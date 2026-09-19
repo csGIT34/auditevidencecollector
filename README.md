@@ -1,6 +1,8 @@
-# Azure encryption-at-rest evidence
+# Cloud governance evidence and audit program
 
-A working, read-only Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
+**Program scope: all applicable NIST controls across the authoritative 23 Azure services.** Start with the [program-wide control/evidence catalog](docs/audit/README.md), [service matrix](docs/audit/SERVICE_MATRIX.md), [all-family review](docs/audit/NIST_FAMILY_REVIEW.md) and [implementation backlog](docs/audit/IMPLEMENTATION_BACKLOG.md). The catalog records 215 proposed checks across 12 domains and all 20 NIST families; it is provisional research, not implemented control coverage or tenant findings.
+
+The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
 
 **Canonical local repository:** `/home/zerocool/github/cloud-governance`. The previous folder at `/home/zerocool/Documents/ChatGPT/Cloud Governance` contains a pointer and a preserved pre-move archive. Make future changes here.
 

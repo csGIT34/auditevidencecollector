@@ -1,8 +1,12 @@
-# Authoritative service scope and current evidence coverage
+# Authoritative service scope and current implementation coverage
 
-Scope version: **2026-09-19.1**. Source: the user's authoritative 23-entry service list. Coverage checked against tool **0.1.1**, rule version **2026.09.19.1**, implementation commit **fa39141**. Microsoft identity/type documentation reviewed on **2026-09-19**. This document records program scope; it does not change collector behavior or narrow inventory to an allowlist.
+Scope version: **2026-09-19.2**.
 
-The program is intended to collect fresh, deterministic evidence frequently and retain history ready for audit or other authorized use. These services are in scope across the **NIST controls selected for the program**. Current executable assessment is only encryption at rest, provisionally mapped to **SC-28 / SC-28(1)**; it does not implement all NIST controls or certify control effectiveness. Applicability must be selected per service and control. A service without its own encryption switch can still have other applicable controls.
+**For full audit applicability, use the [program-wide control/evidence catalog](audit/README.md) and [per-service matrix](audit/SERVICE_MATRIX.md).** They cover all 23 services across identity, exposure, at-rest and transit protection, credential lifecycle, audit, configuration, vulnerabilities, recovery, inventory, incident response and governance, with a review of all 20 NIST families. The matrix below describes current encryption implementation maturity only. It does not limit program applicability.
+
+ Source: the user's authoritative 23-entry service list. Coverage checked against tool **0.1.1**, rule version **2026.09.19.1**, implementation commit **fa39141**. Microsoft identity/type documentation reviewed on **2026-09-19**. This document records program scope; it does not change collector behavior or narrow inventory to an allowlist.
+
+The program is intended to collect fresh, deterministic evidence frequently and retain history ready for audit or other authorized use. These services are in scope across applicable NIST controls, with candidate mappings now documented in the program-wide catalog; final selection remains subject to RCSA/control-owner/auditor agreement. Current executable assessment is only encryption at rest, provisionally mapped to **SC-28 / SC-28(1)**; it does not implement all NIST controls or certify control effectiveness. Applicability must be selected per service and control. A service without its own encryption switch can still have other applicable controls.
 
 ## How to read the matrix
 

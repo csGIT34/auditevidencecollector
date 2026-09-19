@@ -1,5 +1,7 @@
 # Exact service coverage
 
+**Implementation coverage only.** Full NIST applicability is documented separately in the [program-wide catalog](audit/README.md), [service matrix](audit/SERVICE_MATRIX.md) and [coverage audit](audit/COVERAGE_AUDIT.md). A missing encryption handler does not exclude the service from audit scope.
+
 Rule version: `2026.09.19.1`. Sources reviewed: 2026-09-19. Exact registered types: **45**. Registration includes partial and not-applicable rules; it does not mean full encryption coverage.
 
 For the authoritative 23-service program boundary and current gaps, see [PROGRAM_SCOPE.md](PROGRAM_SCOPE.md). The table below is the existing handler catalog, not a complete program control matrix; extra dependency handlers are intentionally retained. Private endpoints remain explicitly in program scope even though this particular encryption mechanism is N/A.
