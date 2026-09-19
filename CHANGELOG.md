@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.8.0 — operational evidence supplements
+
+- Import attributed, dated restore/access/change/incident/exception records against an exact saved run; preserve automated findings and freeze objective references.
+- Publish hash-verified JSON/Markdown archives and standalone PDFs through the CLI and opt-in, key-protected Azure Functions endpoints.
+- Reject invalid scope, duplicate fields and incomplete archives; distinguish stale, future and expired evidence. Operator statements and referenced hashes remain unverified assertions.
+
 ## 0.7.0 — diagnostic destinations and protected backups
 
 - Compare protected sources, policies and reported states for Data Protection and Recovery Services vaults. Missing expected items and unhealthy states cannot hide behind vault-level configuration.

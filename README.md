@@ -1,6 +1,6 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** Version 0.7.0 includes [164 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register](docs/audit/delivery-register.json) for remaining objectives.
+**Current work: multi-control coverage is incomplete.** Version 0.8.0 includes [164 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register](docs/audit/delivery-register.json) for remaining objectives.
 
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 
@@ -144,3 +144,5 @@ Core collection, control evaluation, evidence output and any future core storage
 Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration or dashboard is implemented. The personal Azure lab has completed bounded live collection/report checks and is currently stopped, with no timer or enabled operations. Cloud resources were explicitly authorized for that temporary lab; retained storage may still incur charges. See [current status](docs/STATUS.md) and the [cost/teardown guide](infra/personal-lab/README.md). Workplace infrastructure, scope and acceptance remain separate.
 
 Compare changes between exact archived runs with the [saved-run comparison commands](docs/SAVED_RUN_COMPARISON.md).
+
+Dated restore, access-review, change and incident records can be archived and reported through the [operational evidence supplement](docs/OPERATIONAL_EVIDENCE.md), including explicit missing-evidence requirements.

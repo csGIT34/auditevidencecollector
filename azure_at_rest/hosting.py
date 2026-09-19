@@ -15,7 +15,7 @@ from .storage import parts
 from .workflow import Deadline, collect_run
 
 LOG = logging.getLogger('cloud_governance')
-LOCKS = {'collect': Lock(), 'report': Lock()}
+LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report')}
 
 
 class ConfigurationError(ValueError):
@@ -163,7 +163,7 @@ def resources(settings, deadline, operation):
             credential.close()
 
 
-def execute(operation, *, run_id=None, env=None, factory=resources):
+def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=None, max_age_hours=None, env=None, factory=resources):
     """Returns safe metadata; reports pre-archive failures without exception payloads."""
     env = os.environ if env is None else env
     invocation_id = uuid4().hex
@@ -171,13 +171,15 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
     locked = False
     LOG.info(json.dumps({'operation': operation if operation in LOCKS else 'invalid', 'state': 'started', 'invocation_id': invocation_id}))
     try:
-        if operation not in ('collect', 'report'):
+        if operation not in LOCKS:
             raise ConfigurationError('invalid_operation')
-        setting = 'collection' if operation == 'collect' else 'report'
+        setting = 'collection' if operation == 'collect' else 'operational' if operation.startswith('operational-') else 'report'
         if not enabled(env, setting):
             return {'operation': operation, 'state': 'disabled', 'invocation_id': invocation_id}
         if operation == 'collect':
             schedule(env)
+        elif operation=='operational-report':
+            identity(evidence_id,'o')
         else:
             identity(run_id, 'r')
         if env.get('CG_EXECUTION_EXPIRES_AT'):
@@ -201,6 +203,18 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
                 result = collect_run(store, transport, settings.subscriptions, mode='azure_live', max_pages=settings.max_pages,
                                      provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group, criteria=settings.criteria,
                                      graph_transport=getattr(transport,'graph_transport',None) if settings.graph_enabled else None, tenant_id=settings.tenant)
+            elif operation=='operational-import':
+                from .operational import publish
+                stage='operational_evidence_archive'
+                manifest=publish(store,run_id,document,as_of=as_of,max_age_hours=max_age_hours,provenance=settings.provenance(operation,invocation_id),deadline=deadline)
+                result={key:manifest[key] for key in ('evidence_id','source_run_id','generated_at')}
+                result['archive_state']='complete'
+            elif operation=='operational-report':
+                from .operational import publish_pdf as publish_operational_pdf
+                stage='operational_pdf_archive'
+                manifest=publish_operational_pdf(store,evidence_id,deadline=deadline)
+                result={key:manifest[key] for key in ('evidence_id','report_id','generated_at')}
+                result.update(pdf_key=manifest['pdf']['key'],archive_state='complete')
             else:
                 stage = 'saved_run_pdf_archive'
                 manifest = publish_pdf(store, run_id, provenance=settings.provenance(operation, invocation_id), deadline=deadline)

@@ -6,11 +6,11 @@ Created 2026-09-19. Project status: **INCOMPLETE**. This is the delivery checkli
 
 Deliver an Azure-hosted, deterministic evidence collection and assessment system covering applicable controls for all [23 services](PROGRAM_SCOPE.md). Develop and test on macOS/Linux; run unattended in Azure Functions with managed identity and retained evidence in Azure Storage. Reuse workplace infrastructure patterns. Terraform is for the temporary personal lab only.
 
-Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.5.1 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
+Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.8.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
 
 ## Required deliverables, in execution order
 
-Work in progress: 0.5.0 adds 115 scoped configuration/identity predicates across the 23 services, including tenant-verified Graph metadata. The [delivery register](audit/delivery-register.json) records partial support and remaining objective boundaries. Unchecked deliverables remain incomplete; predicate count is not completion.
+Work in progress: 0.7.0 supplies 164 scoped configuration/identity predicates across the 23 services, including tenant-verified Graph metadata. The [delivery register](audit/delivery-register.json) records partial support and remaining objective boundaries. Unchecked deliverables remain incomplete; predicate count is not completion.
 
 ### 1. Account for every proposed check
 
@@ -78,11 +78,13 @@ Acceptance: a real Wiz collection or native export maps reproducibly into archiv
 
 ### 7. Support operational, manual and inherited evidence
 
-- [ ] Import dated backup/restore, access-review, incident, change, remediation and provider/process evidence with owner, scope, period and provenance.
+- [x] Import dated backup/restore, access-review, incident, change, remediation and provider/process evidence with owner, scope, period and provenance.
 - [ ] Assess required populations, freshness and approved thresholds where evidence supports deterministic evaluation.
-- [ ] Provide explicit human assessment/attestation records for judgments automation cannot establish.
+- [x] Provide explicit human assessment/attestation records for judgments automation cannot establish.
 
 Acceptance: the report distinguishes observed configuration, operating records and human/provider assertions. Missing restore or review evidence remains a gap even when configuration looks correct.
+
+Implementation: [operational supplements](OPERATIONAL_EVIDENCE.md) archive attributed records, required populations/periods and freshness. Authenticated provider provenance and automatic operating-effectiveness observations remain open.
 
 ### 8. Finish audit reporting and historical comparison
 

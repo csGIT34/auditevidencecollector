@@ -75,12 +75,34 @@ def parser():
     diff_show = commands.add_parser("comparison-show", help="Verify and print an exact saved run comparison.")
     diff_show.add_argument("--store", type=Path, required=True)
     diff_show.add_argument("--comparison-id", required=True)
+    operating = commands.add_parser("operational-import", help="Archive attributed operating records against one exact run; no reassessment.")
+    operating.add_argument("--store", type=Path, required=True)
+    operating.add_argument("--run-id", required=True)
+    operating.add_argument("--input", type=Path, required=True)
+    operating.add_argument("--as-of", required=True)
+    operating.add_argument("--max-age-hours", type=float, required=True)
+    for command in ("operational-show", "operational-pdf"):
+        sub = commands.add_parser(command, help="Verify an exact operational supplement and show it or archive its PDF.")
+        sub.add_argument("--store", type=Path, required=True)
+        sub.add_argument("--evidence-id", required=True)
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command in {"operational-import", "operational-show", "operational-pdf"}:
+            from .storage import FileStore
+            from .operational import MAX_BYTES, publish, load, publish_pdf
+            store=FileStore(args.store)
+            if args.command == "operational-import":
+                with args.input.open('rb') as stream:data=stream.read(MAX_BYTES+1)
+                print(json.dumps(publish(store,args.run_id,data,as_of=args.as_of,max_age_hours=args.max_age_hours),indent=2))
+            elif args.command == "operational-show":
+                print(load(store,args.evidence_id)['markdown'],end='')
+            else:
+                print(json.dumps(publish_pdf(store,args.evidence_id),indent=2))
+            return 0
         if args.command in {"compare-runs", "comparison-show"}:
             from .storage import FileStore
             from .run_comparison import publish, load

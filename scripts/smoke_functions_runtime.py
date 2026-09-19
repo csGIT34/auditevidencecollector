@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 IMAGE = 'mcr.microsoft.com/azure-functions/python@sha256:ecdc82ecd47f144f5aa55c14086d6e67684bb3b4b5577ba00d11bb9a47dacd5e'
 
 
-def check_runtime(package, output):
+def check_runtime(package, output, operational=False):
     package, output = Path(package).resolve(), Path(output).resolve()
     if output.is_relative_to(ROOT) or output.exists():
         raise ValueError('Use a new private output directory outside the checkout')
@@ -52,6 +52,7 @@ def check_runtime(package, output):
                             'FUNCTIONS_WORKER_RUNTIME=python', 'CG_COLLECTION_ENABLED=false',
                             'CG_REPORT_ENABLED=false', 'CG_LAB_PROBE_ENABLED=false', 'CG_COLLECTION_SCHEDULE=']:
                 command += ['-e', setting]
+            command += ['-e', 'CG_OPERATIONAL_ENABLED='+str(operational).lower()]
             command.append(IMAGE)
             subprocess.run(command, check=True, capture_output=True, text=True, timeout=300)
             container_started = True
@@ -105,6 +106,16 @@ def check_runtime(package, output):
                                               'expected': expected, 'seconds': elapsed})
                     if status != expected or (status == 400 and json.loads(body) != {'code': 'exact_run_id_required'}):
                         raise RuntimeError(f'{label}: expected HTTP {expected}, received {status}')
+                operational_names={'ImportOperationalEvidence','GenerateOperationalReport'}
+                if operational_names.intersection(summary['functions']) != (operational_names if operational else set()):
+                    raise RuntimeError('Unexpected operational route registration')
+                if operational:
+                    for route, code in [('import','invalid_operational_request'),('reports','exact_evidence_id_required')]:
+                        for label,key,expected in [('missing-key',None,401),('wrong-key','invalid-local-test-key',401),('invalid-body',function_key,400)]:
+                            status,body,elapsed=request('POST','/api/operational/'+route,{},key)
+                            summary['checks'].append({'name':route+'-'+label,'status':status,'expected':expected,'seconds':elapsed})
+                            if status!=expected or (status==400 and json.loads(body)!={'code':code}):
+                                raise RuntimeError('Operational route validation failed')
                 summary['passed'] = True
             finally:
                 try:
@@ -127,5 +138,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--package', type=Path, required=True, help='Linux amd64 Python 3.12 deployment ZIP')
     parser.add_argument('--output', type=Path, required=True, help='New private directory outside this checkout')
+    parser.add_argument('--operational',action='store_true',help='Also verify opt-in operational endpoints')
     args = parser.parse_args()
-    check_runtime(args.package, args.output)
+    check_runtime(args.package, args.output, args.operational)

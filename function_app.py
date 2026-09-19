@@ -4,7 +4,7 @@ import logging
 import os
 import azure.functions as func
 from azure_at_rest.archive import identity
-from azure_at_rest.hosting import ExecutionError, execute, schedule
+from azure_at_rest.hosting import ExecutionError, execute, schedule, enabled
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 # Our handlers emit fixed safe envelopes. Keep SDK response diagnostics out of host logs.
@@ -41,3 +41,46 @@ if _schedule:
     @app.timer_trigger(schedule=_schedule, arg_name='timer', run_on_startup=False, use_monitor=True)
     def collect_evidence(timer: func.TimerRequest) -> None:
         execute('collect')
+
+
+if enabled(os.environ,'operational'):
+    @app.function_name(name='ImportOperationalEvidence')
+    @app.route(route='operational/import',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
+    def import_operational_evidence(req: func.HttpRequest) -> func.HttpResponse:
+        from azure_at_rest.operational import MAX_BYTES
+        from azure_at_rest.archive import encode
+        from azure_at_rest.wiz import decode
+        try:
+            raw=req.get_body()
+            if len(raw)>MAX_BYTES+4096:raise ValueError()
+            body=decode(raw)
+            if not isinstance(body,dict) or set(body)!={'run_id','document','as_of','max_age_hours'}:raise ValueError()
+            run_id=identity(body['run_id'],'r')
+            document=encode(body['document'])
+            if len(document)>MAX_BYTES:raise ValueError()
+        except (ValueError,TypeError,KeyError,RecursionError):
+            return func.HttpResponse('{"code":"invalid_operational_request"}',status_code=400,mimetype='application/json')
+        try:
+            result=execute('operational-import',run_id=run_id,document=document,as_of=body['as_of'],max_age_hours=body['max_age_hours'])
+            status=201 if result['state']=='complete' else 503
+        except ExecutionError as error:
+            result=error.outcome;status=409 if result['code']=='operation_busy' else 500
+        return func.HttpResponse(json.dumps(result),status_code=status,mimetype='application/json',headers={'Cache-Control':'no-store'})
+
+    @app.function_name(name='GenerateOperationalReport')
+    @app.route(route='operational/reports',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
+    def generate_operational_report(req: func.HttpRequest) -> func.HttpResponse:
+        from azure_at_rest.wiz import decode
+        try:
+            if len(req.get_body())>1024:raise ValueError()
+            body=decode(req.get_body())
+            if not isinstance(body,dict) or set(body)!={'evidence_id'}:raise ValueError()
+            evidence_id=identity(body['evidence_id'],'o')
+        except (ValueError,TypeError,KeyError):
+            return func.HttpResponse('{"code":"exact_evidence_id_required"}',status_code=400,mimetype='application/json')
+        try:
+            result=execute('operational-report',evidence_id=evidence_id)
+            status=201 if result['state']=='complete' else 503
+        except ExecutionError as error:
+            result=error.outcome;status=409 if result['code']=='operation_busy' else 500
+        return func.HttpResponse(json.dumps(result),status_code=status,mimetype='application/json',headers={'Cache-Control':'no-store'})
