@@ -11,6 +11,17 @@ variables {
 }
 run "safe_defaults" {
   command = plan
+  override_resource {
+    target = azurerm_service_plan.lab
+    override_during = plan
+    values = {
+      id = "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-demolab12/providers/Microsoft.Web/serverFarms/plan-demolab12"
+    }
+  }
+  assert {
+    condition = azapi_resource.function.body.properties.serverFarmId == "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-demolab12/providers/Microsoft.Web/serverfarms/plan-demolab12" && !strcontains(azapi_resource.function.body.properties.serverFarmId, "//")
+    error_message = "The planned app must retain a valid ARM plan ID when normalizing Azure response casing."
+  }
   assert {
     condition     = azapi_resource.function.body.properties.functionAppConfig.scaleAndConcurrency.maximumInstanceCount == 1 && length(azapi_resource.function.body.properties.functionAppConfig.scaleAndConcurrency.alwaysReady) == 0
     error_message = "Lab must use one on-demand instance per function group and zero always-ready."
@@ -30,6 +41,10 @@ run "safe_defaults" {
   assert {
     condition     = azapi_resource.function.body.properties.siteConfig.ipSecurityRestrictionsDefaultAction == "Deny" && azapi_resource.function.body.properties.siteConfig.scmIpSecurityRestrictionsUseMain && azapi_resource.function.body.properties.httpsOnly
     error_message = "App and deployment endpoint must have restricted inbound access and HTTPS."
+  }
+  assert {
+    condition     = azapi_update_resource.basic_auth["scm"].body.properties.allow == false && azapi_update_resource.basic_auth["scm"].name == "scm"
+    error_message = "The platform-created SCM policy must be updated with basic authentication disabled."
   }
   assert {
     condition     = toset(azurerm_role_definition.subscription_metadata.permissions[0].actions) == toset(["Microsoft.Resources/subscriptions/read"]) && !contains(azurerm_role_definition.evidence.permissions[0].data_actions, "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete")

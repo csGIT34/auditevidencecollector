@@ -128,7 +128,8 @@ resource "azapi_resource" "function" {
   body = {
     kind = "functionapp,linux"
     properties = {
-      serverFarmId        = azurerm_service_plan.lab.id
+      # Microsoft.Web returns this ARM ID segment in lowercase; prevent perpetual drift.
+      serverFarmId        = replace(azurerm_service_plan.lab.id, "serverFarms", "serverfarms")
       reserved            = true
       httpsOnly           = true
       publicNetworkAccess = "Enabled"
@@ -187,7 +188,9 @@ resource "azapi_resource" "function" {
   response_export_values = []
   depends_on             = [azurerm_role_assignment.runtime, azurerm_role_assignment.evidence, azurerm_role_assignment.lab_reader, azurerm_role_assignment.subscription_metadata]
 }
-resource "azapi_resource" "basic_auth" {
+# Azure creates this child with the app; update it instead of attempting creation.
+# Removing this state entry leaves the policy disabled until its parent app is deleted.
+resource "azapi_update_resource" "basic_auth" {
   for_each               = toset(["scm"])
   type                   = "Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01"
   name                   = each.key
