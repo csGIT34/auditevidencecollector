@@ -9,8 +9,8 @@ def text(value):
 
 def markdown(report):
     summary = report["summary"]
-    lines = ["# Azure encryption-at-rest technical assessment", "",
-             f"**Conclusion: {summary['conclusion']}**", "",
+    lines = ["# Azure technical evidence assessment", "",
+             f"**Encryption conclusion: {summary['conclusion']}**", "",
              f"Evidence mode: **{text(report['mode'])}**. Generated: {text(report['generated_at'])}.",
              f"Collection: {text(report['collection_started_at'])} to {text(report['collection_completed_at'])}.",
              f"Rule version: {report['rule_version']}; tool version: {report['tool_version']}.", "",
@@ -21,6 +21,8 @@ def markdown(report):
              f"Known child traversal complete: {summary['child_collections_complete']}. "
              f"Coverage incomplete: {summary['coverage_incomplete']}. Collection errors: {summary['collection_error_count']}.", "",
              "| Result | Count |", "| --- | ---: |"]
+    if "configuration_assessment" in report:
+        lines[2:2] = ["**Configuration conclusion: " + report["configuration_assessment"]["summary"]["conclusion"] + "**", ""]
     lines.extend(f"| {status} | {count} |" for status, count in summary["counts"].items())
     lines.extend(["", "| Subscription | Listing complete | Pages | Items received |", "| --- | --- | ---: | ---: |"])
     for sub in report["inventory"]["subscriptions"]:
@@ -65,6 +67,15 @@ def markdown(report):
             for source in command["sources"]:
                 lines.append("[Supporting service documentation](" + source + ").")
             lines.append("")
+    if "configuration_assessment" in report:
+        cfg = report["configuration_assessment"]
+        lines.extend(["## Configuration control assessments", "", text(cfg["limits"]), "",
+                      "Criteria: " + text(json.dumps(cfg["policy"], sort_keys=True)), "",
+                      "| Resource | Check / objective | Result | Observation | Criterion | Reason |",
+                      "| --- | --- | --- | --- | --- | --- |"] )
+        for row in cfg["results"]:
+            lines.append("| " + " | ".join(text(v) for v in (row["resource_id"],row["check_id"] + " / " + row["catalog_ref"],row["result"],json.dumps(row["observation"]),json.dumps(row["criterion"]),row["reason"])) + " |")
+        lines.extend(["", "Sources: " + ", ".join("[Microsoft API schema](" + url + ")" for url in sorted({r["source"] for r in cfg["results"]})), ""])
     lines.extend(["## Collection errors", ""])
     if not report["errors"]:
         lines.append("No collection errors recorded. This does not establish exhaustive coverage.")
@@ -81,6 +92,7 @@ def markdown(report):
 
 
 def exit_code(report):
-    if report["summary"]["counts"]["FAIL"]:
+    configuration = report.get("configuration_assessment", {}).get("summary", {})
+    if report["summary"]["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0):
         return 1
-    return 2 if report["summary"]["coverage_incomplete"] else 0
+    return 2 if report["summary"]["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" else 0

@@ -72,10 +72,10 @@ class Assessor:
 
         if not rule:
             return finish("UNSUPPORTED", "Inventory retained; no service or applicability assumptions made for this type.")
-        if record["collection_status"] == "error" or record.get("errors"):
-            return finish("ERROR", "A required resource or encryption read failed. No positive conclusion is available.")
         if rule.mode == "na":
             return finish("NOT_APPLICABLE", rule.scope, "justified_applicability")
+        if record["collection_status"] == "error" or record.get("errors"):
+            return finish("ERROR", "A required resource or encryption read failed. No positive conclusion is available.")
         if record["collection_status"] != "ok":
             return finish("UNKNOWN", "Verified service-specific resource details are missing.")
         state = evidence.get("provisioningState")
@@ -192,7 +192,7 @@ class Assessor:
         return finish("UNSUPPORTED", "Rule evaluation mode is not implemented.")
 
 
-def assess(snapshot):
+def assess(snapshot, criteria=None):
     assessor = Assessor(snapshot)
     results = [assessor.evaluate(r) for r in snapshot["resources"]]
     resource_groups = {s["id"].lower(): s["resource_group"] for s in snapshot["inventory"]["subscriptions"] if s.get("resource_group")}
@@ -206,7 +206,7 @@ def assess(snapshot):
     incomplete = (not snapshot["inventory"].get("complete") or not child_complete or not results or bool(snapshot["errors"])
                   or any(counts[s] for s in ("UNKNOWN", "ERROR", "UNSUPPORTED")) or any(r["gaps"] for r in results))
     conclusion = "FAILURES_FOUND" if counts["FAIL"] else "INCOMPLETE" if incomplete else "SUPPORTED_SCOPE_SATISFIED"
-    return {"schema_version": "1.0", "tool_version": __version__, "rule_version": RULE_VERSION,
+    report = {"schema_version": "1.1", "tool_version": __version__, "rule_version": RULE_VERSION,
             "generated_at": now(), "mode": snapshot["mode"], "collection_started_at": snapshot["started_at"],
             "collection_completed_at": snapshot["completed_at"], "control_mapping": {
                 "framework": "NIST SP 800-53 Rev. 5 / SP 800-53A Rev. 5", "controls": ["SC-28", "SC-28(1)"],
@@ -217,3 +217,8 @@ def assess(snapshot):
                         "collection_error_count": len(snapshot["errors"]), "types": {t: dict(v) for t, v in sorted(types.items())},
                         "unsupported_types": sorted({r["type"] for r in results if r["result"] == "UNSUPPORTED"})},
             "verification_guidance": GUIDANCE, "inventory": snapshot["inventory"], "limitations": LIMITATIONS, "errors": snapshot["errors"], "results": results}
+
+    from .controls import evaluate, overall_summary
+    report["configuration_assessment"] = evaluate(snapshot, criteria)
+    report["overall_summary"] = overall_summary(report)
+    return report

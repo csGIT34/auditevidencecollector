@@ -27,7 +27,8 @@ class ScopedVerificationTests(unittest.TestCase):
                 for row in report['results']:
                     commands = row['verification_commands']
                     self.assertEqual(['inventory_lookup'], [c['kind'] for c in commands])
-                    self.assertEqual(transport.calls, [c['url'] for c in commands])
+                    self.assertEqual(transport.calls[:1], [c['url'] for c in commands])  # Legacy encryption lookup; configuration reads are separate.
+                    self.assertTrue(all('/subscriptions/'+SUB+'/' in u for u in transport.calls))
                     if scoped:
                         self.assertIn('/resourceGroups/audit-demo/resources?', commands[0]['url'])
                         self.assertIn('recorded resource-group', commands[0]['verifies'])

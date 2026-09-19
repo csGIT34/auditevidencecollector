@@ -1,0 +1,534 @@
+{
+  "checks": {
+    "ACA-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ACA-external-ingress": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACA-insecure-ingress": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACR-admin-user": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACR-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ACR-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "AI-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AI-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "AI-public-ingestion": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "AI-public-query": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "AKS-azure-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AKS-local-accounts": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-private-api": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPC-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "APPC-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPC-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "APPC-purge-protection": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPREG-approved-owners": {
+      "operator": "equals",
+      "value": [
+        "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+      ]
+    },
+    "APPREG-approved-role-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "appRoleId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+          "principalId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "resourceId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+        }
+      ]
+    },
+    "APPREG-audience": {
+      "operator": "equals",
+      "value": "AzureADMyOrg"
+    },
+    "APPREG-expired-credentials": {
+      "operator": "equals",
+      "value": 0
+    },
+    "APPREG-federation-trust": {
+      "operator": "equals",
+      "value": []
+    },
+    "APPREG-owner-count": {
+      "operator": "at_least",
+      "value": 1
+    },
+    "APPREG-role-grants": {
+      "operator": "equals",
+      "value": 1
+    },
+    "APPREG-sp-enabled": {
+      "operator": "equals",
+      "value": true
+    },
+    "AUTO-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AUTO-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "AUTO-public-network": {
+      "operator": "equals",
+      "value": false
+    },
+    "BV-backup-immutability": {
+      "operator": "equals",
+      "value": "Locked"
+    },
+    "BV-backup-soft-delete": {
+      "operator": "equals",
+      "value": "AlwaysOn"
+    },
+    "BV-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "BV-diagnostic-logs-recovery": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "BV-recovery-immutability": {
+      "operator": "equals",
+      "value": "Locked"
+    },
+    "BV-recovery-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "COS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "COS-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "COS-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "COS-tls": {
+      "operator": "equals",
+      "value": "Tls12"
+    },
+    "EG-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "EG-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "EG-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "EH-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "EH-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "EH-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "EH-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-auth-platform": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-platform-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-required": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-required-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "FUNC-diagnostic-logs-slot": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "FUNC-ftp": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-ftp-basic-auth": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-ftp-basic-auth-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-ftp-slot": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-https": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-https-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-public-network-slot": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-remote-debugging": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-remote-debugging-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-basic-auth": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-basic-auth-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-scm-tls-slot": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-tls-slot": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "GRAF-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "GRAF-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "GRAF-zone-redundancy": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "KV-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "KV-network-default": {
+      "operator": "equals",
+      "value": "Deny"
+    },
+    "KV-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "KV-purge-protection": {
+      "operator": "equals",
+      "value": true
+    },
+    "KV-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "KV-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "LA-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "LA-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "LA-public-ingestion": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "LA-public-query": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "LA-retention": {
+      "operator": "equals",
+      "value": 30
+    },
+    "PE-approval": {
+      "operator": "equals",
+      "value": [
+        "Approved"
+      ]
+    },
+    "PE-subresources": {
+      "operator": "equals",
+      "value": [
+        "blob"
+      ]
+    },
+    "PE-targets": {
+      "operator": "equals",
+      "value": [
+        "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/approved"
+      ]
+    },
+    "PG-backup-retention": {
+      "operator": "equals",
+      "value": 30
+    },
+    "PG-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "PG-entra-auth": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "PG-password-auth": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "PG-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "PROM-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "PROM-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "REDIS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "REDIS-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "ST-anonymous-blob": {
+      "operator": "equals",
+      "value": false
+    },
+    "ST-blob-restore": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-blob-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-blob-versioning": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-container-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ST-https": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-network-default": {
+      "operator": "equals",
+      "value": "Deny"
+    },
+    "ST-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "ST-shared-key": {
+      "operator": "equals",
+      "value": false
+    },
+    "ST-tls": {
+      "operator": "equals",
+      "value": "TLS1_2"
+    },
+    "UAMI-federation-trust": {
+      "operator": "equals",
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "https://issuer.example.invalid",
+          "subject": "system:serviceaccount:audit:collector"
+        }
+      ]
+    },
+    "VM-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "VM-linux-password-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "VM-secure-boot": {
+      "operator": "equals",
+      "value": true
+    },
+    "VM-vtpm": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "VMSS-linux-password-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-secure-boot": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-vtpm": {
+      "operator": "equals",
+      "value": true
+    }
+  },
+  "id": "SYNTHETIC-TEST-CRITERIA-NOT-WORKPLACE-POLICY",
+  "schema_version": "1.0",
+  "status": "approved",
+  "version": "1"
+}

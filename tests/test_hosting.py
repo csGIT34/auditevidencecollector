@@ -218,3 +218,34 @@ class HostingTests(unittest.TestCase):
             self.assertTrue({'function_app.py','host.json','requirements.txt','constraints.txt','azure_at_rest/program_scope.json'} <= set(names))
             self.assertFalse(any(n.startswith(('tests/','examples/','evidence/','output/','.git','local.settings')) for n in names))
             with self.assertRaises(FileExistsError):package(path)
+
+    def test_hosted_all_service_configuration_and_graph_pipeline(self):
+        from azure_at_rest.graph import FixtureGraphTransport
+        from tests.test_graph import TENANT as GRAPH_TENANT
+        from tests.helpers import SUB as GRAPH_SUB
+        source=ROOT/'examples/control-suite'
+        arm=json.loads((source/'arm-fixture.json').read_text())['responses']
+        graph=json.loads((source/'graph-fixture.json').read_text())['responses']
+        arm[endpoint('/subscriptions/'+GRAPH_SUB,SUBSCRIPTIONS_API)]={'subscriptionId':GRAPH_SUB,'tenantId':GRAPH_TENANT,'state':'Enabled'}
+        store=MemoryStore()
+        @contextmanager
+        def factory(settings,deadline,operation):
+            transport=FixtureTransport(arm)
+            transport.graph_transport=FixtureGraphTransport(graph)
+            yield store,transport
+        env={**environment(),'CG_GRAPH_ENABLED':'true','CG_TENANT_ID':GRAPH_TENANT,'CG_SUBSCRIPTION_IDS':GRAPH_SUB,
+             'CG_ASSESSMENT_CRITERIA_JSON':(source/'criteria.json').read_text()}
+        outcome=execute('collect',env=env,factory=factory)
+        self.assertEqual('complete',outcome['state'])
+        self.assertEqual({'PASS':114,'FAIL':1,'UNKNOWN':0,'ERROR':0},outcome['configuration_summary']['counts'])
+        saved=load_run(store,outcome['run_id'])
+        self.assertTrue(saved['snapshot']['identity_evidence']['verified_tenant'])
+        self.assertEqual(23,len({r['catalog_ref'].split('-')[0] for r in saved['assessment']['configuration_assessment']['results']}))
+
+    def test_invalid_criteria_and_missing_graph_transport_fail_before_archive(self):
+        for values in ({'CG_ASSESSMENT_CRITERIA_JSON':'{"checks":{},"checks":{}}'},{'CG_GRAPH_ENABLED':'yes'}):
+            with self.assertRaises(ConfigurationError):Settings.parse({**environment(),**values})
+        store=MemoryStore()
+        with self.assertLogs('cloud_governance'),self.assertRaises(ExecutionError):
+            execute('collect',env={**environment(),'CG_GRAPH_ENABLED':'true'},factory=self.fixture_factory(store))
+        self.assertEqual({},store.objects)

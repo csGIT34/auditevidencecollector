@@ -65,7 +65,7 @@ class CliReportTests(unittest.TestCase):
 
     def test_exit_codes_do_not_mask_coverage(self):
         passrow=resource('Microsoft.Storage/storageAccounts')
-        s=Scenario([passrow]); self.assertEqual(0,exit_code(s.run()))
+        s=Scenario([passrow]); self.assertEqual(2,exit_code(s.run()))  # Encryption passes; broader criteria/evidence are absent.
         unknown=resource('Microsoft.Web/sites'); s=Scenario([unknown]); self.assertEqual(2,exit_code(s.run()))
         fail=resource('Microsoft.Kusto/clusters',properties={'enableDiskEncryption':False}); s=Scenario([fail]); self.assertEqual(1,exit_code(s.run()))
         s=Scenario([]); self.assertEqual(2,exit_code(s.run()))

@@ -23,12 +23,17 @@ def listing(value):
 
 
 def validate_snapshot(snapshot):
-    require(isinstance(snapshot, dict) and snapshot.get("schema_version") == "1.0")
-    require(set(snapshot) == {"schema_version", "mode", "started_at", "completed_at", "inventory", "resources", "errors"})
+    require(isinstance(snapshot, dict) and snapshot.get("schema_version") in {"1.0","1.1"})
+    require(set(snapshot) - {"identity_evidence"} == {"schema_version", "mode", "started_at", "completed_at", "inventory", "resources", "errors"})
     require(snapshot.get("mode") in {"azure_live", "offline_fixture", "azure"})
     timestamp(snapshot.get("started_at"))
     timestamp(snapshot.get("completed_at"))
     require(isinstance(snapshot.get("resources"), list) and isinstance(snapshot.get("errors"), list))
+    if snapshot["schema_version"] == "1.0":
+        require("identity_evidence" not in snapshot and all("configuration" not in row for row in snapshot["resources"]))
+    if "identity_evidence" in snapshot:
+        from .graph import validate_identity_evidence
+        validate_identity_evidence(snapshot["identity_evidence"])
     inventory = snapshot.get("inventory")
     require(isinstance(inventory, dict) and type(inventory.get("complete")) is bool)
     require(isinstance(inventory.get("subscriptions"), list) and isinstance(inventory.get("subscription_discovery"), dict))
@@ -52,7 +57,7 @@ def validate_snapshot(snapshot):
     for row in snapshot["resources"]:
         ident = identity(row)
         require(ident is not None and row["id"].lower() not in seen)
-        require(set(row) <= {"id", "type", "name", "subscription_id", "resource_group", "location", "kind", "sku", "collected_at", "collection_status", "evidence", "children", "errors", "api_version", "request_path"})
+        require(set(row) <= {"id", "type", "name", "subscription_id", "resource_group", "location", "kind", "sku", "collected_at", "collection_status", "evidence", "children", "errors", "api_version", "request_path", "configuration"})
         if "api_version" in row:
             require(valid_api_version(row["api_version"]))
         if "request_path" in row:
@@ -66,6 +71,9 @@ def validate_snapshot(snapshot):
         require(row.get("collection_status") in {"ok", "error", "inventory_only"})
         require(all(isinstance(row.get(k), str) and (label(row[k]) == row[k] or row[k] in {INVALID, "[invalid]"}) for k in ("location", "kind", "sku")))
         require(isinstance(row.get("errors"), list) and isinstance(row.get("evidence"), dict) and isinstance(row.get("children"), dict))
+        if "configuration" in row:
+            from .controls import validate_observations
+            validate_observations(row["configuration"], row["type"])
         rule = RULES.get(row["type"].lower())
         paths = set(rule.paths) if rule else set()
         extra = {"provisioningState", "references", "unmanaged_disk_present", "volumes", "agent_pools", "tde.state", "tde.observed_at"}

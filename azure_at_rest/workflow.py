@@ -28,24 +28,30 @@ class Deadline:
         time.sleep(seconds)
 
 
-def assess_snapshot(snapshot, *, reassessed=False):
-    report = assess(snapshot)
+def assess_snapshot(snapshot, *, reassessed=False, criteria=None):
+    report = assess(snapshot, criteria)
     report['snapshot_sha256'] = snapshot_digest(snapshot)
     report['reassessed_from_snapshot'] = reassessed
     return report
 
 
-def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None, resource_group=None):
+def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None, resource_group=None, criteria=None, graph_transport=None, tenant_id=None):
     if deadline:
         deadline.check()
     snapshot = Collector(transport, max_pages, mode).collect(subscriptions, resource_group=resource_group)
     if deadline:
         deadline.check()
-    report = assess_snapshot(snapshot)
+    if graph_transport is not None:
+        from .graph import GraphCollector
+        from .safety import now
+        snapshot['identity_evidence'] = GraphCollector(graph_transport,tenant_id,max_pages).collect()
+        snapshot['completed_at'] = now()
+    report = assess_snapshot(snapshot, criteria=criteria)
     if deadline:
         deadline.check()
     manifest = save_run(store, snapshot, report, provenance=provenance)
     return {'run_id': manifest['run_id'], 'archive_state': 'complete',
-            'assessment_conclusion': report['summary']['conclusion'],
-            'coverage_incomplete': report['summary']['coverage_incomplete'],
-            'resource_count': report['summary']['resource_count'], 'counts': report['summary']['counts']}
+            'assessment_conclusion': report['overall_summary']['conclusion'],
+            'coverage_incomplete': report['overall_summary']['coverage_incomplete'],
+            'resource_count': report['summary']['resource_count'], 'counts': report['summary']['counts'],
+            'configuration_summary': report['configuration_assessment']['summary']}

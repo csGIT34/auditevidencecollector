@@ -58,7 +58,7 @@ def render_pdf(saved, generation):
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-    from reportlab.platypus import BaseDocTemplate, Frame, PageTemplate, Paragraph, Spacer, PageBreak, LongTable, TableStyle
+    from reportlab.platypus import BaseDocTemplate, Frame, PageTemplate, Paragraph, Spacer, PageBreak, LongTable, TableStyle, KeepTogether
     from reportlab.platypus.tableofcontents import TableOfContents
 
     # ReportLab ships these licensed fonts; embed them to avoid viewer substitution.
@@ -72,10 +72,11 @@ def render_pdf(saved, generation):
 
     report, snapshot, context = saved['assessment'], saved['snapshot'], saved['context']
     program = context['program_scope']
+    configuration = report.get('configuration_assessment')
     rows = report['results']
     references = {r['id'].lower(): f'E{i:03d}' for i, r in enumerate(rows, 1)}
     raw = {r['id'].lower(): r for r in snapshot['resources']}
-    sources = sorted({s['url'] for r in rows for s in r['sources']} | set(report['control_mapping']['sources']))
+    sources = sorted({s['url'] for r in rows for s in r['sources']} | set(report['control_mapping']['sources']) | {r['source'] for r in (configuration['results'] if configuration else [])})
     source_ids = {url: f'S{i:02d}' for i, url in enumerate(sources, 1)}
     styles = getSampleStyleSheet()
     navy = colors.HexColor('#16334C')
@@ -160,8 +161,12 @@ def render_pdf(saved, generation):
         story.append(p(name + ': ' + clean(value)))
 
     story += [Spacer(1,25),p('Cloud governance\nEvidence assessment', 'Title'),Spacer(1,12)]
-    field('Saved assessment conclusion',report['summary']['conclusion'])
-    story.append(p('Evidence coverage is incomplete.' if report['summary']['coverage_incomplete'] else 'Supported collected scope satisfied; broader audit controls remain unassessed.','Heading2'))
+    field('Overall saved assessment', report.get('overall_summary',report['summary'])['conclusion'])
+    field('Saved encryption assessment conclusion',report['summary']['conclusion'])
+    if configuration:
+        field('Saved configuration assessment conclusion', configuration['summary']['conclusion'])
+        field('Configuration check counts', configuration['summary'])
+    story.append(p('Evidence coverage is incomplete.' if report.get('overall_summary',report['summary'])['coverage_incomplete'] else 'Supported collected scope satisfied; broader audit controls remain unassessed.','Heading2'))
     story += [p('One saved collection run. One self-contained auditor report. Evidence, criteria, findings and limitations are included below; access to JSON files, a database or a storage service is not needed to review the report.'),
               p('This document presents only the saved assessment. It neither recollects Azure state nor applies current rules to historical facts. Provider-managed at-rest keys are accepted. No full NIST control effectiveness or audit-period compliance conclusion is made.')]
     if synthetic:story.append(p('DEMONSTRATION ONLY. Every resource identifier and finding in this report comes from a synthetic local fixture. No Azure tenant was accessed.','Heading2'))
@@ -177,7 +182,7 @@ def render_pdf(saved, generation):
     story += [toc, PageBreak()]
     heading('1. Scope, methods and decision criteria','scope')
     story.append(p(report['control_mapping']['assessment']))
-    field('Provisional control mapping',', '.join(report['control_mapping']['controls']))
+    field('Provisional encryption control mapping',', '.join(report['control_mapping']['controls']))
     story.append(p(context['common_criteria']))
     story.append(p('Method: read-only examination of allowlisted ARM identity/configuration and selected child/dependency metadata, plus the stated Microsoft service guarantees. No cryptographic measurement, log-content review, interview, restore exercise or incident-process test was performed. Service guarantees are scoped inferences, not direct observation of stored plaintext/ciphertext.'))
     story.append(p('PASS means the stated implemented technical criterion is met for this observed scope. FAIL means a confirmed disabling state or failed dependency. UNKNOWN means insufficient/contradictory evidence. ERROR means a required read failed. UNSUPPORTED means no reviewed exact-type rule. NOT_APPLICABLE is a documented narrow mechanism/scope exclusion. None of these statuses replaces program-wide applicability or evidence of manual/shared controls.'))
@@ -199,9 +204,9 @@ def render_pdf(saved, generation):
     story.append(PageBreak())
     heading('3. Wider audit applicability and missing evidence','program')
     field('Saved applicability research',program['catalog_version']+'; reviewed '+program['reviewed_on'])
-    story.append(p('All 23 services remain in scope across applicable controls. The following is implementation context frozen with this run, not tenant deployment presence. Only the encryption checks in section 2 produced findings. Other technical, manual/process, shared and inherited requirements have no operating assessment in this run.'))
-    story.append(table([['Domain','Evidence state in this run']]+[[d+' - '+name,'Scoped encryption results only; see E references and limitations.' if d=='R' else 'NOT COLLECTED / NOT ASSESSED. Approved criteria and scoped evidence required.'] for d,name in program['domains'].items()],[230,width-230]))
-    story.append(table([['Service','Existing encryption capability / broader evidence gap']]+[[s['name'],s['current_encryption_maturity']+'. Other domains unassessed. '+s['shared_context']] for s in program['services']],[135,width-135]))
+    story.append(p('All 23 services remain in scope across applicable controls. Encryption findings appear in section 2. Additional saved configuration findings, when present, appear in section 8. Neither section establishes whole-control operating effectiveness. The following research context is not tenant deployment presence.'))
+    story.append(table([['Domain','Evidence state in this run']]+[[d+' - '+name,'Scoped encryption results only; see E references and limitations.' if d=='R' else ('Scoped configuration evidence in section 8; wider objective remains incomplete.' if configuration and any(r['domain']==d for r in configuration['results']) else 'NOT COLLECTED / NOT ASSESSED. Approved criteria and scoped evidence required.')] for d,name in program['domains'].items()],[230,width-230]))
+    story.append(table([['Service','Existing encryption capability / broader evidence gap']]+[[s['name'],s['current_encryption_maturity']+'. Additional saved predicates, if present, appear in section 8; wider coverage remains incomplete. '+s['shared_context']] for s in program['services']],[135,width-135]))
     story.append(p('Resource-local exclusions: private endpoints and user-assigned identities have no customer at-rest store, but retain authorization, trust, change, lifecycle, incident and governance obligations. Private endpoint approval is not proof of correct routing, DNS, target access control or disabled public access. Shared networking evidence remains with the network owner.'))
     story.append(table([['NIST family','Owner / missing shared or process evidence']]+[[f['id'].upper()+' - '+f['title'],f['responsibility']+'. NOT ASSESSED. '+f['review']] for f in program['families']],[170,width-170]))
     story.append(p('The research catalog is provisional. Organization-defined parameters have not been approved by this run. These unresolved items prevent inventing broader technical or process conclusions:'))
@@ -269,5 +274,37 @@ def render_pdf(saved, generation):
     if generation.get('execution_provenance'):
         story.append(table([['PDF generation provenance','Value']]+list(flatten(generation['execution_provenance'])),[230,width-230]))
     story.append(p('The saved JSON is an internal reproducibility format: it preserves collected facts separately from evaluated conclusions. This PDF contains their human-readable substance. Hashes detect mismatch relative to the manifest; they are not signatures or proof against a privileged actor replacing an archive. The application enforces create-only publication. Local files and Azure Blob storage do not by themselves establish WORM protection or a verified retention lock. Retention duration, privileged access and immutable-storage policy remain organization-defined and were not verified by this report.'))
+    if configuration:
+        story.append(PageBreak())
+        heading('8. Configuration control assessments','configuration')
+        story.append(p(configuration['limits']))
+        field('Configuration rule version', configuration['rule_version'])
+        field('Saved configuration summary', configuration['summary'])
+        if snapshot.get('identity_evidence'):
+            graph = snapshot['identity_evidence']
+            field('Graph tenant / verified / complete', {'tenant_id':graph['tenant_id'],'verified_tenant':graph['verified_tenant'],'complete':graph['complete']})
+            story.append(table([['Graph collection field','Saved value']]+list(flatten(graph['listings'])),[205,width-205]))
+            for identity_record in graph['resources']:
+                field('Graph object / application ID', identity_record['id']+' / '+identity_record['app_id'])
+                story.append(table([['Safe identity metadata','Saved value']]+list(flatten(identity_record['metadata'])),[205,width-205]))
+            for error in graph['errors']:field('Graph collection error',error)
+        policy = configuration['policy']
+        field('Criteria identity / version / approval assertion', {k:policy[k] for k in ('id','version','status')} if policy else 'No criteria supplied')
+        story.append(p('Each finding below includes its saved observation and exact criterion. Missing or draft criteria do not produce PASS/FAIL. A matching property does not close the referenced research objective or establish effective authorization, private reachability, recovery or activity over time.'))
+        for row in configuration['results']:
+            story.append(KeepTogether([p(row['check_id']+' | '+row['result']+' | '+row['title'],'Heading2'),
+                                       p('Resource: '+row['resource_id'])]))
+            field('Catalog objective / domain', row['catalog_ref']+' / '+row['domain'])
+            field('Supporting NIST references', ', '.join(row.get('control_refs',[])))
+            objective = context.get('configuration_objectives',{}).get('checks',{}).get(row['catalog_ref'])
+            if objective:
+                field('Wider candidate objective (not closed by this predicate)',objective['candidate_criterion'])
+            field('Observed / assessment time', row['observed_at']+' / '+configuration['generated_at'])
+            field('Read path / API', row.get('request_path',row['resource_id'])+' / '+row['api_version'])
+            field('Property', row['property'])
+            field('Saved observation', row['observation'])
+            field('Saved criterion', row['criterion'])
+            field('Finding', row['reason'])
+            field('API definition source', row['source'])
     doc.multiBuild(story)
     return output.getvalue()

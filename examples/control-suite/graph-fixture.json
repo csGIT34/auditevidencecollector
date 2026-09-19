@@ -1,0 +1,62 @@
+{
+  "fixture_version": "1.0",
+  "responses": {
+    "https://graph.microsoft.com/v1.0/applications/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/federatedIdentityCredentials?$select=id,issuer,subject,audiences": {
+      "value": []
+    },
+    "https://graph.microsoft.com/v1.0/applications/bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb/owners?$select=id": {
+      "value": [
+        {
+          "id": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee",
+          "mail": "DO-NOT-SAVE-GRAPH-SECRET"
+        }
+      ]
+    },
+    "https://graph.microsoft.com/v1.0/applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials": {
+      "value": [
+        {
+          "appId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+          "id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "keyCredentials": [],
+          "passwordCredentials": [
+            {
+              "endDateTime": "2021-01-01T00:00:00Z",
+              "hint": "DO-NOT-SAVE-GRAPH-SECRET",
+              "keyId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+              "secretText": "DO-NOT-SAVE-GRAPH-SECRET",
+              "startDateTime": "2020-01-01T00:00:00Z"
+            }
+          ],
+          "signInAudience": "AzureADMyOrg"
+        }
+      ]
+    },
+    "https://graph.microsoft.com/v1.0/organization?$select=id": {
+      "value": [
+        {
+          "id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        }
+      ]
+    },
+    "https://graph.microsoft.com/v1.0/servicePrincipals/dddddddd-dddd-dddd-dddd-dddddddddddd/appRoleAssignments?$select=id,principalId,resourceId,appRoleId": {
+      "value": [
+        {
+          "appRoleId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+          "id": "opaque_assignment-ID",
+          "principalId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "resourceId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+        }
+      ]
+    },
+    "https://graph.microsoft.com/v1.0/servicePrincipals?$select=id,appId,accountEnabled": {
+      "value": [
+        {
+          "accountEnabled": true,
+          "appId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+          "displayName": "DO-NOT-SAVE-GRAPH-SECRET",
+          "id": "dddddddd-dddd-dddd-dddd-dddddddddddd"
+        }
+      ]
+    }
+  }
+}

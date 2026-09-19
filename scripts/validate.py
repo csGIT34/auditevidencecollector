@@ -27,11 +27,12 @@ def main():
     if not result.wasSuccessful() or result.skipped:
         print('Gate failed: required tests failed or skipped.', file=sys.stderr)
         return 1
-    for script in ('validate_catalog.py', 'export_program_scope.py'):
+    for script in ('validate_catalog.py', 'export_program_scope.py', 'export_control_objectives.py'):
         args = [sys.executable, str(ROOT / 'docs/audit' / script)]
         if script.startswith('export'):
             args.append('--check')
         subprocess.run(args, check=True, cwd=ROOT)
+    subprocess.run([sys.executable, str(ROOT / 'scripts/control_delivery_register.py'), '--check'], check=True, cwd=ROOT)
     subprocess.run([sys.executable, str(ROOT / 'scripts/check_docs.py')], check=True, cwd=ROOT)
     print(f'Offline gate passed: {result.testsRun} tests, zero skips. No Azure validation implied.')
     return 0

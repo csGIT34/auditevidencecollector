@@ -30,9 +30,12 @@ def write_private(path, value):
 
 
 def parser():
-    root = argparse.ArgumentParser(description="Read-only Azure encryption-at-rest technical evidence; provider-managed keys accepted.")
+    root = argparse.ArgumentParser(description="Read-only Azure technical evidence and configurable control assessments.")
     commands = root.add_subparsers(dest="command", required=True)
     collect = commands.add_parser("collect", help="Collect live ARM evidence or exercise the same collector with a fixture.")
+    collect.add_argument("--graph-fixture", type=Path, help="Opt-in offline Graph response fixture; requires --fixture and --tenant-id.")
+    collect.add_argument("--graph", action="store_true", help="Opt-in live Graph metadata using tenant-bound Azure CLI authentication; requires --tenant-id.")
+    collect.add_argument("--tenant-id", help="Explicit tenant UUID for opt-in Graph collection.")
     collect.add_argument("--resource-group", help="Limit inventory and hydration to one group; requires exactly one --subscription.")
     collect.add_argument("--subscription", action="append", help="Subscription UUID; repeat to select multiple. Default: discover accessible subscriptions in current tenant.")
     collect.add_argument("--fixture", type=Path, help="Offline HTTP response fixture. Makes no Azure or credential calls.")
@@ -42,6 +45,7 @@ def parser():
     replay = commands.add_parser("assess", help="Reassess a sanitized snapshot using the current rule version; no Azure calls.")
     replay.add_argument("--input", type=Path, required=True)
     for subparser in (collect, replay):
+        subparser.add_argument("--criteria", type=Path, help="Versioned configuration criteria JSON; absent or draft criteria leave checks UNKNOWN.")
         subparser.add_argument("--json", type=Path, help="Optional loose JSON export (default without --store: evidence/audit.json).")
         subparser.add_argument("--report", type=Path, help="Optional loose Markdown export (default without --store: evidence/audit.md).")
     commands.add_parser("catalog", help="Print exact supported types, scopes, APIs and Microsoft sources as JSON.")
@@ -125,7 +129,17 @@ def main(argv=None):
         input_path = getattr(args, "input", None) or getattr(args, "fixture", None)
         if input_path and input_path.resolve() in {p.resolve() for p in outputs}:
             raise ValueError("An output path must not overwrite the input")
+        if getattr(args,"graph_fixture",None) and args.graph_fixture.resolve() in {p.resolve() for p in outputs}:
+            raise ValueError("Output must not overwrite Graph fixture")
+        if args.criteria and args.criteria.resolve() in {p.resolve() for p in outputs}:
+            raise ValueError("Output must not overwrite criteria")
+        from .controls import decode_policy
+        criteria = decode_policy(args.criteria.read_text()) if args.criteria else None
         if args.command == "collect":
+            if args.tenant_id and not (args.graph or args.graph_fixture):
+                raise ValueError("Tenant selection requires Graph opt-in")
+            if (args.graph or args.graph_fixture) and (not args.tenant_id or subscription_id(args.tenant_id)!=args.tenant_id or args.graph and args.fixture or args.graph_fixture and not args.fixture or args.graph and args.graph_fixture):
+                raise ValueError("Invalid Graph mode/scope")
             if args.subscription and any(not subscription_id(s) for s in args.subscription):
                 raise ValueError("Each subscription must be a UUID")
             if args.fixture:
@@ -136,12 +150,32 @@ def main(argv=None):
             else:
                 transport, mode = ArmTransport(), "azure_live"
             snapshot = Collector(transport, args.max_pages, mode).collect(args.subscription, resource_group=args.resource_group)
+            if args.graph:
+                from .azure_adapters import verify_tenant
+                verify_tenant(transport,[s['id'] for s in snapshot['inventory']['subscriptions']],args.tenant_id)
+            if args.graph or args.graph_fixture:
+                from .graph import GraphCollector, FixtureGraphTransport, GraphTransport, GraphCredential
+                from .safety import now
+                credential = None
+                try:
+                    if args.graph_fixture:
+                        graph_data=json.loads(args.graph_fixture.read_text())
+                        if graph_data.get('fixture_version')!='1.0' or not isinstance(graph_data.get('responses'),dict):raise ValueError('Invalid Graph fixture')
+                        graph_transport=FixtureGraphTransport(graph_data['responses'])
+                    else:
+                        from azure.identity import AzureCliCredential
+                        credential=AzureCliCredential(tenant_id=args.tenant_id,process_timeout=20)
+                        graph_transport=GraphTransport(GraphCredential(credential))
+                    snapshot['identity_evidence']=GraphCollector(graph_transport,args.tenant_id,args.max_pages).collect()
+                    snapshot['completed_at']=now()
+                finally:
+                    if credential is not None:credential.close()
             if args.snapshot:
                 write_private(args.snapshot, json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
         else:
             snapshot = json.loads(args.input.read_text(encoding="utf-8"))
             validate_snapshot(snapshot)
-        report = assess_snapshot(snapshot, reassessed=args.command == "assess")
+        report = assess_snapshot(snapshot, reassessed=args.command == "assess", criteria=criteria)
         if getattr(args, "store", None):
             from .archive import save_run
             from .storage import FileStore
@@ -152,8 +186,9 @@ def main(argv=None):
         if args.report:
             write_private(args.report, markdown(report))
         summary = report["summary"]
-        print(f"{summary['conclusion']}: {summary['resource_count']} resources; "
-              f"{summary['counts']['FAIL']} failed; coverage incomplete={summary['coverage_incomplete']}.")
+        print(f"{report['overall_summary']['conclusion']}: {summary['resource_count']} resources; "
+              f"{summary['counts']['FAIL']} failed; coverage incomplete={report['overall_summary']['coverage_incomplete']}.")
+        print("Configuration checks: " + json.dumps(report["configuration_assessment"]["summary"], sort_keys=True))
         if args.json:
             print(f"JSON: {args.json}")
         if args.report:

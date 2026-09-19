@@ -27,7 +27,8 @@ class ResourceGroupScopeTests(unittest.TestCase):
         self.assertEqual([row['id']],[r['id'] for r in snapshot['resources']])
         self.assertFalse(snapshot['inventory']['complete'])
         self.assertEqual(RG,snapshot['inventory']['subscriptions'][0]['resource_group'])
-        self.assertEqual(2,len(transport.calls))
+        self.assertEqual(4,len(transport.calls))
+        self.assertTrue(all(u.startswith('https://management.azure.com'+SCOPE+'/') for u in transport.calls))
         self.assertNotIn(endpoint('/subscriptions/'+SID+'/resources',INVENTORY_API),transport.calls)
 
     def test_denied_group_is_valid_incomplete_evidence_without_fallback(self):

@@ -31,7 +31,7 @@ Exact Azure run + exact Wiz import -> deterministic comparison
 
 ## Contracts and invariants
 
-- Snapshot, assessment and archive contracts remain version 1.0. Rule version and PDF renderer version are unchanged by 0.4.0. Wiz evidence and comparison contracts are separate version 1.0 records.
+- New snapshots, assessments and archives use version 1.1 in 0.5.0; schema 1.0 archives remain readable. Old readers reject 1.1. Configuration rules have their own version, independent of the encryption rule version. PDF renderer 1.3 reads saved results. Wiz evidence/comparison contracts remain separate version 1.0 records.
 - Run/report/import/comparison IDs select exact objects. There is no implicit latest source, overwrite or historical rewrite. Intent first, completion manifest last; a failure marker makes an attempt unreportable.
 - Hashes detect mismatches relative to retained manifests. They are not signatures, proof against privileged replacement, or a WORM/retention guarantee.
 - `ExecutionError` remains a `RuntimeError` subclass, but Python consumers must use its `outcome` property. Public HTTP status codes and JSON bodies are unchanged. Internal exception text contains only the fixed safe code.
@@ -46,3 +46,7 @@ Add an exact service rule with reviewed API/fields, sources, scope and normal/mi
 For Wiz native transport/mapping, implement the [workplace acceptance contract](WIZ_INTEGRATION.md#native-wiz-mapping-and-api-handoff). Existing normalized imports/comparisons can be replayed unchanged. Do not add assumed API fields or authentication endpoints from unverified examples.
 
 Run the focused tests, then `python scripts/validate.py`. Packaging and Terraform regression checks are described in the development guide. Evidence schema changes require explicit compatibility and historical replay proof before release.
+
+## Configuration and identity extension
+
+`controls.py` owns the typed predicate register, safe observation projection, criteria validation and configuration assessment. `graph.py` owns opt-in tenant-verified Graph metadata reads. ARM configuration observations are separate from legacy encryption evidence; Graph objects have explicit graph:// identities and never masquerade as ARM resources. `control_objectives.json` packages provisional mappings; historical context freezes them. The overall result includes configuration failures/incompleteness. See [configuration assessments](CONFIGURATION_ASSESSMENTS.md) for exact fields, API sources and remaining boundaries.

@@ -66,3 +66,7 @@ unset TF_DATA_DIR
 ```
 
 These tests use mocked providers and plan-only runs; they do not provision or read Azure resources. Initial provider/action/dependency downloads require internet access. Never point the test data directory at live Terraform state. CI runs these four mocked checks without Azure credentials.
+
+## Multi-control local demonstration
+
+Run `python scripts/demo_controls.py --output /tmp/cloud-governance-control-demo` with a new output directory. This exercises 115 configuration/identity predicates across all 23 service entries using synthetic responses, including Graph, and writes archived evidence and a PDF without cloud access. Criteria and permission details are in [configuration assessments](CONFIGURATION_ASSESSMENTS.md).

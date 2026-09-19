@@ -14,8 +14,9 @@ from .snapshot import validate_snapshot
 from .storage import ObjectStore
 from .provenance import validate_provenance
 
-ARCHIVE_VERSION = '1.0'
-RENDERER_VERSION = '1.2'
+ARCHIVE_VERSION = '1.1'
+READABLE_ARCHIVE_VERSIONS = ('1.0','1.1')
+RENDERER_VERSION = '1.3'
 STATUSES = ('PASS', 'FAIL', 'UNKNOWN', 'ERROR', 'UNSUPPORTED', 'NOT_APPLICABLE')
 
 CRITERIA = {
@@ -58,7 +59,9 @@ def make_context():
     """Freeze explanatory rule criteria and program scope with each new run."""
     if {r.mode for r in RULES.values()} - set(CRITERIA):
         raise ValueError('Missing saved rule criterion')
-    return {'schema_version': ARCHIVE_VERSION, 'collector_version': __version__,
+    from .controls import CHECKS, VERSION, OBJECTIVES
+    return {'configuration_objectives': OBJECTIVES, 'configuration_rules': {k:asdict(v) for k,v in CHECKS.items()}, 'configuration_rule_version': VERSION,
+            'schema_version': ARCHIVE_VERSION, 'collector_version': __version__,
             'rule_version': RULE_VERSION, 'common_criteria': COMMON_CRITERIA,
             'criteria_by_mode': CRITERIA,
             'rule_catalog': {k: asdict(v) for k, v in RULES.items()},
@@ -71,7 +74,7 @@ def validate_pair(snapshot, report):
     Historical read intentionally does NOT call validate_snapshot (which uses
     current RULES) or assess. Hashes and this archive-v1 contract guard integrity.
     """
-    if snapshot.get('schema_version') != '1.0' or report.get('schema_version') != '1.0':
+    if snapshot.get('schema_version') not in ('1.0','1.1') or report.get('schema_version') not in ('1.0','1.1'):
         raise ValueError('Unsupported saved evidence schema')
     if report['snapshot_sha256'] != snapshot_digest(snapshot):
         raise ValueError('Evidence/result mismatch')
@@ -89,6 +92,12 @@ def validate_pair(snapshot, report):
                 raise ValueError('Saved observation mismatch')
         if row['result'] not in STATUSES or row['rule_version'] != report['rule_version']:
             raise ValueError('Saved result mismatch')
+    if 'configuration_assessment' in report:
+        validate_configuration_pair(snapshot, report['configuration_assessment'])
+    if 'overall_summary' in report:
+        from .controls import overall_summary
+        if report['overall_summary'] != overall_summary(report):
+            raise ValueError('Saved overall summary mismatch')
     counts = {s: 0 for s in STATUSES}
     counts.update(Counter(r['result'] for r in results))
     if report['summary']['counts'] != counts or report['summary']['resource_count'] != len(results):
@@ -119,6 +128,9 @@ def save_run(store: ObjectStore, snapshot, report, *, provenance=None):
     validate_snapshot(snapshot)
     validate_pair(snapshot, report)
     context = make_context()
+    if report.get("schema_version") != "1.1" or "overall_summary" not in report or "configuration_assessment" not in report:
+        raise ValueError("New archives require the full assessment contract")
+    validate_configuration_population(snapshot,report,context)
     if provenance is not None:
         context['execution_provenance'] = validate_provenance(provenance)
     if report['tool_version'] != context['collector_version'] or report['rule_version'] != context['rule_version']:
@@ -142,7 +154,7 @@ def save_run(store: ObjectStore, snapshot, report, *, provenance=None):
                     'assessment_generated_at': report['generated_at'], 'mode': snapshot['mode'],
                     'scope': snapshot['inventory'], 'collector_version': report['tool_version'], 'rule_version': report['rule_version'],
                     'snapshot_schema_version': snapshot['schema_version'], 'assessment_schema_version': report['schema_version'],
-                    'assessment_conclusion': report['summary']['conclusion'], 'coverage_incomplete': report['summary']['coverage_incomplete'],
+                    'assessment_conclusion': report.get('overall_summary',report['summary'])['conclusion'], 'coverage_incomplete': report.get('overall_summary',report['summary'])['coverage_incomplete'],
                     'objects': objects}
         stage = 'completion_manifest'
         store.put_new(prefix + '/manifest.json', encode(manifest))
@@ -162,7 +174,7 @@ def load_run(store: ObjectStore, run_id):
         raise ValueError('Run publication recorded a failure')
     manifest_bytes = store.read(prefix + '/manifest.json')
     manifest = json.loads(manifest_bytes)
-    if (manifest.get('schema_version'), manifest.get('kind'), manifest.get('state'), manifest.get('run_id')) != (ARCHIVE_VERSION, 'collection_run', 'complete', run_id):
+    if manifest.get('schema_version') not in READABLE_ARCHIVE_VERSIONS or (manifest.get('kind'), manifest.get('state'), manifest.get('run_id')) != ('collection_run', 'complete', run_id):
         raise ValueError('Invalid or incomplete run manifest')
     if set(manifest['objects']) != {'snapshot', 'assessment', 'context'}:
         raise ValueError('Incomplete object manifest')
@@ -175,16 +187,21 @@ def load_run(store: ObjectStore, run_id):
             raise ValueError('Object integrity mismatch')
         saved[name] = json.loads(data)
     validate_pair(saved['snapshot'], saved['assessment'])
+    if manifest['schema_version']=='1.1':
+        if saved['assessment'].get('schema_version')!='1.1':raise ValueError('Invalid new assessment version')
+        validate_configuration_population(saved['snapshot'],saved['assessment'],saved['context'])
+    elif saved['snapshot']['schema_version']!='1.0' or saved['assessment']['schema_version']!='1.0':
+        raise ValueError('Invalid legacy archive version')
     if 'execution_provenance' in saved['context']:
         validate_provenance(saved['context']['execution_provenance'])
-    if (saved['context']['schema_version'] != ARCHIVE_VERSION or saved['context']['rule_version'] != saved['assessment']['rule_version']
+    if (saved['context']['schema_version'] != manifest['schema_version'] or saved['context']['rule_version'] != saved['assessment']['rule_version']
             or saved['context']['collector_version'] != saved['assessment']['tool_version']):
         raise ValueError('Saved context mismatch')
-    for field, value in [('collection_started_at', saved['snapshot']['started_at']), ('collection_completed_at', saved['snapshot']['completed_at']),
+    for field, value in [('snapshot_schema_version',saved['snapshot']['schema_version']), ('assessment_schema_version',saved['assessment']['schema_version']), ('collection_started_at', saved['snapshot']['started_at']), ('collection_completed_at', saved['snapshot']['completed_at']),
                          ('collector_version', saved['assessment']['tool_version']), ('rule_version', saved['assessment']['rule_version']),
                          ('scope', saved['snapshot']['inventory']), ('mode', saved['snapshot']['mode']),
                          ('assessment_generated_at', saved['assessment']['generated_at']),
-                         ('assessment_conclusion', saved['assessment']['summary']['conclusion']), ('coverage_incomplete', saved['assessment']['summary']['coverage_incomplete'])]:
+                         ('assessment_conclusion', saved['assessment'].get('overall_summary',saved['assessment']['summary'])['conclusion']), ('coverage_incomplete', saved['assessment'].get('overall_summary',saved['assessment']['summary'])['coverage_incomplete'])]:
         if manifest[field] != value:
             raise ValueError('Manifest metadata mismatch')
     return {'manifest': manifest, 'manifest_sha256': digest(manifest_bytes), **saved}
@@ -246,3 +263,48 @@ def publish_pdf(store: ObjectStore, run_id, *, provenance=None, deadline=None):
     except Exception:
         _failure(store, prefix, stage)
         raise RuntimeError('PDF_PUBLICATION_FAILED') from None
+
+
+def validate_configuration_pair(snapshot, assessment):
+    records = {r['id']:r for r in snapshot['resources'] + snapshot.get('identity_evidence',{}).get('resources',[])}
+    if assessment.get('schema_version') != '1.0' or not isinstance(assessment.get('results'), list):
+        raise ValueError('Invalid saved configuration assessment')
+    seen = set()
+    policy = assessment.get('policy')
+    from .controls import criterion_for
+    for row in assessment['results']:
+        key = (row['resource_id'], row['check_id'])
+        if key in seen or row['resource_id'] not in records or row['result'] not in ('PASS','FAIL','UNKNOWN','ERROR'):
+            raise ValueError('Invalid saved configuration population')
+        seen.add(key)
+        raw = records[row['resource_id']]
+        if row['observed_at'] != raw['collected_at'] or row['observation'] != raw.get('configuration',{}).get(row['check_id'], {'state':'missing'}):
+            raise ValueError('Saved configuration observation mismatch')
+        if row['criterion'] != criterion_for(policy,row['resource_id'],row['check_id']):
+            raise ValueError('Saved configuration criterion mismatch')
+        if row['result'] in ('PASS','FAIL') and (not policy or policy['status'] != 'approved' or not row['criterion'] or row['observation']['state'] != 'observed'):
+            raise ValueError('Configuration conclusion without evidence/criteria')
+    counts = {s:0 for s in ('PASS','FAIL','UNKNOWN','ERROR')}
+    counts.update(Counter(r['result'] for r in assessment['results']))
+    expected = 'FAILURES_FOUND' if counts['FAIL'] else 'INCOMPLETE' if not seen or counts['UNKNOWN'] or counts['ERROR'] or not snapshot.get('identity_evidence',{}).get('complete',True) else 'SELECTED_CONFIGURATION_CRITERIA_SATISFIED'
+    if assessment['summary'] != {'check_count':len(seen), 'counts':counts, 'conclusion':expected}:
+        raise ValueError('Saved configuration summary mismatch')
+
+
+def validate_configuration_population(snapshot, report, context):
+    """Check frozen registry linkage, never re-run a saved predicate."""
+    assessment=report['configuration_assessment']
+    if assessment['rule_version']!=context['configuration_rule_version']:
+        raise ValueError('Saved configuration rule version mismatch')
+    records=snapshot['resources']+snapshot.get('identity_evidence',{}).get('resources',[])
+    rules=context['configuration_rules']
+    expected={(r['id'],cid) for r in records for cid,c in rules.items() if c['resource_type'].lower()==r['type'].lower()}
+    rows=assessment['results']
+    if {(r['resource_id'],r['check_id']) for r in rows}!=expected or len(rows)!=len(expected):
+        raise ValueError('Incomplete configuration assessment population')
+    for row in rows:
+        rule=rules[row['check_id']]
+        for field,key in [('catalog_ref','catalog_ref'),('source','source'),('api_version','api'),('property','path'),('title','title')]:
+            if row[field]!=rule[key]:raise ValueError('Saved predicate metadata mismatch')
+        if row['control_refs']!=context['configuration_objectives']['checks'][row['catalog_ref']]['controls']:
+            raise ValueError('Saved objective mapping mismatch')

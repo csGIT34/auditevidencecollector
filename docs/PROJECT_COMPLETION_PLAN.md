@@ -6,15 +6,15 @@ Created 2026-09-19. Project status: **INCOMPLETE**. This is the delivery checkli
 
 Deliver an Azure-hosted, deterministic evidence collection and assessment system covering applicable controls for all [23 services](PROGRAM_SCOPE.md). Develop and test on macOS/Linux; run unattended in Azure Functions with managed identity and retained evidence in Azure Storage. Reuse workplace infrastructure patterns. Terraform is for the temporary personal lab only.
 
-Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.4.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
+Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.5.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
 
 ## Required deliverables, in execution order
 
-All boxes below remain open. Existing components must be extended and verified against the broader requirements.
+Work in progress: 0.5.0 adds 115 scoped configuration/identity predicates across the 23 services, including tenant-verified Graph metadata. The [delivery register](audit/delivery-register.json) records partial support and remaining objective boundaries. Unchecked deliverables remain incomplete; predicate count is not completion.
 
 ### 1. Account for every proposed check
 
-- [ ] Turn the [215-check research catalog](audit/catalog.json) into a check-level delivery register, preserving its IDs and service/domain/control relationships.
+- [x] Turn the [215-check research catalog](audit/catalog.json) into a check-level delivery register, preserving its IDs and service/domain/control relationships.
 - [ ] For every check, record collection plane, implementation files, criteria, permissions, test evidence, reporting support, live validation state and outstanding dependencies.
 - [ ] Distinguish proposed, implemented/offline-tested, live-verified, manual/inherited and explicitly excluded checks. Link exclusion decisions and rationale; do not silently drop difficult checks.
 - [ ] Separate engineering coverage from tenant findings. One working property never marks a service or NIST control complete.

@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.4.0.** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.5.0 (locally validated; expanded checks not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,14 +10,15 @@ Updated 2026-09-19. **Source release 0.4.0.** This page is the current status; d
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
-| All-service NIST program | Applicability research | 23 services, 215 proposed checks, 20 families. [Research catalog](audit/README.md) is not implemented coverage. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 115 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| All-service NIST program | Incomplete | 215 research objectives; every objective remains open or partially supported in the [delivery register](audit/delivery-register.json). |
 | Workplace deployment | Pending workplace inputs and acceptance | Use existing workplace infrastructure patterns and [runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). Home Terraform is not the workplace deployment. |
 
-Local release checks: **143 Python tests, zero skips; four Terraform mocked plans; 22 packaged Functions runtime checks**. The original retained v0.3.1 live archive also loaded under 0.4.0 with every object hash unchanged. See [release notes](../CHANGELOG.md).
+The previous 0.4.0 release passed 143 Python tests, four Terraform mocked plans and 22 packaged Functions runtime checks. Version 0.5.0 passed 175 Python tests with zero skips and 22 checks in the packaged local Azure Functions runtime. The synthetic ARM/Graph run exercised 115 predicates across 23 service entries (114 PASS, one intentional expired-credential FAIL); its 100-page PDF was rendered and visually reviewed. The original v0.3.1 live archive loads with every original file hash unchanged. These are local checks, not a new Azure deployment or whole-objective acceptance. The original retained v0.3.1 live archive also loaded under 0.4.0 with every object hash unchanged. See [release notes](../CHANGELOG.md).
 
 ## Full-project completion
 
-The broader audit system is **incomplete**. Track required implementation, workplace acceptance and lab cleanup in the [project completion plan](PROJECT_COMPLETION_PLAN.md). The 215 proposed checks are the delivery inventory, not executable coverage.
+The broader audit system is **incomplete**. Track required implementation, workplace acceptance and lab cleanup in the [project completion plan](PROJECT_COMPLETION_PLAN.md). The 215 proposed checks are the delivery inventory; the new predicate register provides explicit partial implementation links.
 
 ## Start locally
 

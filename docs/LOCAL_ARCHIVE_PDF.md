@@ -4,7 +4,7 @@ Version 0.3.0 preserves the complete workflow locally: collect and assess, prese
 
 The auditor receives the PDF. The JSON files are internal records for historical reproducibility and future consumers; auditors do not need a database, JSON, Blob URL or separate spreadsheet to understand a finding. The PDF contains an index, scope/times, methods and criteria, actual saved facts, findings, dependencies, collection errors, missing/unknown/manual coverage, verification instructions, sources and provenance. The PDF embeds fonts bundled with ReportLab; characters outside their coverage are preserved as explicit Unicode code points rather than unreadable glyphs. Evidence IDs and internal links connect the findings index to resource details inside the same document.
 
-The [NIST catalog](audit/README.md) covers proposed applicability across all 23 services and 20 families. The executable assessment still covers only scoped encryption at rest. Persistence and PDF output add no new service/control collectors or operating-evidence claims.
+The [NIST catalog](audit/README.md) covers proposed applicability across all 23 services and 20 families. Version 0.5.0 adds [scoped configuration and identity assessments](CONFIGURATION_ASSESSMENTS.md), including schema 1.1 archives and renderer 1.3. Schema 1.0 historical reads remain supported. Wider operating-evidence claims are not inferred from these predicates.
 
 ## Install and run
 

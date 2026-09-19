@@ -1,5 +1,13 @@
 # Release notes
 
+## 0.5.0 — expanded configuration assessments
+
+- Add 115 scoped predicates spanning all 23 service entries, configurable typed criteria and exact-resource overrides. Wider audit objectives remain incomplete.
+- Add opt-in tenant-verified Graph metadata, diagnostic category pagination, UAMI federation and private endpoint target/approval evidence.
+- Persist independent configuration results and overall outcomes; include them and frozen NIST objective references in historical PDFs.
+- Write schema 1.1 archives/snapshots/assessments, preserve schema 1.0 reads, and require the new reader for new runs. No in-place archive migration.
+- Add an all-service synthetic demonstration and a 215-objective delivery register. Native Wiz, deep workload/operating evidence and workplace validation remain open.
+
 ## 0.4.0 — 2026-09-19
 
 - Fix credential cleanup being skipped when Blob client cleanup raises. HTTP error handling now uses `ExecutionError.outcome`; status codes and safe JSON response envelopes are unchanged. Python callers must stop parsing exception text as JSON.

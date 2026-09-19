@@ -1,6 +1,6 @@
 # Program-wide NIST applicability and evidence catalog
 
-**All 23 services are in scope across applicable audit controls. Encryption is only the first implemented collector capability.** This catalog is provisional research for RCSA/control-owner/auditor tailoring, not a compliance certification, approved baseline or tenant finding. No tenant was accessed. No new service/control collectors are implemented by this catalog.
+**All 23 services are in scope across applicable audit controls.** Version 0.5.0 adds scoped non-encryption predicates; see [configuration assessments](../CONFIGURATION_ASSESSMENTS.md) and the [delivery register](delivery-register.json). This catalog is provisional research for RCSA/control-owner/auditor tailoring, not a compliance certification, approved baseline or tenant finding. No tenant was accessed. The catalog itself is research; executable support is tracked separately in the delivery register.
 
 The matrix separates four questions: **does the control apply; what evidence could support it; can we collect/evaluate it; what did we actually observe?** A proposed check has no finding until approved criteria and sufficient scoped evidence exist. A technical PASS on one signal never establishes the whole NIST control or operating effectiveness over an audit period.
 

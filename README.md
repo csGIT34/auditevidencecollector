@@ -1,10 +1,12 @@
 # Cloud governance evidence and audit program
 
+**Current work: multi-control coverage is incomplete.** Version 0.5.0 adds [115 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register](docs/audit/delivery-register.json) for remaining objectives.
+
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 
 **Program scope: all applicable NIST controls across the authoritative 23 Azure services.** Start with the [program-wide control/evidence catalog](docs/audit/README.md), [service matrix](docs/audit/SERVICE_MATRIX.md), [all-family review](docs/audit/NIST_FAMILY_REVIEW.md) and [implementation backlog](docs/audit/IMPLEMENTATION_BACKLOG.md). The catalog records 215 proposed checks across 12 domains and all 20 NIST families; it is provisional research, not implemented control coverage or tenant findings.
 
-The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
+The executable CLI collects scoped encryption evidence and configuration/identity observations for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
 
 **Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). The bounded [personal-lab validation](infra/personal-lab/REPEAT_VALIDATION.md) now passes repeated HTTP requests, managed-identity collection and current/historical PDF generation with original evidence preserved. Workplace acceptance is separate.
 
@@ -16,7 +18,7 @@ The [home-only Terraform lab](infra/personal-lab/README.md) has a documented, st
 
 ## Save a run and produce an auditor PDF
 
-Version **0.4.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged. The 0.3.2 report corrections remain; 0.4.0 adds local Wiz evidence import/comparison and reliability/tooling improvements. Historical archives remain frozen.
+Version **0.5.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. The encryption predicates retain their scope; 0.5.0 adds configuration/Graph collection, approved-criteria evaluation and schema 1.1 reports. Version 0.4.0 introduced normalized offline Wiz evidence. Historical archives remain frozen.
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -115,7 +117,7 @@ See [Azure CLI REST documentation](https://learn.microsoft.com/en-us/cli/azure/r
 
 ## Coverage
 
-The [authoritative 23-service program scope](docs/PROGRAM_SCOPE.md) maps the user's service list to current coverage, missing collection planes and deployment-family questions. It governs program scope across selected controls; the current code still assesses only encryption at rest (SC-28 / SC-28(1)).
+The [authoritative 23-service program scope](docs/PROGRAM_SCOPE.md) maps the user's service list to current coverage, missing collection planes and deployment-family questions. It governs program scope across selected controls; the executable configuration predicates now add partial support beyond encryption at rest; the delivery register states what remains incomplete.
 
 The [exact rule matrix](docs/COVERAGE.md) is the source for supported ARM types, assessed scopes and Microsoft documentation. Broadly:
 

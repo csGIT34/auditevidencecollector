@@ -80,6 +80,8 @@ class Settings:
     max_pages: int
     lock_wait: int
     resource_group: str | None
+    criteria: dict | None = None
+    graph_enabled: bool = False
 
     @classmethod
     def parse(cls, env):
@@ -121,10 +123,14 @@ class Settings:
                 if not low <= value <= high:
                     raise ValueError()
                 return value
+            if env.get('CG_GRAPH_ENABLED','false') not in ('true','false'):
+                raise ValueError()
+            from .controls import decode_policy
+            criteria = decode_policy(env['CG_ASSESSMENT_CRITERIA_JSON']) if env.get('CG_ASSESSMENT_CRITERIA_JSON') else None
             return cls(tenant.lower(), client.lower() if client else None, subscriptions, url, container, prefix, development,
                        number('CG_COLLECTION_BUDGET_SECONDS', 480, 30, 540), number('CG_REPORT_BUDGET_SECONDS', 180, 10, 180),
                        number('CG_ARM_RETRIES', 2, 0, 3), number('CG_BLOB_RETRIES', 2, 0, 3),
-                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group)
+                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group, criteria, env.get('CG_GRAPH_ENABLED')=='true')
         except (KeyError, TypeError, ValueError):
             raise ConfigurationError('invalid_host_configuration') from None
 
@@ -145,6 +151,9 @@ def resources(settings, deadline, operation):
         store = BlobStore(settings.blob_url, settings.container, credential, settings.prefix,
                           retries=settings.blob_retries, deadline=deadline)
         transport = BudgetArmTransport(credential, deadline, settings.arm_retries) if operation == 'collect' else None
+        if transport is not None and settings.graph_enabled:
+            from .graph import BudgetGraphTransport
+            transport.graph_transport = BudgetGraphTransport(credential,deadline,settings.arm_retries)
         yield store, transport
     finally:
         try:
@@ -186,9 +195,12 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
             if operation == 'collect':
                 stage = 'tenant_preflight'
                 verify_tenant(transport, settings.subscriptions, settings.tenant)
+                if settings.graph_enabled and getattr(transport,'graph_transport',None) is None:
+                    raise ConfigurationError('graph_transport_required')
                 stage = 'collection_assessment_archive'
                 result = collect_run(store, transport, settings.subscriptions, mode='azure_live', max_pages=settings.max_pages,
-                                     provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group)
+                                     provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group, criteria=settings.criteria,
+                                     graph_transport=getattr(transport,'graph_transport',None) if settings.graph_enabled else None, tenant_id=settings.tenant)
             else:
                 stage = 'saved_run_pdf_archive'
                 manifest = publish_pdf(store, run_id, provenance=settings.provenance(operation, invocation_id), deadline=deadline)

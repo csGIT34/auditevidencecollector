@@ -7,6 +7,7 @@ from urllib.parse import urlsplit, quote
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from .catalog import RULES
+from .controls import for_type, project as project_configuration, valid_value
 from .safety import identity, label, now, project, subscription_id, resource_group_name
 
 ARM = "https://management.azure.com"
@@ -61,13 +62,14 @@ class AzureCliCredential:
             raise CollectionError("authentication_failed") from None
 
 class ArmTransport:
+    validate_url = staticmethod(valid_url)
     def __init__(self, credential=None, retries=3, timeout=30, sleep=time.sleep, opener=None):
         self.credential = credential or AzureCliCredential()
         self.retries, self.timeout, self.sleep = retries, timeout, sleep
         self.opener = opener or build_opener(NoRedirect())
 
     def get(self, url):
-        valid_url(url)  # Before obtaining or sending the bearer token.
+        self.validate_url(url)  # Before obtaining or sending the bearer token.
         for attempt in range(self.retries + 1):
             req = Request(url, headers={"Authorization": "Bearer " + self.credential.get_token(),
                                        "Accept": "application/json"}, method="GET")
@@ -169,27 +171,98 @@ class Collector:
 
     def hydrate(self, record):
         rule = RULES.get(record["type"].lower())
-        if not rule or rule.mode == "na":
+        checks = for_type(record["type"])
+        if (not rule or rule.mode == "na") and not checks:
             return
+        api = rule.api if rule and rule.api else checks[0].api
         rid = record["id"]
-        record["api_version"] = rule.api
+        record["api_version"] = api
         record["request_path"] = rid  # No URLs with opaque continuation tokens.
         try:
-            raw = self.transport.get(endpoint(rid, rule.api))
+            raw = self.transport.get(endpoint(rid, api))
             verified = identity(raw)
             if (not verified or verified["id"].lower() != rid.lower()
                     or not isinstance(raw.get("properties"), dict)):
                 raise CollectionError("invalid_detail_identity_or_properties")
-            record["evidence"] = project(raw, rule)
+            record["evidence"] = project(raw, rule) if rule else {}
+            if checks:
+                record["configuration"] = project_configuration(raw, record["type"])
             if isinstance(raw.get("sku"), dict) and "name" in raw["sku"]:
                 record["sku"] = label(raw["sku"]["name"])
             record["collection_status"] = "ok"
         except CollectionError as exc:
             record["collection_status"] = "error"
             record["errors"].append(self.error(rid, "resource_get", exc))
+        for suffix, supplemental_api in sorted({(c.suffix,c.api) for c in checks if c.suffix and c.operation == 'get'}):
+            path = rid + suffix
+            try:
+                raw = self.transport.get(endpoint(path, supplemental_api))
+                if (not isinstance(raw, dict) or not isinstance(raw.get('id'), str)
+                        or raw['id'].lower() != path.lower() or not isinstance(raw.get('properties'), dict)):
+                    raise CollectionError('invalid_detail_identity_or_properties')
+                observations = project_configuration(raw, record['type'], suffix)
+            except CollectionError as exc:
+                observations = {c.id:{'state':'error','code':exc.code,'http_status':exc.status} for c in checks if c.suffix == suffix}
+            record.setdefault('configuration', {}).update(observations)
+        for check in (c for c in checks if c.operation == 'federation'):
+            reader = Collector(self.transport,self.max_pages,self.mode)
+            path = rid + check.suffix
+            rows, listing = reader.paged(endpoint(path,check.api),rid,'configuration_federation')
+            trusts = []; seen_trusts=set();malformed=False
+            for row in rows:
+                if not isinstance(row,dict) or not isinstance(row.get('id'),str) or row['id'].lower().rsplit('/',1)[0]!=path.lower() or row['id'].lower() in seen_trusts or not isinstance(row.get('properties'),dict):
+                    malformed=True;continue
+                seen_trusts.add(row['id'].lower())
+                props=row['properties']
+                trust={k:props.get(k) for k in ('issuer','subject','audiences')}
+                if isinstance(trust['audiences'],list) and all(isinstance(a,str) for a in trust['audiences']):trust['audiences']=sorted(set(trust['audiences']))
+                if not valid_value(check,[trust]):malformed=True;continue
+                trusts.append(trust)
+            trusts.sort(key=lambda r:json.dumps(r,sort_keys=True))
+            record.setdefault('configuration',{})[check.id] = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':trusts} if valid_value(check,trusts) else {'state':'invalid'}
+            record['configuration'][check.id]['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
+        for check in (c for c in checks if c.operation == 'diagnostics'):
+            reader = Collector(self.transport, self.max_pages, self.mode)
+            path = rid + check.suffix
+            settings, listing = reader.paged(endpoint(path,check.api),rid,'configuration_diagnostics')
+            categories = set()
+            malformed = False
+            seen_settings = set()
+            for setting in settings:
+                if (not isinstance(setting,dict) or not isinstance(setting.get('id'),str)
+                        or setting['id'].lower().rsplit('/',1)[0] != path.lower()
+                        or setting['id'].lower() in seen_settings or not isinstance(setting.get('properties'),dict)):
+                    malformed = True
+                    continue
+                seen_settings.add(setting['id'].lower())
+                logs = setting['properties'].get('logs')
+                if not isinstance(logs,list):
+                    malformed = True
+                    continue
+                for log in logs:
+                    if not isinstance(log,dict) or type(log.get('enabled')) is not bool:
+                        malformed = True
+                        continue
+                    if not log['enabled']:
+                        continue
+                    if bool(log.get('category')) == bool(log.get('categoryGroup')):
+                        malformed = True
+                        continue
+                    name = ('category:'+str(log['category'])) if log.get('category') else ('group:'+str(log['categoryGroup']))
+                    if not valid_value(check,[name]):
+                        malformed = True
+                    else:
+                        categories.add(name)
+            values = sorted(categories)
+            if not valid_value(check,values):
+                observation = {'state':'invalid'}
+            else:
+                observation = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':values}
+            observation['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
+            record.setdefault('configuration',{})[check.id] = observation
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
-        for suffix, child_type in rule.children:
+        for suffix, child_type in (rule.children if rule else ()):
             rows, listing = self.paged(endpoint(rid + "/" + suffix, rule.api), rid, "list_" + suffix)
             children = []
             for row in rows:
@@ -199,7 +272,7 @@ class Collector:
                 else:
                     listing["complete"] = False
             record["children"][suffix] = {**listing, "ids": sorted(set(children), key=str.lower)}
-        if rule.mode == "tde" and not (rule.key == "sql-tde" and record["name"].lower() == "master"):
+        if rule and rule.mode == "tde" and not (rule.key == "sql-tde" and record["name"].lower() == "master"):
             suffix = "/transparentDataEncryption/current"
             try:
                 tde = self.transport.get(endpoint(rid + suffix, rule.api))
@@ -250,6 +323,6 @@ class Collector:
         inventory["complete"] = (inventory["subscription_discovery"]["complete"]
                                  and bool(inventory["subscriptions"])
                                  and all(s["complete"] for s in inventory["subscriptions"]))
-        return {"schema_version": "1.0", "mode": self.mode, "started_at": started, "completed_at": now(),
+        return {"schema_version": "1.1", "mode": self.mode, "started_at": started, "completed_at": now(),
                 "inventory": inventory, "resources": sorted(self.resources.values(), key=lambda r: r["id"].lower()),
                 "errors": self.errors}
