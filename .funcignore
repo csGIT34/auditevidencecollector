@@ -28,3 +28,7 @@ local.settings*
 .vscode
 .DS_Store
 requirements-dev.txt
+infra
+*.tf*
+private
+lab-private

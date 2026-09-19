@@ -2,7 +2,7 @@
 from datetime import datetime
 import re
 from .catalog import RULES
-from .safety import ENUMS, INVALID, identity, label, resource_id, subscription_id, valid_api_version
+from .safety import ENUMS, INVALID, identity, label, resource_id, subscription_id, valid_api_version, resource_group_name, resource_group_id
 
 
 def require(condition):
@@ -42,7 +42,9 @@ def validate_snapshot(snapshot):
     seen = set()
     for sub in inventory["subscriptions"]:
         listing(sub)
-        require(set(sub) == {"id", "complete", "pages", "items_received"})
+        require(set(sub) - {"resource_group"} == {"id", "complete", "pages", "items_received"})
+        if "resource_group" in sub:
+            require(resource_group_name(sub["resource_group"]) is not None)
         require(subscription_id(sub.get("id")) is not None)
     require(len({s["id"].lower() for s in inventory["subscriptions"]}) == len(inventory["subscriptions"]))
     derived_complete = bool(inventory["subscriptions"]) and discovery["complete"] and all(s["complete"] for s in inventory["subscriptions"])
@@ -58,6 +60,8 @@ def validate_snapshot(snapshot):
         seen.add(row["id"].lower())
         require(all(row.get(k) == v for k, v in ident.items()))
         require(row["subscription_id"] in {s["id"].lower() for s in inventory["subscriptions"]})
+        scope = next(s for s in inventory["subscriptions"] if s["id"].lower() == row["subscription_id"])
+        require("resource_group" not in scope or row["resource_group"].lower() == scope["resource_group"].lower())
         timestamp(row.get("collected_at"))
         require(row.get("collection_status") in {"ok", "error", "inventory_only"})
         require(all(isinstance(row.get(k), str) and (label(row[k]) == row[k] or row[k] in {INVALID, "[invalid]"}) for k in ("location", "kind", "sku")))
@@ -112,6 +116,6 @@ def validate_snapshot(snapshot):
         operations = {"inventory_identity", "resource_get", "tde_get", "list_resources", "list_subscriptions"} | {"list_" + suffix for rule in RULES.values() for suffix, _ in rule.children}
         require(error["operation"] in operations)
         scope = error["scope"]
-        require(scope == "/subscriptions" or resource_id(scope) is not None or (scope.startswith("/subscriptions/") and subscription_id(scope[len("/subscriptions/"):]) is not None))
+        require(scope == "/subscriptions" or resource_group_id(scope) is not None or resource_id(scope) is not None or (scope.startswith("/subscriptions/") and subscription_id(scope[len("/subscriptions/"):]) is not None))
         require(error["http_status"] is None or (type(error["http_status"]) is int and 100 <= error["http_status"] <= 599))
         timestamp(error["observed_at"])

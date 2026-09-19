@@ -31,3 +31,18 @@ archive/
 archives/
 *.zip
 deploy/*.local.json
+
+# Terraform and personal lab data (lock file is deliberately tracked)
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfplan.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+.terraformrc
+terraform.rc
+private/
+lab-private/

@@ -33,6 +33,7 @@ def parser():
     root = argparse.ArgumentParser(description="Read-only Azure encryption-at-rest technical evidence; provider-managed keys accepted.")
     commands = root.add_subparsers(dest="command", required=True)
     collect = commands.add_parser("collect", help="Collect live ARM evidence or exercise the same collector with a fixture.")
+    collect.add_argument("--resource-group", help="Limit inventory and hydration to one group; requires exactly one --subscription.")
     collect.add_argument("--subscription", action="append", help="Subscription UUID; repeat to select multiple. Default: discover accessible subscriptions in current tenant.")
     collect.add_argument("--fixture", type=Path, help="Offline HTTP response fixture. Makes no Azure or credential calls.")
     collect.add_argument("--snapshot", type=Path, help="Optional sanitized collection snapshot for replay.")
@@ -100,7 +101,7 @@ def main(argv=None):
                 transport, mode = FixtureTransport(data["responses"]), "offline_fixture"
             else:
                 transport, mode = ArmTransport(), "azure_live"
-            snapshot = Collector(transport, args.max_pages, mode).collect(args.subscription)
+            snapshot = Collector(transport, args.max_pages, mode).collect(args.subscription, resource_group=args.resource_group)
             if args.snapshot:
                 write_private(args.snapshot, json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
         else:

@@ -1,0 +1,9 @@
+# Copy outside the checkout with mode 600. These are NONFUNCTIONAL placeholders.
+subscription_id    = "00000000-0000-0000-0000-000000000000"
+tenant_id          = "00000000-0000-0000-0000-000000000000"
+lab_name           = "replaceunique"
+location           = "eastus"
+operator_ipv4_cidr = "192.0.2.10/32" # Documentation IP: replace with your current approved public /32.
+owner              = "lab-operator"
+expires_on         = "2030-01-02T18:00:00Z" # REPLACE: maximum seven days from approved creation.
+operator_object_id = "00000000-0000-0000-0000-000000000000" # Existing user object UUID, not app/client ID.

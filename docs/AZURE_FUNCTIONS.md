@@ -1,6 +1,6 @@
 # Workplace deployment: Azure Functions, managed identity and retained Blob evidence
 
-Version 0.3.0 supplies a Python v2 Functions application and optional Azure adapters. **This code has passed offline tests on Linux; it has not been deployed or tested against Azure or on macOS.** macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. No deployment, resource, role or paid service is created by this repository.
+Version 0.3.1 supplies a Python v2 Functions application and optional Azure adapters. **The published v0.3.0 passed Linux and macOS offline CI; later changes are tracked separately. Hosted Azure integration remains untested.** macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. The application never provisions infrastructure. Optional home-only Terraform is separately reviewed and has not been applied; workplace patterns are supplied by the user.
 
 The executable assessment remains scoped encryption at rest. The 215 proposed checks across 23 services and 20 NIST families in `docs/audit/` are applicability research, not newly implemented collectors. Provider-managed keys remain acceptable.
 
@@ -34,6 +34,8 @@ This is a synchronous on-demand report operation. Measure PDF duration and memor
 
 Use Python 3.12 on a supported Linux Functions host. Flex Consumption is the initial serverless option to evaluate; the workplace must choose an approved region/plan, networking, capacity and budget. The fixed ten-minute `host.json` limit is an application choice, not a claim that Functions plans all share that limit. Verify current platform constraints and extensions during deployment. [Python Functions reference](https://learn.microsoft.com/en-us/azure/azure-functions/functions-reference-python), [hosting options](https://learn.microsoft.com/en-us/azure/azure-functions/functions-scale).
 
+Use the user's existing infrastructure patterns and the [workplace runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). Home-lab Terraform is not a workplace module.
+
 ## Required workplace inputs
 
 Fill these settings in the approved deployment/configuration mechanism, not a committed file. All values in the checked-in example are empty or safe defaults.
@@ -42,7 +44,9 @@ Fill these settings in the approved deployment/configuration mechanism, not a co
 | --- | --- |
 | `CG_TENANT_ID` | Work-tenant UUID, expected for every selected subscription. |
 | `CG_MANAGED_IDENTITY_CLIENT_ID` | Client ID of the explicitly selected **user-assigned** managed identity attached to the Function App. Production has no automatic credential chain/system-identity fallback. |
-| `CG_SUBSCRIPTION_IDS` | Nonempty comma-separated subscription UUIDs approved for collection. No resource-group filter exists. Do not enable for a broader scope than approved. |
+| `CG_SUBSCRIPTION_IDS` | Nonempty comma-separated subscription UUIDs approved for collection. Optionally set `CG_RESOURCE_GROUP` to narrow to one RG in exactly one subscription. Do not enable for a broader scope than approved. |
+| `CG_RESOURCE_GROUP` | Optional one-RG scope; requires exactly one subscription. Saved in inventory context; out-of-group resources are never hydrated. |
+| `CG_EXECUTION_EXPIRES_AT` | Optional timezone-aware test-window end; rejects new enabled operations after expiry. Not a hard cancellation or cost cap. |
 | `CG_EVIDENCE_ACCOUNT_URL` | Exact public-cloud endpoint `https://<account>.blob.core.windows.net`; no path, SAS, key, custom host or sovereign-cloud endpoint. Private DNS may resolve this normal hostname through an approved private endpoint. |
 | `CG_EVIDENCE_CONTAINER` | Existing retained-evidence container; never auto-created. |
 | `CG_EVIDENCE_PREFIX` | Optional portable key prefix; empty is allowed. No slash at either end. |
@@ -86,7 +90,7 @@ The additive `execution_provenance` extension has its own schema `1.0` inside ha
 
 ## Portable development and packaging
 
-Follow [MACOS_DEVELOPMENT.md](MACOS_DEVELOPMENT.md). Install approved Python 3.12 and use a new virtual environment. `requirements-dev.txt` plus `constraints.txt` installs the complete test/build set, including JMESPath. `python scripts/validate.py` fails on any skipped test. CI defines Linux and macOS jobs using that same gate; no CI run or Mac validation has occurred here. Review GitHub Actions policy/minutes before enabling its runs.
+Follow [MACOS_DEVELOPMENT.md](MACOS_DEVELOPMENT.md). Install approved Python 3.12 and use a new virtual environment. `requirements-dev.txt` plus `constraints.txt` installs the complete test/build set, including JMESPath. `python scripts/validate.py` fails on any skipped test. The published `83b0711` passed [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35452053904), 105 tests each. This does not validate subsequent local commits or live Azure. Review GitHub Actions policy/minutes before enabling its runs.
 
 ReportLab's licensed Vera fonts ship in its installed package and are embedded in PDFs. The application wheel includes `program_scope.json`; neither PDF generation nor Blob archiving needs a persistent local directory. Deploy installed dependencies built for **Linux**, never the Mac `.venv`. Dependency version pins are tested versions, not a claim of identical wheel bytes across operating systems or a vulnerability certification. Review package policy and refresh pins through the full gate.
 

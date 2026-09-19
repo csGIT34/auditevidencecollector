@@ -7,7 +7,7 @@ from urllib.parse import urlsplit, quote
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 from .catalog import RULES
-from .safety import identity, label, now, project, subscription_id
+from .safety import identity, label, now, project, subscription_id, resource_group_name
 
 ARM = "https://management.azure.com"
 INVENTORY_API = "2021-04-01"
@@ -115,6 +115,7 @@ class Collector:
             raise ValueError("max_pages must be positive")
         self.transport, self.max_pages, self.mode = transport, max_pages, mode
         self.errors, self.resources = [], {}
+        self.resource_group = None
 
     def error(self, scope, operation, exc):
         error = {"scope": scope, "operation": operation, "code": exc.code,
@@ -152,6 +153,7 @@ class Collector:
     def add_resource(self, raw, sid, parent=None, expected_type=None):
         meta = identity(raw)
         if (not meta or meta["subscription_id"] != sid.lower()
+                or (self.resource_group and meta["resource_group"].lower() != self.resource_group.lower())
                 or (expected_type and meta["type"].lower() != expected_type.lower())
                 or (parent and meta["id"].lower().rsplit("/", 2)[0] != parent.lower())):
             self.error(parent or f"/subscriptions/{sid}", "inventory_identity", CollectionError("invalid_resource_identity"))
@@ -211,7 +213,11 @@ class Collector:
             except CollectionError as exc:
                 record["errors"].append(self.error(rid, "tde_get", exc))
 
-    def collect(self, subscriptions=None):
+    def collect(self, subscriptions=None, *, resource_group=None):
+        if resource_group is not None and (not resource_group_name(resource_group) or not subscriptions or len(set(subscriptions)) != 1):
+            raise ValueError("Resource-group scope requires one explicit subscription and a valid group")
+        self.errors, self.resources = [], {}
+        self.resource_group = resource_group
         started = now()
         inventory = {"subscription_discovery": {"complete": True, "mode": "explicit"}, "subscriptions": []}
         if subscriptions is None:
@@ -229,11 +235,13 @@ class Collector:
             if not subscription_id(sid):
                 raise ValueError("subscription must be a UUID")
             scope = f"/subscriptions/{sid}"
+            if resource_group:
+                scope += "/resourceGroups/" + resource_group
             rows, listing = self.paged(endpoint(scope + "/resources", INVENTORY_API), scope, "list_resources")
             for row in rows:
                 if not self.add_resource(row, sid):
                     listing["complete"] = False
-            inventory["subscriptions"].append({"id": sid, **listing})
+            inventory["subscriptions"].append({"id": sid, **listing, **({"resource_group": resource_group} if resource_group else {})})
         processed = set()
         while pending := sorted(set(self.resources) - processed):
             for key in pending:

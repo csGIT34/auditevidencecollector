@@ -1,6 +1,7 @@
 """Host-neutral Functions handlers with explicit configuration and safe outcomes."""
 from contextlib import contextmanager
 from dataclasses import dataclass
+from datetime import datetime, timezone
 import json
 import logging
 import os
@@ -9,7 +10,7 @@ from threading import Lock
 from uuid import uuid4
 from .archive import identity, publish_pdf
 from .azure_adapters import BlobStore, BudgetArmTransport, account_url, container_name, token_credential, verify_tenant
-from .safety import subscription_id
+from .safety import subscription_id, resource_group_name
 from .storage import parts
 from .workflow import Deadline, collect_run
 
@@ -71,6 +72,7 @@ class Settings:
     blob_retries: int
     max_pages: int
     lock_wait: int
+    resource_group: str | None
 
     @classmethod
     def parse(cls, env):
@@ -84,6 +86,9 @@ class Settings:
                 raise ValueError()
             subscriptions = tuple(dict.fromkeys(x.strip().lower() for x in env['CG_SUBSCRIPTION_IDS'].split(',')))
             if not subscriptions or any(not subscription_id(x) for x in subscriptions):
+                raise ValueError()
+            resource_group = env.get('CG_RESOURCE_GROUP') or None
+            if resource_group is not None and (not resource_group_name(resource_group) or len(subscriptions) != 1):
                 raise ValueError()
             url = account_url(env['CG_EVIDENCE_ACCOUNT_URL'])
             container = container_name(env['CG_EVIDENCE_CONTAINER'])
@@ -112,7 +117,7 @@ class Settings:
             return cls(tenant.lower(), client.lower() if client else None, subscriptions, url, container, prefix, development,
                        number('CG_COLLECTION_BUDGET_SECONDS', 480, 30, 540), number('CG_REPORT_BUDGET_SECONDS', 180, 10, 180),
                        number('CG_ARM_RETRIES', 2, 0, 3), number('CG_BLOB_RETRIES', 2, 0, 3),
-                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30))
+                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group)
         except (KeyError, TypeError, ValueError):
             raise ConfigurationError('invalid_host_configuration') from None
 
@@ -157,6 +162,10 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
             schedule(env)
         else:
             identity(run_id, 'r')
+        if env.get('CG_EXECUTION_EXPIRES_AT'):
+            expires = datetime.fromisoformat(env['CG_EXECUTION_EXPIRES_AT'])
+            if expires.tzinfo is None or datetime.now(timezone.utc) >= expires:
+                raise ConfigurationError('execution_window_expired')
         settings = Settings.parse(env)
         deadline = Deadline(settings.collection_budget if operation == 'collect' else settings.report_budget)
         stage = 'overlap_guard'
@@ -170,7 +179,7 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
                 verify_tenant(transport, settings.subscriptions, settings.tenant)
                 stage = 'collection_assessment_archive'
                 result = collect_run(store, transport, settings.subscriptions, mode='azure_live', max_pages=settings.max_pages,
-                                     provenance=settings.provenance(operation, invocation_id), deadline=deadline)
+                                     provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group)
             else:
                 stage = 'saved_run_pdf_archive'
                 manifest = publish_pdf(store, run_id, provenance=settings.provenance(operation, invocation_id), deadline=deadline)

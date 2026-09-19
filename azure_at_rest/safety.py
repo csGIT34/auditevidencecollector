@@ -23,6 +23,18 @@ def subscription_id(value):
     except (ValueError, AttributeError):
         return None
 
+def resource_group_name(value):
+    """Portable explicit scope; reject URL delimiters and ambiguous names."""
+    return value if isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_().-]{1,90}", value) and not value.endswith('.') else None
+
+
+def resource_group_id(value):
+    if not isinstance(value, str):
+        return None
+    bits = value.split('/')
+    return value if len(bits) == 5 and bits[1].lower() == 'subscriptions' and subscription_id(bits[2]) and bits[3].lower() == 'resourcegroups' and resource_group_name(bits[4]) else None
+
+
 def identity(raw):
     """Verify type against the last ARM provider segment; extension resources allowed."""
     if not isinstance(raw, dict):

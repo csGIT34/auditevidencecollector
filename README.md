@@ -10,9 +10,11 @@ The [0.3.0 validation record](docs/VALIDATION_0_3_0.md) separates the completed 
 
 This is an initial technical evidence tool, provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). It is not a full RCSA assessment, certification, or claim that all application data is protected. A successful resource result applies to the stated scope and evidence basis.
 
+A [home-only Terraform lab](infra/personal-lab/README.md) is prepared for separate cost/resource review. Workplace infrastructure uses existing patterns through the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md). The optional RG scope confines collection to a single approved group.
+
 ## Save a run and produce an auditor PDF
 
-Version **0.3.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
+Version **0.3.1** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -58,7 +60,7 @@ Optional packaging, if you already have setuptools/pip available: `python3 -m pi
 
 ## Live collection — optional, not yet integration-tested
 
-**No live Azure tenant or subscription has been accessed or tested during development.** Personal subscription credentials must not be used without further user direction. The offline test suite never invokes live collection.
+**No live collector or hosted Azure integration test has run.** Separate read-only personal-lab preflight examined account/cost/resource metadata without collecting tenant evidence or provisioning. Personal subscription credentials must not be used without further user direction. The offline test suite never invokes live collection.
 
 After authorization, an operator can run a smoke test **locally** against existing resources. It uses Azure public-cloud ARM management-plane metadata GETs only. It does not provision resources, use a hosted runner, read blobs/database rows, enable diagnostic logs, activate paid services or modify Azure configuration. Offline testing is the established path when no new Azure charges are permitted. Existing subscriptions/resources retain their normal costs; the tool does not assess those costs.
 

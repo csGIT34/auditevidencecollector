@@ -1,0 +1,117 @@
+{
+  "retrieved_date": "2026-09-19",
+  "sources": {
+    "storage": "https://prices.azure.com/api/retail/prices?currencyCode=USD&%24filter=serviceName+eq+%27Storage%27+and+armRegionName+eq+%27eastus%27+and+priceType+eq+%27Consumption%27+and+contains%28productName%2C+%27Blob%27%29",
+    "functions": "https://prices.azure.com/api/retail/prices?currencyCode=USD&%24filter=serviceName+eq+%27Functions%27+and+armRegionName+eq+%27eastus%27+and+priceType+eq+%27Consumption%27"
+  },
+  "rates": [
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "General Block Blob v2",
+      "skuName": "Hot LRS",
+      "meterName": "Hot LRS Write Operations",
+      "retailPrice": 0.05,
+      "unitOfMeasure": "10K",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2016-11-01T00:00:00Z",
+      "meterId": "14854f12-8d37-4299-842a-b0f2df82a305"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "General Block Blob v2",
+      "skuName": "Hot LRS",
+      "meterName": "All Other Operations",
+      "retailPrice": 0.004,
+      "unitOfMeasure": "10K",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2017-10-01T00:00:00Z",
+      "meterId": "0b248445-aa24-4fe8-a794-a174929327bd"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "General Block Blob v2",
+      "skuName": "Hot LRS",
+      "meterName": "Hot Read Operations",
+      "retailPrice": 0.004,
+      "unitOfMeasure": "10K",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2016-11-01T00:00:00Z",
+      "meterId": "c5248cf8-ecba-4807-9304-6a8f14b5805a"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "General Block Blob v2",
+      "skuName": "Hot LRS",
+      "meterName": "Hot LRS Data Stored",
+      "retailPrice": 0.0208,
+      "unitOfMeasure": "1 GB/Month",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2017-02-03T00:00:00Z",
+      "meterId": "272492b3-1c92-4a5f-bee9-52a8e10ca514"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "General Block Blob v2",
+      "skuName": "Hot LRS",
+      "meterName": "LRS List and Create Container Operations",
+      "retailPrice": 0.05,
+      "unitOfMeasure": "10K",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2016-11-01T00:00:00Z",
+      "meterId": "14854f12-8d37-4299-842a-b0f2df82a305"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "Flex Consumption",
+      "skuName": "On Demand",
+      "meterName": "On Demand Total Executions",
+      "retailPrice": 0.0,
+      "unitOfMeasure": "10",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2024-12-01T00:00:00Z",
+      "meterId": "4d397fba-0393-57dd-9da3-f145b5c874fe"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "Flex Consumption",
+      "skuName": "On Demand",
+      "meterName": "On Demand Total Executions",
+      "retailPrice": 4e-06,
+      "unitOfMeasure": "10",
+      "tierMinimumUnits": 25000.0,
+      "effectiveStartDate": "2024-12-01T00:00:00Z",
+      "meterId": "4d397fba-0393-57dd-9da3-f145b5c874fe"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "Flex Consumption",
+      "skuName": "On Demand",
+      "meterName": "On Demand Execution Time",
+      "retailPrice": 0.0,
+      "unitOfMeasure": "1 GB Second",
+      "tierMinimumUnits": 0.0,
+      "effectiveStartDate": "2024-12-01T00:00:00Z",
+      "meterId": "cd5d6bae-9b8d-5456-ab84-46919175c318"
+    },
+    {
+      "currencyCode": "USD",
+      "armRegionName": "eastus",
+      "productName": "Flex Consumption",
+      "skuName": "On Demand",
+      "meterName": "On Demand Execution Time",
+      "retailPrice": 2.6e-05,
+      "unitOfMeasure": "1 GB Second",
+      "tierMinimumUnits": 100000.0,
+      "effectiveStartDate": "2024-12-01T00:00:00Z",
+      "meterId": "cd5d6bae-9b8d-5456-ab84-46919175c318"
+    }
+  ]
+}

@@ -35,10 +35,10 @@ def assess_snapshot(snapshot, *, reassessed=False):
     return report
 
 
-def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None):
+def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None, resource_group=None):
     if deadline:
         deadline.check()
-    snapshot = Collector(transport, max_pages, mode).collect(subscriptions)
+    snapshot = Collector(transport, max_pages, mode).collect(subscriptions, resource_group=resource_group)
     if deadline:
         deadline.check()
     report = assess_snapshot(snapshot)
