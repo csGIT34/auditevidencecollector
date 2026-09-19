@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.5.1 — saved-run comparison and freshness
+
+- Preserve incomplete coverage when failures also exist; reject missing or falsely complete Graph replay populations.
+- Validation: 188 local tests and 22 packaged Functions runtime checks; retained 0.3.1/0.5.0 archive hashes unchanged.
+- Optional configured freshness windows prevent stale/future configuration observations from passing; exact historical results remain unchanged.
+- Compare exact saved ARM/Graph runs with immutable JSON/Markdown publications, separate criteria/rule changes, lost evidence and explicit population/scope differences.
+
 ## 0.5.0 — expanded configuration assessments
 
 - Add 115 scoped predicates spanning all 23 service entries, configurable typed criteria and exact-resource overrides. Wider audit objectives remain incomplete.

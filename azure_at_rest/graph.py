@@ -212,5 +212,20 @@ def validate_identity_evidence(value):
         valid_url(ORIGIN+error['path'])
         if error['code'] not in ('tenant_mismatch','http_error','network_error','authentication_failed','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599) or datetime.fromisoformat(error['observed_at']).tzinfo is None:raise ValueError('Invalid Graph safe error')
     if value['verified_tenant'] and ('organization' not in value['listings'] or not value['listings']['organization']['complete'] or value['listings']['organization']['items_received']!=1):raise ValueError('Missing verified tenant listing')
+    if value['verified_tenant']:
+        if not {'organization','applications','servicePrincipals'} <= set(value['listings']):
+            raise ValueError('Missing Graph population listings')
+        for collection, resource_type in (('applications','graph.application'),('servicePrincipals','graph.servicePrincipal')):
+            population = sum(row['type']==resource_type for row in value['resources'])
+            listing = value['listings'][collection]
+            if population > listing['items_received'] or listing['complete'] and population != listing['items_received']:
+                raise ValueError('Graph population completeness mismatch')
+        for row in value['resources']:
+            collection = 'applications' if row['type']=='graph.application' else 'servicePrincipals'
+            children = [('owners',('APPREG-owner-count','APPREG-approved-owners')), ('federatedIdentityCredentials',('APPREG-federation-trust',))] if collection=='applications' else [('appRoleAssignments',('APPREG-role-grants','APPREG-approved-role-grants'))]
+            for child, checks in children:
+                listing = value['listings'].get(collection+'/'+row['object_id']+'/'+child)
+                if listing is None or not listing['complete'] and any(row['configuration'].get(check,{}).get('state')=='observed' for check in checks):
+                    raise ValueError('Graph child completeness mismatch')
     expected=value['verified_tenant'] and bool(value['listings']) and all(v['complete'] for v in value['listings'].values()) and not value['errors']
     if value['complete']!=expected or not value['verified_tenant'] and value['resources']:raise ValueError('Invalid Graph completeness')

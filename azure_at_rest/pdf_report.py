@@ -290,6 +290,8 @@ def render_pdf(saved, generation):
             for error in graph['errors']:field('Graph collection error',error)
         policy = configuration['policy']
         field('Criteria identity / version / approval assertion', {k:policy[k] for k in ('id','version','status')} if policy else 'No criteria supplied')
+        if policy and 'max_observation_age_seconds' in policy:
+            field('Maximum observation age (seconds)',policy['max_observation_age_seconds'])
         story.append(p('Each finding below includes its saved observation and exact criterion. Missing or draft criteria do not produce PASS/FAIL. A matching property does not close the referenced research objective or establish effective authorization, private reachability, recovery or activity over time.'))
         for row in configuration['results']:
             story.append(KeepTogether([p(row['check_id']+' | '+row['result']+' | '+row['title'],'Heading2'),
@@ -304,6 +306,8 @@ def render_pdf(saved, generation):
             field('Property', row['property'])
             field('Saved observation', row['observation'])
             field('Saved criterion', row['criterion'])
+            if 'freshness' in row:
+                field('Saved freshness assessment',row['freshness'])
             field('Finding', row['reason'])
             field('API definition source', row['source'])
     doc.multiBuild(story)

@@ -249,3 +249,50 @@ class ConfigurationTests(unittest.TestCase):
             store=MemoryStore()
             with self.assertRaises(ValueError):save_run(store,snapshot,bad)
             self.assertEqual({},store.objects)
+
+
+class FreshnessTests(unittest.TestCase):
+    def test_stale_future_boundary_and_historical_replay(self):
+        responses, policy = fixture()
+        policy['max_observation_age_seconds'] = 3600
+        snapshot = collect(responses)
+        for resource in snapshot['resources']:
+            resource['collected_at'] = '2026-09-19T12:00:00+00:00'
+        for assessed_at, state in [('2026-09-19T13:00:00+00:00','fresh'),
+                                   ('2026-09-19T13:00:01+00:00','stale'),
+                                   ('2026-09-19T11:59:59+00:00','future')]:
+            with patch('azure_at_rest.controls.now', return_value=assessed_at):
+                report = assess_snapshot(snapshot, criteria=policy)
+            rows = report['configuration_assessment']['results']
+            self.assertTrue(all(row['freshness']['state'] == state for row in rows))
+            self.assertTrue(all(row['result'] == ('PASS' if state == 'fresh' else 'UNKNOWN') for row in rows))
+            store = MemoryStore()
+            run = save_run(store, snapshot, report)
+            with patch('azure_at_rest.controls.now', side_effect=AssertionError('historical clock called')):
+                self.assertEqual(load_run(store,run['run_id'])['assessment'], report)
+
+    def test_invalid_freshness_limits_and_forged_fresh_result(self):
+        responses, policy = fixture()
+        for value in (True, 0, -1, 31536001, 1.5, '3600'):
+            policy['max_observation_age_seconds'] = value
+            with self.assertRaises(ValueError):
+                validate_policy(policy)
+        policy['max_observation_age_seconds'] = 3600
+        snapshot = collect(responses)
+        with patch('azure_at_rest.controls.now',return_value='2040-01-01T00:00:00+00:00'):
+            report = assess_snapshot(snapshot,criteria=policy)
+        report['configuration_assessment']['results'][0]['freshness']['state'] = 'fresh'
+        with self.assertRaises(ValueError):
+            validate_pair(snapshot,report)
+
+
+class OverallCoverageTests(unittest.TestCase):
+    def test_failure_does_not_hide_unknown_configuration_coverage(self):
+        from azure_at_rest.controls import overall_summary
+        report = {'summary':{'counts':{'FAIL':0},'coverage_incomplete':False},
+                  'configuration_assessment':{'identity_complete':True,'summary':{
+                      'conclusion':'FAILURES_FOUND','counts':{'FAIL':1,'UNKNOWN':1,'ERROR':0}}}}
+        self.assertEqual(overall_summary(report),{'conclusion':'FAILURES_FOUND','failed_check_count':1,'coverage_incomplete':True})
+        report['configuration_assessment']['summary']['counts']['UNKNOWN']=0
+        report['configuration_assessment']['identity_complete']=False
+        self.assertTrue(overall_summary(report)['coverage_incomplete'])

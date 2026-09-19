@@ -135,3 +135,22 @@ class GraphTests(unittest.TestCase):
         sdk.get_token.side_effect=RuntimeError('SECRET SDK BODY')
         with self.assertRaises(CollectionError) as caught:GraphCredential(sdk).get_token()
         self.assertEqual('authentication_failed',str(caught.exception))
+
+
+class GraphCompletenessTests(unittest.TestCase):
+    def test_missing_population_and_false_complete_children_rejected(self):
+        valid = evidence()
+        for name in ('applications','servicePrincipals','applications/'+APP+'/owners'):
+            altered = copy.deepcopy(valid)
+            del altered['listings'][name]
+            with self.assertRaises(ValueError):
+                validate_identity_evidence(altered)
+        altered = copy.deepcopy(valid)
+        altered['listings']['applications/'+APP+'/owners']['complete'] = False
+        altered['complete'] = False
+        with self.assertRaises(ValueError):
+            validate_identity_evidence(altered)
+        altered = copy.deepcopy(valid)
+        altered['resources'].pop()
+        with self.assertRaises(ValueError):
+            validate_identity_evidence(altered)

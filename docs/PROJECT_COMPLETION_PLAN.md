@@ -6,7 +6,7 @@ Created 2026-09-19. Project status: **INCOMPLETE**. This is the delivery checkli
 
 Deliver an Azure-hosted, deterministic evidence collection and assessment system covering applicable controls for all [23 services](PROGRAM_SCOPE.md). Develop and test on macOS/Linux; run unattended in Azure Functions with managed identity and retained evidence in Azure Storage. Reuse workplace infrastructure patterns. Terraform is for the temporary personal lab only.
 
-Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.5.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
+Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.5.1 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
 
 ## Required deliverables, in execution order
 
@@ -88,7 +88,7 @@ Acceptance: the report distinguishes observed configuration, operating records a
 
 - [ ] Produce a generic multi-control report showing selected scope, criteria, observations, conclusions, source provenance and unresolved gaps.
 - [ ] Show coverage by service/domain/check and separate automated, manual, inherited and unassessed evidence.
-- [ ] Compare exact saved runs for added/removed resources, changed facts/results and lost evidence; distinguish rule/criteria changes from resource drift.
+- [x] Compare exact saved runs for newly/no-longer observed resources, changed facts/results and lost evidence; distinguish rule/criteria changes from resource drift. See [saved-run comparison](SAVED_RUN_COMPARISON.md); absence is not proof of deletion.
 - [ ] Preserve exact-run replay and tamper detection; visually verify representative large multi-control PDFs and historical compatibility.
 
 Acceptance: an auditor can trace each result to saved facts and criteria without recollecting Azure or relying on chat history.

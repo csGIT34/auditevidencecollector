@@ -96,7 +96,13 @@ def validate_pair(snapshot, report):
         validate_configuration_pair(snapshot, report['configuration_assessment'])
     if 'overall_summary' in report:
         from .controls import overall_summary
-        if report['overall_summary'] != overall_summary(report):
+        expected_overall = overall_summary(report)
+        if 'identity_complete' not in report.get('configuration_assessment', {}):
+            cfg = report.get('configuration_assessment', {}).get('summary')
+            incomplete = report['summary']['coverage_incomplete'] or bool(cfg and cfg['conclusion']=='INCOMPLETE')
+            expected_overall['coverage_incomplete'] = bool(incomplete)
+            expected_overall['conclusion'] = 'FAILURES_FOUND' if expected_overall['failed_check_count'] else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED'
+        if report['overall_summary'] != expected_overall:
             raise ValueError('Saved overall summary mismatch')
     counts = {s: 0 for s in STATUSES}
     counts.update(Counter(r['result'] for r in results))
@@ -269,6 +275,8 @@ def validate_configuration_pair(snapshot, assessment):
     records = {r['id']:r for r in snapshot['resources'] + snapshot.get('identity_evidence',{}).get('resources',[])}
     if assessment.get('schema_version') != '1.0' or not isinstance(assessment.get('results'), list):
         raise ValueError('Invalid saved configuration assessment')
+    if 'identity_complete' in assessment and assessment['identity_complete'] != snapshot.get('identity_evidence',{}).get('complete',True):
+        raise ValueError('Saved identity completeness mismatch')
     seen = set()
     policy = assessment.get('policy')
     from .controls import criterion_for
@@ -282,6 +290,17 @@ def validate_configuration_pair(snapshot, assessment):
             raise ValueError('Saved configuration observation mismatch')
         if row['criterion'] != criterion_for(policy,row['resource_id'],row['check_id']):
             raise ValueError('Saved configuration criterion mismatch')
+        if 'freshness' in row:
+            from datetime import datetime
+            freshness = row['freshness']
+            if not policy or freshness.get('as_of') != assessment['generated_at'] or freshness.get('max_age_seconds') != policy.get('max_observation_age_seconds'):
+                raise ValueError('Saved freshness criteria mismatch')
+            age = (datetime.fromisoformat(assessment['generated_at']) - datetime.fromisoformat(row['observed_at'])).total_seconds()
+            state = 'future' if age < 0 else 'stale' if age > freshness['max_age_seconds'] else 'fresh'
+            if freshness.get('state') != state or state != 'fresh' and row['result'] in ('PASS','FAIL'):
+                raise ValueError('Saved freshness mismatch')
+        elif policy and 'max_observation_age_seconds' in policy:
+            raise ValueError('Missing saved freshness assessment')
         if row['result'] in ('PASS','FAIL') and (not policy or policy['status'] != 'approved' or not row['criterion'] or row['observation']['state'] != 'observed'):
             raise ValueError('Configuration conclusion without evidence/criteria')
     counts = {s:0 for s in ('PASS','FAIL','UNKNOWN','ERROR')}

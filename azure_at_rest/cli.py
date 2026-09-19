@@ -68,12 +68,28 @@ def parser():
     show = commands.add_parser("wiz-show", help="Verify and print one exact saved comparison; no recomputation.")
     show.add_argument("--store", type=Path, required=True)
     show.add_argument("--comparison-id", required=True)
+    diff = commands.add_parser("compare-runs", help="Archive changes between two exact saved runs; no reassessment.")
+    diff.add_argument("--store", type=Path, required=True)
+    diff.add_argument("--before", required=True)
+    diff.add_argument("--after", required=True)
+    diff_show = commands.add_parser("comparison-show", help="Verify and print an exact saved run comparison.")
+    diff_show.add_argument("--store", type=Path, required=True)
+    diff_show.add_argument("--comparison-id", required=True)
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command in {"compare-runs", "comparison-show"}:
+            from .storage import FileStore
+            from .run_comparison import publish, load
+            store = FileStore(args.store)
+            if args.command == "compare-runs":
+                print(json.dumps(publish(store, args.before, args.after), indent=2, sort_keys=True))
+            else:
+                print(load(store, args.comparison_id)['markdown'], end='')
+            return 0
         if args.command == "wiz-show":
             from .storage import FileStore
             from .reconciliation import load_comparison

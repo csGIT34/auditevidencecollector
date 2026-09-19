@@ -5,13 +5,14 @@ supporting evidence links, not completion of the larger research objective.
 """
 from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 import re
 import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.2'
+VERSION = '2026.09.19.3'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -280,7 +281,7 @@ def validate_observations(values, rt):
 def validate_policy(policy):
     if policy is None:
         return None
-    if not isinstance(policy, dict) or set(policy) - {'overrides'} != {'schema_version','id','version','status','checks'}:
+    if not isinstance(policy, dict) or set(policy) - {'overrides','max_observation_age_seconds'} != {'schema_version','id','version','status','checks'}:
         raise ValueError('Invalid assessment criteria')
     if policy['schema_version'] != '1.0' or policy['status'] not in ('draft','approved'):
         raise ValueError('Invalid criteria version/status')
@@ -288,6 +289,8 @@ def validate_policy(policy):
         raise ValueError('Invalid criteria identity')
     if not isinstance(policy['checks'], dict) or set(policy['checks']) - set(CHECKS):
         raise ValueError('Unknown criterion')
+    if 'max_observation_age_seconds' in policy and (type(policy['max_observation_age_seconds']) is not int or not 1 <= policy['max_observation_age_seconds'] <= 31536000):
+        raise ValueError('Invalid freshness criterion')
     overrides=policy.get('overrides',{})
     if not isinstance(overrides,dict) or len(overrides)>10000:
         raise ValueError('Invalid criteria overrides')
@@ -317,6 +320,7 @@ def validate_policy(policy):
 def evaluate(snapshot, policy=None):
     validate_policy(policy)
     results = []
+    generated_at = now()
     for record in snapshot['resources'] + snapshot.get('identity_evidence',{}).get('resources',[]):
         observations = record.get('configuration', {})
         for check in for_type(record['type']):
@@ -336,10 +340,16 @@ def evaluate(snapshot, policy=None):
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
                 passed = actual == expected if op == 'equals' else actual in expected if op == 'one_of' else set(expected) <= set(actual) if op == 'contains_all' else actual >= expected
                 row.update(result='PASS' if passed else 'FAIL', reason='Observed configuration matches the supplied criterion.' if passed else 'Observed configuration does not match the supplied criterion.')
+            if policy and 'max_observation_age_seconds' in policy:
+                age = (datetime.fromisoformat(generated_at) - datetime.fromisoformat(record['collected_at'])).total_seconds()
+                state = 'future' if age < 0 else 'stale' if age > policy['max_observation_age_seconds'] else 'fresh'
+                row['freshness'] = {'state':state, 'as_of':generated_at, 'max_age_seconds':policy['max_observation_age_seconds']}
+                if state != 'fresh' and row['result'] != 'ERROR':
+                    row.update(result='UNKNOWN', reason='Observation is future-dated.' if state == 'future' else 'Observation exceeds the supplied freshness window.')
             results.append(row)
     counts = {s:0 for s in ('PASS','FAIL','UNKNOWN','ERROR')}
     counts.update(Counter(r['result'] for r in results))
-    return {'schema_version':'1.0','rule_version':VERSION,'generated_at':now(), 'policy':policy,
+    return {'schema_version':'1.0','rule_version':VERSION,'generated_at':generated_at, 'policy':policy, 'identity_complete':snapshot.get('identity_evidence',{}).get('complete',True),
             'limits':'Point-in-time configuration predicates only. Criteria approval is an operator assertion, not independently authenticated. Catalog references do not close whole objectives, effective access, network reachability or operating effectiveness.',
             'summary':{'check_count':len(results),'counts':counts,
                        'conclusion':'FAILURES_FOUND' if counts['FAIL'] else 'INCOMPLETE' if not results or counts['UNKNOWN'] or counts['ERROR'] or not snapshot.get('identity_evidence',{}).get('complete',True) else 'SELECTED_CONFIGURATION_CRITERIA_SATISFIED'},
@@ -350,7 +360,8 @@ def overall_summary(report):
     encryption = report['summary']
     config = report.get('configuration_assessment', {}).get('summary')
     failures = encryption['counts']['FAIL'] + (config['counts']['FAIL'] if config else 0)
-    incomplete = encryption['coverage_incomplete'] or bool(config and config['conclusion']=='INCOMPLETE')
+    incomplete = encryption['coverage_incomplete'] or bool(config and (config['conclusion']=='INCOMPLETE' or config['counts']['UNKNOWN'] or config['counts']['ERROR']))
+    incomplete = incomplete or not report.get('configuration_assessment', {}).get('identity_complete', True)
     return {'conclusion':'FAILURES_FOUND' if failures else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED',
             'coverage_incomplete':bool(incomplete), 'failed_check_count':failures}
 

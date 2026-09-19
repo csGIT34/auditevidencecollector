@@ -19,7 +19,7 @@ def write_readable_file(archive, path, root):
 def package(output):
     files = [ROOT / name for name in ('function_app.py', 'host.json', 'requirements.txt', 'constraints.txt')]
     modules = ('__init__', '__main__', 'archive', 'assessment', 'azure_adapters', 'catalog', 'cli', 'collector', 'controls', 'graph',
-               'hosting', 'pdf_report', 'provenance', 'reconciliation', 'wiz', 'report', 'safety', 'snapshot', 'storage', 'verification', 'workflow')
+               'hosting', 'pdf_report', 'provenance', 'reconciliation', 'run_comparison', 'wiz', 'report', 'safety', 'snapshot', 'storage', 'verification', 'workflow')
     files += [ROOT / 'azure_at_rest' / (name + '.py') for name in modules]
     files += [ROOT / 'azure_at_rest/program_scope.json', ROOT / 'azure_at_rest/control_objectives.json']
     if any(not f.is_file() or f.is_symlink() for f in files):
