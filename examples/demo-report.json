@@ -1,6 +1,6 @@
 {
-  "collection_completed_at": "2026-09-19T02:25:45+00:00",
-  "collection_started_at": "2026-09-19T02:25:45+00:00",
+  "collection_completed_at": "2026-09-19T02:39:32+00:00",
+  "collection_started_at": "2026-09-19T02:39:32+00:00",
   "control_mapping": {
     "assessment": "Provisional technical configuration examination and documented service guarantees; not certification or full control effectiveness.",
     "controls": [
@@ -17,12 +17,12 @@
     {
       "code": "http_error",
       "http_status": 403,
-      "observed_at": "2026-09-19T02:25:45+00:00",
+      "observed_at": "2026-09-19T02:39:32+00:00",
       "operation": "resource_get",
       "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore"
     }
   ],
-  "generated_at": "2026-09-19T02:25:45+00:00",
+  "generated_at": "2026-09-19T02:39:32+00:00",
   "inventory": {
     "complete": true,
     "subscription_discovery": {
@@ -52,9 +52,9 @@
   "results": [
     {
       "api_version": "2024-03-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -101,13 +101,90 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.App/containerApps"
+      "type": "Microsoft.App/containerApps",
+      "verification_commands": [
+        {
+          "api_version": "2024-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app?api-version=2024-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"managedEnvironmentId\": properties.\"managedEnvironmentId\", \"environmentId\": properties.\"environmentId\", \"volumes\": properties.template.volumes[].{name: name, storageName: storageName, storageType: storageType}}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app?api-version=2024-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"managedEnvironmentId\": properties.\"managedEnvironmentId\", \"environmentId\": properties.\"environmentId\", \"volumes\": properties.template.volumes[].{name: name, storageName: storageName, storageType: storageType}}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app",
+            "properties.managedEnvironmentId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+            "type": "Microsoft.App/containerApps"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"managedEnvironmentId\": properties.\"managedEnvironmentId\", \"environmentId\": properties.\"environmentId\", \"volumes\": properties.template.volumes[].{name: name, storageName: storageName, storageType: storageType}}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app?api-version=2024-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2024-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+            "type": "Microsoft.App/managedEnvironments"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "container_environment",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-03-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -137,13 +214,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.App/managedEnvironments"
+      "type": "Microsoft.App/managedEnvironments",
+      "verification_commands": [
+        {
+          "api_version": "2024-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+            "type": "Microsoft.App/managedEnvironments"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env?api-version=2024-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-03-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -171,13 +289,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.AppConfiguration/configurationStores"
+      "type": "Microsoft.AppConfiguration/configurationStores",
+      "verification_commands": [
+        {
+          "api_version": "2023-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration?api-version=2023-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration?api-version=2023-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration",
+            "type": "Microsoft.AppConfiguration/configurationStores"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-customer-managed-keys"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration?api-version=2023-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-03-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -209,13 +368,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Cache/Redis"
+      "type": "Microsoft.Cache/Redis",
+      "verification_commands": [
+        {
+          "api_version": "2024-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache?api-version=2024-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"redisConfiguration.rdb-backup-enabled\": properties.\"redisConfiguration\".\"rdb-backup-enabled\", \"redisConfiguration.aof-backup-enabled\": properties.\"redisConfiguration\".\"aof-backup-enabled\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache?api-version=2024-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"redisConfiguration.rdb-backup-enabled\": properties.\"redisConfiguration\".\"rdb-backup-enabled\", \"redisConfiguration.aof-backup-enabled\": properties.\"redisConfiguration\".\"aof-backup-enabled\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache",
+            "properties.redisConfiguration.rdb-backup-enabled": "true",
+            "type": "Microsoft.Cache/Redis"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"redisConfiguration.rdb-backup-enabled\": properties.\"redisConfiguration\".\"rdb-backup-enabled\", \"redisConfiguration.aof-backup-enabled\": properties.\"redisConfiguration\".\"aof-backup-enabled\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-premium-persistence"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache?api-version=2024-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-02-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -243,13 +444,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Cache/redisEnterprise"
+      "type": "Microsoft.Cache/redisEnterprise",
+      "verification_commands": [
+        {
+          "api_version": "2024-02-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache?api-version=2024-02-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache?api-version=2024-02-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache",
+            "sku.name": "Enterprise_* or EnterpriseFlash_* (reviewed SKUs only)",
+            "type": "Microsoft.Cache/redisEnterprise"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-premium-persistence"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache?api-version=2024-02-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-03-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -277,13 +520,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Compute/images"
+      "type": "Microsoft.Compute/images",
+      "verification_commands": [
+        {
+          "api_version": "2024-03-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image?api-version=2024-03-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image?api-version=2024-03-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image",
+            "type": "Microsoft.Compute/images"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image?api-version=2024-03-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-10-02",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -311,13 +595,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Compute/snapshots"
+      "type": "Microsoft.Compute/snapshots",
+      "verification_commands": [
+        {
+          "api_version": "2023-10-02",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot?api-version=2023-10-02",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot?api-version=2023-10-02' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot",
+            "type": "Microsoft.Compute/snapshots"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot?api-version=2023-10-02",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-07-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -347,13 +672,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.ContainerRegistry/registries"
+      "type": "Microsoft.ContainerRegistry/registries",
+      "verification_commands": [
+        {
+          "api_version": "2023-07-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry?api-version=2023-07-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.status\": properties.\"encryption\".\"status\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry?api-version=2023-07-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.status\": properties.\"encryption\".\"status\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry",
+            "properties.encryption.status": "disabled",
+            "type": "Microsoft.ContainerRegistry/registries"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.status\": properties.\"encryption\".\"status\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/container-registry/tutorial-customer-managed-keys"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry?api-version=2023-07-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-05-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -406,13 +773,164 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.ContainerService/managedClusters"
+      "type": "Microsoft.ContainerService/managedClusters",
+      "verification_commands": [
+        {
+          "api_version": "2024-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks?api-version=2024-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"nodeResourceGroup\": properties.\"nodeResourceGroup\", \"agent_pools\": properties.agentPoolProfiles[].{name: name, osDiskType: osDiskType, enableEncryptionAtHost: enableEncryptionAtHost}}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks?api-version=2024-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"nodeResourceGroup\": properties.\"nodeResourceGroup\", \"agent_pools\": properties.agentPoolProfiles[].{name: name, osDiskType: osDiskType, enableEncryptionAtHost: enableEncryptionAtHost}}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks",
+            "properties.nodeResourceGroup": "demo-nodes",
+            "type": "Microsoft.ContainerService/managedClusters"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"nodeResourceGroup\": properties.\"nodeResourceGroup\", \"agent_pools\": properties.agentPoolProfiles[].{name: name, osDiskType: osDiskType, enableEncryptionAtHost: enableEncryptionAtHost}}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/aks/concepts-storage"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks?api-version=2024-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2024-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools?api-version=2024-05-01",
+            "--query",
+            "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools?api-version=2024-05-01' --query '{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "previously_observed_ids": [
+              "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system"
+            ]
+          },
+          "interpretation": "Traverse every page. A first page, resource count or identity list cannot prove encryption; run each child's configuration commands. Missing children/read errors keep coverage incomplete.",
+          "kind": "list_agentPools",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/aks/concepts-storage"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools?api-version=2024-05-01",
+          "verifies": "Enumerate agentPools identities; separate child reads establish configuration."
+        },
+        {
+          "api_version": "2024-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+            "properties.enableEncryptionAtHost": true,
+            "properties.osDiskType": "Ephemeral",
+            "type": "Microsoft.ContainerService/managedClusters/agentPools"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}",
+          "relation": "agentPools",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/aks/enable-host-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-10-02",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+            "properties.encryption.type": "EncryptionAtRestWithPlatformKey",
+            "type": "Microsoft.Compute/disks"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+          "relation": "node_resource_group_storage",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-05-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -445,13 +963,56 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.ContainerService/managedClusters/agentPools"
+      "type": "Microsoft.ContainerService/managedClusters/agentPools",
+      "verification_commands": [
+        {
+          "api_version": "2024-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+            "properties.enableEncryptionAtHost": true,
+            "properties.osDiskType": "Ephemeral",
+            "type": "Microsoft.ContainerService/managedClusters/agentPools"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableEncryptionAtHost\": properties.\"enableEncryptionAtHost\", \"osDiskType\": properties.\"osDiskType\", \"osDiskSizeGB\": properties.\"osDiskSizeGB\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/aks/enable-host-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system?api-version=2024-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-01-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -479,13 +1040,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.DataProtection/backupVaults"
+      "type": "Microsoft.DataProtection/backupVaults",
+      "verification_commands": [
+        {
+          "api_version": "2023-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups?api-version=2023-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups?api-version=2023-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups",
+            "type": "Microsoft.DataProtection/backupVaults"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups?api-version=2023-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-12-30",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -513,13 +1115,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.DBforMySQL/flexibleServers"
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "verification_commands": [
+        {
+          "api_version": "2023-12-30",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql?api-version=2023-12-30",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql?api-version=2023-12-30' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql",
+            "type": "Microsoft.DBforMySQL/flexibleServers"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/mysql/security/security-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql?api-version=2023-12-30",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-08-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -549,13 +1192,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "verification_commands": [
+        {
+          "api_version": "2024-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres?api-version=2024-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres?api-version=2024-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres",
+            "properties.dataEncryption.type": "SystemManaged",
+            "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/postgresql/security/security-data-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres?api-version=2024-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-05-15",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -583,13 +1268,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.DocumentDB/databaseAccounts"
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "verification_commands": [
+        {
+          "api_version": "2024-05-15",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo?api-version=2024-05-15",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo?api-version=2024-05-15' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo",
+            "type": "Microsoft.DocumentDB/databaseAccounts"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/cosmos-db/database-encryption-at-rest"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo?api-version=2024-05-15",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-07-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -617,13 +1343,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.DocumentDB/mongoClusters"
+      "type": "Microsoft.DocumentDB/mongoClusters",
+      "verification_commands": [
+        {
+          "api_version": "2024-07-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore?api-version=2024-07-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore?api-version=2024-07-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore",
+            "type": "Microsoft.DocumentDB/mongoClusters"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"dataEncryption.type\": properties.\"dataEncryption\".\"type\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/documentdb/database-encryption-at-rest"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore?api-version=2024-07-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-01-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -658,13 +1425,128 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.EventHub/namespaces"
+      "type": "Microsoft.EventHub/namespaces",
+      "verification_commands": [
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+            "type": "Microsoft.EventHub/namespaces"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/event-hubs/configure-customer-managed-key"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs?api-version=2024-01-01",
+            "--query",
+            "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs?api-version=2024-01-01' --query '{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "previously_observed_ids": [
+              "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured"
+            ]
+          },
+          "interpretation": "Traverse every page. A first page, resource count or identity list cannot prove encryption; run each child's configuration commands. Missing children/read errors keep coverage incomplete.",
+          "kind": "list_eventhubs",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/event-hubs/configure-customer-managed-key"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs?api-version=2024-01-01",
+          "verifies": "Enumerate eventhubs identities; separate child reads establish configuration."
+        },
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+            "properties.captureDescription.destination.name": "EventHubArchive.AzureBlockBlob",
+            "properties.captureDescription.destination.properties.storageAccountResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+            "properties.captureDescription.enabled": true,
+            "type": "Microsoft.EventHub/namespaces/eventhubs"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}",
+          "relation": "eventhubs",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-capture-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-01-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "dependency_assessment_and_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -707,13 +1589,130 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.EventHub/namespaces/eventhubs"
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "verification_commands": [
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+            "properties.captureDescription.destination.name": "EventHubArchive.AzureBlockBlob",
+            "properties.captureDescription.destination.properties.storageAccountResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+            "properties.captureDescription.enabled": true,
+            "type": "Microsoft.EventHub/namespaces/eventhubs"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"captureDescription.enabled\": properties.\"captureDescription\".\"enabled\", \"captureDescription.destination.name\": properties.\"captureDescription\".\"destination\".\"name\", \"captureDescription.destination.properties.storageAccountResourceId\": properties.\"captureDescription\".\"destination\".\"properties\".\"storageAccountResourceId\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-capture-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured?api-version=2024-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+            "properties.encryption.keySource": "Microsoft.Storage",
+            "properties.encryption.services.blob.enabled": true,
+            "properties.encryption.services.file.enabled": true,
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+          "relation": "capture_storage",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+            "type": "Microsoft.EventHub/namespaces"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+          "relation": "owning_namespace",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/event-hubs/configure-customer-managed-key"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events?api-version=2024-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2020-02-02",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "dependency_assessment",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -750,13 +1749,90 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Insights/components"
+      "type": "Microsoft.Insights/components",
+      "verification_commands": [
+        {
+          "api_version": "2020-02-02",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry?api-version=2020-02-02",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"WorkspaceResourceId\": properties.\"WorkspaceResourceId\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry?api-version=2020-02-02' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"WorkspaceResourceId\": properties.\"WorkspaceResourceId\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry",
+            "properties.WorkspaceResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+            "type": "Microsoft.Insights/components"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"WorkspaceResourceId\": properties.\"WorkspaceResourceId\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-monitor/app/create-workspace-resource"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry?api-version=2020-02-02",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-09-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+            "type": "Microsoft.OperationalInsights/workspaces"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "log_analytics_workspace",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/customer-managed-keys"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-07-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -784,13 +1860,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.KeyVault/vaults"
+      "type": "Microsoft.KeyVault/vaults",
+      "verification_commands": [
+        {
+          "api_version": "2023-07-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets?api-version=2023-07-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets?api-version=2023-07-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets",
+            "type": "Microsoft.KeyVault/vaults"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets?api-version=2023-07-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-08-15",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "api_configuration",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -820,13 +1937,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Kusto/clusters"
+      "type": "Microsoft.Kusto/clusters",
+      "verification_commands": [
+        {
+          "api_version": "2023-08-15",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics?api-version=2023-08-15",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableDiskEncryption\": properties.\"enableDiskEncryption\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics?api-version=2023-08-15' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableDiskEncryption\": properties.\"enableDiskEncryption\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics",
+            "properties.enableDiskEncryption": false,
+            "type": "Microsoft.Kusto/clusters"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. properties.enableDiskEncryption must be true for the VM cache check; false is a failure, missing is unknown. The linked guarantee covers backing storage separately.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"enableDiskEncryption\": properties.\"enableDiskEncryption\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/data-explorer/cluster-encryption-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics?api-version=2023-08-15",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: FAIL. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": null,
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "justified_applicability",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "inventory_only",
       "controls": [
         "SC-28",
@@ -854,13 +2013,52 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Network/virtualNetworks"
+      "type": "Microsoft.Network/virtualNetworks",
+      "verification_commands": [
+        {
+          "api_version": "2021-04-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01",
+            "--query",
+            "{\"matches\": value[?id == '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01' --query '{\"matches\": value[?id == '\"'\"'/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network'\"'\"'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network",
+            "type": "Microsoft.Network/virtualNetworks"
+          },
+          "interpretation": "Identity only; no service-specific encryption verification is available from this command. Follow all pages; an absent match is inconclusive. Unsupported or not-applicable status is not a PASS.",
+          "kind": "inventory_lookup",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"matches\": value[?id == '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network",
+          "shell": "POSIX",
+          "sources": [],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01",
+          "verifies": "Locate this resource's identity in subscription inventory."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: NOT_APPLICABLE. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-09-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -888,13 +2086,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.OperationalInsights/workspaces"
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "verification_commands": [
+        {
+          "api_version": "2023-09-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+            "type": "Microsoft.OperationalInsights/workspaces"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/customer-managed-keys"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs?api-version=2023-09-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-01-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -922,13 +2161,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.RecoveryServices/vaults"
+      "type": "Microsoft.RecoveryServices/vaults",
+      "verification_commands": [
+        {
+          "api_version": "2023-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery?api-version=2023-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery?api-version=2023-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery",
+            "type": "Microsoft.RecoveryServices/vaults"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.infrastructureEncryption\": properties.\"encryption\".\"infrastructureEncryption\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/backup/backup-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery?api-version=2023-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-11-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -956,13 +2236,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Search/searchServices"
+      "type": "Microsoft.Search/searchServices",
+      "verification_commands": [
+        {
+          "api_version": "2023-11-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search?api-version=2023-11-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search?api-version=2023-11-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search",
+            "type": "Microsoft.Search/searchServices"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/search/search-security-built-in"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search?api-version=2023-11-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2024-01-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -990,13 +2311,55 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.ServiceBus/namespaces"
+      "type": "Microsoft.ServiceBus/namespaces",
+      "verification_commands": [
+        {
+          "api_version": "2024-01-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages?api-version=2024-01-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages?api-version=2024-01-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages",
+            "sku.name": "Premium (required for this rule's guarantee)",
+            "type": "Microsoft.ServiceBus/namespaces"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/service-bus-messaging/configure-customer-managed-key"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages?api-version=2024-01-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-08-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "dependency_assessment",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1039,13 +2402,231 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Sql/servers"
+      "type": "Microsoft.Sql/servers",
+      "verification_commands": [
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql?api-version=2023-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql",
+            "type": "Microsoft.Sql/servers"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Database or server identity does not prove TDE. Use the separate per-database TDE reads; SQL master cannot use this mechanism.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql?api-version=2023-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases?api-version=2023-08-01",
+            "--query",
+            "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases?api-version=2023-08-01' --query '{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "previously_observed_ids": [
+              "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+              "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern"
+            ]
+          },
+          "interpretation": "Traverse every page. A first page, resource count or identity list cannot prove encryption; run each child's configuration commands. Missing children/read errors keep coverage incomplete.",
+          "kind": "list_databases",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases?api-version=2023-08-01",
+          "verifies": "Enumerate databases identities; separate child reads establish configuration."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+            "type": "Microsoft.Sql/servers/databases"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Database or server identity does not prove TDE. Use the separate per-database TDE reads; SQL master cannot use this mechanism.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "databases",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"state\": properties.state}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01' --query '{\"id\": id, \"state\": properties.state}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current",
+            "properties.state": "Disabled"
+          },
+          "interpretation": "Enabled supports the scoped configuration check; Disabled fails it. Missing, transitional or denied results remain unverified. This is current configuration, not a cryptographic test.",
+          "kind": "tde_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"state\": properties.state}",
+          "relation": "databases",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01",
+          "verifies": "Read the database's TDE configuration, not the server's key/protector setting."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+            "type": "Microsoft.Sql/servers/databases"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Database or server identity does not prove TDE. Use the separate per-database TDE reads; SQL master cannot use this mechanism.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "databases",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"state\": properties.state}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01' --query '{\"id\": id, \"state\": properties.state}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current",
+            "properties.state": "Enabled"
+          },
+          "interpretation": "Enabled supports the scoped configuration check; Disabled fails it. Missing, transitional or denied results remain unverified. This is current configuration, not a cryptographic test.",
+          "kind": "tde_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"state\": properties.state}",
+          "relation": "databases",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01",
+          "verifies": "Read the database's TDE configuration, not the server's key/protector setting."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: FAIL. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-08-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "api_configuration",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1054,7 +2635,7 @@
       "dependencies": [],
       "errors": [],
       "evidence": {
-        "tde.observed_at": "2026-09-19T02:25:45+00:00",
+        "tde.observed_at": "2026-09-19T02:39:32+00:00",
         "tde.state": "Disabled"
       },
       "gaps": [],
@@ -1076,13 +2657,89 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Sql/servers/databases"
+      "type": "Microsoft.Sql/servers/databases",
+      "verification_commands": [
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+            "type": "Microsoft.Sql/servers/databases"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Database or server identity does not prove TDE. Use the separate per-database TDE reads; SQL master cannot use this mechanism.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy?api-version=2023-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"state\": properties.state}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01' --query '{\"id\": id, \"state\": properties.state}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current",
+            "properties.state": "Disabled"
+          },
+          "interpretation": "Enabled supports the scoped configuration check; Disabled fails it. Missing, transitional or denied results remain unverified. This is current configuration, not a cryptographic test.",
+          "kind": "tde_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"state\": properties.state}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy/transparentDataEncryption/current?api-version=2023-08-01",
+          "verifies": "Read the database's TDE configuration, not the server's key/protector setting."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: FAIL. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-08-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "api_configuration",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1091,7 +2748,7 @@
       "dependencies": [],
       "errors": [],
       "evidence": {
-        "tde.observed_at": "2026-09-19T02:25:45+00:00",
+        "tde.observed_at": "2026-09-19T02:39:32+00:00",
         "tde.state": "Enabled"
       },
       "gaps": [],
@@ -1113,13 +2770,89 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Sql/servers/databases"
+      "type": "Microsoft.Sql/servers/databases",
+      "verification_commands": [
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+            "type": "Microsoft.Sql/servers/databases"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Database or server identity does not prove TDE. Use the separate per-database TDE reads; SQL master cannot use this mechanism.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern?api-version=2023-08-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-08-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01",
+            "--query",
+            "{\"id\": id, \"state\": properties.state}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01' --query '{\"id\": id, \"state\": properties.state}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current",
+            "properties.state": "Enabled"
+          },
+          "interpretation": "Enabled supports the scoped configuration check; Disabled fails it. Missing, transitional or denied results remain unverified. This is current configuration, not a cryptographic test.",
+          "kind": "tde_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"state\": properties.state}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern/transparentDataEncryption/current?api-version=2023-08-01",
+          "verifies": "Read the database's TDE configuration, not the server's key/protector setting."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-05-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1151,13 +2884,57 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Storage/storageAccounts"
+      "type": "Microsoft.Storage/storageAccounts",
+      "verification_commands": [
+        {
+          "api_version": "2023-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+            "properties.encryption.keySource": "Microsoft.Storage",
+            "properties.encryption.services.blob.enabled": true,
+            "properties.encryption.services.file.enabled": true,
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore?api-version=2023-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-05-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "none",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "error",
       "controls": [
         "SC-28",
@@ -1168,7 +2945,7 @@
         {
           "code": "http_error",
           "http_status": 403,
-          "observed_at": "2026-09-19T02:25:45+00:00",
+          "observed_at": "2026-09-19T02:39:32+00:00",
           "operation": "resource_get",
           "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore"
         }
@@ -1193,13 +2970,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Storage/storageAccounts"
+      "type": "Microsoft.Storage/storageAccounts",
+      "verification_commands": [
+        {
+          "api_version": "2023-05-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore?api-version=2023-05-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore?api-version=2023-05-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore",
+            "type": "Microsoft.Storage/storageAccounts"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.keySource\": properties.\"encryption\".\"keySource\", \"encryption.services.blob.enabled\": properties.\"encryption\".\"services\".\"blob\".\"enabled\", \"encryption.services.file.enabled\": properties.\"encryption\".\"services\".\"file\".\"enabled\", \"encryption.services.queue.enabled\": properties.\"encryption\".\"services\".\"queue\".\"enabled\", \"encryption.services.table.enabled\": properties.\"encryption\".\"services\".\"table\".\"enabled\"}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore?api-version=2023-05-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: ERROR. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-12-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1237,13 +3055,125 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Web/sites"
+      "type": "Microsoft.Web/sites",
+      "verification_commands": [
+        {
+          "api_version": "2023-12-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app?api-version=2023-12-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app?api-version=2023-12-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app",
+            "type": "Microsoft.Web/sites"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app?api-version=2023-12-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        },
+        {
+          "api_version": "2023-12-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots?api-version=2023-12-01",
+            "--query",
+            "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots?api-version=2023-12-01' --query '{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "previously_observed_ids": [
+              "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging"
+            ]
+          },
+          "interpretation": "Traverse every page. A first page, resource count or identity list cannot prove encryption; run each child's configuration commands. Missing children/read errors keep coverage incomplete.",
+          "kind": "list_slots",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"resources\": value[].{id: id, type: type}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots?api-version=2023-12-01",
+          "verifies": "Enumerate slots identities; separate child reads establish configuration."
+        },
+        {
+          "api_version": "2023-12-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+            "type": "Microsoft.Web/sites/slots"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "slots",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-12-01",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "backing_storage_required",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1273,13 +3203,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Web/sites/slots"
+      "type": "Microsoft.Web/sites/slots",
+      "verification_commands": [
+        {
+          "api_version": "2023-12-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+            "type": "Microsoft.Web/sites/slots"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. These are partial component observations. Verify referenced storage separately; workload, runtime and external-storage gaps remain. URL-derived data-lake references are omitted to avoid exposing SAS values.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging?api-version=2023-12-01",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNKNOWN. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": null,
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "none",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "inventory_only",
       "controls": [
         "SC-28",
@@ -1302,13 +3273,52 @@
       "sku": "unspecified",
       "sources": [],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "MongoDB.Atlas/organizations"
+      "type": "MongoDB.Atlas/organizations",
+      "verification_commands": [
+        {
+          "api_version": "2021-04-01",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01",
+            "--query",
+            "{\"matches\": value[?id == '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01' --query '{\"matches\": value[?id == '\"'\"'/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb'\"'\"'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != '\"'\"''\"'\"'}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb",
+            "type": "MongoDB.Atlas/organizations"
+          },
+          "interpretation": "Identity only; no service-specific encryption verification is available from this command. Follow all pages; an absent match is inconclusive. Unsupported or not-applicable status is not a PASS.",
+          "kind": "inventory_lookup",
+          "method": "GET",
+          "paginated": true,
+          "query": "{\"matches\": value[?id == '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb'].{id: id, type: type, location: location}, \"more_pages\": nextLink != `null` && nextLink != ''}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb",
+          "shell": "POSIX",
+          "sources": [],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01",
+          "verifies": "Locate this resource's identity in subscription inventory."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: UNSUPPORTED. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     },
     {
       "api_version": "2023-10-02",
-      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "assessed_at": "2026-09-19T02:39:32+00:00",
       "basis": "documented_service_guarantee",
-      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collected_at": "2026-09-19T02:39:32+00:00",
       "collection_status": "ok",
       "controls": [
         "SC-28",
@@ -1338,12 +3348,54 @@
         }
       ],
       "subscription_id": "11111111-1111-1111-1111-111111111111",
-      "type": "Microsoft.Compute/disks"
+      "type": "Microsoft.Compute/disks",
+      "verification_commands": [
+        {
+          "api_version": "2023-10-02",
+          "argv": [
+            "az",
+            "rest",
+            "--method",
+            "get",
+            "--url",
+            "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02",
+            "--query",
+            "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+            "--output",
+            "json",
+            "--only-show-errors"
+          ],
+          "command": "az rest --method get --url 'https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02' --query '{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}' --output json --only-show-errors",
+          "expected_fields": {
+            "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+            "properties.encryption.type": "EncryptionAtRestWithPlatformKey",
+            "type": "Microsoft.Compute/disks"
+          },
+          "interpretation": "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch.",
+          "kind": "resource_get",
+          "method": "GET",
+          "paginated": false,
+          "query": "{\"id\": id, \"type\": type, \"location\": location, \"kind\": kind, \"sku\": sku.name, \"provisioningState\": properties.provisioningState, \"encryption.type\": properties.\"encryption\".\"type\", \"storageProfile.osDiskId\": properties.storageProfile.osDisk.managedDisk.id, \"storageProfile.dataDiskIds\": properties.storageProfile.dataDisks[].managedDisk.id, \"virtualMachineProfile.storageProfile.osDiskId\": properties.virtualMachineProfile.storageProfile.osDisk.managedDisk.id, \"virtualMachineProfile.storageProfile.dataDiskIds\": properties.virtualMachineProfile.storageProfile.dataDisks[].managedDisk.id}",
+          "relation": "self",
+          "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+          "shell": "POSIX",
+          "sources": [
+            "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+          ],
+          "synthetic": true,
+          "url": "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk?api-version=2023-10-02",
+          "verifies": "Read resource identity and selected encryption/dependency metadata using the collector's recorded API version."
+        }
+      ],
+      "verification_notes": [
+        "Saved result: PASS. Commands are independent read suggestions; they do not change the assessment or guarantee a PASS.",
+        "SYNTHETIC EXAMPLES \u2014 DO NOT RUN. These IDs do not identify deployed resources."
+      ]
     }
   ],
   "rule_version": "2026.09.19.1",
   "schema_version": "1.0",
-  "snapshot_sha256": "a0810492edc2a1c835ecf1e1cbdde2e0ae83409ff6b011615e9bdd787dfb50e8",
+  "snapshot_sha256": "d39b50de1d9666d88562af97010d77e870f5b271c6ed1bfbe719d31fee1acd58",
   "summary": {
     "child_collections_complete": true,
     "collection_error_count": 1,
@@ -1463,5 +3515,17 @@
       "MongoDB.Atlas/organizations"
     ]
   },
-  "tool_version": "0.1.0"
+  "tool_version": "0.1.1",
+  "verification_guidance": {
+    "current_state": "Rerunning retrieves CURRENT state, not historical proof of the saved observation. Compare returned fields with the timestamped evidence; retain the original report separately.",
+    "pagination": "List commands display one page and a more_pages indicator. A missing match or empty first page is not proof of absence. If more_pages is true, independently traverse all pages using the current nextLink and verify its ARM origin and unchanged collection path. Saved continuation tokens are not emitted.",
+    "prerequisites": "Azure CLI installed; an authorized existing sign-in in the correct tenant and Azure public cloud; metadata read rights on each resource/subscription. Commands use POSIX shell quoting (sh/bash/zsh); JSON argv is available for other launchers.",
+    "safety": "Commands use management-plane GETs and selected metadata only. They do not provision resources, read application data, fetch secrets/keys, enable diagnostics or activate paid services. No command is executed while generating a report. Do not add --debug or remove the projection; normal ARM responses may contain incidental sensitive fields before CLI projection.",
+    "service_guarantees": "Resource identity alone is not cryptographic proof. For mandatory encryption, combine a successful matching identity read with the linked Microsoft guarantee for the exact service, tier and stated scope. Missing optional CMK fields do not establish encryption.",
+    "sources": [
+      "https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-rest",
+      "https://learn.microsoft.com/en-us/cli/azure/use-azure-cli-successfully-query?view=azure-cli-latest"
+    ],
+    "synthetic": "offline_fixture commands are SYNTHETIC EXAMPLES \u2014 DO NOT RUN. Demo IDs do not identify deployed resources. Only commands in an authorized live report target observed resources, and those may since have changed or been deleted."
+  }
 }

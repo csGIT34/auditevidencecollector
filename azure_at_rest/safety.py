@@ -1,5 +1,5 @@
 """Allowlisted evidence projection. Never serialize whole ARM responses."""
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 import re
 from urllib.parse import urlsplit
 from uuid import UUID
@@ -138,3 +138,13 @@ def project(raw, rule):
                                     for k in ("name", "osDiskType", "enableEncryptionAtHost") if k in v}
                                    for v in pools if isinstance(v, dict)]
     return evidence
+
+
+def valid_api_version(value):
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}(?:-preview)?", value):
+        return False
+    try:
+        date.fromisoformat(value[:10])
+        return True
+    except ValueError:
+        return False

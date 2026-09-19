@@ -31,6 +31,11 @@ def markdown(report):
         lines.append(f"| {text(resource_type)} | {text(', '.join(f'{s}: {n}' for s, n in sorted(counts.items())))} |")
     if summary["unsupported_types"]:
         lines.extend(["", "Unsupported types: " + ", ".join(text(t) for t in summary["unsupported_types"]) + "."])
+    lines.extend(["", "## Independent verification", ""])
+    for key, value in report["verification_guidance"].items():
+        if key != "sources":
+            lines.extend([text(value), ""])
+    lines.append("[Azure CLI REST and query documentation](" + report["verification_guidance"]["sources"][0] + ").")
     lines.extend(["", "## Resource evidence", ""])
     for row in report["results"]:
         lines.extend([f"### {text(row['result'])} — {text(row['name'])}", "",
@@ -48,7 +53,18 @@ def markdown(report):
             lines.append(f"- [Microsoft service documentation]({source['url']}) (reviewed {source['reviewed_on']}).")
         for error in row["errors"]:
             lines.append(f"- Read error: {text(error['operation'])} / {text(error['code'])} / HTTP {text(error['http_status'])}.")
-        lines.append("")
+        lines.extend(["", "Read-only verification commands:", ""])
+        for note in row["verification_notes"]:
+            lines.extend([text(note), ""])
+        for command in row["verification_commands"]:
+            label = "SYNTHETIC EXAMPLE — DO NOT RUN" if command["synthetic"] else "CURRENT-STATE READ — requires authorized sign-in"
+            lines.extend(["**" + label + " / " + text(command["kind"]) + " (" + text(command["relation"]) + ")**", "",
+                          text(command["verifies"]), "", "```sh", command["command"], "```", "",
+                          "Expected / saved fields: " + text(json.dumps(command["expected_fields"], sort_keys=True)), "",
+                          text(command["interpretation"]), ""])
+            for source in command["sources"]:
+                lines.append("[Supporting service documentation](" + source + ").")
+            lines.append("")
     lines.extend(["## Collection errors", ""])
     if not report["errors"]:
         lines.append("No collection errors recorded. This does not establish exhaustive coverage.")

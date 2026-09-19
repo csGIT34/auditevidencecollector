@@ -77,6 +77,18 @@ Repeat `--subscription UUID` for multiple subscriptions. Omit it to paginate all
 
 The report includes per-resource identity, collection/assessment timestamps, API and rule versions, scope, result/reason, safe evidence, dependencies, source links and gaps. Inventory traversal, child traversal, unsupported types and collection errors are summarized separately. A partial inventory can contain valid individual passes while the overall result remains incomplete.
 
+## Auditor verification commands
+
+Both report formats include per-resource `verification_commands`. Each entry contains the exact GET URL and API version, shell command and argv, selected-field query, what it checks, expected/saved values, interpretation and service documentation. The Markdown report places commands next to the resource evidence. Resolved dependencies include their separate reads; SQL parents include the child listing and each observed database's TDE request.
+
+Use the commands only after live access is authorized, from a local POSIX shell with Azure CLI and read rights in the correct tenant/public cloud. They retrieve **current** state; they cannot recreate historical proof. Saved snapshots preserve their recorded API versions when generating commands. Generating a report never executes the commands.
+
+Synthetic examples are marked **DO NOT RUN**; demo IDs do not identify deployed resources. Unsupported/not-applicable resources receive inventory-only commands, and unknown/denied results retain their limitations. An identity read is not cryptographic proof: apply the linked Microsoft guarantee only within its stated scope. Configurable mechanisms such as TDE require the separate state read.
+
+List commands show one page with a `more_pages` indicator. Traverse all pages independently; a missing match on one page is inconclusive. Queries select metadata and omit settings/secret values and SAS-bearing URLs; Azure CLI applies projections locally after receiving the ARM response. Keep the projections and avoid debug/raw-response logging. No generated command requests keys, secrets, application data or cloud mutation.
+
+See [Azure CLI REST documentation](https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-rest) and [query behavior](https://learn.microsoft.com/en-us/cli/azure/use-azure-cli-successfully-query?view=azure-cli-latest).
+
 ## Coverage
 
 The [exact rule matrix](docs/COVERAGE.md) is the source for supported ARM types, assessed scopes and Microsoft documentation. Broadly:
@@ -91,8 +103,14 @@ VNet and related network configuration are outside this encryption assessment; n
 
 ## Design and extension
 
-`collector.py` supplies a GET-only ARM adapter, bounded retries/pagination and an offline transport. `safety.py` validates resource identity and projects allowlisted evidence. `catalog.py` pins exact types, API versions, scopes and sources. `assessment.py` evaluates evidence and dependencies. `report.py` and `cli.py` generate reports and exit status. Tests exercise the same collector path used for live runs.
+`collector.py` supplies a GET-only ARM adapter, bounded retries/pagination and an offline transport. `safety.py` validates resource identity and projects allowlisted evidence. `catalog.py` pins exact types, API versions, scopes and sources. `assessment.py` evaluates evidence and dependencies. `verification.py` creates auditor read commands as data; `report.py` and `cli.py` generate reports and exit status. Tests exercise the same collector path used for live runs.
 
 To add a service: research its Microsoft guarantee and exceptions, add an exact type and reviewed API version, collect only necessary metadata, implement any configurable-state/dependency logic, and add positive, disabled, missing, denied and partial-inventory fixtures. Do not classify an entire provider or all its children by name. Keep unsupported types visible. An additional future adapter can emit the sanitized snapshot contract (for example, separately obtained Wiz evidence); no Wiz integration is implemented here.
 
 No deployment, enforcement, remediation, key rotation, secret reads, messaging, remote repository creation or cloud mutation is part of this tool.
+
+## Future integration direction
+
+Core collection, control evaluation, evidence output and any future core storage path must remain deterministic Python/API operations with **no runtime AI/model dependency or model-call costs**. Versioned structured evidence, stable resource/rule IDs, timestamps, coverage results and replayable snapshots are the foundation for future frequent collection and retained history.
+
+Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration, dashboard, scheduler, hosting or evidence-storage service is implemented or provisioned here. No runtime AI does not imply free hosting/storage; those choices and costs remain undecided, and no personal Azure spending is authorized.

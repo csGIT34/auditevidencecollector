@@ -4,6 +4,7 @@ from collections import Counter, defaultdict
 from . import __version__
 from .catalog import RULES, RULE_VERSION, SOURCE_REVIEWED
 from .safety import INVALID, identity, now
+from .verification import GUIDANCE, add_verification
 
 STATUSES = ("PASS", "FAIL", "UNKNOWN", "ERROR", "UNSUPPORTED", "NOT_APPLICABLE")
 LIMITATIONS = [
@@ -194,6 +195,7 @@ class Assessor:
 def assess(snapshot):
     assessor = Assessor(snapshot)
     results = [assessor.evaluate(r) for r in snapshot["resources"]]
+    add_verification(results, assessor.records, snapshot["mode"])
     counts = {s: 0 for s in STATUSES}
     counts.update(Counter(r["result"] for r in results))
     types = defaultdict(Counter)
@@ -213,4 +215,4 @@ def assess(snapshot):
                         "child_collections_complete": child_complete, "resource_count": len(results), "counts": counts,
                         "collection_error_count": len(snapshot["errors"]), "types": {t: dict(v) for t, v in sorted(types.items())},
                         "unsupported_types": sorted({r["type"] for r in results if r["result"] == "UNSUPPORTED"})},
-            "inventory": snapshot["inventory"], "limitations": LIMITATIONS, "errors": snapshot["errors"], "results": results}
+            "verification_guidance": GUIDANCE, "inventory": snapshot["inventory"], "limitations": LIMITATIONS, "errors": snapshot["errors"], "results": results}

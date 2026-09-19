@@ -2,7 +2,7 @@
 from datetime import datetime
 import re
 from .catalog import RULES
-from .safety import ENUMS, INVALID, identity, label, resource_id, subscription_id
+from .safety import ENUMS, INVALID, identity, label, resource_id, subscription_id, valid_api_version
 
 
 def require(condition):
@@ -51,6 +51,10 @@ def validate_snapshot(snapshot):
         ident = identity(row)
         require(ident is not None and row["id"].lower() not in seen)
         require(set(row) <= {"id", "type", "name", "subscription_id", "resource_group", "location", "kind", "sku", "collected_at", "collection_status", "evidence", "children", "errors", "api_version", "request_path"})
+        if "api_version" in row:
+            require(valid_api_version(row["api_version"]))
+        if "request_path" in row:
+            require(row["request_path"] == row["id"])
         seen.add(row["id"].lower())
         require(all(row.get(k) == v for k, v in ident.items()))
         require(row["subscription_id"] in {s["id"].lower() for s in inventory["subscriptions"]})

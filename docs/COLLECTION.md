@@ -45,3 +45,11 @@ The assessment checks encryption confidentiality mechanisms, not the full SC-28 
 Automated tests and the demo use local JSON fixtures only. They validate control flow, rules, source/scoping output, redaction, dependency gaps, pagination, CLI/report behavior and replay. They do not validate a real tenant's service responses, RBAC, API availability or inventory completeness.
 
 A future authorized smoke test can run the CLI on the operator's local machine against existing subscription resources using metadata reads only. It requires no new Azure resource, hosted compute, diagnostic activation, service activation or application-data operation. Do not create sample resources for testing under the user's no-new-charges requirement. No personal credentials or live Azure tests were used in this implementation.
+
+## Independent verification fields
+
+Reports add `verification_guidance` at run level and `verification_commands` / `verification_notes` on each resource result. Commands are descriptions, not executed jobs. Each command has `kind`, `resource_id`, `relation` (self or dependency), `method`, `url`, `api_version`, `query`, `argv`, `command`, `shell`, `synthetic`, `verifies`, `expected_fields`, `interpretation`, `sources` and `paginated`.
+
+SQL and MI TDE commands select `properties.state`; Synapse dedicated-pool TDE commands select `properties.status`. Other commands use selected catalogued fields. Current successful reads must be interpreted together with the original scope and any unresolved dependencies, not as automatic overrides of previous findings. Missing/invalid collected API metadata does not cause a guessed service endpoint. Resource IDs, API versions and request paths are validated before command construction; POSIX quoting is applied to every argument, with argv also retained.
+
+The synthetic example and automated tests do not execute Azure commands. Offline command tests use a temporary fake `az` program to check shell argument boundaries. An optional local JMESPath test can run with an installed Azure CLI Python runtime to validate projection syntax/results without importing the Azure CLI, obtaining tokens or accessing Azure. Standard-library-only environments skip that optional parser check; all other tests remain dependency-free.
