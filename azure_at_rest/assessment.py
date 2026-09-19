@@ -8,8 +8,8 @@ from .verification import GUIDANCE, add_verification
 
 STATUSES = ("PASS", "FAIL", "UNKNOWN", "ERROR", "UNSUPPORTED", "NOT_APPLICABLE")
 LIMITATIONS = [
-    "Inventory covers only the explicitly selected subscriptions or those visible to the CLI identity in its current tenant, in Azure public cloud.",
-    "The ARM subscription resource list is not a universal child-resource or data-plane inventory. Only catalogued child collections are enumerated. Deleted, inaccessible, external and unlisted child resources may be absent.",
+    "Inventory covers only the subscription or resource-group scopes recorded in this report, as visible to the collection identity in its authenticated tenant in Azure public cloud. Whole-tenant coverage is not established.",
+    "The scoped ARM resource list is not a universal child-resource or data-plane inventory. Only catalogued child collections are enumerated. Deleted, inaccessible, external and unlisted child resources may be absent.",
     "A PASS applies only to the stated resource scope and basis. Documented service enforcement is an inference from verified resource identity and a Microsoft guarantee, not a cryptographic measurement.",
     "Application data flows, Kubernetes runtime volumes, external SaaS, local copies, exports, diagnostics destinations and key lifecycle/availability are not comprehensively discovered.",
     "This is point-in-time technical evidence provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). Organizational scope, information types, integrity protection, procedures and operating effectiveness require separate RCSA/800-53A assessment.",
@@ -195,7 +195,8 @@ class Assessor:
 def assess(snapshot):
     assessor = Assessor(snapshot)
     results = [assessor.evaluate(r) for r in snapshot["resources"]]
-    add_verification(results, assessor.records, snapshot["mode"])
+    resource_groups = {s["id"].lower(): s["resource_group"] for s in snapshot["inventory"]["subscriptions"] if s.get("resource_group")}
+    add_verification(results, assessor.records, snapshot["mode"], resource_groups=resource_groups)
     counts = {s: 0 for s in STATUSES}
     counts.update(Counter(r["result"] for r in results))
     types = defaultdict(Counter)

@@ -193,7 +193,7 @@ def render_pdf(saved, generation):
     story.append(PageBreak())
     heading('2. Findings and evidence index','findings')
     story.append(p('Evidence references E001 onward locate the complete saved resource observations later in this document. Parent/dependency findings can describe the same underlying condition; row counts are not unique incident counts or a control pass rate.'))
-    story.append(table([['Evidence','Resource / ARM type','Saved status / reason']]+[
+    story.append(table([['Ref','Resource / ARM type','Saved status / reason']]+[
         [references[r['id'].lower()],r['name']+'\n'+r['type'],r['result']+'\n'+r['reason']] for r in rows],[45,205,width-250]))
     if not rows:story.append(p('No resource observations. Empty inventory is incomplete coverage, not an all-clear.'))
     story.append(PageBreak())
@@ -205,7 +205,7 @@ def render_pdf(saved, generation):
     story.append(p('Resource-local exclusions: private endpoints and user-assigned identities have no customer at-rest store, but retain authorization, trust, change, lifecycle, incident and governance obligations. Private endpoint approval is not proof of correct routing, DNS, target access control or disabled public access. Shared networking evidence remains with the network owner.'))
     story.append(table([['NIST family','Owner / missing shared or process evidence']]+[[f['id'].upper()+' - '+f['title'],f['responsibility']+'. NOT ASSESSED. '+f['review']] for f in program['families']],[170,width-170]))
     story.append(p('The research catalog is provisional. Organization-defined parameters have not been approved by this run. These unresolved items prevent inventing broader technical or process conclusions:'))
-    story.append(table([['Domain','Parameters requiring approval']]+list(program['organization_parameters'].items()),[45,width-45]))
+    story.append(table([['Code','Parameters requiring approval']]+list(program['organization_parameters'].items()),[45,width-45]))
     story.append(PageBreak())
     heading('4. Saved resource evidence','evidence')
     story.append(p('Each evidence block includes the exact saved scope, observed facts and assessment, plus child listing completeness and dependency references. Blank/empty returned metadata is identified explicitly. No current external state is used. Characters unavailable in the embedded fonts appear as explicit [U+XXXX] Unicode code points.'))

@@ -1,6 +1,6 @@
 # Workplace deployment: Azure Functions, managed identity and retained Blob evidence
 
-Version 0.3.1 supplies a Python v2 Functions application and optional Azure adapters. **The published v0.3.0 passed Linux and macOS offline CI; later changes are tracked separately. Hosted Azure integration remains untested.** macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. The application never provisions infrastructure. Optional home-only Terraform is separately reviewed and has not been applied; workplace patterns are supplied by the user.
+Version 0.3.2 supplies a Python v2 Functions application and optional Azure adapters. The published v0.3.1 baseline passed Linux/macOS CI (117 tests each); local v0.3.2 passes 120 tests. A [personal lab run](../infra/personal-lab/LIVE_VALIDATION.md) validated UAMI/Blob access, one RG collection and one PDF, but repeated HTTP requests became unavailable. The lab is stopped; this is not workplace acceptance. macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. The application never provisions infrastructure. Terraform is home-only; workplace patterns are supplied by the user.
 
 The executable assessment remains scoped encryption at rest. The 215 proposed checks across 23 services and 20 NIST families in `docs/audit/` are applicability research, not newly implemented collectors. Provider-managed keys remain acceptable.
 

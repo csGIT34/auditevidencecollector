@@ -2,7 +2,7 @@
 
 The user already has workplace patterns for Function Apps and storage. Supply these requirements to those patterns; **do not deploy `infra/personal-lab` at work or replace existing Terraform**. The home lab is a temporary integration test with a different network/caller boundary. Its real tenant settings, state, plans, billing details and evidence do not belong in source transfer.
 
-The source is published at [csGIT34/auditevidencecollector](https://github.com/csGIT34/auditevidencecollector). Commit `83b0711` passed [Linux and macOS offline CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35452053904): 105 tests each, zero skips, distribution and source-package builds. The later home-lab/RG-scope changes have their own [local preparation record](../infra/personal-lab/VALIDATION.md); the old CI result must not be attributed to an unpushed commit. Neither proves live workplace connectivity.
+The source is published at [csGIT34/auditevidencecollector](https://github.com/csGIT34/auditevidencecollector). Baseline `1922cb7` (v0.3.1) passed [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35454459202): 117 tests per OS, zero skips and package builds. Local v0.3.2 passes 120 tests; its scope/PDF fixes are not in the deployed v0.3.1 package. The [personal live record](../infra/personal-lab/LIVE_VALIDATION.md) separates successful identity/collection/PDF evidence from unresolved repeated-request availability. Neither establishes workplace connectivity or acceptance.
 
 ## Runtime and package
 

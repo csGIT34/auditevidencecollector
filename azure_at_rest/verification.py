@@ -4,10 +4,10 @@ import shlex
 
 from .catalog import RULES
 from .collector import INVENTORY_API, endpoint
-from .safety import identity, resource_id, valid_api_version
+from .safety import identity, resource_group_name, resource_id, valid_api_version
 
 GUIDANCE = {
-    "prerequisites": "Azure CLI installed; an authorized existing sign-in in the correct tenant and Azure public cloud; metadata read rights on each resource/subscription. Commands use POSIX shell quoting (sh/bash/zsh); JSON argv is available for other launchers.",
+    "prerequisites": "Azure CLI installed; an authorized existing sign-in in the correct tenant and Azure public cloud; metadata read rights on the recorded inventory scopes and exact resources. Commands use POSIX shell quoting (sh/bash/zsh); JSON argv is available for other launchers.",
     "current_state": "Rerunning retrieves CURRENT state, not historical proof of the saved observation. Compare returned fields with the timestamped evidence; retain the original report separately.",
     "service_guarantees": "Resource identity alone is not cryptographic proof. For mandatory encryption, combine a successful matching identity read with the linked Microsoft guarantee for the exact service, tier and stated scope. Missing optional CMK fields do not establish encryption.",
     "safety": "Commands use management-plane GETs and selected metadata only. They do not provision resources, read application data, fetch secrets/keys, enable diagnostics or activate paid services. No command is executed while generating a report. Do not add --debug or remove the projection; normal ARM responses may contain incidental sensitive fields before CLI projection.",
@@ -29,11 +29,23 @@ def property_expression(path):
     return "properties." + ".".join(json.dumps(part) for part in path.split("."))
 
 
-def make_command(record, mode, kind, path, api, query, verifies, expected, interpretation, sources=(), paginated=False):
+def inventory_path(record, resource_group=None):
+    ident = identity(record)
+    if not ident:
+        raise ValueError("Invalid verification identity")
+    scope = f"/subscriptions/{ident['subscription_id']}"
+    if resource_group is not None:
+        if not resource_group_name(resource_group) or ident['resource_group'].lower() != resource_group.lower():
+            raise ValueError("Verification resource escaped recorded group")
+        scope += f"/resourceGroups/{resource_group}"
+    return scope + "/resources"
+
+
+def make_command(record, mode, kind, path, api, query, verifies, expected, interpretation, sources=(), paginated=False, resource_group=None):
     if not identity(record) or not valid_api_version(api):
         raise ValueError("Invalid verification metadata")
     ident = identity(record)
-    allowed_paths = {record["id"], f"/subscriptions/{ident['subscription_id']}/resources"}
+    allowed_paths = {record["id"], inventory_path(record, resource_group)}
     rule = RULES.get(record["type"].lower())
     if rule:
         allowed_paths.update(record["id"] + "/" + suffix for suffix, _ in rule.children)
@@ -51,25 +63,28 @@ def make_command(record, mode, kind, path, api, query, verifies, expected, inter
             "relation": "self"}
 
 
-def inventory_command(record, mode):
+def inventory_command(record, mode, resource_group=None):
     ident = identity(record)
     if not ident:
         raise ValueError("Invalid verification identity")
     # The identity validator excludes apostrophes, backslashes, backticks and shell expansions.
     query = projection({"matches": "value[?id == '" + record["id"] + "'].{id: id, type: type, location: location}",
                         "more_pages": MORE_PAGES})
-    return make_command(record, mode, "inventory_lookup", f"/subscriptions/{ident['subscription_id']}/resources",
-                        INVENTORY_API, query, "Locate this resource's identity in subscription inventory.",
+    scope_label = "recorded resource-group" if resource_group is not None else "subscription"
+    return make_command(record, mode, "inventory_lookup", inventory_path(record, resource_group),
+                        INVENTORY_API, query, "Locate this resource's identity in " + scope_label + " inventory.",
                         {"id": record["id"], "type": record["type"]},
                         "Identity only; no service-specific encryption verification is available from this command. "
                         "Follow all pages; an absent match is inconclusive. Unsupported or not-applicable status is not a PASS.",
-                        paginated=True)
+                        paginated=True, resource_group=resource_group)
 
 
-def direct_commands(record, mode, include_children=True):
+def direct_commands(record, mode, include_children=True, *, resource_group=None):
     """Use the API version actually recorded, including when replay uses newer rules."""
     if not identity(record):
         raise ValueError("Invalid verification identity")
+    if resource_group is not None:
+        inventory_path(record, resource_group)  # Reject a command outside the recorded collection boundary.
     rule = RULES.get(record["type"].lower())
     api = record.get("api_version")
     if api is not None and not valid_api_version(api):
@@ -77,7 +92,7 @@ def direct_commands(record, mode, include_children=True):
     if record.get("request_path", record["id"]) != record["id"]:
         raise ValueError("Unexpected verification request path")
     if not rule or rule.mode == "na" or not api:
-        return [inventory_command(record, mode)]
+        return [inventory_command(record, mode, resource_group)]
     fields = {"id": "id", "type": "type", "location": "location", "kind": "kind", "sku": "sku.name",
               "provisioningState": "properties.provisioningState"}
     expected = {"id": record["id"], "type": record["type"]}
@@ -132,10 +147,11 @@ def direct_commands(record, mode, include_children=True):
     return commands
 
 
-def add_verification(results, records, mode):
+def add_verification(results, records, mode, resource_groups=None):
+    resource_groups = resource_groups or {}
     for row in results:
         record = records[row["id"].lower()]
-        commands = direct_commands(record, mode)
+        commands = direct_commands(record, mode, resource_group=resource_groups.get(record["subscription_id"]))
         notes = ["Saved result: " + row["result"] + ". Commands are independent read suggestions; they do not change the assessment or guarantee a PASS."]
         if mode == "offline_fixture":
             notes.append("SYNTHETIC EXAMPLES — DO NOT RUN. These IDs do not identify deployed resources.")
@@ -147,7 +163,7 @@ def add_verification(results, records, mode):
             if target is None:
                 notes.append("No collected service endpoint/API is available for dependency " + str(dependency["id"]) + "; no configuration command is fabricated.")
                 continue
-            for command in direct_commands(target, mode, include_children=False):
+            for command in direct_commands(target, mode, include_children=False, resource_group=resource_groups.get(target["subscription_id"])):
                 command["relation"] = dependency["relation"]
                 commands.append(command)
         seen = set()

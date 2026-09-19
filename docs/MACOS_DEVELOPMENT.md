@@ -11,7 +11,7 @@ python scripts/validate.py
 python -m build --no-isolation
 ```
 
-The complete gate requires Azure SDKs, ReportLab, pypdf and jmespath. It checks all tests with no skips, host configuration, the research catalog and its packaged outline. Tests use fixtures/fake transports; they do not log in, obtain real tokens or connect to Azure. Published commit `83b0711` passed [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35452053904), 105 tests each with zero skips. Later local changes and the actual work Mac require their own gate. The secure local FileStore uses POSIX no-follow opens, private files, directory-relative traversal and hard-link create-only publication. Validate on the Mac's intended filesystem; native Windows and network-share semantics are not claimed.
+The complete gate requires Azure SDKs, ReportLab, pypdf and jmespath. It checks all tests with no skips, host configuration, the research catalog and its packaged outline. Tests use fixtures/fake transports; they do not log in, obtain real tokens or connect to Azure. Published v0.3.1 commit `1922cb7` passed [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35454459202), 117 tests each with zero skips. Local v0.3.2 passes 120 tests; that local result is not a new macOS CI result. Later local changes and the actual work Mac require their own gate. The secure local FileStore uses POSIX no-follow opens, private files, directory-relative traversal and hard-link create-only publication. Validate on the Mac's intended filesystem; native Windows and network-share semantics are not claimed.
 
 For a demonstration:
 

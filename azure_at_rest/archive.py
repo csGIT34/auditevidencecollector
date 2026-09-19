@@ -15,7 +15,7 @@ from .storage import ObjectStore
 from .provenance import validate_provenance
 
 ARCHIVE_VERSION = '1.0'
-RENDERER_VERSION = '1.1'
+RENDERER_VERSION = '1.2'
 STATUSES = ('PASS', 'FAIL', 'UNKNOWN', 'ERROR', 'UNSUPPORTED', 'NOT_APPLICABLE')
 
 CRITERIA = {

@@ -2,19 +2,19 @@
 
 **Program scope: all applicable NIST controls across the authoritative 23 Azure services.** Start with the [program-wide control/evidence catalog](docs/audit/README.md), [service matrix](docs/audit/SERVICE_MATRIX.md), [all-family review](docs/audit/NIST_FAMILY_REVIEW.md) and [implementation backlog](docs/audit/IMPLEMENTATION_BACKLOG.md). The catalog records 215 proposed checks across 12 domains and all 20 NIST families; it is provisional research, not implemented control coverage or tenant findings.
 
-The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
+The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
 
-**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). No Azure deployment or live tenant validation has been performed.
+**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). A bounded personal lab has partial [live validation](infra/personal-lab/LIVE_VALIDATION.md); repeated-request availability remains unresolved. Workplace acceptance is separate.
 
 The [0.3.0 validation record](docs/VALIDATION_0_3_0.md) separates the completed offline checks from the remaining workplace deployment gates.
 
 This is an initial technical evidence tool, provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). It is not a full RCSA assessment, certification, or claim that all application data is protected. A successful resource result applies to the stated scope and evidence basis.
 
-A [home-only Terraform lab](infra/personal-lab/README.md) is prepared for separate cost/resource review. Workplace infrastructure uses existing patterns through the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md). The optional RG scope confines collection to a single approved group.
+The [home-only Terraform lab](infra/personal-lab/README.md) has a documented, stopped test deployment; each new deployment requires its own cost/resource review. Workplace infrastructure uses existing patterns through the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md). The optional RG scope confines collection to a single approved group.
 
 ## Save a run and produce an auditor PDF
 
-Version **0.3.1** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
+Version **0.3.2** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged. Version 0.3.2 corrects new RG-scoped verification commands and two PDF labels; historical archives remain frozen.
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -26,7 +26,7 @@ python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_
 
 Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
 
-See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented and tested offline; deployment and live validation remain workplace steps. Both hosted operations default disabled. No database, runtime AI or cloud spending was introduced. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
+See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented and tested offline; deployment and live validation remain workplace steps. Both hosted operations default disabled. No database or runtime AI is required. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
 
 ## Run offline now
 

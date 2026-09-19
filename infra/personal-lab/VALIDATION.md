@@ -12,3 +12,5 @@
 Published baseline `83b0711` passed [Linux and macOS GitHub CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35452053904) with 105 tests per OS, zero skips and package builds. That result applies to the baseline only; this newer local slice has not been pushed or run in GitHub/macOS CI. The user's actual work Mac and live workplace network/caller controls still require acceptance using existing workplace infrastructure patterns.
 
 Remaining live gates: billing-period/currency/headroom confirmation under the total-$25 condition; inheritance/diagnostic export costs; region/Flex quota/provider registration; approved operator /32/object ID and unique lab names; a reviewed private create plan; explicit creation/deployment/test authorization, then the already-authorized project-only cleanup after successful workplace handoff, artifact preservation and scope verification. Follow [README.md](README.md); do not provision solely because local validation passed.
+
+This is the historical preparation record. Later live observations and v0.3.2 fixes are recorded separately in [LIVE_VALIDATION.md](LIVE_VALIDATION.md).
