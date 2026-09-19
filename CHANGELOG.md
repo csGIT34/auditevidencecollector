@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.7.0 — diagnostic destinations and protected backups
+
+- Compare protected sources, policies and reported states for Data Protection and Recovery Services vaults. Missing expected items and unhealthy states cannot hide behind vault-level configuration.
+- Compare each setting’s enabled audit categories together with its actual destination IDs and workspace table mode, reusing the existing API read.
+- Malformed destinations, wrong identities, incomplete pages and denied reads cannot pass. Delivery health and retention remain separate.
+
 ## 0.6.0 — ARM authorization and delegated consent
 
 - Compare declared resource/inherited ARM assignments and resolved built-in/custom role permissions with supplied approved grant sets.

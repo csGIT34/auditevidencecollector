@@ -228,7 +228,8 @@
     },
     {
       "configuration_predicates": [
-        "EH-diagnostic-logs"
+        "EH-diagnostic-logs",
+        "EH-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -347,7 +348,8 @@
     },
     {
       "configuration_predicates": [
-        "AKS-diagnostic-logs"
+        "AKS-diagnostic-logs",
+        "AKS-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -581,7 +583,8 @@
     },
     {
       "configuration_predicates": [
-        "EG-diagnostic-logs"
+        "EG-diagnostic-logs",
+        "EG-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -703,7 +706,8 @@
     },
     {
       "configuration_predicates": [
-        "ST-diagnostic-logs"
+        "ST-diagnostic-logs",
+        "ST-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -827,7 +831,8 @@
     },
     {
       "configuration_predicates": [
-        "COS-diagnostic-logs"
+        "COS-diagnostic-logs",
+        "COS-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -943,7 +948,8 @@
     },
     {
       "configuration_predicates": [
-        "REDIS-diagnostic-logs"
+        "REDIS-diagnostic-logs",
+        "REDIS-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1080,7 +1086,9 @@
     {
       "configuration_predicates": [
         "FUNC-diagnostic-logs",
-        "FUNC-diagnostic-logs-slot"
+        "FUNC-diagnostic-logs-slot",
+        "FUNC-diagnostic-routes",
+        "FUNC-diagnostic-routes-slot"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1201,7 +1209,8 @@
     },
     {
       "configuration_predicates": [
-        "KV-diagnostic-logs"
+        "KV-diagnostic-logs",
+        "KV-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1322,7 +1331,8 @@
     },
     {
       "configuration_predicates": [
-        "PG-diagnostic-logs"
+        "PG-diagnostic-logs",
+        "PG-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1442,7 +1452,8 @@
     },
     {
       "configuration_predicates": [
-        "ACA-diagnostic-logs"
+        "ACA-diagnostic-logs",
+        "ACA-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1724,7 +1735,8 @@
     },
     {
       "configuration_predicates": [
-        "ACR-diagnostic-logs"
+        "ACR-diagnostic-logs",
+        "ACR-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1842,7 +1854,9 @@
     {
       "configuration_predicates": [
         "BV-diagnostic-logs",
-        "BV-diagnostic-logs-recovery"
+        "BV-diagnostic-logs-recovery",
+        "BV-diagnostic-routes",
+        "BV-diagnostic-routes-recovery"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -1881,8 +1895,10 @@
     {
       "configuration_predicates": [
         "BV-backup-immutability",
+        "BV-backup-population",
         "BV-backup-soft-delete",
-        "BV-recovery-immutability"
+        "BV-recovery-immutability",
+        "BV-recovery-population"
       ],
       "domain": "B",
       "existing_encryption_rules": [],
@@ -1963,7 +1979,8 @@
     },
     {
       "configuration_predicates": [
-        "APPC-diagnostic-logs"
+        "APPC-diagnostic-logs",
+        "APPC-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2083,7 +2100,8 @@
     },
     {
       "configuration_predicates": [
-        "AI-diagnostic-logs"
+        "AI-diagnostic-logs",
+        "AI-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2197,7 +2215,8 @@
     },
     {
       "configuration_predicates": [
-        "GRAF-diagnostic-logs"
+        "GRAF-diagnostic-logs",
+        "GRAF-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2313,7 +2332,8 @@
     },
     {
       "configuration_predicates": [
-        "PROM-diagnostic-logs"
+        "PROM-diagnostic-logs",
+        "PROM-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2432,6 +2452,7 @@
     {
       "configuration_predicates": [
         "LA-diagnostic-logs",
+        "LA-diagnostic-routes",
         "LA-retention"
       ],
       "domain": "L",
@@ -2547,7 +2568,8 @@
     },
     {
       "configuration_predicates": [
-        "VM-diagnostic-logs"
+        "VM-diagnostic-logs",
+        "VM-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2665,7 +2687,8 @@
     },
     {
       "configuration_predicates": [
-        "VMSS-diagnostic-logs"
+        "VMSS-diagnostic-logs",
+        "VMSS-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2783,7 +2806,8 @@
     },
     {
       "configuration_predicates": [
-        "AUTO-diagnostic-logs"
+        "AUTO-diagnostic-logs",
+        "AUTO-diagnostic-routes"
       ],
       "domain": "L",
       "existing_encryption_rules": [],
@@ -2833,7 +2857,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 140,
+  "configuration_predicate_count": 164,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }

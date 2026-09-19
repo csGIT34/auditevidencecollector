@@ -25,6 +25,8 @@ def setpath(obj,path,value):
 
 
 def sample(check, negative=False):
+    if check.kind in ('dp_population','rs_population'):return []
+    if check.kind=='diagnostic_routes':return []
     if check.kind=='arm_grants':
         from tests.test_authorization import grant
         return [grant()] if negative else []
@@ -50,6 +52,18 @@ def fixture():
         for c in checks:
             value=sample(c)
             criteria[c.id]={'operator':'equals','value':value}
+            if c.operation == 'diagnostic_routes':
+                from azure_at_rest.diagnostic_routes import project as project_routes
+                settings=responses[endpoint(row['id']+c.suffix,c.api)]['value']
+                value=project_routes(settings,row['id']+c.suffix,{'complete':True,'pages':1,'items_received':1},[])['value']
+                criteria[c.id]={'operator':'equals','value':value}
+                continue
+            if c.operation == 'backup_population':
+                from tests.test_backup_population import item,normalized
+                backup=item(row['id'],c.kind)
+                responses[endpoint(row['id']+c.suffix,c.api)]={'value':[backup]}
+                criteria[c.id]={'operator':'equals','value':[normalized(backup,c.kind)]}
+                continue
             if c.operation == 'authorization':
                 responses[endpoint(row['id']+c.suffix,c.api)+'&$filter=atScope%28%29']={'value':[]}
                 continue
@@ -61,7 +75,7 @@ def fixture():
                 responses[endpoint(row['id']+c.suffix,c.api)]={'value':[{'id':row['id']+c.suffix+'/safe','properties':{**value[0],'secretCanary':'DO-NOT-ARCHIVE-SECRET'}}]}
                 continue
             if c.operation == 'diagnostics':
-                responses[endpoint(row['id']+c.suffix,c.api)]={'value':[{'id':row['id']+c.suffix+'/safe','properties':{'logs':[{'category':'AuditEvent','enabled':True}], 'secretCanary':'DO-NOT-ARCHIVE-SECRET'}}]}
+                responses[endpoint(row['id']+c.suffix,c.api)]={'value':[{'id':row['id']+c.suffix+'/safe','properties':{'workspaceId':resource('Microsoft.OperationalInsights/workspaces','approved-logs')['id'],'logs':[{'category':'AuditEvent','enabled':True}], 'secretCanary':'DO-NOT-ARCHIVE-SECRET'}}]}
                 continue
             if c.suffix:
                 target=responses.setdefault(endpoint(row['id']+c.suffix,c.api),{'id':row['id']+c.suffix,'properties':{}})
@@ -107,7 +121,7 @@ class ConfigurationTests(unittest.TestCase):
                     if isinstance(raw,dict) and 'properties' in raw and (raw.get('type','').lower()==c.resource_type if not c.suffix else raw.get('id','').endswith(c.suffix)):
                         setpath(raw['properties'],c.path,value)
             for url in list(responses):
-                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
+                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
                 elif '/privateendpoints/' in url and 'properties' in responses[url]:responses[url]['properties']['privateLinkServiceConnections']=None
             snapshot=collect(responses);validate_snapshot(snapshot)
             results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']
@@ -212,7 +226,7 @@ class ConfigurationTests(unittest.TestCase):
         snapshot=collect(responses);validate_snapshot(snapshot)
         report=assess_snapshot(snapshot,criteria=policy)
         rows=[r for r in report['configuration_assessment']['results'] if r['observation'].get('collection',{}).get('errors')]
-        self.assertEqual(1,len(rows));self.assertEqual('ERROR',rows[0]['result'])
+        self.assertEqual(2,len(rows));self.assertTrue(all(row['result']=='ERROR' for row in rows))
         self.assertEqual(['category:AuditEvent'],rows[0]['observation']['value'])
         self.assertEqual(1,rows[0]['observation']['collection']['pages'])
         self.assertFalse(rows[0]['observation']['collection']['complete'])
@@ -231,7 +245,7 @@ class ConfigurationTests(unittest.TestCase):
         for raw in responses.values():
             if isinstance(raw,dict) and raw.get('type','').lower()=='microsoft.keyvault/vaults':raw['properties']['provisioningState']='Failed'
         rows=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
-        self.assertTrue(all(r['result']=='UNKNOWN' for r in rows if r['check_id'].startswith('KV-') and r['check_id'] not in ('KV-diagnostic-logs','KV-approved-arm-grants')))
+        self.assertTrue(all(r['result']=='UNKNOWN' for r in rows if r['check_id'].startswith('KV-') and r['check_id'] not in ('KV-diagnostic-logs','KV-diagnostic-routes','KV-approved-arm-grants')))
 
     def test_schema_versions_prevent_old_readers_omitting_new_findings(self):
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)

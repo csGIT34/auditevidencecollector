@@ -261,9 +261,15 @@ class Collector:
                 observation = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':values}
             observation['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
             record.setdefault('configuration',{})[check.id] = observation
+            from .diagnostic_routes import project as project_routes
+            for route_check in (c for c in checks if c.operation=='diagnostic_routes' and c.suffix==check.suffix):
+                record['configuration'][route_check.id]=project_routes(settings,path,listing,reader.errors)
         for check in (c for c in checks if c.operation == 'authorization'):
             from .authorization import collect as collect_authorization
             record.setdefault('configuration',{})[check.id] = collect_authorization(self.transport,rid,self.max_pages,self.authorization_roles)
+        for check in (c for c in checks if c.operation=='backup_population'):
+            from .backup_population import collect as collect_backup_population
+            record.setdefault('configuration',{})[check.id]=collect_backup_population(self.transport,rid,check,self.max_pages)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

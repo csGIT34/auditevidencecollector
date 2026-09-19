@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.4'
+VERSION = '2026.09.19.6'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -159,6 +159,13 @@ for rt in sorted({c.resource_type for c in CHECKS.values()}):
 
 
 
+for _logs in list(CHECKS.values()):
+    if _logs.operation=='diagnostics':
+        _cid=_logs.id.replace('diagnostic-logs','diagnostic-routes')
+        CHECKS[_cid]=Check(_cid,_logs.resource_type,_logs.api,'logs and destination IDs per diagnostic setting',(),_logs.catalog_ref,
+            'Enabled audit categories bound to configured destinations; delivery and retention remain separate',
+            _logs.source,_logs.suffix,'diagnostic_routes','diagnostic_routes')
+
 PE_SOURCE='https://learn.microsoft.com/en-us/azure/templates/microsoft.network/2023-11-01/privateendpoints'
 for key,path,kind,title in [
  ('targets','privateLinkServiceConnections/manualPrivateLinkServiceConnections.privateLinkServiceId','resource_ids','Declared private endpoint target IDs; reachability and public target restrictions remain separate'),
@@ -219,11 +226,28 @@ for _rt in sorted({c.resource_type for c in CHECKS.values() if not c.resource_ty
         'Declared ARM assignments at or above this resource and resolved role permissions; effective access remains separate',
         AUTH_SOURCE,AUTH_SUFFIX,'arm_grants','authorization')
 
+CHECKS['BV-backup-population']=Check('BV-backup-population','microsoft.dataprotection/backupvaults','2026-03-01',
+ 'backupInstances[].dataSourceInfo.resourceID/policyInfo.policyId/currentProtectionState/protectionStatus.status',(),'BV-B',
+ 'Backup instance source, policy and reported protection state; restore success remains separate',
+ 'https://learn.microsoft.com/en-us/rest/api/dataprotection/backup-instances/list?view=rest-dataprotection-2026-03-01',
+ '/backupInstances','dp_population','backup_population')
+CHECKS['BV-recovery-population']=Check('BV-recovery-population','microsoft.recoveryservices/vaults','2026-02-01',
+ 'backupProtectedItems[].sourceResourceId/policyId/protectionState/protectionStatus',(),'BV-B',
+ 'Recovery Services protected source, policy and reported protection state; restore success remains separate',
+ 'https://learn.microsoft.com/en-us/rest/api/backup/backup-protected-items/list?view=rest-backup-2026-02-01',
+ '/backupProtectedItems','rs_population','backup_population')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
 
 def valid_value(check, value):
+    if check.kind in ('dp_population','rs_population'):
+        from .backup_population import valid_population
+        return valid_population(value,'dataprotection' if check.kind=='dp_population' else 'recovery')
+    if check.kind=='diagnostic_routes':
+        from .diagnostic_routes import valid_routes
+        return valid_routes(value)
     if check.kind=='delegated_grants':
         from .authorization import valid_delegated_grants
         return valid_delegated_grants(value)
@@ -284,7 +308,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','federation','authorization') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):

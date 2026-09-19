@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.6.0 (locally validated; new authorization reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.7.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Updated 2026-09-19. **Source release 0.6.0 (locally validated; new authorization
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
-| Multi-control configuration/identity predicates | Implemented; local validation | 140 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 164 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | All-service NIST program | Incomplete | 215 research objectives; every objective remains open or partially supported in the [delivery register](audit/delivery-register.json). |
 | Workplace deployment | Pending workplace inputs and acceptance | Use existing workplace infrastructure patterns and [runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). Home Terraform is not the workplace deployment. |
@@ -20,6 +20,8 @@ Version 0.5.1 passed 188 Python tests with zero skips and 22 packaged local Func
 The previous 0.4.0 release passed 143 Python tests, four Terraform mocked plans and 22 packaged Functions runtime checks. Version 0.5.0 passed 175 Python tests with zero skips and 22 checks in the packaged local Azure Functions runtime. The synthetic ARM/Graph run exercised 115 predicates across 23 service entries (114 PASS, one intentional expired-credential FAIL); its 100-page PDF was rendered and visually reviewed. The original v0.3.1 live archive loads with every original file hash unchanged. These are local checks, not a new Azure deployment or whole-objective acceptance. The original retained v0.3.1 live archive also loaded under 0.4.0 with every object hash unchanged. See [release notes](../CHANGELOG.md).
 
 Version 0.6.0 passed 199 tests with zero skips and 22 packaged local Functions runtime checks. Its synthetic all-service run evaluates 140 predicates (139 PASS, one intentional expired-credential FAIL). The 113-page PDF was rendered and visually reviewed, including inherited custom-role permissions and delegated consent. No cloud changes were made.
+
+Version 0.7.0 passed 207 local tests with zero skips. Diagnostic routing and protected-backup populations are fixture-tested; no live deployment is implied.
 
 ## Full-project completion
 
