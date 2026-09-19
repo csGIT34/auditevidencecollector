@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.8.1 — scale-set instance drift
+
+- Read and compare actual Uniform VMSS instance identities and latest-model flags with supplied criteria. Preserve denied, malformed and incomplete listings.
+- Detect missing expected instances and model drift; explicitly leave Flexible orchestration and guest state unassessed.
+
 ## 0.8.0 — operational evidence supplements
 
 - Import attributed, dated restore/access/change/incident/exception records against an exact saved run; preserve automated findings and freeze objective references.

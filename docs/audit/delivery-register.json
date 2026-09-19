@@ -2702,6 +2702,7 @@
     },
     {
       "configuration_predicates": [
+        "VMSS-instance-models",
         "VMSS-secure-boot",
         "VMSS-vtpm"
       ],
@@ -2857,7 +2858,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 164,
+  "configuration_predicate_count": 165,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }

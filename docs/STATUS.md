@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.8.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.8.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Updated 2026-09-19. **Source release 0.8.0 (local tests passed; expanded reads n
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
-| Multi-control configuration/identity predicates | Implemented; local validation | 164 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 165 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
 | All-service NIST program | Incomplete | 215 research objectives; every objective remains open or partially supported in the [delivery register](audit/delivery-register.json). |
@@ -45,3 +45,7 @@ The broader audit system is **incomplete**. Track required implementation, workp
 Current source and exact-commit validation are available in the [repository](https://github.com/csGIT34/auditevidencecollector) and [CI](https://github.com/csGIT34/auditevidencecollector/actions/workflows/offline.yml). Public documentation excludes personal identifiers, evidence, secrets and Terraform state.
 
 Version 0.8.0 passed 219 tests with zero skips and 28 checks in the final packaged Linux Functions runtime, including both optional operational endpoints. Required operational evidence identifies missing/current/conflicting assertions without overwriting automated results. The three-page operational supplement and all 128 pages of the v0.7.0 configuration report were rendered and visually reviewed. Historical 0.3.1, 0.5.0 and 0.7.0 archives loaded with every original file hash unchanged. No Azure resources were changed.
+
+Version 0.8.1 adds actual Uniform VMSS instance population/model comparison. All 223 local tests passed with zero skips. Flexible instance membership, guest configuration and image/patch findings remain separate unfinished work.
+
+The 0.8.1 Linux deployment package passed 28 local Functions runtime checks. Its all-service fixture produced 165 configuration results (164 PASS, one intentional expired-credential FAIL, no UNKNOWN/ERROR); the new instance-result PDF page was rendered and visually checked. Original run objects remained unchanged during report generation. These are synthetic checks, not live Azure validation.

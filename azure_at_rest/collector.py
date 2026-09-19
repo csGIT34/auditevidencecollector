@@ -194,6 +194,7 @@ class Collector:
         except CollectionError as exc:
             record["collection_status"] = "error"
             record["errors"].append(self.error(rid, "resource_get", exc))
+        parent_detail=raw if record['collection_status']=='ok' else None
         for suffix, supplemental_api in sorted({(c.suffix,c.api) for c in checks if c.suffix and c.operation == 'get'}):
             path = rid + suffix
             try:
@@ -270,6 +271,9 @@ class Collector:
         for check in (c for c in checks if c.operation=='backup_population'):
             from .backup_population import collect as collect_backup_population
             record.setdefault('configuration',{})[check.id]=collect_backup_population(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='vmss_instances'):
+            from .compute_instances import collect as collect_instances
+            record.setdefault('configuration',{})[check.id]=collect_instances(self.transport,rid,check,self.max_pages,parent_detail)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

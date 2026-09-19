@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.7.0 includes **164 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.8.1 includes **165 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -263,3 +263,12 @@ Both vault families now compare the explicitly expected protected-item populatio
 Use per-vault approved expected item tuples in criteria overrides. A missing expected item or changed state/policy produces FAIL when the listing is complete. Denied/partial lists, unknown states, missing fields, unexpected item identities and unsupported non-ARM data sources remain incomplete. Recovery Services item identifiers preserve required semicolon-delimited components. Full payloads, friendly names, datasource credentials and error descriptions are not retained.
 
 This comparison proves the returned population/configuration matches the supplied expectation. It does not infer the required protected workload population, prove backup-job success, validate retention/RPO/RTO or prove restoration. Those require operating records and approved criteria. New API versions are locally fixture-tested, not live-verified.
+
+
+### Actual Uniform VM scale-set instances
+
+`VMSS-instance-models` reads the paginated `/virtualMachines` child collection using Compute API `2026-03-01` and compares exact `{instance_id, latest_model_applied}` tuples against supplied criteria. This detects a missing expected instance or model application drift even when the scale-set model itself has approved settings. It requires `Microsoft.Compute/virtualMachineScaleSets/virtualMachines/read`, in addition to the parent read. Only instance IDs and the reported boolean are retained; OS profiles, custom data and extension payloads are excluded.
+
+The parent must explicitly identify `orchestrationMode: Uniform`. Flexible, missing or unreadable parent evidence remains unassessed. Duplicate IDs, wrong parents, missing/nonboolean model status, denied reads and incomplete pagination cannot pass. Empty populations pass only when explicitly expected by supplied criteria. Exact population criteria should be maintained for autoscaling environments. The provider's latest-model flag does not prove guest configuration, patch compliance or image safety.
+
+API contract: [VM scale-set VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machine-scale-set-vms/list?view=rest-compute-2026-03-01).
