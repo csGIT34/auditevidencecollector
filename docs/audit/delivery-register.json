@@ -159,6 +159,7 @@
     },
     {
       "configuration_predicates": [
+        "EH-approved-arm-grants",
         "EH-local-auth"
       ],
       "domain": "I",
@@ -277,6 +278,7 @@
     },
     {
       "configuration_predicates": [
+        "AKS-approved-arm-grants",
         "AKS-azure-rbac",
         "AKS-local-accounts",
         "AKS-rbac"
@@ -398,6 +400,7 @@
         "APPREG-approved-owners",
         "APPREG-approved-role-grants",
         "APPREG-audience",
+        "APPREG-delegated-grants",
         "APPREG-federation-trust",
         "APPREG-owner-count",
         "APPREG-role-grants",
@@ -513,6 +516,7 @@
     },
     {
       "configuration_predicates": [
+        "EG-approved-arm-grants",
         "EG-local-auth"
       ],
       "domain": "I",
@@ -627,6 +631,7 @@
     },
     {
       "configuration_predicates": [
+        "ST-approved-arm-grants",
         "ST-shared-key"
       ],
       "domain": "I",
@@ -753,6 +758,7 @@
     },
     {
       "configuration_predicates": [
+        "COS-approved-arm-grants",
         "COS-local-auth"
       ],
       "domain": "I",
@@ -870,14 +876,16 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "REDIS-approved-arm-grants"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "REDIS-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Only approved Entra principals/Redis command scopes; permitted access-key fallback is justified. Cluster managed identity is not proof of client authentication.",
       "service_id": "REDIS",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Redis users and access-key authentication",
       "whole_objective_complete": false
     },
@@ -985,6 +993,8 @@
     },
     {
       "configuration_predicates": [
+        "FUNC-approved-arm-grants",
+        "FUNC-approved-arm-grants-slot",
         "FUNC-auth-platform",
         "FUNC-auth-platform-slot",
         "FUNC-auth-required",
@@ -1123,6 +1133,7 @@
     },
     {
       "configuration_predicates": [
+        "KV-approved-arm-grants",
         "KV-rbac"
       ],
       "domain": "I",
@@ -1243,6 +1254,7 @@
     },
     {
       "configuration_predicates": [
+        "PG-approved-arm-grants",
         "PG-entra-auth",
         "PG-password-auth"
       ],
@@ -1361,14 +1373,16 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ACA-approved-arm-grants"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "ACA-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Approved callers and minimal identities; review job-start and role wildcard abilities as powerful access even without explicit listSecrets.",
       "service_id": "ACA",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "App callers, runtime identities and job execution",
       "whole_objective_complete": false
     },
@@ -1478,6 +1492,7 @@
     },
     {
       "configuration_predicates": [
+        "UAMI-approved-arm-grants",
         "UAMI-federation-trust"
       ],
       "domain": "I",
@@ -1563,14 +1578,16 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "PE-approved-arm-grants"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "PE-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Only authorized parties create/approve links; endpoint reachability does not replace target service authentication.",
       "service_id": "PE",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Endpoint creation, connection approval and target authorization",
       "whole_objective_complete": false
     },
@@ -1640,7 +1657,8 @@
     },
     {
       "configuration_predicates": [
-        "ACR-admin-user"
+        "ACR-admin-user",
+        "ACR-approved-arm-grants"
       ],
       "domain": "I",
       "existing_encryption_rules": [],
@@ -1755,14 +1773,17 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "BV-approved-arm-grants",
+        "BV-approved-arm-grants-recovery"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "BV-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Incompatible backup/security/delete duties separated; privileged destructive paths require selected approvals and only authorized restore destinations.",
       "service_id": "BV",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Backup, restore, delete and security administration",
       "whole_objective_complete": false
     },
@@ -1875,6 +1896,7 @@
     },
     {
       "configuration_predicates": [
+        "APPC-approved-arm-grants",
         "APPC-local-auth"
       ],
       "domain": "I",
@@ -1993,6 +2015,7 @@
     },
     {
       "configuration_predicates": [
+        "AI-approved-arm-grants",
         "AI-local-auth"
       ],
       "domain": "I",
@@ -2109,14 +2132,16 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "GRAF-approved-arm-grants"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "GRAF-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Approved least privilege at workspace and data source; a dashboard viewer must not gain unintended data through a broad shared managed identity.",
       "service_id": "GRAF",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Grafana roles and data-source authorization",
       "whole_objective_complete": false
     },
@@ -2223,14 +2248,16 @@
       "whole_objective_complete": false
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "PROM-approved-arm-grants"
+      ],
       "domain": "I",
       "existing_encryption_rules": [],
       "id": "PROM-I",
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Approved principals can ingest/query only intended resource populations; workspace mode and source-resource rights considered together.",
       "service_id": "PROM",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Metrics ingestion and query scope",
       "whole_objective_complete": false
     },
@@ -2336,6 +2363,7 @@
     },
     {
       "configuration_predicates": [
+        "LA-approved-arm-grants",
         "LA-local-auth"
       ],
       "domain": "I",
@@ -2454,6 +2482,7 @@
     },
     {
       "configuration_predicates": [
+        "VM-approved-arm-grants",
         "VM-linux-password-auth"
       ],
       "domain": "I",
@@ -2571,6 +2600,7 @@
     },
     {
       "configuration_predicates": [
+        "VMSS-approved-arm-grants",
         "VMSS-linux-password-auth"
       ],
       "domain": "I",
@@ -2688,6 +2718,7 @@
     },
     {
       "configuration_predicates": [
+        "AUTO-approved-arm-grants",
         "AUTO-local-auth"
       ],
       "domain": "I",
@@ -2802,7 +2833,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 115,
+  "configuration_predicate_count": 140,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }

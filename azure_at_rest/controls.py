@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.3'
+VERSION = '2026.09.19.4'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -202,11 +202,34 @@ CHECKS['APPREG-federation-trust']=Check('APPREG-federation-trust','graph.applica
  'https://learn.microsoft.com/en-us/graph/api/federatedidentitycredential-list?view=graph-rest-1.0','/federatedIdentityCredentials','federation')
 
 
+CHECKS['APPREG-delegated-grants']=Check('APPREG-delegated-grants','graph.servicePrincipal','v1.0',
+ 'oauth2PermissionGrants[].clientId/resourceId/consentType/principalId/scope',(),'APPREG-I',
+ 'Exact delegated consent grants and scope claims; effective user access and consent review remain separate',
+ 'https://learn.microsoft.com/en-us/graph/api/serviceprincipal-list-oauth2permissiongrants?view=graph-rest-1.0',
+ '/oauth2PermissionGrants','delegated_grants')
+
+# One declared-assignment comparison per supported ARM resource type.
+from .authorization import API as AUTH_API, SOURCE as AUTH_SOURCE, SUFFIX as AUTH_SUFFIX
+for _rt in sorted({c.resource_type for c in CHECKS.values() if not c.resource_type.startswith('graph.')}):
+    _sample = next(c for c in CHECKS.values() if c.resource_type == _rt)
+    _service = _sample.catalog_ref.split('-')[0]
+    _tail = '-slot' if _rt.endswith('/slots') else '-recovery' if _rt == 'microsoft.recoveryservices/vaults' else ''
+    _cid = _service + '-approved-arm-grants' + _tail
+    CHECKS[_cid] = Check(_cid,_rt,AUTH_API,'assignments[].principalId/scope/roleDefinitionId/permissions/conditionSha256',(),_service+'-I',
+        'Declared ARM assignments at or above this resource and resolved role permissions; effective access remains separate',
+        AUTH_SOURCE,AUTH_SUFFIX,'arm_grants','authorization')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
 
 def valid_value(check, value):
+    if check.kind=='delegated_grants':
+        from .authorization import valid_delegated_grants
+        return valid_delegated_grants(value)
+    if check.kind=='arm_grants':
+        from .authorization import valid_grants
+        return valid_grants(value)
     if check.kind=='uuid_set':
         return isinstance(value,list) and len(value)<=10000 and all(isinstance(v,str) and subscription_id(v)==v for v in value) and value==sorted(set(value))
     if check.kind=='role_grants':
@@ -261,11 +284,15 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','federation') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','federation','authorization') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
-                if not isinstance(error,dict) or set(error)!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
+                if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
                     raise ValueError('Invalid collection error')
+                if 'role_id' in error:
+                    from .authorization import role_id
+                    if allowed[cid].operation!='authorization' or not role_id(error['role_id']):
+                        raise ValueError('Invalid unresolved role identity')
             if row['state']=='observed' and (not metadata['complete'] or metadata['malformed'] or metadata['errors'] or metadata['pages']==0):
                 raise ValueError('Incomplete observation marked complete')
         if row['state'] in ('observed','partial'):

@@ -237,7 +237,8 @@ class HostingTests(unittest.TestCase):
              'CG_ASSESSMENT_CRITERIA_JSON':(source/'criteria.json').read_text()}
         outcome=execute('collect',env=env,factory=factory)
         self.assertEqual('complete',outcome['state'])
-        self.assertEqual({'PASS':114,'FAIL':1,'UNKNOWN':0,'ERROR':0},outcome['configuration_summary']['counts'])
+        from azure_at_rest.controls import CHECKS
+        self.assertEqual({'PASS':len(CHECKS)-1,'FAIL':1,'UNKNOWN':0,'ERROR':0},outcome['configuration_summary']['counts'])
         saved=load_run(store,outcome['run_id'])
         self.assertTrue(saved['snapshot']['identity_evidence']['verified_tenant'])
         self.assertEqual(23,len({r['catalog_ref'].split('-')[0] for r in saved['assessment']['configuration_assessment']['results']}))

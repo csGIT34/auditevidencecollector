@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.6.0 — ARM authorization and delegated consent
+
+- Compare declared resource/inherited ARM assignments and resolved built-in/custom role permissions with supplied approved grant sets.
+- Collect and compare Graph delegated consent, including per-user and tenant-wide grants and scope claims.
+- Retain explicit partial/denied evidence; preserve historical runs. No identity grants or live resources are created.
+
 ## 0.5.1 — saved-run comparison and freshness
 
 - Preserve incomplete coverage when failures also exist; reject missing or falsely complete Graph replay populations.

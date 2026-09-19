@@ -1,2 +1,2 @@
 """Azure encryption-at-rest evidence. ARM collection is read-only; optional Blob storage archives evidence."""
-__version__ = "0.5.1"
+__version__ = "0.6.0"

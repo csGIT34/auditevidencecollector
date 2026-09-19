@@ -16,7 +16,7 @@ def valid_url(url):
     try:p=urlsplit(url)
     except ValueError:raise CollectionError('invalid_url') from None
     if (p.scheme!='https' or p.netloc!='graph.microsoft.com' or p.fragment or '\\' in url
-            or any(c in url for c in '\r\n') or not re.fullmatch(r'/v1.0/(organization|applications|servicePrincipals)(/'+GUID+r'(/(owners|appRoleAssignments|federatedIdentityCredentials))?)?',p.path)):
+            or any(c in url for c in '\r\n') or not re.fullmatch(r'/v1.0/(organization|applications|servicePrincipals)(/'+GUID+r'(/(owners|appRoleAssignments|federatedIdentityCredentials|oauth2PermissionGrants))?)?',p.path)):
         raise CollectionError('unsafe_url')
     return p
 
@@ -126,6 +126,23 @@ class GraphCollector:
                     record['configuration'][set_id]={'state':'observed' if child_listing['complete'] else 'partial','value':set_value}
                     count_id='APPREG-owner-count' if is_app else 'APPREG-role-grants'
                     record['configuration'][count_id]={'state':'observed' if child_listing['complete'] else 'partial','value':len(safe)}
+                    if not is_app:
+                        consent,consent_listing=self.listing('servicePrincipals/'+oid+'/oauth2PermissionGrants','id,clientId,resourceId,consentType,principalId,scope')
+                        listings['servicePrincipals/'+oid+'/oauth2PermissionGrants']=consent_listing
+                        grants=[];consent_seen=set()
+                        for item in consent:
+                            if not isinstance(item,dict) or not isinstance(item.get('id'),str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,256}',item['id']) or item['id'] in consent_seen:
+                                consent_listing['complete']=False;continue
+                            consent_seen.add(item['id'])
+                            grant={k:item.get(k) for k in ('clientId','resourceId','consentType','principalId')}
+                            for key in ('clientId','resourceId','principalId'):
+                                if isinstance(grant[key],str):grant[key]=grant[key].lower()
+                            grant['scopes']=sorted(set(item['scope'].split())) if isinstance(item.get('scope'),str) and len(item['scope'])<=131072 else None
+                            if grant['clientId']!=oid or not valid_value(CHECKS['APPREG-delegated-grants'],[grant]):
+                                consent_listing['complete']=False;continue
+                            grants.append(grant)
+                        grants.sort(key=lambda grant:json.dumps(grant,sort_keys=True))
+                        record['configuration']['APPREG-delegated-grants']={'state':'observed' if consent_listing['complete'] else 'partial','value':grants} if valid_value(CHECKS['APPREG-delegated-grants'],grants) else {'state':'invalid'}
                     if is_app:
                         federation,fed_listing=self.listing('applications/'+oid+'/federatedIdentityCredentials','id,issuer,subject,audiences')
                         listings['applications/'+oid+'/federatedIdentityCredentials']=fed_listing
@@ -223,6 +240,10 @@ def validate_identity_evidence(value):
         for row in value['resources']:
             collection = 'applications' if row['type']=='graph.application' else 'servicePrincipals'
             children = [('owners',('APPREG-owner-count','APPREG-approved-owners')), ('federatedIdentityCredentials',('APPREG-federation-trust',))] if collection=='applications' else [('appRoleAssignments',('APPREG-role-grants','APPREG-approved-role-grants'))]
+            if collection=='servicePrincipals' and 'APPREG-delegated-grants' in row['configuration']:
+                children.append(('oauth2PermissionGrants',('APPREG-delegated-grants',)))
+                if any(grant['clientId']!=row['object_id'] for grant in row['configuration']['APPREG-delegated-grants'].get('value',[])):
+                    raise ValueError('Delegated grant client mismatch')
             for child, checks in children:
                 listing = value['listings'].get(collection+'/'+row['object_id']+'/'+child)
                 if listing is None or not listing['complete'] and any(row['configuration'].get(check,{}).get('state')=='observed' for check in checks):

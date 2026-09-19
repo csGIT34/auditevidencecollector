@@ -1,5 +1,9 @@
 {
   "checks": {
+    "ACA-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "ACA-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -18,6 +22,10 @@
       "operator": "equals",
       "value": false
     },
+    "ACR-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "ACR-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -27,6 +35,10 @@
     "ACR-public-network": {
       "operator": "equals",
       "value": "Disabled"
+    },
+    "AI-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "AI-diagnostic-logs": {
       "operator": "equals",
@@ -45,6 +57,10 @@
     "AI-public-query": {
       "operator": "equals",
       "value": "Disabled"
+    },
+    "AKS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "AKS-azure-rbac": {
       "operator": "equals",
@@ -67,6 +83,10 @@
     "AKS-rbac": {
       "operator": "equals",
       "value": true
+    },
+    "APPC-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "APPC-diagnostic-logs": {
       "operator": "equals",
@@ -106,6 +126,20 @@
       "operator": "equals",
       "value": "AzureADMyOrg"
     },
+    "APPREG-delegated-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "clientId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "consentType": "AllPrincipals",
+          "principalId": null,
+          "resourceId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "scopes": [
+            "User.Read"
+          ]
+        }
+      ]
+    },
     "APPREG-expired-credentials": {
       "operator": "equals",
       "value": 0
@@ -126,6 +160,10 @@
       "operator": "equals",
       "value": true
     },
+    "AUTO-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "AUTO-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -139,6 +177,14 @@
     "AUTO-public-network": {
       "operator": "equals",
       "value": false
+    },
+    "BV-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "BV-approved-arm-grants-recovery": {
+      "operator": "equals",
+      "value": []
     },
     "BV-backup-immutability": {
       "operator": "equals",
@@ -168,6 +214,10 @@
       "operator": "equals",
       "value": "Disabled"
     },
+    "COS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "COS-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -186,6 +236,10 @@
       "operator": "equals",
       "value": "Tls12"
     },
+    "EG-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "EG-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -199,6 +253,10 @@
     "EG-public-network": {
       "operator": "equals",
       "value": "Disabled"
+    },
+    "EH-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "EH-diagnostic-logs": {
       "operator": "equals",
@@ -217,6 +275,14 @@
     "EH-tls": {
       "operator": "equals",
       "value": "1.2"
+    },
+    "FUNC-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "FUNC-approved-arm-grants-slot": {
+      "operator": "equals",
+      "value": []
     },
     "FUNC-auth-platform": {
       "operator": "equals",
@@ -310,6 +376,10 @@
       "operator": "equals",
       "value": "1.2"
     },
+    "GRAF-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "GRAF-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -323,6 +393,10 @@
     "GRAF-zone-redundancy": {
       "operator": "equals",
       "value": "Enabled"
+    },
+    "KV-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "KV-diagnostic-logs": {
       "operator": "equals",
@@ -349,6 +423,10 @@
     "KV-soft-delete": {
       "operator": "equals",
       "value": true
+    },
+    "LA-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "LA-diagnostic-logs": {
       "operator": "equals",
@@ -378,6 +456,10 @@
         "Approved"
       ]
     },
+    "PE-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "PE-subresources": {
       "operator": "equals",
       "value": [
@@ -389,6 +471,10 @@
       "value": [
         "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/approved"
       ]
+    },
+    "PG-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "PG-backup-retention": {
       "operator": "equals",
@@ -412,6 +498,10 @@
       "operator": "equals",
       "value": "Disabled"
     },
+    "PROM-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "PROM-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -421,6 +511,10 @@
     "PROM-public-network": {
       "operator": "equals",
       "value": "Disabled"
+    },
+    "REDIS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "REDIS-diagnostic-logs": {
       "operator": "equals",
@@ -435,6 +529,34 @@
     "ST-anonymous-blob": {
       "operator": "equals",
       "value": false
+    },
+    "ST-approved-arm-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "assignment_id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roleassignments/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "condition_sha256": null,
+          "condition_version": null,
+          "delegated_identity": null,
+          "permissions": [
+            {
+              "actions": [
+                "*"
+              ],
+              "dataActions": [],
+              "notActions": [
+                "microsoft.authorization/*/write"
+              ],
+              "notDataActions": []
+            }
+          ],
+          "principal_id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "principal_type": "ServicePrincipal",
+          "role_id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roledefinitions/cccccccc-cccc-cccc-cccc-cccccccccccc",
+          "role_type": "CustomRole",
+          "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+        }
+      ]
     },
     "ST-blob-restore": {
       "operator": "equals",
@@ -478,6 +600,10 @@
       "operator": "equals",
       "value": "TLS1_2"
     },
+    "UAMI-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
     "UAMI-federation-trust": {
       "operator": "equals",
       "value": [
@@ -489,6 +615,10 @@
           "subject": "system:serviceaccount:audit:collector"
         }
       ]
+    },
+    "VM-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "VM-diagnostic-logs": {
       "operator": "equals",
@@ -507,6 +637,10 @@
     "VM-vtpm": {
       "operator": "equals",
       "value": true
+    },
+    "VMSS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
     },
     "VMSS-diagnostic-logs": {
       "operator": "equals",

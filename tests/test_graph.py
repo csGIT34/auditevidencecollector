@@ -21,6 +21,7 @@ BASE='https://graph.microsoft.com/v1.0/'
 
 def fixture():
     return {
+      BASE+'servicePrincipals/'+SP+'/oauth2PermissionGrants?$select=id,clientId,resourceId,consentType,principalId,scope':{'value':[]},
       BASE+'organization?$select=id':{'value':[{'id':TENANT}]},
       BASE+'applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials':{'value':[{'id':APP,'appId':CLIENT,'signInAudience':'AzureADMyOrg','passwordCredentials':[{'keyId':ROLE,'startDateTime':'2020-01-01T00:00:00Z','endDateTime':'2021-01-01T00:00:00Z','secretText':'DO-NOT-SAVE-GRAPH-SECRET','hint':'DO-NOT-SAVE-GRAPH-SECRET'}],'keyCredentials':[]}]},
       BASE+'servicePrincipals?$select=id,appId,accountEnabled':{'value':[{'id':SP,'appId':CLIENT,'accountEnabled':True,'displayName':'DO-NOT-SAVE-GRAPH-SECRET'}]},
@@ -154,3 +155,25 @@ class GraphCompletenessTests(unittest.TestCase):
         altered['resources'].pop()
         with self.assertRaises(ValueError):
             validate_identity_evidence(altered)
+
+
+class DelegatedConsentTests(unittest.TestCase):
+    def test_scope_claims_tenant_wide_and_per_user_consent(self):
+        responses=fixture();url=BASE+'servicePrincipals/'+SP+'/oauth2PermissionGrants?$select=id,clientId,resourceId,consentType,principalId,scope'
+        responses[url]={'value':[{'id':'grant-one','clientId':SP,'resourceId':APP,'consentType':'AllPrincipals','principalId':None,'scope':'User.Read Mail.Read User.Read','description':'DO-NOT-SAVE-CONSENT'},
+                                 {'id':'grant-two','clientId':SP,'resourceId':APP,'consentType':'Principal','principalId':OWNER,'scope':'User.Read'}]}
+        result=evidence(responses);validate_identity_evidence(result)
+        observed=result['resources'][1]['configuration']['APPREG-delegated-grants']
+        self.assertEqual('observed',observed['state'])
+        self.assertEqual(2,len(observed['value']))
+        self.assertNotIn('DO-NOT-SAVE-CONSENT',json.dumps(result))
+        self.assertTrue(any(row['scopes']==['Mail.Read','User.Read'] for row in observed['value']))
+
+    def test_denied_wrong_client_and_partial_consent_cannot_pass(self):
+        url=BASE+'servicePrincipals/'+SP+'/oauth2PermissionGrants?$select=id,clientId,resourceId,consentType,principalId,scope'
+        for response in ({'fixture_error':403},{'value':[{'id':'bad','clientId':APP,'resourceId':APP,'consentType':'AllPrincipals','principalId':None,'scope':'User.Read'}]},
+                         {'value':[],'@odata.nextLink':url+'&$skiptoken=missing'}):
+            responses=fixture();responses[url]=response
+            result=evidence(responses);validate_identity_evidence(result)
+            self.assertEqual('partial',result['resources'][1]['configuration']['APPREG-delegated-grants']['state'])
+            self.assertFalse(result['complete'])

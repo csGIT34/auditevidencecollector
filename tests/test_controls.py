@@ -25,6 +25,9 @@ def setpath(obj,path,value):
 
 
 def sample(check, negative=False):
+    if check.kind=='arm_grants':
+        from tests.test_authorization import grant
+        return [grant()] if negative else []
     if check.kind=='labels':return ['category:Different' if negative else 'category:AuditEvent']
     if check.kind=='resource_ids':return [resource('Microsoft.Storage/storageAccounts','other' if negative else 'approved')['id'].lower()]
     if check.kind=='tokens':return ['Pending' if negative else 'Approved'] if check.id=='PE-approval' else ['file' if negative else 'blob']
@@ -47,6 +50,9 @@ def fixture():
         for c in checks:
             value=sample(c)
             criteria[c.id]={'operator':'equals','value':value}
+            if c.operation == 'authorization':
+                responses[endpoint(row['id']+c.suffix,c.api)+'&$filter=atScope%28%29']={'value':[]}
+                continue
             if c.operation == 'private_endpoint':
                 row['properties']['privateLinkServiceConnections']=[{'properties':{'privateLinkServiceId':sample(CHECKS['PE-targets'])[0],'groupIds':['blob'],'privateLinkServiceConnectionState':{'status':'Approved'}}}]
                 row['properties']['manualPrivateLinkServiceConnections']=[]
@@ -101,7 +107,7 @@ class ConfigurationTests(unittest.TestCase):
                     if isinstance(raw,dict) and 'properties' in raw and (raw.get('type','').lower()==c.resource_type if not c.suffix else raw.get('id','').endswith(c.suffix)):
                         setpath(raw['properties'],c.path,value)
             for url in list(responses):
-                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
+                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
                 elif '/privateendpoints/' in url and 'properties' in responses[url]:responses[url]['properties']['privateLinkServiceConnections']=None
             snapshot=collect(responses);validate_snapshot(snapshot)
             results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']
@@ -225,7 +231,7 @@ class ConfigurationTests(unittest.TestCase):
         for raw in responses.values():
             if isinstance(raw,dict) and raw.get('type','').lower()=='microsoft.keyvault/vaults':raw['properties']['provisioningState']='Failed'
         rows=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
-        self.assertTrue(all(r['result']=='UNKNOWN' for r in rows if r['check_id'].startswith('KV-') and r['check_id']!='KV-diagnostic-logs'))
+        self.assertTrue(all(r['result']=='UNKNOWN' for r in rows if r['check_id'].startswith('KV-') and r['check_id'] not in ('KV-diagnostic-logs','KV-approved-arm-grants')))
 
     def test_schema_versions_prevent_old_readers_omitting_new_findings(self):
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)

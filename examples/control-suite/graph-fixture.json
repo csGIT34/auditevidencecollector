@@ -48,6 +48,18 @@
         }
       ]
     },
+    "https://graph.microsoft.com/v1.0/servicePrincipals/dddddddd-dddd-dddd-dddd-dddddddddddd/oauth2PermissionGrants?$select=id,clientId,resourceId,consentType,principalId,scope": {
+      "value": [
+        {
+          "clientId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "consentType": "AllPrincipals",
+          "id": "synthetic-delegated-grant",
+          "principalId": null,
+          "resourceId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "scope": "User.Read"
+        }
+      ]
+    },
     "https://graph.microsoft.com/v1.0/servicePrincipals?$select=id,appId,accountEnabled": {
       "value": [
         {

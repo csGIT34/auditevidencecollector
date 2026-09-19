@@ -118,6 +118,7 @@ class Collector:
         self.transport, self.max_pages, self.mode = transport, max_pages, mode
         self.errors, self.resources = [], {}
         self.resource_group = None
+        self.authorization_roles = {}
 
     def error(self, scope, operation, exc):
         error = {"scope": scope, "operation": operation, "code": exc.code,
@@ -260,6 +261,9 @@ class Collector:
                 observation = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':values}
             observation['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
             record.setdefault('configuration',{})[check.id] = observation
+        for check in (c for c in checks if c.operation == 'authorization'):
+            from .authorization import collect as collect_authorization
+            record.setdefault('configuration',{})[check.id] = collect_authorization(self.transport,rid,self.max_pages,self.authorization_roles)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):
