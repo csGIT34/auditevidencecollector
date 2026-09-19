@@ -91,6 +91,8 @@ See [Azure CLI REST documentation](https://learn.microsoft.com/en-us/cli/azure/r
 
 ## Coverage
 
+The [authoritative 23-service program scope](docs/PROGRAM_SCOPE.md) maps the user's service list to current coverage, missing collection planes and deployment-family questions. It governs program scope across selected controls; the current code still assesses only encryption at rest (SC-28 / SC-28(1)).
+
 The [exact rule matrix](docs/COVERAGE.md) is the source for supported ARM types, assessed scopes and Microsoft documentation. Broadly:
 
 - Reviewed service guarantees cover Storage; managed disks/snapshots/images; PostgreSQL/MySQL Flexible Server; Cosmos DB accounts including MongoDB API; Azure DocumentDB Mongo clusters (formerly MongoDB vCore); ACR; backup vault storage; Log Analytics; Event Hubs; Premium Service Bus; AI Search; App Configuration values; Key Vault secrets; and reviewed Redis Enterprise SKUs.
@@ -99,7 +101,7 @@ The [exact rule matrix](docs/COVERAGE.md) is the source for supported ARM types,
 - Classic Redis persistence, newer Managed Redis SKUs, non-Premium Service Bus and classic Application Insights remain unverified where the current rule lacks sufficient evidence.
 - MongoDB Atlas, self-hosted MongoDB internals, Managed HSM, NetApp, Databricks, Data Factory, Service Fabric, HDInsight and other unlisted types have no full rule. Discovery does not imply support. Runtime/data-plane dependencies and arbitrary child types are not exhaustively inventoried.
 
-VNet and related network configuration are outside this encryption assessment; narrowly listed network types receive an applicability explanation. No network changes are performed.
+Private endpoints are explicitly in program scope for resource-local evidence and shared ownership; their current encryption rule is inventory-only and justified N/A. VNet/routing/shared-network administration remains outside the platform scope. Other listed network constructs retain narrow encryption applicability explanations. No network changes are performed.
 
 ## Design and extension
 
