@@ -16,3 +16,7 @@ htmlcov/
 *credentials*.json
 *token*.json
 .azure/
+
+# Local generated reports and archive QA artifacts
+output/
+tmp/

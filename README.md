@@ -8,9 +8,25 @@ The currently executable capability is a read-only encryption-at-rest Python CLI
 
 This is an initial technical evidence tool, provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). It is not a full RCSA assessment, certification, or claim that all application data is protected. A successful resource result applies to the stated scope and evidence basis.
 
+## Save a run and produce an auditor PDF
+
+Version **0.2.0** adds a local archive and a separate historical PDF operation. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
+
+```sh
+python3 -m pip install '.[pdf]'
+python3 -m azure_at_rest collect --fixture examples/demo-fixture.json --store ./evidence/archive
+python3 -m azure_at_rest runs --store ./evidence/archive
+# Use the exact r-... ID printed above; the demo collection exits 1 intentionally.
+python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_ID
+```
+
+Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
+
+See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). **Azure storage connectivity is deferred**; no Azure SDK, cloud storage, database, runtime AI or cloud spending is introduced. The filesystem adapter currently requires POSIX support. ReportLab is optional and needed only for PDF generation.
+
 ## Run offline now
 
-Python 3.11+ is required. Runtime and tests use the Python standard library; there are no runtime packages to download. Run from the repository:
+Python 3.11+ is required. Collection, assessment and JSON archiving use the Python standard library. PDF output uses the optional ReportLab extra; PDF extraction tests use optional pypdf. Run from the repository:
 
 ```sh
 cd /home/zerocool/github/cloud-governance
