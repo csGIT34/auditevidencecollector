@@ -1,6 +1,6 @@
 # Bounded personal Azure validation — 2026-09-19
 
-**Partial live validation; repeated-request availability remains unresolved.** The personal Function App is stopped, collection/report/probe settings are false, the schedule is empty, and refreshed function metadata contains no timer. Evidence/storage and the 16 Terraform-managed instances remain for the authorized post-workplace-handoff cleanup. Personal identifiers, state, plans, billing responses and evidence are outside this public repository.
+**Historical initial validation.** The [follow-up validation](REPEAT_VALIDATION.md) resolved repeated-request availability and completed the second collection plus current/historical PDFs. The results and limitations below describe the initial session. The personal Function App is stopped, collection/report/probe settings are false, the schedule is empty, and refreshed function metadata contains no timer. Evidence/storage and the 16 Terraform-managed instances remain for the authorized post-workplace-handoff cleanup. Personal identifiers, state, plans, billing responses and evidence are outside this public repository.
 
 See the [follow-up dispatch investigation](DISPATCH_INVESTIGATION.md) for the minimal reproduction, temporary logging and packaging-permission fix. The original results below are historical.
 

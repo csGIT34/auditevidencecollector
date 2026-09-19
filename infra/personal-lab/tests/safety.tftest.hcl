@@ -12,19 +12,23 @@ variables {
 run "safe_defaults" {
   command = plan
   override_resource {
-    target = azurerm_service_plan.lab
+    target          = azurerm_service_plan.lab
     override_during = plan
     values = {
       id = "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-demolab12/providers/Microsoft.Web/serverFarms/plan-demolab12"
     }
   }
   assert {
-    condition = azapi_resource.function.body.properties.serverFarmId == "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-demolab12/providers/Microsoft.Web/serverfarms/plan-demolab12" && !strcontains(azapi_resource.function.body.properties.serverFarmId, "//")
+    condition     = azapi_resource.function.body.properties.serverFarmId == "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/rg-demolab12/providers/Microsoft.Web/serverfarms/plan-demolab12" && !strcontains(azapi_resource.function.body.properties.serverFarmId, "//")
     error_message = "The planned app must retain a valid ARM plan ID when normalizing Azure response casing."
   }
   assert {
     condition     = azapi_resource.function.body.properties.functionAppConfig.scaleAndConcurrency.maximumInstanceCount == 1 && length(azapi_resource.function.body.properties.functionAppConfig.scaleAndConcurrency.alwaysReady) == 0
     error_message = "Lab must use one on-demand instance per function group and zero always-ready."
+  }
+  assert {
+    condition     = azapi_resource.function.body.properties.functionAppConfig.scaleAndConcurrency.triggers.http.perInstanceConcurrency == 16
+    error_message = "Keep the validated HTTP concurrency setting; low values reproduced sequential-request 503s."
   }
   assert {
     condition     = alltrue([for s in azapi_resource.function.body.properties.siteConfig.appSettings : s.value == "false" if contains(["CG_COLLECTION_ENABLED", "CG_REPORT_ENABLED"], s.name)]) && one([for s in azapi_resource.function.body.properties.siteConfig.appSettings : s.value if s.name == "CG_COLLECTION_SCHEDULE"]) == ""

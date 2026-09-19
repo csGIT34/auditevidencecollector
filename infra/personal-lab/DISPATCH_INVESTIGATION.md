@@ -1,6 +1,6 @@
 # Flex HTTP dispatch investigation — 2026-09-19
 
-**Availability is still blocked. No runtime workaround is validated.** This follow-up isolates the failure from collector/PDF application code; it does not establish an Azure platform root cause or approve workplace deployment. Original live evidence remains unchanged.
+**Historical investigation.** The subsequent [repeated-request validation](REPEAT_VALIDATION.md) resolved the observed failure using HTTP concurrency 16 while retaining one on-demand instance, and completed the second collection and historical PDF checks. The observations below describe the earlier blocked state. This follow-up isolates the failure from collector/PDF application code; it does not establish an Azure platform root cause or approve workplace deployment. Original live evidence remains unchanged.
 
 ## Controlled observations
 

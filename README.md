@@ -4,7 +4,7 @@
 
 The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
 
-**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). A bounded personal lab has partial [live validation](infra/personal-lab/LIVE_VALIDATION.md); repeated-request availability remains unresolved. Workplace acceptance is separate.
+**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). The bounded [personal-lab validation](infra/personal-lab/REPEAT_VALIDATION.md) now passes repeated HTTP requests, managed-identity collection and current/historical PDF generation with original evidence preserved. Workplace acceptance is separate.
 
 The [0.3.0 validation record](docs/VALIDATION_0_3_0.md) separates the completed offline checks from the remaining workplace deployment gates.
 
@@ -26,7 +26,7 @@ python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_
 
 Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
 
-See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented and tested offline; deployment and live validation remain workplace steps. Both hosted operations default disabled. No database or runtime AI is required. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
+See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented, tested offline and validated in the personal lab; deployment and acceptance in the work tenant remain workplace steps. Both hosted operations default disabled. No database or runtime AI is required. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
 
 ## Run offline now
 
@@ -58,9 +58,9 @@ python3 -m azure_at_rest assess \
 
 Optional packaging, if you already have setuptools/pip available: `python3 -m pip install -e .` provides the `azure-at-rest` command. Running the module directly does not need installation.
 
-## Live collection — optional, not yet integration-tested
+## Live collection — optional and explicitly scoped
 
-**No live collector or hosted Azure integration test has run.** Separate read-only personal-lab preflight examined account/cost/resource metadata without collecting tenant evidence or provisioning. Personal subscription credentials must not be used without further user direction. The offline test suite never invokes live collection.
+The authorized personal lab completed two hosted RG-scoped collections and current/historical PDF generation; see the [live validation results](infra/personal-lab/REPEAT_VALIDATION.md). This does not establish coverage for other services, subscriptions or workplace environments. The offline test suite never invokes live collection. Obtain authorization for each new tenant/scope before collecting its evidence.
 
 After authorization, an operator can run a smoke test **locally** against existing resources. It uses Azure public-cloud ARM management-plane metadata GETs only. It does not provision resources, use a hosted runner, read blobs/database rows, enable diagnostic logs, activate paid services or modify Azure configuration. Offline testing is the established path when no new Azure charges are permitted. Existing subscriptions/resources retain their normal costs; the tool does not assess those costs.
 

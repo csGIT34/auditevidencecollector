@@ -146,7 +146,8 @@ resource "azapi_resource" "function" {
           maximumInstanceCount = 1
           instanceMemoryMB     = 2048
           alwaysReady          = []
-          triggers             = { http = { perInstanceConcurrency = 1 } }
+          # Verified against sequential 503s at low HTTP concurrency; instance cap stays one.
+          triggers = { http = { perInstanceConcurrency = 16 } }
         }
       }
       siteConfig = {
