@@ -26,6 +26,13 @@ class OperationBusy(RuntimeError):
     pass
 
 
+class ExecutionError(RuntimeError):
+    """Safe structured host outcome; exception text never carries SDK details."""
+    def __init__(self, outcome):
+        self.outcome = dict(outcome)
+        super().__init__(self.outcome['code'])
+
+
 def enabled(env, operation):
     value = env.get('CG_' + operation.upper() + '_ENABLED', 'false')
     if value not in ('true', 'false'):
@@ -140,9 +147,11 @@ def resources(settings, deadline, operation):
         transport = BudgetArmTransport(credential, deadline, settings.arm_retries) if operation == 'collect' else None
         yield store, transport
     finally:
-        if store:
-            store.close()
-        credential.close()
+        try:
+            if store is not None:
+                store.close()
+        finally:
+            credential.close()
 
 
 def execute(operation, *, run_id=None, env=None, factory=resources):
@@ -194,7 +203,7 @@ def execute(operation, *, run_id=None, env=None, factory=resources):
                   'invocation_id': invocation_id, 'stage': stage,
                   'code': 'operation_busy' if isinstance(exc, OperationBusy) else 'operation_failed'}
         LOG.error(json.dumps(result, sort_keys=True))  # No raw exception, request or SDK data.
-        raise RuntimeError(json.dumps(result, sort_keys=True)) from None
+        raise ExecutionError(result) from None
     finally:
         if locked:
             LOCKS[operation].release()

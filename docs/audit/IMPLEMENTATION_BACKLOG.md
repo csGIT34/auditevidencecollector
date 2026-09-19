@@ -12,7 +12,8 @@ This is the control-collector backlog, separate from the authorized local eviden
 | P2 — Workload and software | Restricted Kubernetes metadata, guest/agent reports, actual VMSS instances/revisions/image digests and scanned software identity. | Fixtures for model/instance drift, stale scan, missing agent, changed digest and unsupported runtime; no secret/env/log payload leakage. |
 | P2 — Operational evidence | Aggregate ingestion/retention/health, backup protected-item completeness, recovery records, access-review outcomes, incident/change/remediation samples. | Compare to approved windows and expected populations; configuration alone cannot close operating objectives. |
 | P3 — Common/provider/process assessments | Controlled evidence import with document date/period/owner, scope, attestations, assurance exceptions and assessment decision. | Manual/inherited evidence remains traceable and explicitly distinct from automatic configuration results. |
-| Deferred — Wiz/MCP/query/dashboard | Reconcile authorized external observations later; optional readers consume saved common records. | Separate request and permissions; no runtime AI/model dependency introduced in collection, evaluation, storage or PDF reporting. |
+| Local Wiz evidence / native integration pending | Normalized import, inventory/finding comparison and historical replay are implemented; see [Wiz integration](../WIZ_INTEGRATION.md). Native API/export mapping requires the real workplace contract. | Preserve source meaning/time/completeness, exact ARM identity and historical hashes; no automatic control equivalence. |
+| Deferred — MCP/query/dashboard | Optional readers can consume saved common records. | Separate scoped implementation; no runtime AI/model dependency in collection, evaluation, storage or reporting. |
 
 ## Service-specific next slices
 

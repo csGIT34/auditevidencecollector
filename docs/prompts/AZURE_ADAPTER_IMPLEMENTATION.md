@@ -1,5 +1,8 @@
 # Copyable workplace configuration and implementation prompt
 
+
+Historical implementation/validation prompt. For current capabilities, versions and remaining work, start with [current status](../STATUS.md). Do not treat old baseline claims below as current deployment state.
+
 Work in this cloud-governance repository. Inspect its actual current code and preserve unrelated changes. It implements version 0.3.2: deterministic Python evidence collection/assessment, local archival/PDF use, and a thin Azure Functions v2 hosting layer with managed identity and a create-only Azure Blob ObjectStore. Do not rebuild those parts from scratch or assume they are deployed. Read docs/AZURE_FUNCTIONS.md, docs/MACOS_DEVELOPMENT.md, docs/WORKPLACE_AZURE_HANDOFF.md, docs/LOCAL_ARCHIVE_PDF.md and the module contracts below. These instructions are self-contained and do not require earlier conversation context.
 
 The intended product is macOS development/testing and production execution entirely inside Azure Functions, independent of a person's machine. Source transfers through an approved GitHub repository. Azure Automation is not the selected target. Two separate operations exist: scheduled collection -> deterministic assessment -> unique archived run; an explicitly requested saved-run PDF -> unique archived report. No automatic report after collection, latest-run substitution, recollection/reassessment for a historical PDF, public anonymous endpoint, database, dashboard, runtime AI, remediation or additional service collectors.

@@ -51,12 +51,46 @@ def parser():
     pdf.add_argument("--store", type=Path, required=True)
     pdf.add_argument("--run-id", required=True, help="Exact r-... identifier printed by collect or runs; no implicit latest run.")
     pdf.add_argument("--export", type=Path, help="Optional additional PDF copy; must not already exist.")
+    wiz = commands.add_parser("wiz-import", help="Validate and archive a normalized Wiz evidence file; no network calls.")
+    wiz.add_argument("--input", type=Path, required=True)
+    wiz.add_argument("--store", type=Path, required=True)
+    compare = commands.add_parser("wiz-reconcile", help="Compare one saved Azure run and one Wiz import without reassessment.")
+    compare.add_argument("--store", type=Path, required=True)
+    compare.add_argument("--run-id", required=True)
+    compare.add_argument("--wiz-import-id", required=True)
+    compare.add_argument("--as-of", required=True, help="Explicit timezone-aware comparison time.")
+    compare.add_argument("--max-age-hours", type=float, required=True)
+    compare.add_argument("--max-skew-hours", type=float, required=True)
+    show = commands.add_parser("wiz-show", help="Verify and print one exact saved comparison; no recomputation.")
+    show.add_argument("--store", type=Path, required=True)
+    show.add_argument("--comparison-id", required=True)
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command == "wiz-show":
+            from .storage import FileStore
+            from .reconciliation import load_comparison
+            print(load_comparison(FileStore(args.store), args.comparison_id)['markdown'], end='')
+            return 0
+        if args.command in {"wiz-import", "wiz-reconcile"}:
+            from .storage import FileStore
+            from .wiz import MAX_INPUT_BYTES, import_export
+            from .reconciliation import publish_comparison
+            store = FileStore(args.store)
+            if args.command == "wiz-import":
+                with args.input.open('rb') as stream:
+                    data = stream.read(MAX_INPUT_BYTES + 1)
+                manifest = import_export(store, data)
+                print(json.dumps({'wiz_import_id':manifest['wiz_import_id'], 'input_sha256':manifest['input_sha256'],
+                                  'source_mode':manifest['source_mode'], 'state':'complete'}, sort_keys=True))
+            else:
+                manifest = publish_comparison(store, args.run_id, args.wiz_import_id, as_of=args.as_of,
+                                              max_age_hours=args.max_age_hours, max_skew_hours=args.max_skew_hours)
+                print(json.dumps(manifest, indent=2, sort_keys=True))
+            return 0
         if args.command == "catalog":
             print(json.dumps({"rule_version": RULE_VERSION, "rules": {rt: asdict(rule) for rt, rule in sorted(RULES.items())}}, indent=2))
             return 0

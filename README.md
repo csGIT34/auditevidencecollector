@@ -1,5 +1,7 @@
 # Cloud governance evidence and audit program
 
+Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
+
 **Program scope: all applicable NIST controls across the authoritative 23 Azure services.** Start with the [program-wide control/evidence catalog](docs/audit/README.md), [service matrix](docs/audit/SERVICE_MATRIX.md), [all-family review](docs/audit/NIST_FAMILY_REVIEW.md) and [implementation backlog](docs/audit/IMPLEMENTATION_BACKLOG.md). The catalog records 215 proposed checks across 12 domains and all 20 NIST families; it is provisional research, not implemented control coverage or tenant findings.
 
 The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
@@ -14,7 +16,7 @@ The [home-only Terraform lab](infra/personal-lab/README.md) has a documented, st
 
 ## Save a run and produce an auditor PDF
 
-Version **0.3.2** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged. Version 0.3.2 corrects new RG-scoped verification commands and two PDF labels; historical archives remain frozen.
+Version **0.4.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged. The 0.3.2 report corrections remain; 0.4.0 adds local Wiz evidence import/comparison and reliability/tooling improvements. Historical archives remain frozen.
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -129,7 +131,7 @@ Private endpoints are explicitly in program scope for resource-local evidence an
 
 `collector.py` supplies a GET-only ARM adapter, bounded retries/pagination and an offline transport. `safety.py` validates resource identity and projects allowlisted evidence. `catalog.py` pins exact types, API versions, scopes and sources. `assessment.py` evaluates evidence and dependencies. `verification.py` creates auditor read commands as data; `report.py` and `cli.py` generate reports and exit status. Tests exercise the same collector path used for live runs.
 
-To add a service: research its Microsoft guarantee and exceptions, add an exact type and reviewed API version, collect only necessary metadata, implement any configurable-state/dependency logic, and add positive, disabled, missing, denied and partial-inventory fixtures. Do not classify an entire provider or all its children by name. Keep unsupported types visible. An additional future adapter can emit the sanitized snapshot contract (for example, separately obtained Wiz evidence); no Wiz integration is implemented here.
+To add a service: research its Microsoft guarantee and exceptions, add an exact type and reviewed API version, collect only necessary metadata, implement any configurable-state/dependency logic, and add positive, disabled, missing, denied and partial-inventory fixtures. Do not classify an entire provider or all its children by name. Keep unsupported types visible. The [Wiz integration](docs/WIZ_INTEGRATION.md) validates a separate normalized evidence contract and compares it with saved ARM runs. It preserves both sources without treating Wiz findings as ARM observations or changing Azure conclusions. A native Wiz API/export mapper still requires workplace schema/access validation.
 
 ARM collection performs no enforcement, remediation, key rotation or application-secret reads. The optional Blob adapter writes only archive objects in the configured existing container. No resource provisioning, deployment, role changes, messaging or remote repository creation is performed by the tool.
 
@@ -137,4 +139,4 @@ ARM collection performs no enforcement, remediation, key rotation or application
 
 Core collection, control evaluation, evidence output and any future core storage path must remain deterministic Python/API operations with **no runtime AI/model dependency or model-call costs**. Versioned structured evidence, stable resource/rule IDs, timestamps, coverage results and replayable snapshots are the foundation for future frequent collection and retained history.
 
-Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration or dashboard is implemented. The Functions hosting layer and Blob adapter are source implementations only; no cloud service or schedule is provisioned here. No runtime AI does not imply free hosting/storage; those choices and costs remain undecided, and no personal Azure spending is authorized.
+Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration or dashboard is implemented. The personal Azure lab has completed bounded live collection/report checks and is currently stopped, with no timer or enabled operations. Cloud resources were explicitly authorized for that temporary lab; retained storage may still incur charges. See [current status](docs/STATUS.md) and the [cost/teardown guide](infra/personal-lab/README.md). Workplace infrastructure, scope and acceptance remain separate.

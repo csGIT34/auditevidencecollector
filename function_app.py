@@ -4,7 +4,7 @@ import logging
 import os
 import azure.functions as func
 from azure_at_rest.archive import identity
-from azure_at_rest.hosting import execute, schedule
+from azure_at_rest.hosting import ExecutionError, execute, schedule
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 # Our handlers emit fixed safe envelopes. Keep SDK response diagnostics out of host logs.
@@ -27,8 +27,8 @@ def generate_report(req: func.HttpRequest) -> func.HttpResponse:
     try:
         result = execute('report', run_id=run_id)
         status = 201 if result['state'] == 'complete' else 503
-    except RuntimeError as error:
-        result = json.loads(str(error))  # execute emits only its fixed safe envelope.
+    except ExecutionError as error:
+        result = error.outcome
         status = 409 if result['code'] == 'operation_busy' else 500
     return func.HttpResponse(json.dumps(result), status_code=status, mimetype='application/json',
                              headers={'Cache-Control': 'no-store'})

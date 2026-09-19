@@ -95,7 +95,7 @@ A feature/default statement establishes capability only. Inheritance needs exact
 
 ### WIZ: Optional Wiz export/API
 
-Future read-only, organization-authorized export with documented inventory, finding and scan scopes; no Wiz connection or credential exists in this tool.
+The [normalized Wiz evidence importer](../WIZ_INTEGRATION.md) accepts an organization-authorized, safely mapped export with explicit inventory/finding scopes and observation times. Local synthetic import/comparison/replay is implemented; no native Wiz connection or credential exists in this tool.
 
 Corroborating evidence only until source timestamps, scan coverage, resource identity and rule meaning reconcile. Wiz finding IDs are not NIST assessment conclusions.
 
@@ -103,7 +103,7 @@ Corroborating evidence only until source timestamps, scan coverage, resource ide
 
 Every future observation needs collection run/time/period, source/plane, tenant and stable object/resource identity, exact route/API/schema/collector version, scope/pagination completeness, allowlisted facts, dependencies and explicit errors. Assessment records separately retain rule/control/criterion version, applied parameters, source evidence IDs, result/reason and gaps. Configuration comparisons, timestamp windows and inventory joins are deterministic; approval, legal basis and operating judgment remain identified human tasks.
 
-Wiz/direct-source reconciliation must compare stable IDs, service variants, observation time, scan/evidence coverage and semantics. Do not substitute a Wiz recommendation, Azure Policy compliance label or provider certification for the underlying selected control evidence. No connection is implemented or authorized.
+Wiz/direct-source reconciliation must compare stable IDs, service variants, observation time, scan/evidence coverage and semantics. Do not substitute a Wiz recommendation, Azure Policy compliance label or provider certification for the underlying selected control evidence. The offline comparison preserves these distinctions. A native connection/schema mapping still needs workplace-specific implementation and validation.
 
 Sensitive data can exist in metadata: query strings, app settings, pod env/annotations, dashboard JSON, runbooks, log streams and credential-bearing references. Prefer owner-supplied redacted manifests/aggregate reports until safe APIs/projections exist. Never read secrets and redact them only afterwards as an assessment strategy.
 

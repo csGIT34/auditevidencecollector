@@ -47,3 +47,22 @@ Use the workplace configuration guide for the separate runtime/evidence storage 
 The GitHub repository transfers source and reviewed configuration templates. `git status --short` and `git diff --cached` are the final staged-content checks before a separately authorized push. `.gitignore` excludes local settings, environments, credentials and standard output paths, but cannot protect an arbitrary forced export or a manual whole-directory upload.
 
 Create the allowlisted source ZIP with `python scripts/package_functions.py --output dist/functions-source.zip`. Build dependencies for Linux in a clean approved build environment or with the selected Functions remote-build mechanism. Never deploy the Mac virtual environment. See [AZURE_FUNCTIONS.md](AZURE_FUNCTIONS.md) for hosted inputs, identity, triggers, limits and workplace acceptance.
+
+## Additional local checks
+
+Run `python scripts/demo_wiz.py --output ../wiz-demo` to exercise the complete synthetic [Wiz workflow](WIZ_INTEGRATION.md). Run `python scripts/benchmark_pipeline.py --output ../scale-results --sizes 100 1000 2000` to measure mixed-inventory/PDF scale without cloud calls. Both require new directories outside the checkout; outputs are private. See [scale results and limits](LOCAL_SCALE_VALIDATION.md).
+
+The main validation gate includes `scripts/check_docs.py`, which checks relative Markdown file targets; external URLs and heading anchors are not checked. CI also benchmarks 100 resources on both operating systems and checks the packaged Linux Functions runtime.
+
+To test home Terraform without live credentials/state, use the pinned Terraform version in `infra/personal-lab/versions.tf` and an isolated data directory:
+
+```sh
+export TF_DATA_DIR="$(mktemp -d)"
+terraform -chdir=infra/personal-lab fmt -check -recursive
+terraform -chdir=infra/personal-lab init -backend=false -input=false -lockfile=readonly
+terraform -chdir=infra/personal-lab validate
+terraform -chdir=infra/personal-lab test
+unset TF_DATA_DIR
+```
+
+These tests use mocked providers and plan-only runs; they do not provision or read Azure resources. Initial provider/action/dependency downloads require internet access. Never point the test data directory at live Terraform state. CI runs these four mocked checks without Azure credentials.

@@ -21,7 +21,7 @@ Reviewed on 2026-09-19 against the official NIST OSCAL catalog containing SP 800
 
 Microsoft service baselines (MCSB v1) are feature/responsibility references; several warn that guidance is outdated. Current service documentation governs feature interpretation. MCSB v2 is preview in the reviewed index. Microsoft/NIST mappings are not one-to-one equivalences and are not imported as proof of NIST satisfaction. NIST mappings here are reasoned candidate mappings, tied to the stated check boundary. Exact provider API versions and safe projections for unimplemented checks remain adapter acceptance work.
 
-Scope is intentionally broader than ARM: Entra applications/service principals, Kubernetes, guest/agent reports, service metadata, provider assurance, process evidence and authorized test records. Wiz may corroborate later; no Wiz adapter/access exists. App registrations are not ARM resources. Managed Redis uses the modern redisEnterprise SKU/database boundary. Managed Prometheus uses Microsoft.Monitor/accounts, not Log Analytics. Event Grid families and both backup vault families stay distinguishable.
+Scope is intentionally broader than ARM: Entra applications/service principals, Kubernetes, guest/agent reports, service metadata, provider assurance, process evidence and authorized test records. The [local Wiz evidence adapter](../WIZ_INTEGRATION.md) imports and correlates normalized observations; no native Wiz API access or new control evaluator exists. App registrations are not ARM resources. Managed Redis uses the modern redisEnterprise SKU/database boundary. Managed Prometheus uses Microsoft.Monitor/accounts, not Log Analytics. Event Grid families and both backup vault families stay distinguishable.
 
 ## Decisions needed before findings
 

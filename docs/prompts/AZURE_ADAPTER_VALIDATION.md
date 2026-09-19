@@ -1,5 +1,8 @@
 # Copyable independent workplace validation and rollout prompt
 
+
+Historical implementation/validation prompt. For current capabilities, versions and remaining work, start with [current status](../STATUS.md). Do not treat old baseline claims below as current deployment state.
+
 Review this cloud-governance repository's actual Azure Functions implementation before workplace rollout. Read docs/AZURE_FUNCTIONS.md and inspect function_app.py, hosting.py, azure_adapters.py, workflow.py, provenance.py, archive.py, pdf_report.py, host.json, requirements/constraints, settings templates and packaging scripts. Treat previous Linux fixture results as offline evidence only; no Azure or macOS validation is implied. Do not change unrelated work or trust a previous completion claim without checking the current revision.
 
 The required architecture is macOS development/testing and production in Azure Functions without a workstation runtime. CollectEvidence is scheduled only with an explicit workplace schedule and enable flag; GenerateReport is a separate key-protected POST that requires one exact saved run ID. Verify there is no anonymous route, implicit latest selection, automatic PDF requirement or runtime AI. Confirm production cannot use Azure CLI/default credential fallback and explicitly selects the assigned managed identity. Verify tenant and subscription checks use supported authenticated mechanisms, never unverified JWT decoding. Confirm report generation cannot call collection, assessment or current context to rewrite historical meaning.

@@ -32,6 +32,7 @@ def main():
         if script.startswith('export'):
             args.append('--check')
         subprocess.run(args, check=True, cwd=ROOT)
+    subprocess.run([sys.executable, str(ROOT / 'scripts/check_docs.py')], check=True, cwd=ROOT)
     print(f'Offline gate passed: {result.testsRun} tests, zero skips. No Azure validation implied.')
     return 0
 

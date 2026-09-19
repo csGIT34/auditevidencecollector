@@ -1,6 +1,6 @@
 # Workplace deployment: Azure Functions, managed identity and retained Blob evidence
 
-Version 0.3.2 supplies a Python v2 Functions application and optional Azure adapters. The [Linux/macOS workflow](https://github.com/csGIT34/auditevidencecollector/actions/workflows/offline.yml) validates offline behavior and builds. The [personal follow-up validation](../infra/personal-lab/REPEAT_VALIDATION.md) resolved observed HTTP 503s through a tested Flex concurrency setting, then completed a second UAMI-backed RG collection and current/historical PDFs with original hashes preserved. The app is stopped; workplace acceptance remains incomplete. macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. The application never provisions infrastructure. Terraform is home-only; workplace patterns are supplied by the user.
+Version 0.4.0 supplies a Python v2 Functions application and optional Azure adapters. The [Linux/macOS workflow](https://github.com/csGIT34/auditevidencecollector/actions/workflows/offline.yml) validates offline behavior and builds. The [personal follow-up validation](../infra/personal-lab/REPEAT_VALIDATION.md) resolved observed HTTP 503s through a tested Flex concurrency setting, then completed a second UAMI-backed RG collection and current/historical PDFs with original hashes preserved. The personal app remains on v0.3.2 and stopped; current source changes are validated locally, and workplace acceptance remains incomplete. See [current status](STATUS.md). macOS is for development/testing. Production runs in an Azure Function App without a workstation, interactive login, or running local terminal. The application never provisions infrastructure. Terraform is home-only; workplace patterns are supplied by the user.
 
 The executable assessment remains scoped encryption at rest. The 215 proposed checks across 23 services and 20 NIST families in `docs/audit/` are applicability research, not newly implemented collectors. Provider-managed keys remain acceptable.
 
@@ -22,7 +22,7 @@ This is a synchronous on-demand report operation. Measure PDF duration and memor
 | File/module | Responsibility |
 | --- | --- |
 | `function_app.py` | Trigger registration, POST input validation, safe HTTP response. |
-| `azure_at_rest/hosting.py` | Strict settings, explicit operation selection, scoped tenant preflight, per-process overlap guard, safe invocation outcomes and dependency construction. |
+| `azure_at_rest/hosting.py` | Strict settings, scoped tenant preflight, per-process overlap guard, structured safe execution errors and dependency construction/cleanup. |
 | `azure_at_rest/azure_adapters.py` | Explicit credential factory, ARM SDK-credential wrapper, budget-aware ARM transport, Blob `ObjectStore`. |
 | `azure_at_rest/workflow.py` | Shared assessment/digest logic and deterministic collect-assess-archive operation. |
 | `azure_at_rest/archive.py` | Versioned facts, saved conclusions, context, exact historical selection and PDF publication. |

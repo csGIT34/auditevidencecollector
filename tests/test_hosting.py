@@ -12,7 +12,7 @@ import zipfile
 
 from azure_at_rest.archive import load_run, publish_pdf, save_run
 from azure_at_rest.collector import FixtureTransport, SUBSCRIPTIONS_API, endpoint
-from azure_at_rest.hosting import ConfigurationError, LOCKS, Settings, execute, schedule
+from azure_at_rest.hosting import ConfigurationError, ExecutionError, LOCKS, Settings, execute, resources, schedule
 from tests.test_archive import evidence, MemoryStore
 from tests.test_azure_adapters import CLIENT, TENANT, SUB, URL, FakeContainer, HAS_AZURE
 
@@ -62,17 +62,37 @@ class ConfigurationTests(unittest.TestCase):
             def broken(*args):
                 raise RuntimeError('SECRET SDK BODY')
                 yield
-            with self.assertLogs('cloud_governance',level='INFO') as logs,self.assertRaises(RuntimeError) as caught:
+            with self.assertLogs('cloud_governance',level='INFO') as logs,self.assertRaises(ExecutionError) as caught:
                 execute('collect',env=env,factory=broken)
             self.assertNotIn('SECRET',str(caught.exception));self.assertNotIn('SECRET',''.join(logs.output))
-            self.assertEqual('failed',json.loads(str(caught.exception))['state'])
+            self.assertEqual('failed',caught.exception.outcome['state'])
             self.assertIn('started',''.join(logs.output))
+
+    def test_resources_always_close_credential_when_blob_close_fails(self):
+        from azure_at_rest.workflow import Deadline
+        credential, store = Mock(), Mock()
+        store.close.side_effect = RuntimeError('synthetic cleanup failure')
+        with patch('azure_at_rest.hosting.token_credential', return_value=credential), patch('azure_at_rest.hosting.BlobStore', return_value=store):
+            with self.assertRaisesRegex(RuntimeError, 'synthetic cleanup failure'):
+                with resources(Settings.parse(environment()), Deadline(30), 'report'):
+                    pass
+        store.close.assert_called_once_with()
+        credential.close.assert_called_once_with()
+
+    def test_resources_close_credential_when_store_construction_fails(self):
+        from azure_at_rest.workflow import Deadline
+        credential = Mock()
+        with patch('azure_at_rest.hosting.token_credential', return_value=credential), patch('azure_at_rest.hosting.BlobStore', side_effect=ValueError('synthetic')):
+            with self.assertRaises(ValueError):
+                with resources(Settings.parse(environment()), Deadline(30), 'report'):
+                    self.fail('must not enter')
+        credential.close.assert_called_once_with()
 
     def test_overlap_rejected_and_configured_wait_is_bounded(self):
         LOCKS['collect'].acquire()
         try:
-            with self.assertLogs('cloud_governance'),self.assertRaises(RuntimeError) as caught:execute('collect',env=environment(),factory=Mock())
-            self.assertEqual('operation_busy',json.loads(str(caught.exception))['code'])
+            with self.assertLogs('cloud_governance'),self.assertRaises(ExecutionError) as caught:execute('collect',env=environment(),factory=Mock())
+            self.assertEqual('operation_busy',caught.exception.outcome['code'])
         finally:LOCKS['collect'].release()
         self.assertEqual(2,Settings.parse({**environment(),'CG_LOCK_WAIT_SECONDS':'2'}).lock_wait)
 
@@ -114,8 +134,8 @@ class HostingTests(unittest.TestCase):
         store=MemoryStore()
         @contextmanager
         def factory(*args):yield store,Mock(get=Mock(return_value={'subscriptionId':SUB,'tenantId':CLIENT,'state':'Enabled'}))
-        with self.assertLogs('cloud_governance'),self.assertRaises(RuntimeError) as caught:execute('collect',env=environment(),factory=factory)
-        self.assertEqual('tenant_preflight',json.loads(str(caught.exception))['stage']);self.assertEqual({},store.objects)
+        with self.assertLogs('cloud_governance'),self.assertRaises(ExecutionError) as caught:execute('collect',env=environment(),factory=factory)
+        self.assertEqual('tenant_preflight',caught.exception.outcome['stage']);self.assertEqual({},store.objects)
 
     def test_registered_http_is_key_protected_post_and_timer_has_no_startup_run(self):
         import function_app
@@ -148,6 +168,20 @@ class HostingTests(unittest.TestCase):
         with patch.object(module,'execute',return_value={'state':'complete','report_id':'p-'+'b'*32}):
             response=module.generate_report(req);self.assertEqual(201,response.status_code)
             self.assertEqual('no-store',response.headers['Cache-Control'])
+
+    def test_http_maps_structured_errors_without_parsing_exception_text(self):
+        import azure.functions as func
+        import function_app
+        request = func.HttpRequest('POST', 'https://fixture/api/reports', body=json.dumps({'run_id':'r-'+'a'*32}).encode())
+        for code, status in [('operation_busy', 409), ('operation_failed', 500)]:
+            outcome = {'operation':'report', 'state':'failed', 'invocation_id':'a'*32, 'stage':'overlap_guard', 'code':code}
+            error = ExecutionError(outcome)
+            self.assertEqual(code, str(error))
+            with patch.object(function_app, 'execute', side_effect=error):
+                response = function_app.generate_report(request)
+            self.assertEqual(status, response.status_code)
+            self.assertEqual(outcome, json.loads(response.get_body()))
+            self.assertEqual('no-store', response.headers['Cache-Control'])
 
     def test_concurrent_pdf_generations_keep_old_run_and_readable_embedded_fonts(self):
         from pypdf import PdfReader

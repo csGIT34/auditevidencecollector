@@ -17,6 +17,8 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements-dev.txt
       - run: python scripts/validate.py
+      - name: Small offline scale regression
+        run: python scripts/benchmark_pipeline.py --sizes 100 --output "$RUNNER_TEMP/scale-check" --max-report-seconds 120 --max-rss-mib 1536
       - run: python -m build --no-isolation
       - run: python scripts/package_functions.py --output dist/functions-source.zip
       - name: Build Linux Functions runtime package
@@ -25,3 +27,20 @@ jobs:
       - name: Smoke test Functions runtime locally
         if: runner.os == 'Linux'
         run: python scripts/smoke_functions_runtime.py --package dist/functions-runtime.zip --output "$RUNNER_TEMP/functions-runtime-check"
+  terraform:
+    name: Terraform mocked plans
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TF_IN_AUTOMATION: 'true'
+      TF_DATA_DIR: /tmp/cloud-governance-terraform-tests
+    steps:
+      - uses: actions/checkout@v5
+      - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3
+        with:
+          terraform_version: '1.15.9'
+          terraform_wrapper: false
+      - run: terraform -chdir=infra/personal-lab fmt -check -recursive
+      - run: terraform -chdir=infra/personal-lab init -backend=false -input=false -lockfile=readonly
+      - run: terraform -chdir=infra/personal-lab validate
+      - run: terraform -chdir=infra/personal-lab test
