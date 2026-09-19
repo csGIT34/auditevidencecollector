@@ -15,6 +15,10 @@ Updated 2026-09-19. **Source release 0.4.0.** This page is the current status; d
 
 Local release checks: **143 Python tests, zero skips; four Terraform mocked plans; 22 packaged Functions runtime checks**. The original retained v0.3.1 live archive also loaded under 0.4.0 with every object hash unchanged. See [release notes](../CHANGELOG.md).
 
+## Full-project completion
+
+The broader audit system is **incomplete**. Track required implementation, workplace acceptance and lab cleanup in the [project completion plan](PROJECT_COMPLETION_PLAN.md). The 215 proposed checks are the delivery inventory, not executable coverage.
+
 ## Start locally
 
 1. Follow [macOS/Linux development](MACOS_DEVELOPMENT.md) and run `python scripts/validate.py`.
