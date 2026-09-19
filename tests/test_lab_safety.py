@@ -46,3 +46,31 @@ class LabSafetyTests(unittest.TestCase):
         with patch('scripts.build_functions_package.platform.system',return_value='Linux'),patch('scripts.build_functions_package.platform.machine',return_value='aarch64'),patch('scripts.build_functions_package.subprocess.run') as install:
             with self.assertRaisesRegex(RuntimeError,'x86_64'):build('/tmp/unsupported-arm-functions.zip')
             install.assert_not_called()
+
+    def test_private_build_files_remain_readable_in_deployment_archive(self):
+        import os, tempfile, zipfile
+        from pathlib import Path
+        from scripts.build_functions_package import build
+
+        def install(command, **kwargs):
+            target = Path(command[command.index('--target') + 1])
+            target.mkdir(parents=True)
+            (target / 'private_dependency.py').write_text('VALUE = 1\n')
+            (target / 'private_dependency.py').chmod(0o600)
+
+        with tempfile.TemporaryDirectory() as temp:
+            output = Path(temp) / 'function.zip'
+            previous = os.umask(0o077)
+            try:
+                with patch('scripts.build_functions_package.platform.system', return_value='Linux'), \
+                     patch('scripts.build_functions_package.platform.machine', return_value='x86_64'), \
+                     patch('scripts.build_functions_package.sys.version_info', (3, 12)), \
+                     patch('scripts.build_functions_package.subprocess.run', side_effect=install):
+                    build(output, with_lab_probe=True)
+            finally:
+                os.umask(previous)
+            self.assertEqual(output.stat().st_mode & 0o777, 0o600)
+            with zipfile.ZipFile(output) as archive:
+                self.assertIn('.python_packages/lib/site-packages/private_dependency.py', archive.namelist())
+                for item in archive.infolist():
+                    self.assertEqual((item.external_attr >> 16) & 0o777, 0o644, item.filename)

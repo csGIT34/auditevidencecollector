@@ -8,9 +8,9 @@ import sys
 import tempfile
 import zipfile
 if __package__:
-    from .package_functions import package, ROOT
+    from .package_functions import package, ROOT, write_readable_file
 else:
-    from package_functions import package, ROOT
+    from package_functions import package, ROOT, write_readable_file
 
 
 def build(output, *, wheelhouse=None, with_lab_probe=False):
@@ -40,7 +40,7 @@ def build(output, *, wheelhouse=None, with_lab_probe=False):
                 if file.is_symlink():
                     raise ValueError('No symlinks in deployment package')
                 if file.is_file():
-                    archive.write(file, file.relative_to(stage))
+                    write_readable_file(archive, file, stage)
     print('Built Linux deployment package; no Azure action performed. Lab probe included:', with_lab_probe)
 
 

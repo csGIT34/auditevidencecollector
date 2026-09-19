@@ -2,11 +2,13 @@
 
 **Partial live validation; repeated-request availability remains unresolved.** The personal Function App is stopped, collection/report/probe settings are false, the schedule is empty, and refreshed function metadata contains no timer. Evidence/storage and the 16 Terraform-managed instances remain for the authorized post-workplace-handoff cleanup. Personal identifiers, state, plans, billing responses and evidence are outside this public repository.
 
+See the [follow-up dispatch investigation](DISPATCH_INVESTIGATION.md) for the minimal reproduction, temporary logging and packaging-permission fix. The original results below are historical.
+
 ## Exact versions and proof boundaries
 
-- Published/deployed baseline: `1922cb78d47c3eca6594e9b391dfde98672f7670`, application v0.3.1 and PDF renderer 1.1. [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35454459202) passed 117 tests per OS, zero skips, plus builds.
-- The deployed Linux x64 ZIP is 16,189,936 bytes, SHA-256 `44b023e1a909d15a6a6c094cbd1b8d8b2f95b6da6c41d25ae326df5032409bef`. Application bytes were compared with that commit before deployment. No corrected v0.3.2 package was deployed.
-- Local corrected source: application v0.3.2, PDF renderer 1.2, unchanged assessment rule version. **120 tests passed, zero skips**, including RG verification scope and preservation of historical commands/bytes. This local result is not a new GitHub/macOS or hosted-runtime result; publication CI must be recorded separately.
+- Original live-run deployment baseline: `1922cb78d47c3eca6594e9b391dfde98672f7670`, application v0.3.1 and PDF renderer 1.1. [Linux/macOS CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35454459202) passed 117 tests per OS, zero skips, plus builds.
+- The deployed Linux x64 ZIP is 16,189,936 bytes, SHA-256 `44b023e1a909d15a6a6c094cbd1b8d8b2f95b6da6c41d25ae326df5032409bef`. Application bytes were compared with that commit before deployment. No corrected v0.3.2 package was deployed during that initial session; the follow-up investigation records its later deployment.
+- Local corrected source: application v0.3.2, PDF renderer 1.2, unchanged assessment rule version. **120 tests passed, zero skips**, including RG verification scope and preservation of historical commands/bytes. [Publication CI](https://github.com/csGIT34/auditevidencecollector/actions/runs/35458109446) subsequently passed 120 tests per OS on Linux/macOS, zero skips, plus builds; that does not establish hosted availability.
 - Terraform remains home-only. The SCM policy/casing fix passed schema/format validation and all four mocked plan tests. The reviewed live reconciliation changed only the existing SCM policy's `allow` property to false. Workplace infrastructure uses the user's existing patterns and the [runtime contract](../../docs/WORKPLACE_RUNTIME_CONTRACT.md).
 
 ## Observed live results

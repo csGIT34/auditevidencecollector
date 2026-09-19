@@ -90,7 +90,7 @@ Build on Linux x86_64 Python 3.12, independent of a personal Mac virtual environ
 python scripts/build_functions_package.py --output "$LAB_PRIVATE/functions-lab.zip" --with-lab-probe
 ```
 
-On an Apple Silicon Mac, use an approved x64 Linux build runner or a container explicitly configured with `--platform linux/amd64`; an ARM Linux container is rejected because its native wheels do not match the managed Functions x64 runtime. The builder combines the source allowlist with pinned Linux dependencies and a temporary lab probe. It never deploys. `--wheelhouse PATH` uses an approved local package cache with `--no-index`. The normal production source packager excludes all lab code/Terraform. Deploy a complete package through the supported Flex CLI path, using the private output's RG/app name and the existing Entra CLI session:
+On an Apple Silicon Mac, use an approved x64 Linux build runner or a container explicitly configured with `--platform linux/amd64`; an ARM Linux container is rejected because its native wheels do not match the managed Functions x64 runtime. The builder combines the source allowlist with pinned Linux dependencies and a temporary lab probe. Both ZIP builders normalize archived file modes to 0644 so a restrictive local umask does not prevent the Azure runtime from reading the code; local source/output permissions are preserved. It never deploys. `--wheelhouse PATH` uses an approved local package cache with `--no-index`. The normal production source packager excludes all lab code/Terraform. Deploy a complete package through the supported Flex CLI path, using the private output's RG/app name and the existing Entra CLI session:
 
 ```sh
 az functionapp deployment source config-zip --resource-group LAB_RG --name LAB_APP \
