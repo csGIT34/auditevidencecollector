@@ -1,14 +1,13 @@
 """Command line interface; the default offline path needs only Python."""
 import argparse
 from dataclasses import asdict
-import hashlib
 import json
 import os
 from pathlib import Path
 import sys
 import tempfile
 
-from .assessment import assess
+from .workflow import assess_snapshot
 from .catalog import RULES, RULE_VERSION
 from .collector import ArmTransport, Collector, FixtureTransport
 from .report import exit_code, markdown
@@ -107,10 +106,7 @@ def main(argv=None):
         else:
             snapshot = json.loads(args.input.read_text(encoding="utf-8"))
             validate_snapshot(snapshot)
-        report = assess(snapshot)
-        snapshot_bytes = json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode("utf-8")
-        report["snapshot_sha256"] = hashlib.sha256(snapshot_bytes).hexdigest()
-        report["reassessed_from_snapshot"] = args.command == "assess"
+        report = assess_snapshot(snapshot, reassessed=args.command == "assess")
         if getattr(args, "store", None):
             from .archive import save_run
             from .storage import FileStore

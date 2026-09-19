@@ -13,7 +13,7 @@ The matrix separates four questions: **does the control apply; what evidence cou
 - [Prioritized implementation backlog](IMPLEMENTATION_BACKLOG.md): collection phases, service-specific work and acceptance gates.
 - [Evidence method and permission boundary](METHOD.md), [source register](SOURCES.md), [machine-readable catalog](catalog.json), [NIST control/objective index](nist-control-index.json).
 
-Current executable encryption rules and their limits remain in [implementation coverage](../COVERAGE.md) and [authoritative service identity scope](../PROGRAM_SCOPE.md). The tool is still version 0.1.1 at this research snapshot. The [local archive/PDF pipeline](../LOCAL_ARCHIVE_PDF.md) now exists in tool 0.2.0; it does not implement these proposed control checks.
+Current executable encryption rules and their limits remain in [implementation coverage](../COVERAGE.md) and [authoritative service identity scope](../PROGRAM_SCOPE.md). The tool is still version 0.1.1 at this research snapshot. The [local archive/PDF pipeline](../LOCAL_ARCHIVE_PDF.md) now exists in tool 0.3.0; it does not implement these proposed control checks.
 
 ## Research basis and limits
 

@@ -20,3 +20,14 @@ htmlcov/
 # Local generated reports and archive QA artifacts
 output/
 tmp/
+local.settings*.json
+!local.settings.example.json
+.python_packages/
+.venv*/
+venv*/
+.vscode/
+.DS_Store
+archive/
+archives/
+*.zip
+deploy/*.local.json

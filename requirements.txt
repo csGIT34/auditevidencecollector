@@ -1,0 +1,6 @@
+# Functions runtime dependencies; constraints pins the tested transitive set.
+-c constraints.txt
+azure-functions
+azure-identity
+azure-storage-blob
+reportlab

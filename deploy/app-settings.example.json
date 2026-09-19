@@ -1,0 +1,23 @@
+{
+  "FUNCTIONS_WORKER_RUNTIME": "python",
+  "CG_COLLECTION_ENABLED": "false",
+  "CG_REPORT_ENABLED": "false",
+  "CG_COLLECTION_SCHEDULE": "",
+  "CG_AUTH_MODE": "managed_identity",
+  "CG_TENANT_ID": "",
+  "CG_MANAGED_IDENTITY_CLIENT_ID": "",
+  "CG_SUBSCRIPTION_IDS": "",
+  "CG_EVIDENCE_ACCOUNT_URL": "",
+  "CG_EVIDENCE_CONTAINER": "",
+  "CG_EVIDENCE_PREFIX": "",
+  "CG_RUNTIME_STORAGE_ACCOUNT": "",
+  "AzureWebJobsStorage__accountName": "",
+  "AzureWebJobsStorage__credential": "managedidentity",
+  "AzureWebJobsStorage__clientId": "",
+  "CG_COLLECTION_BUDGET_SECONDS": "480",
+  "CG_REPORT_BUDGET_SECONDS": "180",
+  "CG_LOCK_WAIT_SECONDS": "0",
+  "CG_ARM_RETRIES": "2",
+  "CG_BLOB_RETRIES": "2",
+  "CG_MAX_PAGES": "1000"
+}

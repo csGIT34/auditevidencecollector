@@ -3,6 +3,20 @@ from io import BytesIO
 from pathlib import Path
 import json
 from xml.sax.saxutils import escape
+from functools import wraps
+from threading import Lock
+
+_RENDER_LOCK = Lock()
+
+
+def serialized_render(function):
+    @wraps(function)
+    def wrapped(*args, **kwargs):
+        # ReportLab's registered TTFont objects are process-global. Keep one
+        # document's subset/font state isolated from another concurrent render.
+        with _RENDER_LOCK:
+            return function(*args, **kwargs)
+    return wrapped
 
 
 def renderer_dependencies():
@@ -35,6 +49,7 @@ def flatten(value, prefix=''):
         yield prefix or 'Value', ('Empty object' if value == {} else 'Empty list' if value == [] else readable(value))
 
 
+@serialized_render
 def render_pdf(saved, generation):
     renderer_dependencies()
     import reportlab
@@ -168,7 +183,13 @@ def render_pdf(saved, generation):
     story.append(p('PASS means the stated implemented technical criterion is met for this observed scope. FAIL means a confirmed disabling state or failed dependency. UNKNOWN means insufficient/contradictory evidence. ERROR means a required read failed. UNSUPPORTED means no reviewed exact-type rule. NOT_APPLICABLE is a documented narrow mechanism/scope exclusion. None of these statuses replaces program-wide applicability or evidence of manual/shared controls.'))
     story.append(table([['Inventory scope','Value']]+list(flatten(snapshot['inventory'])),[width*.44,width*.56]))
     for item in report['limitations']:story.append(p('- '+item))
-    story.append(p('Dates cover this collection window only. Evidence age is visible, but an organization-approved freshness limit is not defined. No evidence is supplied for the rest of an audit period. Tenant identity is not explicitly captured by the current ARM snapshot; subscription selection and collector mode are preserved.'))
+    story.append(p('Dates cover this collection window only. Evidence age is visible, but an organization-approved freshness limit is not defined. No evidence is supplied for the rest of an audit period.'))
+    provenance = context.get('execution_provenance')
+    if provenance:
+        story.append(table([['Saved execution provenance','Value']]+list(flatten(provenance)),[230,width-230]))
+        story.append(p('The client ID records identity configuration, not independent proof of the executing principal. Live tenant validation marked arm_subscription_metadata uses authenticated ARM subscription metadata. Synthetic reports contain test context only. Tokens were not decoded or retained; storage retention policy was not verified.'))
+    else:
+        story.append(p('Tenant identity is not explicitly captured by this saved ARM snapshot; subscription selection and collector mode are preserved. No execution provenance extension was recorded.'))
     story.append(PageBreak())
     heading('2. Findings and evidence index','findings')
     story.append(p('Evidence references E001 onward locate the complete saved resource observations later in this document. Parent/dependency findings can describe the same underlying condition; row counts are not unique incident counts or a control pass rate.'))
@@ -245,6 +266,8 @@ def render_pdf(saved, generation):
                        ('NIST catalog version',program['nist_source']['version']),('NIST catalog SHA-256',program['nist_source']['sha256']),
                        ('PDF generation time',generation['generated_at']),('Renderer / dependency',generation['renderer_version']+' / '+json.dumps(generation['dependencies'],sort_keys=True))]:field(name,value)
     for name,item in saved['manifest']['objects'].items():field(name+' object SHA-256',item['sha256'])
-    story.append(p('The saved JSON is an internal reproducibility format: it preserves collected facts separately from evaluated conclusions. This PDF contains their human-readable substance. Hashes detect mismatch relative to the manifest; they are not signatures or proof against an administrator replacing an entire local archive. The local store prevents application-level overwrites but is not locked immutable storage. Retention duration and production immutable-storage policy remain organization-defined.'))
+    if generation.get('execution_provenance'):
+        story.append(table([['PDF generation provenance','Value']]+list(flatten(generation['execution_provenance'])),[230,width-230]))
+    story.append(p('The saved JSON is an internal reproducibility format: it preserves collected facts separately from evaluated conclusions. This PDF contains their human-readable substance. Hashes detect mismatch relative to the manifest; they are not signatures or proof against a privileged actor replacing an archive. The application enforces create-only publication. Local files and Azure Blob storage do not by themselves establish WORM protection or a verified retention lock. Retention duration, privileged access and immutable-storage policy remain organization-defined and were not verified by this report.'))
     doc.multiBuild(story)
     return output.getvalue()

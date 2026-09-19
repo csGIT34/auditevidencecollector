@@ -4,13 +4,15 @@
 
 The currently executable capability is a read-only encryption-at-rest Python CLI for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
 
-**Canonical local repository:** `/home/zerocool/github/cloud-governance`. The previous folder at `/home/zerocool/Documents/ChatGPT/Cloud Governance` contains a pointer and a preserved pre-move archive. Make future changes here.
+**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). No Azure deployment or live tenant validation has been performed.
+
+The [0.3.0 validation record](docs/VALIDATION_0_3_0.md) separates the completed offline checks from the remaining workplace deployment gates.
 
 This is an initial technical evidence tool, provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). It is not a full RCSA assessment, certification, or claim that all application data is protected. A successful resource result applies to the stated scope and evidence basis.
 
 ## Save a run and produce an auditor PDF
 
-Version **0.2.0** adds a local archive and a separate historical PDF operation. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
+Version **0.3.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. Existing encryption collectors are unchanged.
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -22,14 +24,14 @@ python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_
 
 Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
 
-See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). **Azure storage connectivity is deferred**; no Azure SDK, cloud storage, database, runtime AI or cloud spending is introduced. The filesystem adapter currently requires POSIX support. ReportLab is optional and needed only for PDF generation.
+See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented and tested offline; deployment and live validation remain workplace steps. Both hosted operations default disabled. No database, runtime AI or cloud spending was introduced. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
 
 ## Run offline now
 
-Python 3.11+ is required. Collection, assessment and JSON archiving use the Python standard library. PDF output uses the optional ReportLab extra; PDF extraction tests use optional pypdf. Run from the repository:
+Python 3.11+ is required. Collection, assessment and JSON archiving use the Python standard library. PDF output uses the optional ReportLab extra; PDF extraction tests use optional pypdf. For the complete development/test dependencies, follow [the venv setup](docs/MACOS_DEVELOPMENT.md); its validation gate rejects skipped checks. Run from the repository:
 
 ```sh
-cd /home/zerocool/github/cloud-governance
+# From the cloned repository root, with your virtual environment active
 python3 -m azure_at_rest collect \
   --fixture examples/demo-fixture.json \
   --snapshot evidence/demo-snapshot.json \
@@ -42,7 +44,7 @@ The fixture is synthetic and makes **no Azure calls, authentication calls or cha
 Open [the committed synthetic report](examples/demo-report.md) to see the output without running anything. Its identifiers and findings are examples, not tenant evidence.
 
 ```sh
-python3 -m unittest discover -v
+python3 scripts/validate.py
 python3 -m azure_at_rest catalog
 python3 -m azure_at_rest assess \
   --input evidence/demo-snapshot.json \
@@ -60,7 +62,7 @@ Optional packaging, if you already have setuptools/pip available: `python3 -m pi
 
 After authorization, an operator can run a smoke test **locally** against existing resources. It uses Azure public-cloud ARM management-plane metadata GETs only. It does not provision resources, use a hosted runner, read blobs/database rows, enable diagnostic logs, activate paid services or modify Azure configuration. Offline testing is the established path when no new Azure charges are permitted. Existing subscriptions/resources retain their normal costs; the tool does not assess those costs.
 
-Requirements: Azure CLI installed, an existing authorized sign-in for the correct tenant, public Azure cloud, and metadata read permissions. The tool only requests a short-lived ARM token through `az account get-access-token`; it never runs `az login` or changes the active subscription/cloud.
+Requirements: Azure CLI installed, an existing authorized sign-in for the correct tenant, public Azure cloud, and metadata read permissions. The local CLI only requests a short-lived ARM token through `az account get-access-token`; it never runs `az login` or changes the active subscription/cloud.
 
 ```sh
 # Substitute an existing subscription UUID after live testing is authorized.
@@ -127,10 +129,10 @@ Private endpoints are explicitly in program scope for resource-local evidence an
 
 To add a service: research its Microsoft guarantee and exceptions, add an exact type and reviewed API version, collect only necessary metadata, implement any configurable-state/dependency logic, and add positive, disabled, missing, denied and partial-inventory fixtures. Do not classify an entire provider or all its children by name. Keep unsupported types visible. An additional future adapter can emit the sanitized snapshot contract (for example, separately obtained Wiz evidence); no Wiz integration is implemented here.
 
-No deployment, enforcement, remediation, key rotation, secret reads, messaging, remote repository creation or cloud mutation is part of this tool.
+ARM collection performs no enforcement, remediation, key rotation or application-secret reads. The optional Blob adapter writes only archive objects in the configured existing container. No resource provisioning, deployment, role changes, messaging or remote repository creation is performed by the tool.
 
 ## Future integration direction
 
 Core collection, control evaluation, evidence output and any future core storage path must remain deterministic Python/API operations with **no runtime AI/model dependency or model-call costs**. Versioned structured evidence, stable resource/rule IDs, timestamps, coverage results and replayable snapshots are the foundation for future frequent collection and retained history.
 
-Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration, dashboard, scheduler, hosting or evidence-storage service is implemented or provisioned here. No runtime AI does not imply free hosting/storage; those choices and costs remain undecided, and no personal Azure spending is authorized.
+Optional future consumers may include MCP clients used by internal AI tools, uploaded Markdown/PDF knowledge-base documents, APIs and posture dashboards. They can consume core evidence without making collection or evaluation depend on a model. No MCP server, AI integration or dashboard is implemented. The Functions hosting layer and Blob adapter are source implementations only; no cloud service or schedule is provisioned here. No runtime AI does not imply free hosting/storage; those choices and costs remain undecided, and no personal Azure spending is authorized.

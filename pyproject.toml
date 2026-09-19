@@ -4,14 +4,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "azure-at-rest"
-version = "0.2.0"
+version = "0.3.0"
 description = "Read-only Azure encryption-at-rest technical evidence collector"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
 pdf = ["reportlab>=4.4,<5"]
-test = ["pypdf>=6,<7"]
+test = ["pypdf>=6,<7", "jmespath>=1.0,<2"]
+azure = ["azure-identity>=1.25,<2", "azure-storage-blob>=12.30,<13", "azure-functions>=1.25,<2"]
 
 [tool.setuptools.package-data]
 azure_at_rest = ["program_scope.json"]

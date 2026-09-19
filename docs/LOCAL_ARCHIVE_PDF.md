@@ -1,6 +1,6 @@
 # Local saved-evidence and PDF workflow
 
-Version 0.2.0 implements the complete workflow locally: collect and assess, preserve the facts and conclusions in a new archive run, select one exact saved run, generate one self-contained PDF, and archive that PDF as a new report version. **There is no Azure Blob adapter, database or cloud upload in this implementation.**
+Version 0.3.0 preserves the complete workflow locally: collect and assess, preserve the facts and conclusions in a new archive run, select one exact saved run, generate one self-contained PDF, and archive that PDF as a new report version. This page describes the local workflow. The optional Azure Functions/Blob path is documented in [AZURE_FUNCTIONS.md](AZURE_FUNCTIONS.md); it does not require a database.
 
 The auditor receives the PDF. The JSON files are internal records for historical reproducibility and future consumers; auditors do not need a database, JSON, Blob URL or separate spreadsheet to understand a finding. The PDF contains an index, scope/times, methods and criteria, actual saved facts, findings, dependencies, collection errors, missing/unknown/manual coverage, verification instructions, sources and provenance. The PDF embeds fonts bundled with ReportLab; characters outside their coverage are preserved as explicit Unicode code points rather than unreadable glyphs. Evidence IDs and internal links connect the findings index to resource details inside the same document.
 
@@ -58,7 +58,7 @@ UUIDs prevent same-timestamp collisions. Given run/report IDs, object keys are d
 | --- | --- |
 | snapshot.json | Sanitized collected observations, original collection period, mode, inventory/child completeness and errors. No evaluation is substituted into these facts. |
 | assessment.json | Saved results/reasons/scopes, dependencies, gaps, source references, rule/tool/schema versions, timestamps, summary and snapshot digest. |
-| context.json | Frozen explanatory rule criteria/catalog plus program applicability outline, unresolved parameters and research source hashes. Later documentation/rule changes do not rewrite this context. |
+| context.json | Frozen explanatory rule criteria/catalog plus program applicability outline, unresolved parameters and research source hashes. Hosted runs add versioned nonsecret execution/backend provenance. Later documentation/rule changes do not rewrite this context. |
 | Run manifest | Original collection/assessment timestamps, archive timestamps, scope, versions, assessment conclusion/coverage flags and exact keys/lengths/SHA-256 for all three objects. Written last. |
 | PDF manifest | New report ID/generation time, renderer/tool/dependency versions, original run-manifest hash and object descriptors, PDF key/size/hash and archive completion time. Written last. |
 | Intent/failure records | A started attempt and, if possible, a sanitized failure stage/time. No credentials or raw exception/API payloads. |
@@ -89,10 +89,10 @@ The renderer operates in memory on one run; very large inventories may require f
 - `tests/test_archive.py` and `tests/test_pdf_pipeline.py`: no-overwrite/concurrency, invalid paths/symlinks, partial/corrupt runs, historical selection, failure stages, PDF content and optional export semantics.
 
 ```sh
-python3 -m pip install '.[pdf,test]'
-python3 -m unittest discover -v
+python3 -m pip install -r requirements-dev.txt
+python3 scripts/validate.py
 python3 docs/audit/validate_catalog.py
 python3 docs/audit/export_program_scope.py --check
 ```
 
-PDF extraction tests require the optional test dependency `pypdf`; the existing optional JMESPath parser test requires `jmespath`. These are test-only and do not add runtime collection dependencies. Visually render a newly generated sample using Poppler after renderer changes, inspect tables/headers/footers/long IDs and all section transitions, and verify internal evidence links. See the [portable workplace guide](WORKPLACE_AZURE_HANDOFF.md) and [ready-to-use implementation prompt](prompts/AZURE_ADAPTER_IMPLEMENTATION.md) for the deferred Azure extension.
+PDF extraction tests require the optional test dependency `pypdf`; the existing optional JMESPath parser test requires `jmespath`. These are test-only and do not add runtime collection dependencies. Visually render a newly generated sample using Poppler after renderer changes, inspect tables/headers/footers/long IDs and all section transitions, and verify internal evidence links. See the [portable workplace guide](WORKPLACE_AZURE_HANDOFF.md) and [ready-to-use implementation prompt](prompts/AZURE_ADAPTER_IMPLEMENTATION.md) for the implemented Azure adapter and remaining workplace deployment steps.

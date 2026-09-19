@@ -12,9 +12,10 @@ from .catalog import RULES, RULE_VERSION
 from .safety import now
 from .snapshot import validate_snapshot
 from .storage import ObjectStore
+from .provenance import validate_provenance
 
 ARCHIVE_VERSION = '1.0'
-RENDERER_VERSION = '1.0'
+RENDERER_VERSION = '1.1'
 STATUSES = ('PASS', 'FAIL', 'UNKNOWN', 'ERROR', 'UNSUPPORTED', 'NOT_APPLICABLE')
 
 CRITERIA = {
@@ -114,10 +115,12 @@ def _failure(store, prefix, stage):
         pass  # An intent without a final manifest still indicates incomplete publication.
 
 
-def save_run(store: ObjectStore, snapshot, report):
+def save_run(store: ObjectStore, snapshot, report, *, provenance=None):
     validate_snapshot(snapshot)
     validate_pair(snapshot, report)
     context = make_context()
+    if provenance is not None:
+        context['execution_provenance'] = validate_provenance(provenance)
     if report['tool_version'] != context['collector_version'] or report['rule_version'] != context['rule_version']:
         raise ValueError('Cannot archive old results with current context')
     run_id = 'r-' + uuid4().hex
@@ -172,6 +175,8 @@ def load_run(store: ObjectStore, run_id):
             raise ValueError('Object integrity mismatch')
         saved[name] = json.loads(data)
     validate_pair(saved['snapshot'], saved['assessment'])
+    if 'execution_provenance' in saved['context']:
+        validate_provenance(saved['context']['execution_provenance'])
     if (saved['context']['schema_version'] != ARCHIVE_VERSION or saved['context']['rule_version'] != saved['assessment']['rule_version']
             or saved['context']['collector_version'] != saved['assessment']['tool_version']):
         raise ValueError('Saved context mismatch')
@@ -206,7 +211,9 @@ def list_runs(store: ObjectStore):
     return runs
 
 
-def publish_pdf(store: ObjectStore, run_id):
+def publish_pdf(store: ObjectStore, run_id, *, provenance=None, deadline=None):
+    if deadline:
+        deadline.check()
     saved = load_run(store, run_id)
     from .pdf_report import render_pdf, renderer_dependencies
     dependencies = renderer_dependencies()  # Fail clearly before reserving a report if dependency is absent.
@@ -216,10 +223,16 @@ def publish_pdf(store: ObjectStore, run_id):
     generation = {'report_id': report_id, 'run_id': run_id, 'generated_at': generated_at,
                   'renderer_version': RENDERER_VERSION, 'generator_tool_version': __version__, 'dependencies': dependencies,
                   'source_manifest_sha256': saved['manifest_sha256']}
+    if provenance is not None:
+        generation['execution_provenance'] = validate_provenance(provenance)
     store.put_new(prefix + '/intent.json', encode({'schema_version': ARCHIVE_VERSION, **generation}))
     stage = 'render_pdf'
     try:
+        if deadline:
+            deadline.check()
         data = render_pdf(saved, generation)
+        if deadline:
+            deadline.check()
         if not data.startswith(b'%PDF-') or not data.rstrip().endswith(b'%%EOF'):
             raise ValueError('Invalid rendered PDF')
         stage = 'pdf_object'
