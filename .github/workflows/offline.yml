@@ -19,3 +19,9 @@ jobs:
       - run: python scripts/validate.py
       - run: python -m build --no-isolation
       - run: python scripts/package_functions.py --output dist/functions-source.zip
+      - name: Build Linux Functions runtime package
+        if: runner.os == 'Linux'
+        run: python scripts/build_functions_package.py --output dist/functions-runtime.zip
+      - name: Smoke test Functions runtime locally
+        if: runner.os == 'Linux'
+        run: python scripts/smoke_functions_runtime.py --package dist/functions-runtime.zip --output "$RUNNER_TEMP/functions-runtime-check"

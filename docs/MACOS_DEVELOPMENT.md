@@ -30,6 +30,14 @@ The Functions Python SDK is included in the developer requirements. Its registra
 
 Copy `local.settings.example.json` to ignored `local.settings.json`. Both operations are disabled by default and the collection schedule is empty. Do not fill in workplace settings or enable an operation until work-tenant access is authorized. Use `func start --port 7071` on localhost only; local Functions HTTP key checks are disabled. No public tunnel or exposed development port is part of this workflow.
 
+After creating the Linux amd64 Python 3.12 deployment ZIP, you can test it in Microsoft's actual Functions container on a Mac with Docker Desktop or on Linux with Docker Engine:
+
+```sh
+python scripts/smoke_functions_runtime.py --package dist/functions-runtime.zip --output ../functions-runtime-check
+```
+
+Use a new output directory outside the checkout. The script pins the Microsoft image by digest, binds only a random loopback port, uses temporary local function keys, and supplies no Azure login, tenant settings or cloud credentials. Collection, reporting and the timer remain disabled. It checks function indexing, rejects missing/wrong keys and sends 20 consecutive authenticated validation requests over fresh connections. It records the package hash, host version and results, then removes its container. The container uses at most 2 GiB and one CPU. Initial image/extension downloads require internet access; this optional integration check is separate from the fixture-only offline gate. Linux CI runs it too. A local pass does not validate Flex ingress, managed identity, Azure networking or a different cloud host version.
+
 For authorized local Azure adapter testing, `CG_AUTH_MODE=azure_cli` plus `CG_LOCAL_DEVELOPMENT=true` explicitly selects a tenant-bound developer credential. It is rejected when Azure host environment markers are present. `CG_MANAGED_IDENTITY_CLIENT_ID` may remain empty for this developer mode. The standard CLI still uses its current authorized CLI context, so inspect `az cloud show` and `az account show`, sign in to the intended tenant and pass an explicit subscription. No DefaultAzureCredential chain silently chooses another identity.
 
 Use the workplace configuration guide for the separate runtime/evidence storage settings. An emulator is optional developer infrastructure requiring its own approval/setup; no emulator is required by the tests or automatically installed here. Do not place keys in tracked settings or shell scripts.
