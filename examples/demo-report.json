@@ -1,0 +1,1467 @@
+{
+  "collection_completed_at": "2026-09-19T02:25:45+00:00",
+  "collection_started_at": "2026-09-19T02:25:45+00:00",
+  "control_mapping": {
+    "assessment": "Provisional technical configuration examination and documented service guarantees; not certification or full control effectiveness.",
+    "controls": [
+      "SC-28",
+      "SC-28(1)"
+    ],
+    "framework": "NIST SP 800-53 Rev. 5 / SP 800-53A Rev. 5",
+    "sources": [
+      "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+      "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"
+    ]
+  },
+  "errors": [
+    {
+      "code": "http_error",
+      "http_status": 403,
+      "observed_at": "2026-09-19T02:25:45+00:00",
+      "operation": "resource_get",
+      "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore"
+    }
+  ],
+  "generated_at": "2026-09-19T02:25:45+00:00",
+  "inventory": {
+    "complete": true,
+    "subscription_discovery": {
+      "complete": true,
+      "items_received": 1,
+      "mode": "accessible_in_current_tenant",
+      "pages": 1
+    },
+    "subscriptions": [
+      {
+        "complete": true,
+        "id": "11111111-1111-1111-1111-111111111111",
+        "items_received": 29,
+        "pages": 2
+      }
+    ]
+  },
+  "limitations": [
+    "Inventory covers only the explicitly selected subscriptions or those visible to the CLI identity in its current tenant, in Azure public cloud.",
+    "The ARM subscription resource list is not a universal child-resource or data-plane inventory. Only catalogued child collections are enumerated. Deleted, inaccessible, external and unlisted child resources may be absent.",
+    "A PASS applies only to the stated resource scope and basis. Documented service enforcement is an inference from verified resource identity and a Microsoft guarantee, not a cryptographic measurement.",
+    "Application data flows, Kubernetes runtime volumes, external SaaS, local copies, exports, diagnostics destinations and key lifecycle/availability are not comprehensively discovered.",
+    "This is point-in-time technical evidence provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). Organizational scope, information types, integrity protection, procedures and operating effectiveness require separate RCSA/800-53A assessment."
+  ],
+  "mode": "offline_fixture",
+  "reassessed_from_snapshot": false,
+  "results": [
+    {
+      "api_version": "2024-03-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+          "relation": "container_environment",
+          "resolved": true,
+          "result": "UNKNOWN"
+        }
+      ],
+      "errors": [],
+      "evidence": {
+        "managedEnvironmentId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+        "volumes": [
+          {
+            "name": "data",
+            "storageName": "shared-files",
+            "storageType": "AzureFile"
+          }
+        ]
+      },
+      "gaps": [
+        "Dependency container_environment is UNKNOWN: /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+        "Declared environment and volume metadata only; mounted stores, revisions, ephemeral storage and application dependencies remain unverified."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/containerApps/app",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "app",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "container-app",
+      "rule_version": "2026.09.19.1",
+      "scope": "Declared environment and volume metadata only; mounted stores, revisions, ephemeral storage and application dependencies remain unverified.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.App/containerApps"
+    },
+    {
+      "api_version": "2024-03-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [
+        "Environment metadata only; file shares, logs, application volumes and revision storage need separate evidence."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.App/managedEnvironments/apps-env",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "apps-env",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "container-env",
+      "rule_version": "2026.09.19.1",
+      "scope": "Environment metadata only; file shares, logs, application volumes and revision storage need separate evidence.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/container-apps/storage-mounts"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.App/managedEnvironments"
+    },
+    {
+      "api_version": "2023-03-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.AppConfiguration/configurationStores/configuration",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "configuration",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "appconfig",
+      "rule_version": "2026.09.19.1",
+      "scope": "Sensitive configuration values stored within App Configuration; clients and linked stores excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-app-configuration/concept-customer-managed-keys"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.AppConfiguration/configurationStores"
+    },
+    {
+      "api_version": "2024-03-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "redisConfiguration.rdb-backup-enabled": "true"
+      },
+      "gaps": [
+        "Persistence account identifiers are not available safely from this read without inspecting connection strings. Supply separate destination evidence; no secret/listKeys calls are made."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/Redis/cache",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "cache",
+      "reason": "Redis persistence flags do not establish the identity and encryption of every backing destination.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "redis",
+      "rule_version": "2026.09.19.1",
+      "scope": "Premium RDB/AOF persistence destinations require verification; export, external and temporary copies excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-premium-persistence"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Cache/Redis"
+    },
+    {
+      "api_version": "2024-02-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Cache/redisEnterprise/enterprise-cache",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "enterprise-cache",
+      "reason": "The documented guarantee covers service disks and persistence with Microsoft-managed keys.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "redis-enterprise",
+      "rule_version": "2026.09.19.1",
+      "scope": "Enterprise and Enterprise Flash service disks and persistence only; newer Managed Redis SKUs need a separate rule.",
+      "sku": "Enterprise_E10",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-how-to-premium-persistence"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Cache/redisEnterprise"
+    },
+    {
+      "api_version": "2024-03-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/images/image",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "image",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "disk-sse",
+      "rule_version": "2026.09.19.1",
+      "scope": "Persisted managed disk, snapshot or managed image content; excludes VM temporary disks and caches.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Compute/images"
+    },
+    {
+      "api_version": "2023-10-02",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/snapshots/snapshot",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "snapshot",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "disk-sse",
+      "rule_version": "2026.09.19.1",
+      "scope": "Persisted managed disk, snapshot or managed image content; excludes VM temporary disks and caches.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Compute/snapshots"
+    },
+    {
+      "api_version": "2023-07-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "encryption.status": "disabled"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerRegistry/registries/registry",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "registry",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "acr",
+      "rule_version": "2026.09.19.1",
+      "scope": "Registry images and artifacts; downloaded images and runtime writes excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/container-registry/tutorial-customer-managed-keys"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.ContainerRegistry/registries"
+    },
+    {
+      "api_version": "2024-05-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+          "relation": "agentPools",
+          "resolved": true,
+          "result": "UNKNOWN"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+          "relation": "node_resource_group_storage",
+          "resolved": true,
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "evidence": {
+        "agent_pools": [
+          {
+            "enableEncryptionAtHost": true,
+            "name": "system",
+            "osDiskType": "Ephemeral"
+          }
+        ],
+        "nodeResourceGroup": "demo-nodes"
+      },
+      "gaps": [
+        "Dependency agentPools is UNKNOWN: /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+        "ARM node-pool and node-resource-group evidence only; Kubernetes PVs, CSI drivers, emptyDir, hostPath, external stores and runtime workloads remain unverified."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "aks",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "aks",
+      "rule_version": "2026.09.19.1",
+      "scope": "ARM node-pool and node-resource-group evidence only; Kubernetes PVs, CSI drivers, emptyDir, hostPath, external stores and runtime workloads remain unverified.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/aks/concepts-storage"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.ContainerService/managedClusters"
+    },
+    {
+      "api_version": "2024-05-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "enableEncryptionAtHost": true,
+        "osDiskType": "Ephemeral"
+      },
+      "gaps": [
+        "Node host-encryption configuration only; does not establish workload or persistent-volume protection."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ContainerService/managedClusters/aks/agentPools/system",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "system",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "aks-pool",
+      "rule_version": "2026.09.19.1",
+      "scope": "Node host-encryption configuration only; does not establish workload or persistent-volume protection.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/aks/enable-host-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.ContainerService/managedClusters/agentPools"
+    },
+    {
+      "api_version": "2023-01-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DataProtection/backupVaults/backups",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "backups",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "backup",
+      "rule_version": "2026.09.19.1",
+      "scope": "Backup data stored in the Azure vault only; source workloads, operational snapshots, local agents and restore destinations require separate evidence.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.DataProtection/backupVaults"
+    },
+    {
+      "api_version": "2023-12-30",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforMySQL/flexibleServers/mysql",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "mysql",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "mysql-flex",
+      "rule_version": "2026.09.19.1",
+      "scope": "Managed server data at rest; excludes customer exports and downstream stores.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/mysql/security/security-overview"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.DBforMySQL/flexibleServers"
+    },
+    {
+      "api_version": "2024-08-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "dataEncryption.type": "SystemManaged"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DBforPostgreSQL/flexibleServers/postgres",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "postgres",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "postgres-flex",
+      "rule_version": "2026.09.19.1",
+      "scope": "Managed server databases, logs, temporary files and service backups.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/postgresql/security/security-data-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+    },
+    {
+      "api_version": "2024-05-15",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-mongo",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "cosmos-mongo",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "cosmos",
+      "rule_version": "2026.09.19.1",
+      "scope": "Account databases, attachments and service backups, including the MongoDB API.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/cosmos-db/database-encryption-at-rest"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.DocumentDB/databaseAccounts"
+    },
+    {
+      "api_version": "2024-07-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.DocumentDB/mongoClusters/mongo-vcore",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "mongo-vcore",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "documentdb-mongo",
+      "rule_version": "2026.09.19.1",
+      "scope": "Azure DocumentDB (formerly Cosmos DB for MongoDB vCore) managed cluster data, logs, temporary files and backups; not MongoDB Atlas or self-hosted MongoDB.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/documentdb/database-encryption-at-rest"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.DocumentDB/mongoClusters"
+    },
+    {
+      "api_version": "2024-01-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+          "relation": "eventhubs",
+          "resolved": true,
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "events",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "eventhubs",
+      "rule_version": "2026.09.19.1",
+      "scope": "Messages retained by Event Hubs; Capture destinations and consumer stores excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/event-hubs/configure-customer-managed-key"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.EventHub/namespaces"
+    },
+    {
+      "api_version": "2024-01-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "dependency_assessment_and_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+          "relation": "capture_storage",
+          "resolved": true,
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "evidence": {
+        "captureDescription.destination.name": "EventHubArchive.AzureBlockBlob",
+        "captureDescription.destination.properties.storageAccountResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+        "captureDescription.enabled": true
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.EventHub/namespaces/events/eventhubs/captured",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "captured",
+      "reason": "Namespace retained-message encryption and declared Capture configuration are substantiated.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "eventhub-capture",
+      "rule_version": "2026.09.19.1",
+      "scope": "Event Hub retained messages and declared Capture storage destination.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-capture-overview"
+        },
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/event-hubs/configure-customer-managed-key"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.EventHub/namespaces/eventhubs"
+    },
+    {
+      "api_version": "2020-02-02",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "dependency_assessment",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+          "relation": "log_analytics_workspace",
+          "resolved": true,
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "evidence": {
+        "WorkspaceResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Insights/components/telemetry",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "telemetry",
+      "reason": "The referenced Log Analytics workspace has positive encryption evidence for telemetry storage.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "app-insights",
+      "rule_version": "2026.09.19.1",
+      "scope": "Workspace-backed telemetry only; classic Application Insights and exported copies unverified.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/app/create-workspace-resource"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Insights/components"
+    },
+    {
+      "api_version": "2023-07-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.KeyVault/vaults/secrets",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "secrets",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "keyvault",
+      "rule_version": "2026.09.19.1",
+      "scope": "Vault-managed secret values, including certificate private-key secret representations; cryptographic key objects, consuming services and backups outside the vault are excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/key-vault/secrets/about-secrets"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.KeyVault/vaults"
+    },
+    {
+      "api_version": "2023-08-15",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "api_configuration",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "enableDiskEncryption": false
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Kusto/clusters/analytics",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "analytics",
+      "reason": "VM cache disk encryption is explicitly disabled; backing-storage encryption alone does not cover it.",
+      "resource_group": "audit-demo",
+      "result": "FAIL",
+      "rule_id": "kusto",
+      "rule_version": "2026.09.19.1",
+      "scope": "Cluster backing storage and VM cache disks; external tables and exports excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/data-explorer/cluster-encryption-overview"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Kusto/clusters"
+    },
+    {
+      "api_version": null,
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "justified_applicability",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "inventory_only",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Network/virtualNetworks/network",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "network",
+      "reason": "Resource is a networking or identity construct, not a customer data-at-rest store in this assessment. Network controls and diagnostic destinations are separate responsibilities.",
+      "resource_group": "audit-demo",
+      "result": "NOT_APPLICABLE",
+      "rule_id": "non-data-plane",
+      "rule_version": "2026.09.19.1",
+      "scope": "Resource is a networking or identity construct, not a customer data-at-rest store in this assessment. Network controls and diagnostic destinations are separate responsibilities.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Network/virtualNetworks"
+    },
+    {
+      "api_version": "2023-09-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/logs",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "logs",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "logs",
+      "rule_version": "2026.09.19.1",
+      "scope": "Workspace data and saved queries inside Azure Monitor; exports excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/customer-managed-keys"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.OperationalInsights/workspaces"
+    },
+    {
+      "api_version": "2023-01-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.RecoveryServices/vaults/recovery",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "recovery",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "backup",
+      "rule_version": "2026.09.19.1",
+      "scope": "Backup data stored in the Azure vault only; source workloads, operational snapshots, local agents and restore destinations require separate evidence.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/backup/backup-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.RecoveryServices/vaults"
+    },
+    {
+      "api_version": "2023-11-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Search/searchServices/search",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "search",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "search",
+      "rule_version": "2026.09.19.1",
+      "scope": "Search indexes, synonym maps and object definitions, on data and temporary disks; sources and enrichment dependencies excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/search/search-security-built-in"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Search/searchServices"
+    },
+    {
+      "api_version": "2024-01-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ServiceBus/namespaces/messages",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "messages",
+      "reason": "Verified Premium resource identity is covered by the service-enforced encryption guarantee.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "servicebus",
+      "rule_version": "2026.09.19.1",
+      "scope": "Premium namespace retained messages; other tiers need a separately substantiated guarantee.",
+      "sku": "Premium",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/service-bus-messaging/configure-customer-managed-key"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.ServiceBus/namespaces"
+    },
+    {
+      "api_version": "2023-08-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "dependency_assessment",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+          "relation": "databases",
+          "resolved": true,
+          "result": "FAIL"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+          "relation": "databases",
+          "resolved": true,
+          "result": "PASS"
+        }
+      ],
+      "errors": [],
+      "evidence": {},
+      "gaps": [
+        "Dependency databases is FAIL: /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy"
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "sql",
+      "reason": "At least one enumerated user database has disabled TDE.",
+      "resource_group": "audit-demo",
+      "result": "FAIL",
+      "rule_id": "sql-server",
+      "rule_version": "2026.09.19.1",
+      "scope": "Aggregated TDE state of enumerated user databases only.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Sql/servers"
+    },
+    {
+      "api_version": "2023-08-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "api_configuration",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "tde.observed_at": "2026-09-19T02:25:45+00:00",
+        "tde.state": "Disabled"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/legacy",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "legacy",
+      "reason": "The database TDE endpoint explicitly reports Disabled.",
+      "resource_group": "audit-demo",
+      "result": "FAIL",
+      "rule_id": "sql-tde",
+      "rule_version": "2026.09.19.1",
+      "scope": "Database, transaction logs and TDE-protected backups; exported BACPAC and external data excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Sql/servers/databases"
+    },
+    {
+      "api_version": "2023-08-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "api_configuration",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "tde.observed_at": "2026-09-19T02:25:45+00:00",
+        "tde.state": "Enabled"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Sql/servers/sql/databases/modern",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "modern",
+      "reason": "The database TDE endpoint explicitly reports Enabled; provider-managed keys are acceptable.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "sql-tde",
+      "rule_version": "2026.09.19.1",
+      "scope": "Database, transaction logs and TDE-protected backups; exported BACPAC and external data excluded.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-sql/database/transparent-data-encryption-tde-overview"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Sql/servers/databases"
+    },
+    {
+      "api_version": "2023-05-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "encryption.keySource": "Microsoft.Storage",
+        "encryption.services.blob.enabled": true,
+        "encryption.services.file.enabled": true
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/demostore",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demostore",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "audit-demo",
+      "result": "PASS",
+      "rule_id": "storage-sse",
+      "rule_version": "2026.09.19.1",
+      "scope": "Account blobs, files, queues and tables, including service replicas; excludes external copies.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "api_version": "2023-05-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "none",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "error",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [
+        {
+          "code": "http_error",
+          "http_status": 403,
+          "observed_at": "2026-09-19T02:25:45+00:00",
+          "operation": "resource_get",
+          "scope": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore"
+        }
+      ],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/deniedstore",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "deniedstore",
+      "reason": "A required resource or encryption read failed. No positive conclusion is available.",
+      "resource_group": "audit-demo",
+      "result": "ERROR",
+      "rule_id": "storage-sse",
+      "rule_version": "2026.09.19.1",
+      "scope": "Account blobs, files, queues and tables, including service replicas; excludes external copies.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/storage/common/storage-service-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Storage/storageAccounts"
+    },
+    {
+      "api_version": "2023-12-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+          "relation": "slots",
+          "resolved": true,
+          "result": "UNKNOWN"
+        }
+      ],
+      "errors": [],
+      "evidence": {},
+      "gaps": [
+        "Dependency slots is UNKNOWN: /subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+        "App Service / Functions identity and slot inventory only; host storage, deployment packages, mounts, temporary files, settings and downstream stores require evidence."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app",
+      "kind": "functionapp,linux",
+      "location": "eastus",
+      "name": "function-app",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "web-app",
+      "rule_version": "2026.09.19.1",
+      "scope": "App Service / Functions identity and slot inventory only; host storage, deployment packages, mounts, temporary files, settings and downstream stores require evidence.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Web/sites"
+    },
+    {
+      "api_version": "2023-12-01",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "backing_storage_required",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [
+        "Slot identity only; host/content storage, deployment packages and application stores unverified."
+      ],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Web/sites/function-app/slots/staging",
+      "kind": "functionapp,linux",
+      "location": "eastus",
+      "name": "staging",
+      "reason": "ARM metadata does not establish encryption for all workload storage. Review the explicit dependencies and gaps.",
+      "resource_group": "audit-demo",
+      "result": "UNKNOWN",
+      "rule_id": "web-slot",
+      "rule_version": "2026.09.19.1",
+      "scope": "Slot identity only; host/content storage, deployment packages and application stores unverified.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/azure-functions/storage-considerations"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Web/sites/slots"
+    },
+    {
+      "api_version": null,
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "none",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "inventory_only",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {},
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/MongoDB.Atlas/organizations/external-mongodb",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "external-mongodb",
+      "reason": "Inventory retained; no service or applicability assumptions made for this type.",
+      "resource_group": "audit-demo",
+      "result": "UNSUPPORTED",
+      "rule_id": "unsupported",
+      "rule_version": "2026.09.19.1",
+      "scope": "No reviewed rule for this exact ARM resource type.",
+      "sku": "unspecified",
+      "sources": [],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "MongoDB.Atlas/organizations"
+    },
+    {
+      "api_version": "2023-10-02",
+      "assessed_at": "2026-09-19T02:25:45+00:00",
+      "basis": "documented_service_guarantee",
+      "collected_at": "2026-09-19T02:25:45+00:00",
+      "collection_status": "ok",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "dependencies": [],
+      "errors": [],
+      "evidence": {
+        "encryption.type": "EncryptionAtRestWithPlatformKey"
+      },
+      "gaps": [],
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/demo-nodes/providers/Microsoft.Compute/disks/node-disk",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "node-disk",
+      "reason": "Verified resource identity is covered by Microsoft's service-enforced encryption guarantee. Optional CMK fields are not required evidence of base encryption.",
+      "resource_group": "demo-nodes",
+      "result": "PASS",
+      "rule_id": "disk-sse",
+      "rule_version": "2026.09.19.1",
+      "scope": "Persisted managed disk, snapshot or managed image content; excludes VM temporary disks and caches.",
+      "sku": "unspecified",
+      "sources": [
+        {
+          "reviewed_on": "2026-09-19",
+          "url": "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+        }
+      ],
+      "subscription_id": "11111111-1111-1111-1111-111111111111",
+      "type": "Microsoft.Compute/disks"
+    }
+  ],
+  "rule_version": "2026.09.19.1",
+  "schema_version": "1.0",
+  "snapshot_sha256": "a0810492edc2a1c835ecf1e1cbdde2e0ae83409ff6b011615e9bdd787dfb50e8",
+  "summary": {
+    "child_collections_complete": true,
+    "collection_error_count": 1,
+    "conclusion": "FAILURES_FOUND",
+    "counts": {
+      "ERROR": 1,
+      "FAIL": 3,
+      "NOT_APPLICABLE": 1,
+      "PASS": 21,
+      "UNKNOWN": 7,
+      "UNSUPPORTED": 1
+    },
+    "coverage_incomplete": true,
+    "inventory_complete": true,
+    "resource_count": 34,
+    "types": {
+      "Microsoft.App/containerApps": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.App/managedEnvironments": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.AppConfiguration/configurationStores": {
+        "PASS": 1
+      },
+      "Microsoft.Cache/Redis": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.Cache/redisEnterprise": {
+        "PASS": 1
+      },
+      "Microsoft.Compute/disks": {
+        "PASS": 1
+      },
+      "Microsoft.Compute/images": {
+        "PASS": 1
+      },
+      "Microsoft.Compute/snapshots": {
+        "PASS": 1
+      },
+      "Microsoft.ContainerRegistry/registries": {
+        "PASS": 1
+      },
+      "Microsoft.ContainerService/managedClusters": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.ContainerService/managedClusters/agentPools": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.DBforMySQL/flexibleServers": {
+        "PASS": 1
+      },
+      "Microsoft.DBforPostgreSQL/flexibleServers": {
+        "PASS": 1
+      },
+      "Microsoft.DataProtection/backupVaults": {
+        "PASS": 1
+      },
+      "Microsoft.DocumentDB/databaseAccounts": {
+        "PASS": 1
+      },
+      "Microsoft.DocumentDB/mongoClusters": {
+        "PASS": 1
+      },
+      "Microsoft.EventHub/namespaces": {
+        "PASS": 1
+      },
+      "Microsoft.EventHub/namespaces/eventhubs": {
+        "PASS": 1
+      },
+      "Microsoft.Insights/components": {
+        "PASS": 1
+      },
+      "Microsoft.KeyVault/vaults": {
+        "PASS": 1
+      },
+      "Microsoft.Kusto/clusters": {
+        "FAIL": 1
+      },
+      "Microsoft.Network/virtualNetworks": {
+        "NOT_APPLICABLE": 1
+      },
+      "Microsoft.OperationalInsights/workspaces": {
+        "PASS": 1
+      },
+      "Microsoft.RecoveryServices/vaults": {
+        "PASS": 1
+      },
+      "Microsoft.Search/searchServices": {
+        "PASS": 1
+      },
+      "Microsoft.ServiceBus/namespaces": {
+        "PASS": 1
+      },
+      "Microsoft.Sql/servers": {
+        "FAIL": 1
+      },
+      "Microsoft.Sql/servers/databases": {
+        "FAIL": 1,
+        "PASS": 1
+      },
+      "Microsoft.Storage/storageAccounts": {
+        "ERROR": 1,
+        "PASS": 1
+      },
+      "Microsoft.Web/sites": {
+        "UNKNOWN": 1
+      },
+      "Microsoft.Web/sites/slots": {
+        "UNKNOWN": 1
+      },
+      "MongoDB.Atlas/organizations": {
+        "UNSUPPORTED": 1
+      }
+    },
+    "unsupported_types": [
+      "MongoDB.Atlas/organizations"
+    ]
+  },
+  "tool_version": "0.1.0"
+}
