@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.19.0
+
+- Add a control-indexed evidence register: `control-register` inverts saved runs so each NIST SP 800-53 control lists its observations, findings and gaps without re-evaluating anything.
+- Add an approved control purview with IN_SCOPE, INHERITED and EXCLUDED dispositions, required rationale and approver, and a `--template` starter covering every candidate control. A draft purview never excludes or inherits.
+- Package control labels, titles and families from the reviewed NIST index, gated like the other packaged research exports.
+- No status asserts that a control is satisfied; assessor determination, organization-defined parameters and operating effectiveness stay outside this evidence.
+
 ## 0.18.0
 
 - Replace the Enterprise-only cache rule with exact Azure Managed Redis / Redis Enterprise cluster and database rules on API 2025-04-01, covering every reviewed SKU family and the Flash families' transient NVMe disk.

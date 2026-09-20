@@ -1,0 +1,1011 @@
+{
+  "controls": {
+    "AC-17": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-6(7)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AT-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AT-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AT-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-14": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-9(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-2(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IR-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "MA-2": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MA-3": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MA-4": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MA-5": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MA-6": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-2": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-3": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-4": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-5": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-6": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "MP-7": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-10": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-11": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-12": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-13": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-14": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-15": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-16": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-17": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-18": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-2": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-20": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-23": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-3": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-4": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-5": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-6": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-8": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PE-9": {
+      "assurance_reference": "REPLACE WITH THE AUTHORIZED PROVIDER ASSURANCE REPORT, SCOPE AND PERIOD",
+      "disposition": "INHERITED",
+      "owner": "Azure platform (example)",
+      "rationale": "Datacenter, maintenance and physical media custody sit inside the provider boundary for this system.",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PL-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-1": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-14": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-18": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-19": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-23": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-28": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-29": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-30": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-31": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PM-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PS-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "People operations and security awareness (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "PT-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-15": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-15(13)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-22": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-24": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-17": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-20": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-21": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-22": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-23": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-28": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-28(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-39": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-45": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-8(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-16": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-18": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-19": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-2(7)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    }
+  },
+  "id": "SYNTHETIC-EXAMPLE-PURVIEW-NOT-WORKPLACE-POLICY",
+  "schema_version": "1.0",
+  "status": "approved",
+  "version": "1"
+}

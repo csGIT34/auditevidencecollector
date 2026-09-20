@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-20. **Source release 0.18.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-20. **Source release 0.19.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,6 +10,7 @@ Updated 2026-09-20. **Source release 0.18.0 (local tests passed; expanded reads 
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
+| Control-indexed evidence register | Implemented; local validation | Indexes saved runs by NIST control with declared purview, inheritance and exclusions; [guide](CONTROL_REGISTER.md). 38 of 189 candidate controls have automated evidence today; the remainder are NOT_ASSESSED and visible per control. |
 | Multi-control configuration/identity predicates | Implemented; local validation | 188 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
@@ -83,3 +84,5 @@ Version 0.16.1 passed 310 local tests with zero skips and 43 checks in the final
 Version 0.17.0 passed 314 local tests with zero skips and 43 checks in the packaged Functions runtime. Grafana, Prometheus and Automation encryption pages were rendered and visually reviewed with their explicit stored-data boundaries. The retained 0.16.0 archive still returns its original UNSUPPORTED decisions for those resources, with every original object hash unchanged; new rules are not applied during historical loading. The new guarantees have not been live-verified.
 
 Version 0.18.0 passed 324 local tests with zero skips. The synthetic all-service report evaluates 188 predicates (187 PASS, one intentional expired-credential FAIL); its 143-page PDF was rendered and visually reviewed, including the new Managed Redis cluster and database pages with their in-memory and export exclusions. Reviewed SKU families, denied or truncated database listings, unverified clusters and the documented Basic/Standard C0-C1 failure are fixture-tested offline; no live Redis reads or cloud changes were made.
+
+Version 0.19.0 passed 335 local tests with zero skips. The control-indexed register was generated from the synthetic all-service run: 189 candidate controls, 38 with automated evidence, 151 NOT_ASSESSED with no purview declared. A worked purview moved 29 provider-owned controls to INHERITED_CLAIMED, each carrying an explicit gap until its assurance report is referenced. The register re-evaluates nothing and is deterministic from a saved run; no control status asserts satisfaction. No cloud changes were made.

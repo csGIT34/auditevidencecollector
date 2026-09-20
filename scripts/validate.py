@@ -27,7 +27,7 @@ def main():
     if not result.wasSuccessful() or result.skipped:
         print('Gate failed: required tests failed or skipped.', file=sys.stderr)
         return 1
-    for script in ('validate_catalog.py', 'export_program_scope.py', 'export_control_objectives.py'):
+    for script in ('validate_catalog.py', 'export_program_scope.py', 'export_control_objectives.py', 'export_control_index.py'):
         args = [sys.executable, str(ROOT / 'docs/audit' / script)]
         if script.startswith('export'):
             args.append('--check')

@@ -48,6 +48,13 @@ def parser():
         subparser.add_argument("--criteria", type=Path, help="Versioned configuration criteria JSON; absent or draft criteria leave checks UNKNOWN.")
         subparser.add_argument("--json", type=Path, help="Optional loose JSON export (default without --store: evidence/audit.json).")
         subparser.add_argument("--report", type=Path, help="Optional loose Markdown export (default without --store: evidence/audit.md).")
+    controls = commands.add_parser("control-register", help="Index one saved assessment by NIST control; no recollection or reassessment.")
+    controls.add_argument("--input", type=Path, help="Saved assessment JSON from collect or assess.")
+    controls.add_argument("--template", type=Path, help="Write a starter purview covering every candidate control instead of indexing a run.")
+    controls.add_argument("--purview", type=Path, help="Approved control purview JSON; absent or draft dispositions never exclude a control.")
+    controls.add_argument("--operational", type=Path, help="Optional saved operational supplement contributing attributed records.")
+    controls.add_argument("--json", type=Path, help="Optional register JSON export.")
+    controls.add_argument("--report", type=Path, help="Optional register Markdown export.")
     commands.add_parser("catalog", help="Print exact supported types, scopes, APIs and Microsoft sources as JSON.")
     runs = commands.add_parser("runs", help="List local run archive states; complete archive does not mean audit PASS.")
     runs.add_argument("--store", type=Path, required=True)
@@ -196,6 +203,35 @@ def main(argv=None):
                     print("PDF is archived, but the extra export failed (existing/unsafe path or I/O error). No existing export was replaced.", file=sys.stderr)
                     return 3
                 print(f"PDF export: {args.export}")
+            return 0
+        if args.command == "control-register":
+            from .control_register import build, markdown as control_markdown, template
+            if args.template:
+                write_private(args.template, json.dumps(template(), indent=2, sort_keys=True) + "\n")
+                print("Starter purview written as a draft: review every disposition and owner, then set status to approved.")
+                return 0
+            if not args.input:
+                raise ValueError("control-register requires --input or --template")
+            report = json.loads(args.input.read_text(encoding="utf-8"))
+            if not isinstance(report, dict) or report.get("schema_version") not in ("1.0", "1.1"):
+                raise ValueError("Expected a saved assessment with schema_version 1.0 or 1.1")
+            purview = json.loads(args.purview.read_text(encoding="utf-8")) if args.purview else None
+            operational = json.loads(args.operational.read_text(encoding="utf-8")) if args.operational else None
+            register = build(report, purview, operational)
+            outputs = [p for p in (args.json, args.report) if p]
+            if len({p.resolve() for p in outputs}) != len(outputs):
+                raise ValueError("Output paths must be distinct")
+            if args.input.resolve() in {p.resolve() for p in outputs}:
+                raise ValueError("An output path must not overwrite the input")
+            if args.json:
+                write_private(args.json, json.dumps(register, indent=2, sort_keys=True) + "\n")
+            if args.report:
+                write_private(args.report, control_markdown(register))
+            summary = register["summary"]
+            print("Controls indexed: " + str(summary["controls"]) + "; with evidence: " + str(summary["with_evidence"]) +
+                  "; " + json.dumps(summary["statuses"], sort_keys=True))
+            if not register["purview"]["declared"]:
+                print("Purview is NOT DECLARED: no control is excluded or inherited and coverage cannot be judged complete.", file=sys.stderr)
             return 0
         if not getattr(args, "store", None):
             args.json = args.json or Path("evidence/audit.json")
