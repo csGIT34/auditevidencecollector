@@ -36,3 +36,5 @@ Collection, evaluation, core persistence and reports remain deterministic withou
 `catalog.json` is the research source of truth; Markdown matrices are readable views. `nist-control-index.json` retains selected official control statements, assessment objectives/method objects and organization-defined parameter definitions to support reproducible review. It is not a runtime rule catalog. Do not merge it into executable RULES until a scoped adapter/evaluator has passed the backlog gates.
 
 Run `python3 docs/audit/validate_catalog.py` from the repository to check all service/domain/family/control/source references and planned-check status. Change mappings and readable views together. Re-review service documentation/API capability before implementation and when provider features change.
+
+The [predicate execution plan](PREDICATE_EXECUTION_PLAN.md) tracks the remaining service objectives section by section, with the measured position before and after each one.
