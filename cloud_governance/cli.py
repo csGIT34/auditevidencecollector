@@ -59,6 +59,8 @@ def parser():
     controls.add_argument("--operational", type=Path, help="Optional saved operational supplement contributing attributed records.")
     controls.add_argument("--json", type=Path, help="Optional register JSON export.")
     controls.add_argument("--report", type=Path, help="Optional register Markdown export.")
+    controls.add_argument("--evidence", type=Path, help="Auditor evidence package: per control, the observations supporting it.")
+    controls.add_argument("--scope", choices=("service", "all"), default="service", help="service: controls the collected resource types implicate. all: every control in the catalogue.")
     commands.add_parser("catalog", help="Print exact supported types, scopes, APIs and Microsoft sources as JSON.")
     runs = commands.add_parser("runs", help="List local run archive states; complete archive does not mean audit PASS.")
     runs.add_argument("--store", type=Path, required=True)
@@ -209,7 +211,7 @@ def main(argv=None):
                 print(f"PDF export: {args.export}")
             return 0
         if args.command == "control-register":
-            from .control_register import build, markdown as control_markdown, template
+            from .control_register import build, evidence_markdown, markdown as control_markdown, template
             if args.template:
                 write_private(args.template, json.dumps(template(args.template_scope), indent=2, sort_keys=True) + "\n")
                 print("Starter tailoring written as a draft: review every disposition and owner, then set status to approved.")
@@ -222,7 +224,7 @@ def main(argv=None):
             tailoring = json.loads(args.tailoring.read_text(encoding="utf-8")) if args.tailoring else None
             operational = json.loads(args.operational.read_text(encoding="utf-8")) if args.operational else None
             register = build(report, tailoring, operational)
-            outputs = [p for p in (args.json, args.report) if p]
+            outputs = [p for p in (args.json, args.report, args.evidence) if p]
             if len({p.resolve() for p in outputs}) != len(outputs):
                 raise ValueError("Output paths must be distinct")
             if args.input.resolve() in {p.resolve() for p in outputs}:
@@ -231,6 +233,8 @@ def main(argv=None):
                 write_private(args.json, json.dumps(register, indent=2, sort_keys=True) + "\n")
             if args.report:
                 write_private(args.report, control_markdown(register))
+            if args.evidence:
+                write_private(args.evidence, evidence_markdown(register, scope=args.scope))
             summary = register["summary"]
             print("Controls indexed: " + str(summary["controls"]) + "; with evidence: " + str(summary["with_evidence"]) +
                   "; " + json.dumps(summary["statuses"], sort_keys=True))

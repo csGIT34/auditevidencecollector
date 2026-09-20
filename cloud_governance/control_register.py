@@ -72,26 +72,49 @@ def _labels(values):
     return [v for v in values if isinstance(v, str) and LABEL.fullmatch(v) and v in CONTROLS]
 
 
+def _observed(row):
+    """The value an auditor needs to see, when the predicate actually observed one."""
+    observation = row.get('observation') or {}
+    return observation.get('value') if observation.get('state') in ('observed', 'partial') else None
+
+
 def _evidence(report, operational):
-    """Flatten saved results into per-control evidence items. Nothing is re-evaluated."""
+    """Flatten saved results into per-control evidence items. Nothing is re-evaluated.
+
+    Each item carries what proves it: the resource, what was read, at which API version,
+    what was observed and when. A control row is the index; these are the evidence.
+    """
     items = []
     for row in report_model.resource_results(report):
         items.append({'kind': 'resource_rule', 'reference': row['rule_id'], 'resource_id': row['id'],
                       'result': row['result'], 'summary': row['reason'], 'controls': _labels(row.get('controls', [])),
-                      'gaps': list(row.get('gaps', []))})
+                      'gaps': list(row.get('gaps', [])),
+                      'proof': {'basis': row.get('basis'), 'scope': row.get('scope'),
+                                'api_version': row.get('api_version'), 'observed_at': row.get('collected_at'),
+                                'resource_type': row.get('type'),
+                                'sources': [s['url'] for s in row.get('sources', [])]}})
     for row in report_model.configuration_results(report):
         items.append({'kind': 'configuration_predicate', 'reference': row['check_id'],
                       'resource_id': row.get('resource_id', ''), 'result': row['result'], 'summary': row['title'],
-                      'controls': _labels(row.get('control_refs', [])), 'gaps': []})
+                      'controls': _labels(row.get('control_refs', [])), 'gaps': [],
+                      'proof': {'property': row.get('property'), 'api_version': row.get('api_version'),
+                                'observed': _observed(row), 'criterion': row.get('criterion'),
+                                'observed_at': row.get('observed_at'), 'reason': row.get('reason'),
+                                'sources': [row['source']] if row.get('source') else []}})
     for row in report_model.policy_results(report):
         items.append({'kind': 'policy_compliance', 'reference': row['reference'],
                       'resource_id': row['resource_id'], 'result': row['result'],
                       'summary': 'Azure Policy asserted ' + row['compliance_state'],
-                      'controls': _labels(row['controls']), 'gaps': []})
+                      'controls': _labels(row['controls']), 'gaps': [],
+                      'proof': {'compliance_state': row['compliance_state'], 'evaluation_scope': row['scope'],
+                                'policy_action': row['action'], 'assignment': row['assignment'],
+                                'observed_at': row['evaluated_at'], 'asserted_by': 'Microsoft Azure Policy'}})
     for row in (operational or {}).get('records', []):
         items.append({'kind': 'attributed_record', 'reference': row.get('id', ''), 'resource_id': row.get('scope', ''),
                       'result': 'ATTRIBUTED', 'summary': row.get('title', ''),
-                      'controls': _labels(row.get('control_refs', [])), 'gaps': []})
+                      'controls': _labels(row.get('control_refs', [])), 'gaps': [],
+                      'proof': {'owner': row.get('owner'), 'period': row.get('period'),
+                                'observed_at': row.get('recorded_at'), 'asserted_by': row.get('owner')}})
     return items
 
 
@@ -232,4 +255,62 @@ def markdown(register):
                        ' | ' + str(counts['PASS']) + ' | ' + str(counts['FAIL']) + ' | ' + str(other) + ' | ' +
                        str(row['evidence_count']) + ' |')
     out += ['', '## Limitations', ''] + ['- ' + limit for limit in register['limits']] + ['']
+    return '\n'.join(out)
+
+
+def _value(observed):
+    if observed is None:
+        return '—'
+    if isinstance(observed, bool):
+        return 'true' if observed else 'false'
+    if isinstance(observed, (int, float, str)):
+        return str(observed)[:80]
+    return json.dumps(observed, sort_keys=True)[:80]
+
+
+def evidence_markdown(register, *, scope='service'):
+    """Auditor evidence package: per control, the observations that support it.
+
+    An observation is evidence whether or not an approved criterion turned it into a
+    pass. Criteria produce a conclusion; the underlying reading is what an assessor
+    examines, so it is presented either way.
+    """
+    rows = [row for row in register['controls']
+            if (row['service_applicable'] if scope == 'service' else True)]
+    out = ['# Control evidence package', '',
+           'Generated: ' + register['generated_at'] + '. Source run: ' +
+           str(register['assessment']['generated_at']) + ' (' + str(register['assessment']['mode']) + ').', '',
+           'Controls in scope: **' + str(len(rows)) + '**' +
+           (' — the controls the collected Azure resource types implicate.' if scope == 'service' else '.'), '']
+    verdicts = {'PASS': [], 'FAIL': [], 'NO EVIDENCE': []}
+    for row in rows:
+        counts = row['counts']
+        verdicts['FAIL' if counts['FAIL'] else 'PASS' if counts['PASS'] else 'NO EVIDENCE'].append(row)
+    out += ['| Verdict | Controls |', '| --- | --- |']
+    out += ['| ' + name + ' | ' + str(len(found)) + ' |' for name, found in verdicts.items()]
+    out += ['', 'A verdict summarises the observations below it. No verdict is a control determination: '
+            'an assessor decides whether this evidence satisfies the control.', '']
+    for row in rows:
+        counts = row['counts']
+        verdict = 'FAIL' if counts['FAIL'] else 'PASS' if counts['PASS'] else 'NO EVIDENCE'
+        out += ['## ' + row['control'] + ' — ' + row['title'], '',
+                '**' + verdict + '** · passing ' + str(counts['PASS']) + ' · failing ' + str(counts['FAIL'])
+                + ' · other ' + str(counts['UNKNOWN'] + counts['ERROR'] + counts['UNSUPPORTED']) + '', '']
+        if not row['evidence']:
+            out += ['No observation in this run references this control.', '']
+            continue
+        out += ['| Result | Resource | Checked | Observed | Read at | Source |',
+                '| --- | --- | --- | --- | --- | --- |']
+        for item in sorted(row['evidence'], key=lambda i: (i['result'] != 'FAIL', i['reference'])):
+            proof = item.get('proof') or {}
+            checked = (proof.get('property') or proof.get('basis') or proof.get('policy_action')
+                       or item['reference'])
+            observed = (_value(proof['observed']) if 'observed' in proof
+                        else proof.get('compliance_state') or proof.get('asserted_by') or '—')
+            source = (proof.get('sources') or [''])[0] if proof.get('sources') else ''
+            out.append('| ' + item['result'] + ' | `' + item['resource_id'].rsplit('/', 1)[-1] + '` | '
+                       + str(checked) + ' | ' + observed + ' | ' + str(proof.get('observed_at') or '—') + ' | '
+                       + ('[api](' + source + ')' if source else '—') + ' |')
+        out.append('')
+    out += ['## Limitations', ''] + ['- ' + limit for limit in register['limits']] + ['']
     return '\n'.join(out)

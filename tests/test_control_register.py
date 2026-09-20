@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from cloud_governance.control_register import (CONTROLS, SERVICE_APPLICABLE, STATUSES, build, markdown,
-                                            template, validate_tailoring)
+from cloud_governance.control_register import (CONTROLS, SERVICE_APPLICABLE, STATUSES, build,
+                                            evidence_markdown, markdown, template, validate_tailoring)
 from cloud_governance.cli import main
 from tests.test_controls import collect, fixture
 from cloud_governance.workflow import assess_snapshot
@@ -181,3 +181,27 @@ class ControlRegisterTests(unittest.TestCase):
         self.assertIn('not assessable control identifiers', guidance['role'])
         self.assertEqual(9, len(guidance['areas']))
         self.assertNotIn('800-144', ' '.join(entry['status'] for entry in register['controls']))
+
+    def test_the_evidence_package_shows_the_observation_behind_each_control(self):
+        register = build(report())
+        text = evidence_markdown(register)
+        # Scoped by default to the controls the collected resource types implicate.
+        self.assertIn('Controls in scope: **48**', text)
+        self.assertIn('| Verdict | Controls |', text)
+        # An observed value is evidence whether or not a criterion judged it.
+        self.assertIn('supportsHttpsTrafficOnly', text)
+        self.assertIn('| PASS |', text)
+        self.assertIn('an assessor decides whether this evidence satisfies the control', text)
+        wider = evidence_markdown(register, scope='all')
+        self.assertGreater(len(wider), len(text))
+
+    def test_evidence_items_carry_what_proves_them(self):
+        register = build(report())
+        items = [item for row in register['controls'] for item in row['evidence']]
+        self.assertTrue(items)
+        for item in items:
+            self.assertIn('proof', item)
+            self.assertIn('observed_at', item['proof'])
+        predicate = next(i for i in items if i['kind'] == 'configuration_predicate')
+        self.assertIn('property', predicate['proof'])
+        self.assertIn('api_version', predicate['proof'])
