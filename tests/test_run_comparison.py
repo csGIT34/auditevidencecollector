@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import io
 import json
@@ -98,7 +99,7 @@ class SavedRunComparisonTests(unittest.TestCase):
     def test_new_and_old_archive_comparison_and_policy_approval_change(self):
         before = load_run(self.store, self.before)
         legacy = copy.deepcopy(before)
-        legacy['assessment'].pop('configuration_assessment')
+        legacy['assessment']['evidence'].pop('configuration')
         result = compare(legacy, before)
         self.assertTrue(any(row['changes']==['NEW_OBSERVATION'] for row in result['checks']))
         policy = copy.deepcopy(self.policy)

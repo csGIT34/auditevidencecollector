@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from io import BytesIO
+from cloud_governance import report_model
 import importlib
 import importlib.util
 import json
@@ -241,7 +242,7 @@ class HostingTests(unittest.TestCase):
         self.assertEqual({'PASS':len(CHECKS)-1,'FAIL':1,'UNKNOWN':0,'ERROR':0},outcome['configuration_summary']['counts'])
         saved=load_run(store,outcome['run_id'])
         self.assertTrue(saved['snapshot']['identity_evidence']['verified_tenant'])
-        self.assertEqual(23,len({r['catalog_ref'].split('-')[0] for r in saved['assessment']['configuration_assessment']['results']}))
+        self.assertEqual(23,len({r['catalog_ref'].split('-')[0] for r in report_model.configuration(saved['assessment'])['results']}))
 
     def test_invalid_criteria_and_missing_graph_transport_fail_before_archive(self):
         for values in ({'CG_ASSESSMENT_CRITERIA_JSON':'{"checks":{},"checks":{}}'},{'CG_GRAPH_ENABLED':'yes'}):

@@ -10,9 +10,9 @@ def text(value):
 
 
 def markdown(report):
-    summary = report["summary"]
+    summary = report_model.resource_summary(report)
     lines = ["# Azure technical evidence assessment", "",
-             f"**Encryption conclusion: {summary['conclusion']}**", "",
+             f"**Resource rule conclusion: {summary['conclusion']}**", "",
              f"Evidence mode: **{text(report['mode'])}**. Generated: {text(report['generated_at'])}.",
              f"Collection: {text(report['collection_started_at'])} to {text(report['collection_completed_at'])}.",
              f"Rule version: {report['rule_version']}; tool version: {report['tool_version']}.", "",
@@ -97,6 +97,7 @@ def markdown(report):
 
 def exit_code(report):
     configuration = report_model.configuration_summary(report)
-    if report["summary"]["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0):
+    rules = report_model.resource_summary(report)
+    if rules["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0):
         return 1
-    return 2 if report["summary"]["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" else 0
+    return 2 if rules["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" else 0

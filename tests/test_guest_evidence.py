@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import io
 import json
@@ -35,14 +36,14 @@ class GuestEvidenceTests(unittest.TestCase):
 
     def test_vm_and_saved_vmss_instances_assess_all_measurements(self):
         report=load(self.store,self.save()['evidence_id'])['report']
-        self.assertEqual({'PASS':20,'FAIL':0,'UNKNOWN':0},report['summary']['counts'])
-        self.assertFalse(report['summary']['coverage_incomplete'])
+        self.assertEqual({'PASS':20,'FAIL':0,'UNKNOWN':0},report_model.resource_summary(report)['counts'])
+        self.assertFalse(report_model.resource_summary(report)['coverage_incomplete'])
         self.assertEqual({self.vm,self.instance},set(report['source_scope']['expected_guest_ids']))
 
     def test_missing_guest_is_not_silently_removed(self):
         doc=copy.deepcopy(self.document);doc['records']=doc['records'][:1]
         report=load(self.store,self.save(doc)['evidence_id'])['report']
-        self.assertEqual(10,report['summary']['counts']['UNKNOWN']);self.assertTrue(report['summary']['coverage_incomplete'])
+        self.assertEqual(10,report_model.resource_summary(report)['counts']['UNKNOWN']);self.assertTrue(report_model.resource_summary(report)['coverage_incomplete'])
         self.assertEqual('missing',report['records'][1]['freshness'])
 
     def test_old_component_reports_cannot_pass_zero_counts(self):
@@ -63,7 +64,7 @@ class GuestEvidenceTests(unittest.TestCase):
     def test_conflicting_sources_do_not_hide_failure(self):
         doc=copy.deepcopy(self.document);extra=record(self.vm,'other-source');extra['protection']['enabled']=False;extra['vulnerabilities']['critical']=1
         doc['records'].append(extra);report=load(self.store,self.save(doc)['evidence_id'])['report']
-        self.assertEqual(2,report['summary']['counts']['FAIL']);self.assertEqual('FAILURES_FOUND',report['summary']['conclusion'])
+        self.assertEqual(2,report_model.resource_summary(report)['counts']['FAIL']);self.assertEqual('FAILURES_FOUND',report_model.resource_summary(report)['conclusion'])
         self.assertEqual(3,len(report['records']))
 
     def test_invalid_identity_unknown_fields_duplicates_and_future_components_reject_before_write(self):

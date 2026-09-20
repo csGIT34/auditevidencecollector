@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -44,7 +45,7 @@ class ComputeInstanceTests(unittest.TestCase):
             responses,policy=fixture();url=next(k for k in responses if '/virtualMachines?api-version=2026-03-01' in k)
             if mutation=='drift':responses[url]['value'][0]['properties']['latestModelApplied']=False
             else:responses[url]['value']=[]
-            results=assess_snapshot(collect_arm(responses),criteria=policy)['configuration_assessment']['results']
+            results=report_model.configuration_results(assess_snapshot(collect_arm(responses),criteria=policy))
             self.assertEqual('FAIL',next(row for row in results if row['check_id']==self.check.id)['result'])
 
     def test_flexible_membership_uses_declared_parent_and_discovers_vm_dependencies(self):
@@ -66,7 +67,7 @@ class ComputeInstanceTests(unittest.TestCase):
         observed=rows[parent['id']]['configuration']['VMSS-instance-members']
         self.assertEqual('observed',observed['state']);self.assertNotIn('SECRET-CANARY',json.dumps(snapshot))
         report=assess_snapshot(snapshot,criteria=policy)
-        decision=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='VMSS-instance-members')
+        decision=next(r for r in report_model.configuration_results(report) if r['check_id']=='VMSS-instance-members')
         self.assertEqual('PASS',decision['result']);self.assertEqual(listing.split('?')[0].removeprefix('https://management.azure.com'),decision['request_path'])
         from cloud_governance.archive import save_run,load_run
         from tests.test_archive import MemoryStore

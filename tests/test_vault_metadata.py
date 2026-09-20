@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -73,8 +74,8 @@ class VaultMetadataTests(unittest.TestCase):
         responses[url]['value'].append(second)
         policy['checks']['KV-secrets-lifecycle']={'operator':'lifecycle','value':CRITERION}
         snapshot=run_collection(responses);report=assess_snapshot(snapshot,criteria=policy)
-        self.assertTrue(report['overall_summary']['coverage_incomplete'])
-        row=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='KV-secrets-lifecycle')
+        self.assertTrue(report_model.overall(report)['coverage_incomplete'])
+        row=next(r for r in report_model.configuration_results(report) if r['check_id']=='KV-secrets-lifecycle')
         self.assertEqual('FAIL',row['result']);self.assertTrue(row['lifecycle_evaluation']['coverage_incomplete'])
         store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];before=dict(store.objects)
         with patch('cloud_governance.vault_metadata.assess',side_effect=AssertionError('No reassessment')):

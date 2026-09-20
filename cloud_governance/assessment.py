@@ -7,6 +7,21 @@ from .safety import INVALID, identity, now
 from .verification import GUIDANCE, add_verification
 
 STATUSES = ("PASS", "FAIL", "UNKNOWN", "ERROR", "UNSUPPORTED", "NOT_APPLICABLE")
+
+FRAMEWORK = "NIST SP 800-53 Rev. 5 / SP 800-53A Rev. 5"
+MAPPING_LIMIT = ("Provisional technical configuration examination and documented service guarantees; not certification "
+                 "or full control effectiveness. Controls are listed because collected evidence references them, not "
+                 "because a control was assessed.")
+MAPPING_SOURCES = ["https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+                   "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"]
+
+
+def control_mapping(results, configuration):
+    """Derive the referenced controls from the evidence actually collected."""
+    controls = {label for row in results for label in row.get("controls", ())}
+    controls |= {label for row in (configuration or {}).get("results", ()) for label in row.get("control_refs", ())}
+    return {"framework": FRAMEWORK, "controls": sorted(controls), "assessment": MAPPING_LIMIT,
+            "sources": list(MAPPING_SOURCES)}
 LIMITATIONS = [
     "Inventory covers only the subscription or resource-group scopes recorded in this report, as visible to the collection identity in its authenticated tenant in Azure public cloud. Whole-tenant coverage is not established.",
     "The scoped ARM resource list is not a universal child-resource or data-plane inventory. Only catalogued child collections are enumerated. Deleted, inaccessible, external and unlisted child resources may be absent.",
@@ -238,19 +253,23 @@ def assess(snapshot, criteria=None):
     incomplete = (not snapshot["inventory"].get("complete") or not child_complete or not results or bool(snapshot["errors"])
                   or any(counts[s] for s in ("UNKNOWN", "ERROR", "UNSUPPORTED")) or any(r["gaps"] for r in results))
     conclusion = "FAILURES_FOUND" if counts["FAIL"] else "INCOMPLETE" if incomplete else "SUPPORTED_SCOPE_SATISFIED"
-    report = {"schema_version": "1.1", "tool_version": __version__, "rule_version": RULE_VERSION,
-            "generated_at": now(), "mode": snapshot["mode"], "collection_started_at": snapshot["started_at"],
-            "collection_completed_at": snapshot["completed_at"], "control_mapping": {
-                "framework": "NIST SP 800-53 Rev. 5 / SP 800-53A Rev. 5", "controls": ["SC-28", "SC-28(1)"],
-                "assessment": "Provisional technical configuration examination and documented service guarantees; not certification or full control effectiveness.",
-                "sources": ["https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final", "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"]},
-            "summary": {"conclusion": conclusion, "coverage_incomplete": incomplete, "inventory_complete": snapshot["inventory"].get("complete", False),
-                        "child_collections_complete": child_complete, "resource_count": len(results), "counts": counts,
-                        "collection_error_count": len(snapshot["errors"]), "types": {t: dict(v) for t, v in sorted(types.items())},
-                        "unsupported_types": sorted({r["type"] for r in results if r["result"] == "UNSUPPORTED"})},
-            "verification_guidance": GUIDANCE, "inventory": snapshot["inventory"], "limitations": LIMITATIONS, "errors": snapshot["errors"], "results": results}
-
     from .controls import evaluate, overall_summary
-    report["configuration_assessment"] = evaluate(snapshot, criteria)
-    report["overall_summary"] = overall_summary(report)
+    configuration = evaluate(snapshot, criteria)
+    report = {"schema_version": "1.2", "tool_version": __version__, "rule_version": RULE_VERSION,
+            "generated_at": now(), "mode": snapshot["mode"], "collection_started_at": snapshot["started_at"],
+            "collection_completed_at": snapshot["completed_at"],
+            "control_mapping": control_mapping(results, configuration),
+            "verification_guidance": GUIDANCE, "inventory": snapshot["inventory"], "limitations": LIMITATIONS,
+            "errors": snapshot["errors"],
+            "evidence": {
+                "resource_rules": {
+                    "summary": {"conclusion": conclusion, "coverage_incomplete": incomplete,
+                                "inventory_complete": snapshot["inventory"].get("complete", False),
+                                "child_collections_complete": child_complete, "resource_count": len(results),
+                                "counts": counts, "collection_error_count": len(snapshot["errors"]),
+                                "types": {t: dict(v) for t, v in sorted(types.items())},
+                                "unsupported_types": sorted({r["type"] for r in results if r["result"] == "UNSUPPORTED"})},
+                    "results": results},
+                "configuration": configuration}}
+    report["summary"] = overall_summary(report)
     return report

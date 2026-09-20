@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import io
 import json
@@ -161,7 +162,7 @@ class ConfigurationTests(unittest.TestCase):
     def test_every_predicate_collects_and_passes_exact_criterion(self):
         responses,policy=fixture(); snapshot=collect(responses); validate_snapshot(snapshot)
         report=assess_snapshot(snapshot,criteria=policy)
-        results=report['configuration_assessment']['results']
+        results=report_model.configuration_results(report)
         self.assertEqual({c.id for c in CHECKS.values() if not c.resource_type.startswith('graph.')},{r['check_id'] for r in results})
         self.assertTrue(all(r['result']=='PASS' for r in results))
         self.assertNotIn('DO-NOT-ARCHIVE-SECRET',json.dumps(snapshot))
@@ -174,7 +175,7 @@ class ConfigurationTests(unittest.TestCase):
         for cid,c in CHECKS.items():
             if cid not in policy['checks']:continue
             policy['checks'][cid]['value']=sample(c,True)
-        results=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
+        results=report_model.configuration_results(assess_snapshot(collect(responses),criteria=policy))
         self.assertTrue(all(r['result']=='FAIL' for r in results))
 
     def test_every_predicate_missing_null_invalid_is_unknown_and_redacted(self):
@@ -194,7 +195,7 @@ class ConfigurationTests(unittest.TestCase):
                 if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url or '/containers?' in url or '.vault.azure.net/' in url or '/runbooks?' in url or '/modules?' in url or '/runtimeEnvironments?' in url or '/tables?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
                 elif '/privateendpoints/' in url and 'properties' in responses[url]:responses[url]['properties']['privateLinkServiceConnections']=None
             snapshot=collect(responses);validate_snapshot(snapshot)
-            results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']
+            results=report_model.configuration_results(assess_snapshot(snapshot,criteria=policy))
             self.assertTrue(all(r['result']=='UNKNOWN' for r in results))
             self.assertNotIn('DO-NOT-ARCHIVE-SECRET',json.dumps(snapshot))
 
@@ -202,7 +203,7 @@ class ConfigurationTests(unittest.TestCase):
         responses,policy=fixture();snapshot=collect(responses)
         for criteria in (None,{**policy,'status':'draft'},{**policy,'checks':{}}):
             report=assess_snapshot(snapshot,criteria=criteria)
-            self.assertTrue(all(r['result']=='UNKNOWN' for r in report['configuration_assessment']['results']))
+            self.assertTrue(all(r['result']=='UNKNOWN' for r in report_model.configuration_results(report)))
             self.assertEqual(2,exit_code(report))
 
     def test_supplemental_denial_is_local_to_affected_checks(self):
@@ -211,7 +212,7 @@ class ConfigurationTests(unittest.TestCase):
             if '/config/web?' in url:responses[url]={'fixture_error':403}
         snapshot=collect(responses);validate_snapshot(snapshot)
         report=assess_snapshot(snapshot,criteria=policy)
-        for row in report['configuration_assessment']['results']:
+        for row in report_model.configuration_results(report):
             self.assertEqual('ERROR' if '/config/web' in row['request_path'] else 'PASS',row['result'])
         self.assertTrue(all(r['collection_status']=='ok' for r in snapshot['resources']))
 
@@ -219,7 +220,7 @@ class ConfigurationTests(unittest.TestCase):
         responses,policy=fixture()
         for url,raw in responses.items():
             if '/config/web?' in url:raw['id'] += '-wrong'
-        results=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
+        results=report_model.configuration_results(assess_snapshot(collect(responses),criteria=policy))
         self.assertTrue(all(r['result']=='ERROR' for r in results if '/config/web' in r['request_path']))
 
     def test_policy_rejects_arbitrary_values_and_boolean_integer_confusion(self):
@@ -235,7 +236,7 @@ class ConfigurationTests(unittest.TestCase):
         responses,policy=fixture()
         policy['checks']['LA-retention']={'operator':'at_least','value':29}
         policy['checks']['ST-tls']={'operator':'one_of','value':['TLS1_0','TLS1_2']}
-        results=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
+        results=report_model.configuration_results(assess_snapshot(collect(responses),criteria=policy))
         self.assertTrue(all(r['result']=='PASS' for r in results))
 
     def test_archive_pdf_and_markdown_include_frozen_controls(self):
@@ -251,7 +252,7 @@ class ConfigurationTests(unittest.TestCase):
         pages=[p.extract_text() for p in PdfReader(io.BytesIO(store.read(pdf['pdf']['key']))).pages]
         extracted=' '.join(pages)
         normalized=[' '.join(page.split()) for page in pages]
-        for row in report['configuration_assessment']['results']:
+        for row in report_model.configuration_results(report):
             heading=' '.join((row['check_id']+' | '+row['result']+' | '+row['title']).split())
             self.assertTrue(any(heading in page for page in normalized),row['check_id']+' heading split across pages')
         for term in ('Configuration control assessments','ST-https','LA-retention','synthetic-only','Saved criterion'):
@@ -261,9 +262,9 @@ class ConfigurationTests(unittest.TestCase):
 
     def test_archive_rejects_changed_observation_or_summary(self):
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)
-        bad=copy.deepcopy(report);bad['configuration_assessment']['results'][0]['observation']={'state':'missing'}
+        bad=copy.deepcopy(report);report_model.configuration_results(bad)[0]['observation']={'state':'missing'}
         with self.assertRaises(ValueError):validate_pair(snapshot,bad)
-        bad=copy.deepcopy(report);bad['configuration_assessment']['summary']['check_count']+=1
+        bad=copy.deepcopy(report);report_model.configuration_summary(bad)['check_count']+=1
         with self.assertRaises(ValueError):validate_pair(snapshot,bad)
 
     def test_snapshot_rejects_injected_configuration_payload(self):
@@ -278,10 +279,10 @@ class ConfigurationTests(unittest.TestCase):
         policy['checks']['ST-https']={'operator':'equals','value':True}
         policy['overrides']={row['id'].lower():{'ST-https':{'operator':'equals','value':False}}}
         report=assess_snapshot(snapshot,criteria=policy)
-        result=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='ST-https')
+        result=next(r for r in report_model.configuration_results(report) if r['check_id']=='ST-https')
         self.assertEqual('PASS',result['result']);self.assertEqual(False,result['criterion']['value'])
         store=MemoryStore();manifest=save_run(store,snapshot,report)
-        self.assertEqual(policy,load_run(store,manifest['run_id'])['assessment']['configuration_assessment']['policy'])
+        self.assertEqual(policy,report_model.configuration(load_run(store,manifest['run_id'])['assessment'])['policy'])
 
     def test_duplicate_or_nonfinite_criteria_json_is_rejected(self):
         from cloud_governance.controls import decode_policy
@@ -295,7 +296,7 @@ class ConfigurationTests(unittest.TestCase):
         responses[url+'&$skiptoken=page2']={'fixture_error':403}
         snapshot=collect(responses);validate_snapshot(snapshot)
         report=assess_snapshot(snapshot,criteria=policy)
-        rows=[r for r in report['configuration_assessment']['results'] if r['observation'].get('collection',{}).get('errors')]
+        rows=[r for r in report_model.configuration_results(report) if r['observation'].get('collection',{}).get('errors')]
         self.assertEqual(2,len(rows));self.assertTrue(all(row['result']=='ERROR' for row in rows))
         self.assertEqual(['category:AuditEvent'],rows[0]['observation']['value'])
         self.assertEqual(1,rows[0]['observation']['collection']['pages'])
@@ -307,31 +308,31 @@ class ConfigurationTests(unittest.TestCase):
         responses[url]['value'][0]['properties']['issuer']='https://issuer.example.invalid?sig=SECRET'
         snapshot=collect(responses);validate_snapshot(snapshot)
         report=assess_snapshot(snapshot,criteria=policy)
-        row=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='UAMI-federation-trust')
+        row=next(r for r in report_model.configuration_results(report) if r['check_id']=='UAMI-federation-trust')
         self.assertEqual('UNKNOWN',row['result']);self.assertNotIn('sig=SECRET',json.dumps(snapshot))
 
     def test_failed_provisioning_does_not_produce_positive_root_predicates(self):
         responses,policy=fixture()
         for raw in responses.values():
             if isinstance(raw,dict) and raw.get('type','').lower()=='microsoft.keyvault/vaults':raw['properties']['provisioningState']='Failed'
-        rows=assess_snapshot(collect(responses),criteria=policy)['configuration_assessment']['results']
+        rows=report_model.configuration_results(assess_snapshot(collect(responses),criteria=policy))
         self.assertTrue(all(r['result']=='UNKNOWN' for r in rows if r['check_id'].startswith('KV-') and r['check_id'] not in ('KV-diagnostic-logs','KV-diagnostic-routes','KV-approved-arm-grants')))
 
     def test_schema_versions_prevent_old_readers_omitting_new_findings(self):
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)
         store=MemoryStore();manifest=save_run(store,snapshot,report)
-        self.assertEqual('1.1',snapshot['schema_version']);self.assertEqual('1.1',report['schema_version']);self.assertEqual('1.1',manifest['schema_version'])
+        self.assertEqual('1.1',snapshot['schema_version']);self.assertEqual('1.2',report['schema_version']);self.assertEqual('1.2',manifest['schema_version'])
         old=copy.deepcopy(snapshot);old['schema_version']='1.0'
         for row in old['resources']:row.pop('configuration',None)
         validate_snapshot(old)
         reassessed=assess_snapshot(old,criteria=policy)
-        self.assertFalse(any(r['result']=='PASS' for r in reassessed['configuration_assessment']['results']))
+        self.assertFalse(any(r['result']=='PASS' for r in report_model.configuration_results(reassessed)))
 
     def test_new_archive_cannot_omit_predicates_or_forge_mapping(self):
         from cloud_governance.controls import overall_summary
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)
         for change in ('missing','mapping'):
-            bad=copy.deepcopy(report);cfg=bad['configuration_assessment']
+            bad=copy.deepcopy(report);cfg=report_model.configuration(bad)
             if change=='missing':
                 cfg['results'].pop();cfg['summary']['check_count']-=1;cfg['summary']['counts']['PASS']-=1
                 bad['overall_summary']=overall_summary(bad)
@@ -353,7 +354,7 @@ class FreshnessTests(unittest.TestCase):
                                    ('2026-09-19T11:59:59+00:00','future')]:
             with patch('cloud_governance.controls.now', return_value=assessed_at):
                 report = assess_snapshot(snapshot, criteria=policy)
-            rows = report['configuration_assessment']['results']
+            rows = report_model.configuration_results(report)
             self.assertTrue(all(row['freshness']['state'] == state for row in rows))
             self.assertTrue(all(row['result'] == ('PASS' if state == 'fresh' else 'UNKNOWN') for row in rows))
             store = MemoryStore()
@@ -371,7 +372,7 @@ class FreshnessTests(unittest.TestCase):
         snapshot = collect(responses)
         with patch('cloud_governance.controls.now',return_value='2040-01-01T00:00:00+00:00'):
             report = assess_snapshot(snapshot,criteria=policy)
-        report['configuration_assessment']['results'][0]['freshness']['state'] = 'fresh'
+        report_model.configuration_results(report)[0]['freshness']['state'] = 'fresh'
         with self.assertRaises(ValueError):
             validate_pair(snapshot,report)
 
@@ -383,6 +384,6 @@ class OverallCoverageTests(unittest.TestCase):
                   'configuration_assessment':{'identity_complete':True,'summary':{
                       'conclusion':'FAILURES_FOUND','counts':{'FAIL':1,'UNKNOWN':1,'ERROR':0}}}}
         self.assertEqual(overall_summary(report),{'conclusion':'FAILURES_FOUND','failed_check_count':1,'coverage_incomplete':True})
-        report['configuration_assessment']['summary']['counts']['UNKNOWN']=0
-        report['configuration_assessment']['identity_complete']=False
+        report_model.configuration_summary(report)['counts']['UNKNOWN']=0
+        report_model.configuration(report)['identity_complete']=False
         self.assertTrue(overall_summary(report)['coverage_incomplete'])

@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import json
 import unittest
 from cloud_governance.catalog import MANAGED_REDIS_FAMILIES, RULES
@@ -120,8 +121,8 @@ class ManagedRedisTests(unittest.TestCase):
         before = dict(store.objects); publish_pdf(store, run)
         saved = load_run(store, run)['assessment']
         self.assertEqual(report, saved)
-        self.assertEqual({'PASS'}, {row['result'] for row in saved['results']})
-        for row in saved['results']:
+        self.assertEqual({'PASS'}, {row['result'] for row in report_model.resource_results(saved)})
+        for row in report_model.resource_results(saved):
             self.assertTrue(row['sources'] and row['scope'])
         self.assertTrue(all(store.objects[key] == value for key, value in before.items()))
 

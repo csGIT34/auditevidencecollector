@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import io
 import json
@@ -20,8 +21,8 @@ class CollectionTests(unittest.TestCase):
         s.responses[s.inventory_url]["nextLink"] = next_url
         s.responses[next_url] = {"value": [a, b]}
         s.run()
-        self.assertEqual(2, s.report["summary"]["resource_count"])
-        self.assertTrue(s.report["summary"]["inventory_complete"])
+        self.assertEqual(2, report_model.resource_summary(s.report)["resource_count"])
+        self.assertTrue(report_model.resource_summary(s.report)["inventory_complete"])
         self.assertEqual(2, s.snapshot["inventory"]["subscriptions"][0]["pages"])
 
     def test_partial_inventory_retains_resources_and_never_aggregate_pass(self):
@@ -31,16 +32,16 @@ class CollectionTests(unittest.TestCase):
         s.responses[s.inventory_url]["nextLink"] = link
         s.responses[link] = {"fixture_error": 403}
         s.run()
-        self.assertEqual(1, s.report["summary"]["resource_count"])
+        self.assertEqual(1, report_model.resource_summary(s.report)["resource_count"])
         self.assertEqual("PASS", s.result(a)["result"])
-        self.assertEqual("INCOMPLETE", s.report["summary"]["conclusion"])
+        self.assertEqual("INCOMPLETE", report_model.resource_summary(s.report)["conclusion"])
         self.assertNotIn("secret-cursor", json.dumps(s.snapshot))
 
     def test_unsafe_pagination_does_not_send_token_to_other_host(self):
         for link in ("https://evil.example/subscriptions", "http://management.azure.com/subscriptions", "https://management.azure.com@evil.example/subscriptions"):
             s = Scenario([]); s.responses[s.inventory_url]["nextLink"] = link; s.run()
             self.assertNotIn(link, s.transport.calls)
-            self.assertFalse(s.report["summary"]["inventory_complete"])
+            self.assertFalse(report_model.resource_summary(s.report)["inventory_complete"])
 
     def test_pagination_cannot_change_subscription_scope(self):
         s = Scenario([])
@@ -56,15 +57,15 @@ class CollectionTests(unittest.TestCase):
             s.responses[s.inventory_url]["nextLink"] = value
             s.run(max_pages=limit)
             self.assertEqual(expected, s.snapshot["errors"][0]["code"])
-            self.assertEqual("INCOMPLETE", s.report["summary"]["conclusion"])
+            self.assertEqual("INCOMPLETE", report_model.resource_summary(s.report)["conclusion"])
 
     def test_list_failure_and_empty_scope_do_not_green(self):
         s = Scenario([])
         s.responses[endpoint("/subscriptions", SUBSCRIPTIONS_API)] = {"fixture_error": 403}
         s.run()
-        self.assertEqual("INCOMPLETE", s.report["summary"]["conclusion"])
+        self.assertEqual("INCOMPLETE", report_model.resource_summary(s.report)["conclusion"])
         s = Scenario([]); s.run()
-        self.assertEqual("INCOMPLETE", s.report["summary"]["conclusion"])
+        self.assertEqual("INCOMPLETE", report_model.resource_summary(s.report)["conclusion"])
 
     def test_denied_detail_is_error_even_for_enforced_service(self):
         row = resource("Microsoft.Storage/storageAccounts")
@@ -81,7 +82,7 @@ class CollectionTests(unittest.TestCase):
         s = Scenario([])
         s.responses[s.inventory_url]["value"] = [None, {"id": "unsafe", "type": "Microsoft.Storage/storageAccounts"}]
         s.run()
-        self.assertFalse(s.report["summary"]["inventory_complete"])
+        self.assertFalse(report_model.resource_summary(s.report)["inventory_complete"])
         self.assertEqual(2, len(s.snapshot["errors"]))
 
     def test_unknown_type_retained_without_detail_get(self):
@@ -100,20 +101,20 @@ class CollectionTests(unittest.TestCase):
         s.run()
         self.assertEqual("PASS", s.result(db)["result"])
         self.assertEqual("UNKNOWN", s.result(server)["result"])
-        self.assertFalse(s.report["summary"]["child_collections_complete"])
+        self.assertFalse(report_model.resource_summary(s.report)["child_collections_complete"])
 
     def test_child_list_wrong_parent_is_rejected(self):
         server = resource("Microsoft.Sql/servers", "server")
         db = resource("Microsoft.Sql/servers/databases", "wrong/db")
         s = Scenario([server]).children(server, "databases", [db]).tde(db); s.run()
-        self.assertEqual(1, s.report["summary"]["resource_count"])
+        self.assertEqual(1, report_model.resource_summary(s.report)["resource_count"])
         self.assertEqual("UNKNOWN", s.result(server)["result"])
 
     def test_duplicate_child_inventory_is_assessed_once(self):
         server = resource("Microsoft.Sql/servers", "server")
         db = resource("Microsoft.Sql/servers/databases", "server/db")
         s = Scenario([server, db]).children(server, "databases", [db]).tde(db); s.run()
-        self.assertEqual(2, s.report["summary"]["resource_count"])
+        self.assertEqual(2, report_model.resource_summary(s.report)["resource_count"])
         self.assertEqual("PASS", s.result(server)["result"])
 
     def test_secret_fields_are_excluded_everywhere(self):

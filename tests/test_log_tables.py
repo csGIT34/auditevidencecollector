@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -69,7 +70,7 @@ class LogTableTests(unittest.TestCase):
         policy['checks'][self.check.id]={'operator':'table_retention','value':criterion(rid)}
         validate_policy(policy);responses[url]['value']=[]
         snapshot=collect_arm(responses);report=assess_snapshot(snapshot,criteria=policy)
-        result=next(r for r in report['configuration_assessment']['results'] if r['check_id']==self.check.id)
+        result=next(r for r in report_model.configuration_results(report) if r['check_id']==self.check.id)
         self.assertEqual('FAIL',result['result'])
         store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];before=dict(store.objects)
         self.assertEqual(report,load_run(store,run)['assessment']);publish_pdf(store,run)
@@ -79,4 +80,4 @@ class LogTableTests(unittest.TestCase):
         responses,policy=fixture();snapshot=collect_arm(responses)
         for value in (None,{**policy,'status':'draft'}):
             report=assess_snapshot(snapshot,criteria=value)
-            self.assertEqual('UNKNOWN',next(r for r in report['configuration_assessment']['results'] if r['check_id']==self.check.id)['result'])
+            self.assertEqual('UNKNOWN',next(r for r in report_model.configuration_results(report) if r['check_id']==self.check.id)['result'])

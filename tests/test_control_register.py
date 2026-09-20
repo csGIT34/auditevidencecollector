@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import json
 from pathlib import Path
 import tempfile
@@ -49,11 +50,11 @@ class ControlRegisterTests(unittest.TestCase):
 
     def test_failed_and_incomplete_observations_reach_their_controls(self):
         source = report()
-        source['configuration_assessment']['results'][0]['result'] = 'FAIL'
-        controls = source['configuration_assessment']['results'][0]['control_refs']
+        report_model.configuration_results(source)[0]['result'] = 'FAIL'
+        controls = report_model.configuration_results(source)[0]['control_refs']
         register = build(source)
         self.assertEqual('FINDINGS_PRESENT', row(register, controls[0])['status'])
-        source['configuration_assessment']['results'][0]['result'] = 'UNKNOWN'
+        report_model.configuration_results(source)[0]['result'] = 'UNKNOWN'
         self.assertEqual('INCOMPLETE_EVIDENCE', row(build(source), controls[0])['status'])
 
     def test_controls_without_any_evidence_are_explicitly_not_assessed(self):

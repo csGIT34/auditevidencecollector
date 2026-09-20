@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import json
 import unittest
 from cloud_governance.catalog import RULES
@@ -37,6 +38,6 @@ class AdditionalEncryptionTests(unittest.TestCase):
         s=Scenario([resource(kind) for kind in TYPES]);s.run();report=assess_snapshot(s.snapshot)
         store=MemoryStore();run=save_run(store,s.snapshot,report)['run_id'];before=dict(store.objects);publish_pdf(store,run)
         saved=load_run(store,run)['assessment'];self.assertEqual(report,saved)
-        for row in saved['results']:
+        for row in report_model.resource_results(saved):
             self.assertEqual('PASS',row['result']);self.assertTrue(row['sources']);self.assertTrue(row['scope'])
         self.assertTrue(all(store.objects[k]==v for k,v in before.items()))

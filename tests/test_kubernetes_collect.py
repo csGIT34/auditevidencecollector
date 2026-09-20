@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import io
 import json
@@ -58,7 +59,7 @@ class KubernetesCollectionTests(unittest.TestCase):
         transport=Mock();transport.get.side_effect=[CollectionError('http_error',403),self.nodes]
         manifest=collect(self.store,self.run,self.config,self.arm,Mock(),Deadline(30),provenance=self.provenance,transport_factory=Mock(return_value=transport))
         report=load(self.store,manifest['evidence_id'])['report']
-        self.assertTrue(report['summary']['coverage_incomplete']);self.assertEqual('INCOMPLETE',report['summary']['conclusion'])
+        self.assertTrue(report_model.resource_summary(report)['coverage_incomplete']);self.assertEqual('INCOMPLETE',report_model.resource_summary(report)['conclusion'])
         self.assertEqual(403,report['collection_source']['pods']['http_status'])
 
     def test_pages_preserve_snapshot_and_detect_cycles_version_changes_and_limits(self):

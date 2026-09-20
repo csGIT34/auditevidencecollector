@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -57,9 +58,9 @@ class DiagnosticRouteTests(unittest.TestCase):
         row=next(r for r in snapshot['resources'] if r['type']=='microsoft.keyvault/vaults')
         check=CHECKS['KV-diagnostic-routes'];url=endpoint(row['id']+check.suffix,check.api)
         self.assertEqual(1,transport.calls.count(url))
-        result=next(r for r in assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results'] if r['check_id']==check.id)
+        result=next(r for r in report_model.configuration_results(assess_snapshot(snapshot,criteria=policy)) if r['check_id']==check.id)
         self.assertEqual('PASS',result['result'])
         responses[url]['value'][0]['properties']['workspaceId']=OTHER
         changed=Collector(FixtureTransport(responses),mode='offline_fixture').collect([SUB])
-        result=next(r for r in assess_snapshot(changed,criteria=policy)['configuration_assessment']['results'] if r['check_id']==check.id)
+        result=next(r for r in report_model.configuration_results(assess_snapshot(changed,criteria=policy)) if r['check_id']==check.id)
         self.assertEqual('FAIL',result['result'])

@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import hashlib
 import json
@@ -134,9 +135,9 @@ class ArchiveTests(unittest.TestCase):
     def test_mismatched_saved_findings_and_summary_are_rejected_before_write(self):
         snapshot,report=evidence()
         for mutate in [lambda r:r.update(snapshot_sha256='0'*64),
-                       lambda r:r['results'][0]['evidence'].update(password='bad'),
-                       lambda r:r['summary'].update(coverage_incomplete=True),
-                       lambda r:r['results'][0].update(result='FAIL')]:
+                       lambda r:report_model.resource_results(r)[0]['evidence'].update(password='bad'),
+                       lambda r:report_model.resource_summary(r).update(coverage_incomplete=True),
+                       lambda r:report_model.resource_results(r)[0].update(result='FAIL')]:
             bad=copy.deepcopy(report);mutate(bad);store=MemoryStore()
             with self.assertRaises(ValueError):save_run(store,snapshot,bad)
             self.assertEqual({},store.objects)

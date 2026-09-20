@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -40,7 +41,7 @@ class BlobContainerTests(unittest.TestCase):
         policy['checks']['ST-container-access']={'operator':'allowed_access','value':['None']}
         for level,expected in [('None','PASS'),('Blob','FAIL'),('Container','FAIL')]:
             responses[url]['value'][0]['properties']['publicAccess']=level
-            results=assess_snapshot(collect_arm(responses),criteria=policy)['configuration_assessment']['results']
+            results=report_model.configuration_results(assess_snapshot(collect_arm(responses),criteria=policy))
             self.assertEqual(expected,next(r for r in results if r['check_id']==self.check.id)['result'])
 
     def test_empty_complete_listing_and_missing_criteria_are_distinct(self):
@@ -50,5 +51,5 @@ class BlobContainerTests(unittest.TestCase):
         policy['checks'][self.check.id]={'operator':'allowed_access','value':['None']}
         snapshot=collect_arm(responses)
         for supplied,result in ((policy,'PASS'),(None,'UNKNOWN')):
-            rows=assess_snapshot(snapshot,criteria=supplied)['configuration_assessment']['results']
+            rows=report_model.configuration_results(assess_snapshot(snapshot,criteria=supplied))
             self.assertEqual(result,next(r for r in rows if r['check_id']==self.check.id)['result'])

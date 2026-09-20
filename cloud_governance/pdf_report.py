@@ -164,7 +164,7 @@ def render_pdf(saved, generation):
 
     story += [Spacer(1,25),p('Cloud governance\nEvidence assessment', 'Title'),Spacer(1,12)]
     field('Overall saved assessment', report_model.overall(report)['conclusion'])
-    field('Saved encryption assessment conclusion',report['summary']['conclusion'])
+    field('Saved resource rule conclusion',report_model.resource_summary(report)['conclusion'])
     if configuration:
         field('Saved configuration assessment conclusion', configuration['summary']['conclusion'])
         field('Configuration check counts', configuration['summary'])
@@ -177,7 +177,7 @@ def render_pdf(saved, generation):
                        ('Saved assessment generated',report['generated_at']),('PDF generated',generation['generated_at']),
                        ('Collector / rule / evidence schema',f"{report['tool_version']} / {report['rule_version']} / {snapshot['schema_version']}"),
                        ('PDF renderer',generation['renderer_version'])]:field(name,value)
-    story.append(table([['Result','Count']]+[[s,report['summary']['counts'][s]] for s in report['summary']['counts']], [width*.72,width*.28]))
+    story.append(table([['Result','Count']]+[[s,report_model.resource_summary(report)['counts'][s]] for s in report_model.resource_summary(report)['counts']], [width*.72,width*.28]))
     story.append(PageBreak())
     heading('Document index','contents')
     toc=TableOfContents();toc.levelStyles=[ParagraphStyle(name='AuditTOC',fontName='AuditSans',fontSize=9.2,leading=13,spaceBefore=3,splitLongWords=1)]

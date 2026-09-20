@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -53,10 +54,10 @@ class BackupPopulationTests(unittest.TestCase):
             target_url=next(url for url in responses if url.endswith(check.suffix+'?api-version='+check.api))
             responses[target_url]={'value':[]}
         snapshot=collect_arm(responses)
-        results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']
+        results=report_model.configuration_results(assess_snapshot(snapshot,criteria=policy))
         self.assertTrue(all(row['result']=='FAIL' for row in results if row['check_id'] in ('BV-backup-population','BV-recovery-population')))
         responses,policy=fixture()
         url=next(url for url in responses if '/backupInstances?' in url)
         responses[url]['value'][0]['properties']['currentProtectionState']='ProtectionError'
-        results=assess_snapshot(collect_arm(responses),criteria=policy)['configuration_assessment']['results']
+        results=report_model.configuration_results(assess_snapshot(collect_arm(responses),criteria=policy))
         self.assertEqual('FAIL',next(row for row in results if row['check_id']=='BV-backup-population')['result'])

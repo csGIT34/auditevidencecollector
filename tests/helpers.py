@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 from cloud_governance.catalog import RULES
 from cloud_governance.collector import Collector, FixtureTransport, INVENTORY_API, SUBSCRIPTIONS_API, endpoint
 from cloud_governance.assessment import assess
@@ -54,4 +55,4 @@ class Scenario:
         return self.report
 
     def result(self, row):
-        return next(r for r in self.report["results"] if r["id"].lower() == row["id"].lower())
+        return next(r for r in report_model.resource_results(self.report) if r["id"].lower() == row["id"].lower())

@@ -568,13 +568,15 @@ def evaluate(snapshot, policy=None):
 
 
 def overall_summary(report):
-    encryption = report['summary']
-    config = report.get('configuration_assessment', {}).get('summary')
-    failures = encryption['counts']['FAIL'] + (config['counts']['FAIL'] if config else 0)
-    incomplete = encryption['coverage_incomplete'] or bool(config and (config['conclusion']=='INCOMPLETE' or config['counts']['UNKNOWN'] or config['counts']['ERROR']))
-    incomplete = incomplete or not report.get('configuration_assessment', {}).get('identity_complete', True)
-    incomplete = incomplete or any(row.get('lifecycle_evaluation',{}).get('coverage_incomplete',False) for row in report.get('configuration_assessment',{}).get('results',[]))
-    incomplete = incomplete or any(row.get('job_evaluation',{}).get('coverage_incomplete',False) for row in report.get('configuration_assessment',{}).get('results',[]))
+    from . import report_model
+    rules = report_model.resource_summary(report)
+    section = report_model.configuration(report) or {}
+    config = section.get('summary')
+    failures = rules['counts']['FAIL'] + (config['counts']['FAIL'] if config else 0)
+    incomplete = rules['coverage_incomplete'] or bool(config and (config['conclusion']=='INCOMPLETE' or config['counts']['UNKNOWN'] or config['counts']['ERROR']))
+    incomplete = incomplete or not section.get('identity_complete', True)
+    incomplete = incomplete or any(row.get('lifecycle_evaluation',{}).get('coverage_incomplete',False) for row in section.get('results',[]))
+    incomplete = incomplete or any(row.get('job_evaluation',{}).get('coverage_incomplete',False) for row in section.get('results',[]))
     return {'conclusion':'FAILURES_FOUND' if failures else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED',
             'coverage_incomplete':bool(incomplete), 'failed_check_count':failures}
 

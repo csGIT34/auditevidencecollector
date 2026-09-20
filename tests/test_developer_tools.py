@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 from pathlib import Path
 import tempfile
 import unittest
@@ -22,5 +23,5 @@ class DeveloperToolTests(unittest.TestCase):
         snapshot = Collector(transport, mode='offline_fixture').collect([SUB])
         self.assertEqual(101, len(snapshot['resources']))
         self.assertEqual(2, snapshot['inventory']['subscriptions'][0]['pages'])
-        counts = assess(snapshot)['summary']['counts']
+        counts = report_model.resource_summary(assess(snapshot))['counts']
         self.assertTrue(all(counts[k] > 0 for k in ('PASS','FAIL','UNKNOWN','ERROR','UNSUPPORTED','NOT_APPLICABLE')))

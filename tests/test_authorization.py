@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -98,14 +99,14 @@ class AuthorizationTests(unittest.TestCase):
         row['configuration']['ST-approved-arm-grants']=observation
         policy['checks']['ST-approved-arm-grants']={'operator':'equals','value':[grant()]}
         report=assess_snapshot(snapshot,criteria=policy)
-        result=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='ST-approved-arm-grants')
+        result=next(r for r in report_model.configuration_results(report) if r['check_id']=='ST-approved-arm-grants')
         self.assertEqual('PASS',result['result'])
         self.assertIn('notActions',markdown(report))
         store=MemoryStore();run=save_run(store,snapshot,report)
         self.assertEqual(report,load_run(store,run['run_id'])['assessment'])
         policy['checks']['ST-approved-arm-grants']['value']=[]
         report=assess_snapshot(snapshot,criteria=policy)
-        self.assertEqual('FAIL',next(r for r in report['configuration_assessment']['results'] if r['check_id']=='ST-approved-arm-grants')['result'])
+        self.assertEqual('FAIL',next(r for r in report_model.configuration_results(report) if r['check_id']=='ST-approved-arm-grants')['result'])
 
     def test_changed_custom_role_permissions_fail_approved_grant_set(self):
         from tests.test_controls import fixture,collect as collect_arm
@@ -116,7 +117,7 @@ class AuthorizationTests(unittest.TestCase):
         target['configuration']['ST-approved-arm-grants']=collect(FixtureTransport(changed),RID,10,{})
         policy['checks']['ST-approved-arm-grants']={'operator':'equals','value':[grant()]}
         report=assess_snapshot(snapshot,criteria=policy)
-        self.assertEqual('FAIL',next(row for row in report['configuration_assessment']['results'] if row['check_id']=='ST-approved-arm-grants')['result'])
+        self.assertEqual('FAIL',next(row for row in report_model.configuration_results(report) if row['check_id']=='ST-approved-arm-grants')['result'])
 
     def test_role_definition_reads_stay_under_selected_resource(self):
         transport=FixtureTransport(responses())

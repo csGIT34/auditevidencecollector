@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import io
 import json
 import unittest
@@ -56,7 +57,7 @@ class TransportBoundsTests(unittest.TestCase):
         transport=ArmTransport(Credential(),opener=Opener(b'{"value":['+b' '*200+b']}'),max_response_bytes=64)
         snapshot=Collector(transport,mode='offline_fixture').collect([SUB]);validate_snapshot(snapshot)
         self.assertFalse(snapshot['inventory']['complete']);self.assertEqual('response_size_limit',snapshot['errors'][0]['code'])
-        report=assess_snapshot(snapshot);self.assertTrue(report['overall_summary']['coverage_incomplete'])
+        report=assess_snapshot(snapshot);self.assertTrue(report_model.overall(report)['coverage_incomplete'])
         store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];before=dict(store.objects);pdf=publish_pdf(store,run)
         from pypdf import PdfReader
         text=' '.join(page.extract_text() for page in PdfReader(io.BytesIO(store.read(pdf['pdf']['key']))).pages)

@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-20. **Source release 0.20.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-20. **Source release 0.21.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -89,3 +89,5 @@ Version 0.18.0 passed 324 local tests with zero skips. The synthetic all-service
 Version 0.19.0 passed 335 local tests with zero skips. The control-indexed register was generated from the synthetic all-service run: 189 organization-wide candidate controls of which 48 are implicated by the deployed resource types, 38 with automated evidence and 151 NOT_ASSESSED with no tailoring declared. A worked tailoring moved 29 provider-owned controls to INHERITED_CLAIMED, each carrying an explicit gap until its assurance report is referenced. The register re-evaluates nothing and is deterministic from a saved run; no control status asserts satisfaction. No cloud changes were made.
 
 Version 0.20.0 renames the package to `cloud_governance`, the `encryption_rule` evidence kind to `resource_rule` and the control scope declaration to `tailoring`. All 346 local tests passed with zero skips and the built wheel now carries the packaged control index. These are naming and packaging changes; no rule, criterion or saved archive changed, and historical runs keep the identifiers frozen into them.
+
+Version 0.21.0 restructures assessment reports to schema 1.2 so no single evidence kind owns the report. All 352 local tests passed with zero skips. Retained archives written by tool versions 0.2.0 and 0.3.0 still load and return their original results and conclusions; an archive's format version now pins the assessment schema stored in it. The derived control mapping lists 38 referenced controls in the synthetic all-service run, replacing a fixed two-control mapping.

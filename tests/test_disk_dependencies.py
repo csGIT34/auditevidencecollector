@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -51,7 +52,7 @@ class DiskDependencyTests(unittest.TestCase):
             validate_snapshot(snapshot)
             self.assertEqual([vm['id']],[r['id'] for r in snapshot['resources']])
             self.assertFalse(any(target in url for url in transport.calls))
-            self.assertEqual('UNKNOWN',assess(snapshot)['results'][0]['result'])
+            self.assertEqual('UNKNOWN',report_model.resource_results(assess(snapshot))[0]['result'])
             self.assertNotIn('SECRET-CANARY',json.dumps(snapshot))
 
     def test_selected_other_subscription_resolves_without_rewriting_inventory(self):

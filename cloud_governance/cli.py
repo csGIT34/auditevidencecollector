@@ -215,8 +215,8 @@ def main(argv=None):
             if not args.input:
                 raise ValueError("control-register requires --input or --template")
             report = json.loads(args.input.read_text(encoding="utf-8"))
-            if not isinstance(report, dict) or report.get("schema_version") not in ("1.0", "1.1"):
-                raise ValueError("Expected a saved assessment with schema_version 1.0 or 1.1")
+            if not isinstance(report, dict) or report.get("schema_version") not in report_model.SCHEMAS:
+                raise ValueError("Expected a saved assessment with a known schema version")
             tailoring = json.loads(args.tailoring.read_text(encoding="utf-8")) if args.tailoring else None
             operational = json.loads(args.operational.read_text(encoding="utf-8")) if args.operational else None
             register = build(report, tailoring, operational)
@@ -302,7 +302,7 @@ def main(argv=None):
             write_private(args.json, json.dumps(report, indent=2, sort_keys=True) + "\n")
         if args.report:
             write_private(args.report, markdown(report))
-        summary = report["summary"]
+        summary = report_model.resource_summary(report)
         print(f"{report_model.overall(report)['conclusion']}: {summary['resource_count']} resources; "
               f"{summary['counts']['FAIL']} failed; coverage incomplete={report_model.overall(report)['coverage_incomplete']}.")
         print("Configuration checks: " + json.dumps(report_model.configuration_summary(report), sort_keys=True))

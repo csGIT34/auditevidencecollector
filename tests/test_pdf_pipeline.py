@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import contextlib
 import copy
 from io import BytesIO, StringIO
@@ -72,7 +73,7 @@ class PdfPipelineTests(unittest.TestCase):
         pdf=store.read(manifest['pdf']['key']);reader,text=self.text(pdf)
         compact=''.join(text.split())
         self.assertGreater(len(reader.pages),10)
-        for row in report['results']:
+        for row in report_model.resource_results(report):
             self.assertIn(''.join(row['id'].split()),compact)
             self.assertIn(''.join(row['reason'].split()),compact)
             for k,v in row['evidence'].items():self.assertIn(k,compact)
@@ -137,8 +138,8 @@ class PdfPipelineTests(unittest.TestCase):
         store=MemoryStore();m=save_run(store,scenario.snapshot,r);pdf=publish_pdf(store,m['run_id'])
         text=self.text(store.read(pdf['pdf']['key']))[1]
         self.assertIn('INCOMPLETE',text);self.assertIn('Empty inventory',text)
-        s,r=evidence();r['results'][0]['gaps']=['Missing dependency evidence. '*200 + ' \u4e2d']
-        r['summary']['coverage_incomplete']=True;r['summary']['conclusion']='INCOMPLETE'
+        s,r=evidence();report_model.resource_results(r)[0]['gaps']=['Missing dependency evidence. '*200 + ' \u4e2d']
+        report_model.resource_summary(r)['coverage_incomplete']=True;report_model.resource_summary(r)['conclusion']='INCOMPLETE'
         m=save_run(store,s,r);pdf=publish_pdf(store,m['run_id'])
         rendered, rendered_text = self.text(store.read(pdf['pdf']['key']))
         self.assertTrue(rendered.pages)

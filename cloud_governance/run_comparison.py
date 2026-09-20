@@ -3,6 +3,7 @@ from collections import Counter
 import json
 from uuid import uuid4
 
+from . import report_model
 from . import __version__
 from .archive import digest, encode, identity, load_run
 from .safety import now
@@ -23,7 +24,7 @@ def _scope(saved):
 def _rows(saved):
     rows = {}
     resources = {r['id']: r for r in saved['snapshot']['resources']}
-    for row in saved['assessment']['results']:
+    for row in report_model.resource_results(saved['assessment']):
         rows[(row['id'].lower(), 'encryption')] = {
             'observation': {'evidence': row['evidence'], 'collection_status': row['collection_status'],
                             'errors': row['errors'], 'gaps': row['gaps'],
@@ -33,7 +34,7 @@ def _rows(saved):
                           'criteria': saved['context']['criteria_by_mode'].get(
                               (saved['context']['rule_catalog'].get(row['type'].lower()) or {}).get('mode')),
                           'catalog': saved['context']['rule_catalog'].get(row['type'].lower())}}
-    assessment = saved['assessment'].get('configuration_assessment', {})
+    assessment = report_model.configuration(saved['assessment']) or {}
     for row in assessment.get('results', []):
         rows[(row['resource_id'].lower(), row['check_id'])] = {
             'observation': row['observation'], 'result': row['result'], 'observed_at': row['observed_at'],

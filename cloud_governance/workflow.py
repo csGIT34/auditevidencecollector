@@ -1,5 +1,6 @@
 """Reusable deterministic operations; no host SDK or CLI process dependency."""
 import time
+from . import report_model
 from .archive import save_run, snapshot_digest
 from .assessment import assess
 from .collector import Collector
@@ -51,7 +52,8 @@ def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture',
         deadline.check()
     manifest = save_run(store, snapshot, report, provenance=provenance)
     return {'run_id': manifest['run_id'], 'archive_state': 'complete',
-            'assessment_conclusion': report['overall_summary']['conclusion'],
-            'coverage_incomplete': report['overall_summary']['coverage_incomplete'],
-            'resource_count': report['summary']['resource_count'], 'counts': report['summary']['counts'],
-            'configuration_summary': report['configuration_assessment']['summary']}
+            'assessment_conclusion': report_model.overall(report)['conclusion'],
+            'coverage_incomplete': report_model.overall(report)['coverage_incomplete'],
+            'resource_count': report_model.resource_summary(report)['resource_count'],
+            'counts': report_model.resource_summary(report)['counts'],
+            'configuration_summary': report_model.configuration_summary(report)}

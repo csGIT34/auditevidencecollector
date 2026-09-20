@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -44,5 +45,5 @@ class ContainerRevisionTests(unittest.TestCase):
             if change=='image':responses[url]['value'][0]['properties']['template']['initContainers'][0]['image']='example.azurecr.io/init:old'
             elif change=='active':responses[url]['value'][0]['properties']['active']=False
             else:responses[url]['value']=[]
-            result=assess_snapshot(collect_arm(responses),criteria=policy)['configuration_assessment']['results']
+            result=report_model.configuration_results(assess_snapshot(collect_arm(responses),criteria=policy))
             self.assertEqual('FAIL',next(r for r in result if r['check_id']==self.check.id)['result'])

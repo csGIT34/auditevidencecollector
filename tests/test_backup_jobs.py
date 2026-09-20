@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -77,7 +78,7 @@ class BackupJobTests(unittest.TestCase):
         validate_policy(policy)
         snapshot=collect_arm(responses)
         with patch('cloud_governance.controls.now',return_value=AS_OF):report=assess_snapshot(snapshot,criteria=policy)
-        self.assertTrue(all(r['result']=='PASS' for r in report['configuration_assessment']['results']))
+        self.assertTrue(all(r['result']=='PASS' for r in report_model.configuration_results(report)))
         store=MemoryStore();manifest=save_run(store,snapshot,report)
         # Replay does not reinterpret old observations using today's age.
         with patch('cloud_governance.backup_jobs.assess',side_effect=AssertionError('must not reassess')):

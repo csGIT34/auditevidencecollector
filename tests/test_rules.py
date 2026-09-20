@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import unittest
 
@@ -80,7 +81,7 @@ class RuleTests(unittest.TestCase):
         server = resource("Microsoft.Sql/servers", "server")
         db = resource("Microsoft.Sql/servers/databases", "server/db")
         s = Scenario([server]).children(server, "databases", [db]).tde(db, "Disabled"); s.run()
-        self.assertEqual(2, s.report["summary"]["resource_count"])
+        self.assertEqual(2, report_model.resource_summary(s.report)["resource_count"])
         self.assertEqual("FAIL", s.result(server)["result"])
 
     def test_sql_parent_complete_empty_is_na(self):

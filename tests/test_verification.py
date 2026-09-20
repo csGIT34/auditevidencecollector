@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import os
@@ -134,7 +135,7 @@ class VerificationTests(unittest.TestCase):
         transport=FixtureTransport(fixture['responses']); snapshot=Collector(transport,mode='offline_fixture').collect()
         with patch('subprocess.run',side_effect=AssertionError('Rendering must not execute commands')):
             report=assess(snapshot); md=markdown(report)
-        for row in report['results']:
+        for row in report_model.resource_results(report):
             self.assertTrue(row['verification_commands'])
             for c in row['verification_commands']:
                 self.assertTrue(c['synthetic']); self.assertEqual(c['argv'],shlex.split(c['command']))
@@ -151,7 +152,7 @@ class VerificationTests(unittest.TestCase):
         rows=[resource('Microsoft.Web/sites','app'),resource('Microsoft.Cache/Redis','cache'),
               resource('Microsoft.Synapse/workspaces','ws',{'defaultDataLakeStorage':{'accountUrl':'https://store.blob.core.windows.net/?sig=SECRET'}})]
         s=Scenario(rows); s.run()
-        commands=json.dumps([r['verification_commands'] for r in s.report['results']])
+        commands=json.dumps([r['verification_commands'] for r in report_model.resource_results(s.report)])
         for forbidden in ('appSettings','connectionString','defaultDataLakeStorage.accountUrl','sig=SECRET','administratorLoginPassword'):
             self.assertNotIn(forbidden,commands)
         redis=s.result(rows[1])['verification_commands'][0]['query']
@@ -161,7 +162,7 @@ class VerificationTests(unittest.TestCase):
     def test_live_context_is_explicit_without_running_live(self):
         row=resource('Microsoft.Storage/storageAccounts'); s=self.scenario(row)
         s.snapshot['mode']='azure_live'; report=assess(s.snapshot); md=markdown(report)
-        self.assertFalse(report['results'][0]['verification_commands'][0]['synthetic'])
+        self.assertFalse(report_model.resource_results(report)[0]['verification_commands'][0]['synthetic'])
         self.assertIn('CURRENT-STATE READ — requires authorized sign-in',md)
 
 
@@ -178,7 +179,7 @@ class ProjectionTests(unittest.TestCase):
         fixture=json.loads((Path(__file__).resolve().parents[1]/'examples/demo-fixture.json').read_text())
         transport=FixtureTransport(fixture['responses'])
         report=assess(Collector(transport,mode='offline_fixture').collect())
-        for row in report['results']:
+        for row in report_model.resource_results(report):
             for c in row['verification_commands']:
                 with self.subTest(kind=c['kind'],resource=c['resource_id']):
                     raw=copy.deepcopy(fixture['responses'][c['url']])

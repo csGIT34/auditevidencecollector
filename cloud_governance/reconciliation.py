@@ -3,6 +3,7 @@ from collections import Counter, defaultdict
 import math
 from uuid import uuid4
 
+from . import report_model
 from . import __version__
 from .archive import digest, encode, load_run
 from .safety import now
@@ -31,7 +32,7 @@ def reconcile(saved, imported, *, as_of, max_age_hours, max_skew_hours):
     timestamp_checks += [r['observed_at'] for r in imported['document']['resources'] + imported['document']['findings']]
     timestamp_checks += [r['collected_at'] for r in snapshot['resources']]
     require(all(timestamp(t) <= reference for t in timestamp_checks))
-    azure = {r['id'].lower():r for r in assessment['results']}
+    azure = {r['id'].lower():r for r in report_model.resource_results(assessment)}
     wiz = {r['resource_id'].lower():r for r in imported['document']['resources']}
     finding_index = defaultdict(list)
     for finding in imported['document']['findings']:

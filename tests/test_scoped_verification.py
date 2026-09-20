@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import json
 import unittest
 from unittest.mock import patch
@@ -24,7 +25,7 @@ class ScopedVerificationTests(unittest.TestCase):
             with self.subTest(scoped=scoped):
                 snapshot, transport = self.collected(scoped)
                 report = assess_snapshot(snapshot)
-                for row in report['results']:
+                for row in report_model.resource_results(report):
                     commands = row['verification_commands']
                     self.assertEqual(['inventory_lookup'], [c['kind'] for c in commands])
                     self.assertEqual(transport.calls[:1], [c['url'] for c in commands])  # Legacy encryption lookup; configuration reads are separate.
@@ -46,7 +47,7 @@ class ScopedVerificationTests(unittest.TestCase):
         snapshot, _ = self.collected()
         old_report = assess_snapshot(snapshot)
         # Reproduce the historical report's wider verification suggestions, without executing them.
-        for row, record in zip(old_report['results'], snapshot['resources']):
+        for row, record in zip(report_model.resource_results(old_report), snapshot['resources']):
             row['verification_commands'] = direct_commands(record, 'azure_live')
         store = MemoryStore()
         run = save_run(store, snapshot, old_report)
@@ -57,4 +58,4 @@ class ScopedVerificationTests(unittest.TestCase):
         self.assertEqual(old_report, saved['assessment'])
         self.assertEqual(original, {k: store.objects[k] for k in original})
         self.assertEqual('complete', publication['state'])
-        self.assertTrue(all('/subscriptions/'+SUB+'/resources?' in r['verification_commands'][0]['url'] for r in saved['assessment']['results']))
+        self.assertTrue(all('/subscriptions/'+SUB+'/resources?' in r['verification_commands'][0]['url'] for r in report_model.resource_results(saved['assessment'])))

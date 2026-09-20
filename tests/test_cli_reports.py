@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import contextlib
 import copy
 import io
@@ -31,14 +32,14 @@ class CliReportTests(unittest.TestCase):
                 code, _ = self.invoke(['collect', '--fixture', str(ROOT/'examples/demo-fixture.json'), '--json', str(report), '--report', str(readable), '--snapshot', str(snapshot)])
             self.assertEqual(1, code)
             data = json.loads(report.read_text())
-            self.assertEqual(35, data['summary']['resource_count'])
-            self.assertEqual({'PASS':22, 'FAIL':3, 'ERROR':1, 'UNKNOWN':7, 'UNSUPPORTED':1, 'NOT_APPLICABLE':1}, data['summary']['counts'])
+            self.assertEqual(35, report_model.resource_summary(data)['resource_count'])
+            self.assertEqual({'PASS':22, 'FAIL':3, 'ERROR':1, 'UNKNOWN':7, 'UNSUPPORTED':1, 'NOT_APPLICABLE':1}, report_model.resource_summary(data)['counts'])
             self.assertEqual('offline_fixture', data['mode'])
             self.assertEqual(0o600, report.stat().st_mode & 0o777)
             md = readable.read_text()
             for text in ('Coverage incomplete: True', 'Microsoft service documentation', 'SC-28', 'Rule version:', 'Collection errors', 'Unsupported types:'):
                 self.assertIn(text, md)
-            for result in data['results']:
+            for result in report_model.resource_results(data):
                 self.assertIn(result['id'], md)
                 self.assertTrue(result['collected_at'])
                 self.assertTrue(result['rule_version'])
@@ -46,7 +47,7 @@ class CliReportTests(unittest.TestCase):
             code, _ = self.invoke(['assess', '--input', str(snapshot), '--json', str(replay), '--report', str(path/'replay.md')])
             self.assertEqual(1, code)
             rerun=json.loads(replay.read_text())
-            self.assertEqual(data['summary'], rerun['summary'])
+            self.assertEqual(report_model.resource_summary(data), report_model.resource_summary(rerun))
             self.assertEqual(data['snapshot_sha256'], rerun['snapshot_sha256'])
             self.assertTrue(rerun['reassessed_from_snapshot'])
 
@@ -83,8 +84,8 @@ class CliReportTests(unittest.TestCase):
     def test_subscription_level_resource_identity_is_retained(self):
         row={'id':'/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Security/pricings/Default', 'type':'Microsoft.Security/pricings','properties':{}}
         s=Scenario([row]); data=s.run()
-        self.assertTrue(data['summary']['inventory_complete'])
-        self.assertEqual(1,data['summary']['counts']['UNSUPPORTED'])
+        self.assertTrue(report_model.resource_summary(data)['inventory_complete'])
+        self.assertEqual(1,report_model.resource_summary(data)['counts']['UNSUPPORTED'])
 
     def test_malformed_replay_cannot_inject_state_or_metadata(self):
         s=Scenario([resource('Microsoft.Storage/storageAccounts')]); s.run()

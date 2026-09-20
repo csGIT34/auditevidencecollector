@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -103,10 +104,10 @@ class GraphTests(unittest.TestCase):
         validate_snapshot(snapshot)
         policy['checks'].update({'APPREG-approved-owners':{'operator':'equals','value':[OWNER]},'APPREG-approved-role-grants':{'operator':'equals','value':[{'principalId':SP,'resourceId':OWNER,'appRoleId':ROLE}]},'APPREG-federation-trust':{'operator':'equals','value':[]},'APPREG-audience':{'operator':'equals','value':'AzureADMyOrg'},'APPREG-owner-count':{'operator':'at_least','value':1},'APPREG-expired-credentials':{'operator':'equals','value':0},'APPREG-sp-enabled':{'operator':'equals','value':True},'APPREG-role-grants':{'operator':'equals','value':1}})
         report=assess_snapshot(snapshot,criteria=policy)
-        checks={r['check_id']:r for r in report['configuration_assessment']['results']}
+        checks={r['check_id']:r for r in report_model.configuration_results(report)}
         self.assertEqual('FAIL',checks['APPREG-expired-credentials']['result'])
         self.assertEqual('PASS',checks['APPREG-owner-count']['result'])
-        self.assertEqual('FAILURES_FOUND',report['overall_summary']['conclusion'])
+        self.assertEqual('FAILURES_FOUND',report_model.overall(report)['conclusion'])
         store=MemoryStore();manifest=save_run(store,snapshot,report)
         with patch('cloud_governance.controls.evaluate',side_effect=AssertionError('reassess')):
             self.assertEqual(report,load_run(store,manifest['run_id'])['assessment'])
@@ -114,7 +115,7 @@ class GraphTests(unittest.TestCase):
     def test_exact_owners_and_role_tuples_are_checked_independently_of_count(self):
         responses,policy=arm_fixture();snapshot=collect(responses);snapshot['identity_evidence']=evidence()
         policy['checks'].update({'APPREG-approved-owners':{'operator':'equals','value':[ROLE]},'APPREG-approved-role-grants':{'operator':'equals','value':[{'principalId':SP,'resourceId':APP,'appRoleId':ROLE}]}})
-        rows={r['check_id']:r for r in assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']}
+        rows={r['check_id']:r for r in report_model.configuration_results(assess_snapshot(snapshot,criteria=policy))}
         self.assertEqual('FAIL',rows['APPREG-approved-owners']['result'])
         self.assertEqual('FAIL',rows['APPREG-approved-role-grants']['result'])
 

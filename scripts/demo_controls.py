@@ -1,4 +1,5 @@
 """Run all registered configuration predicates with synthetic ARM/Graph evidence."""
+from cloud_governance import report_model
 import argparse
 import json
 import os
@@ -33,7 +34,7 @@ def main():
     exports.put_new('report.pdf',store.read(pdf['pdf']['key']))
     exports.put_new('assessment.json',encode(saved['assessment']))
     exports.put_new('report.md',markdown(saved['assessment']).encode())
-    cfg=saved['assessment']['configuration_assessment']
+    cfg=report_model.configuration(saved['assessment'])
     result={'synthetic':True,'azure_calls':0,'graph_calls':0,'run_id':run['run_id'],
             'service_entries':len({r['catalog_ref'].split('-')[0] for r in cfg['results']}),
             'configuration_summary':cfg['summary'],'archive_originals_preserved':True,

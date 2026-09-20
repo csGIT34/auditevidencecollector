@@ -1,3 +1,4 @@
+from cloud_governance import report_model
 import copy
 import json
 import unittest
@@ -52,7 +53,7 @@ class AutomationAssetTests(unittest.TestCase):
             elif mutation=='version':responses[url]['value'][0]['properties']['version']='0.1.0'
             else:responses[url]['value'][0]['properties']['state']='Edit'
             snapshot=collect_arm(responses);report=assess_snapshot(snapshot,criteria=policy)
-            row=next(r for r in report['configuration_assessment']['results'] if r['check_id']==cid)
+            row=next(r for r in report_model.configuration_results(report) if r['check_id']==cid)
             self.assertEqual('FAIL',row['result'])
             store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];before=dict(store.objects)
             self.assertEqual(report,load_run(store,run)['assessment']);publish_pdf(store,run)
@@ -62,7 +63,7 @@ class AutomationAssetTests(unittest.TestCase):
         responses,policy=fixture();snapshot=collect_arm(responses)
         for value in (None,{**policy,'status':'draft'}):
             report=assess_snapshot(snapshot,criteria=value)
-            self.assertTrue(all(r['result']=='UNKNOWN' for r in report['configuration_assessment']['results'] if r['check_id'] in ('AUTO-runbooks-metadata','AUTO-modules-metadata')))
+            self.assertTrue(all(r['result']=='UNKNOWN' for r in report_model.configuration_results(report) if r['check_id'] in ('AUTO-runbooks-metadata','AUTO-modules-metadata')))
 
     def test_baseline_ignores_modification_time_but_keeps_typed_expected_fields(self):
         from cloud_governance.automation_assets import valid_criterion

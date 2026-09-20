@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.21.0
+
+- Assessment reports move to schema 1.2, where evidence kinds are peers under `evidence` instead of one kind holding the top-level `results` slot while the rest nest beneath it.
+- `control_mapping.controls` is derived from the controls the collected evidence actually references, replacing the fixed `SC-28` / `SC-28(1)` pair. A synthetic all-service run now reports 38 referenced controls.
+- The top-level `summary` is the cross-kind conclusion; each kind keeps its own summary beside its results.
+- Archive format 1.2 pins the assessment schema written into it. Archives written as 1.0 and 1.1 keep loading under their own shape, verified against retained runs from tool versions 0.2.0 and 0.3.0.
+
 ## 0.20.0
 
 - Rename the package and distribution from `azure_at_rest` / `azure-at-rest` to `cloud_governance` / `cloud-governance`. Encryption at rest is one rule family, not the identity of the program; the CLI is now `python -m cloud_governance`.
