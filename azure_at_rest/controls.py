@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.20.3'
+VERSION = '2026.09.20.4'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -277,6 +277,11 @@ CHECKS['AUTO-runtime-packages']=Check('AUTO-runtime-packages','microsoft.automat
  'https://learn.microsoft.com/en-us/rest/api/automation/runtime-environments/list-by-automation-account?view=rest-automation-2024-10-23',
  '/runtimeEnvironments','automation_runtimes','automation_runtimes')
 
+CHECKS['LA-table-retention']=Check('LA-table-retention','microsoft.operationalinsights/workspaces','2025-07-01',
+ 'tables[].plan/retentionInDays/totalRetentionInDays',(),'LA-L','Table population, plans and retention configuration',
+ 'https://learn.microsoft.com/en-us/rest/api/loganalytics/tables/list-by-workspace?view=rest-loganalytics-2025-07-01',
+ '/tables','log_tables','log_tables')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
@@ -290,6 +295,9 @@ for _kind in ('keys','secrets','certificates'):
 
 
 def valid_value(check, value):
+    if check.kind=='log_tables':
+        from .log_tables import valid
+        return valid(value)
     if check.kind=='automation_runtimes':
         from .automation_assets import valid_runtimes
         return valid_runtimes(value)
@@ -380,7 +388,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members','automation_assets','automation_runtimes') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members','automation_assets','automation_runtimes','log_tables') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -425,7 +433,10 @@ def validate_policy(policy):
         if not isinstance(criterion, dict) or set(criterion) != {'operator','value'}:
             raise ValueError('Invalid criterion')
         op, value = criterion['operator'], criterion['value']
-        if op=='asset_baseline':
+        if op=='table_retention':
+            from .log_tables import valid_criterion
+            good=CHECKS[cid].kind=='log_tables' and valid_criterion(value)
+        elif op=='asset_baseline':
             from .automation_assets import valid_criterion
             good=CHECKS[cid].kind=='automation_assets' and valid_criterion(value,CHECKS[cid].path)
         elif op=='lifecycle':
@@ -477,7 +488,11 @@ def evaluate(snapshot, policy=None):
                 row['reason'] = 'Approved criterion is not supplied; observation retained without a positive or negative assessment.'
             elif observation['state'] == 'observed':
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
-                if op=='asset_baseline':
+                if op=='table_retention':
+                    from .log_tables import meets
+                    passed=meets(actual,expected)
+                    row.update(result='PASS' if passed else 'FAIL',reason='Required tables, permitted plans and minimum retention match the approved criterion.' if passed else 'Required table population, plan or retention does not match the approved criterion.')
+                elif op=='asset_baseline':
                     from .automation_assets import baseline
                     passed=baseline(actual)==expected
                     row.update(result='PASS' if passed else 'FAIL',reason='Returned asset population and selected metadata match the approved baseline.' if passed else 'Returned asset population or selected metadata differ from the approved baseline.')

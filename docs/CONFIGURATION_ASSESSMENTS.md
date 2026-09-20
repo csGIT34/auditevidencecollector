@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.15.1 includes **176 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.16.0 includes **177 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -374,3 +374,28 @@ A missing expected asset, unexpected asset, changed publication state, runtime r
 Reads require the corresponding scoped Automation runbook, module, runtime-environment and package read actions. Runtime collection is limited to 100 environments, 1000 imported packages per environment and 10000 imported packages total; pagination uses the configured limit and execution deadline. No additional role assignments or infrastructure are created. Actual permissions and service responses still need live workplace acceptance.
 
 Contracts: [runbooks](https://learn.microsoft.com/en-us/rest/api/automation/runbook/list-by-automation-account?view=rest-automation-2024-10-23), [classic modules](https://learn.microsoft.com/en-us/rest/api/automation/module/list-by-automation-account?view=rest-automation-2024-10-23), [runtime environments](https://learn.microsoft.com/en-us/rest/api/automation/runtime-environments/list-by-automation-account?view=rest-automation-2024-10-23), [runtime packages](https://learn.microsoft.com/en-us/rest/api/automation/package/list-by-runtime-environment?view=rest-automation-2024-10-23).
+
+## Log Analytics table retention (0.16.0)
+
+`LA-table-retention` adds a read-only ARM `/tables` listing using API `2025-07-01`, requiring `Microsoft.OperationalInsights/workspaces/tables/read` at the selected workspace scope. It retains table ID, plan, returned retention/total/long-term days, inheritance flags and provisioning state. Schemas, search/restore query payloads, system identities and raw data are excluded. The list is paginated and bounded to 10,000 projected tables. This establishes declared configuration, not actual ingestion, event completeness, query access or retained-data availability.
+
+Use an exact `equals` baseline or a `table_retention` criterion:
+
+```json
+{
+  "operator": "table_retention",
+  "value": {
+    "allow_unlisted": false,
+    "tables": [{
+      "table_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/example/providers/microsoft.operationalinsights/workspaces/logs/tables/audittable",
+      "allowed_plans": ["Analytics"],
+      "minimum_retention_days": 30,
+      "minimum_total_days": 365
+    }]
+  }
+}
+```
+
+These example thresholds are not approved organization policy. At least one required table is mandatory for this operator. Missing required tables, unapproved plans, short retention and extra tables when `allow_unlisted` is false produce FAIL after a complete valid listing. Allowing unlisted tables does not waive requirements for the named tables. Numeric returned retention values are assessed; a `-1` sentinel is retained as incomplete instead of assuming a workspace default. Missing fields, inconsistent totals/long-term values, unresolved defaults, unstable provisioning, duplicates or truncated lists remain incomplete; read errors stay visible. Missing/draft criteria remain UNKNOWN. Basic and Auxiliary plans are only accepted when explicitly included in the criterion; no feature equivalence with Analytics is inferred.
+
+Reference: [Microsoft table list API and field definitions](https://learn.microsoft.com/en-us/rest/api/loganalytics/tables/list-by-workspace?view=rest-loganalytics-2025-07-01). This adapter is locally fixture-tested and has not been live-verified.

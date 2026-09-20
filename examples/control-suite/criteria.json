@@ -880,6 +880,21 @@
       "operator": "equals",
       "value": 30
     },
+    "LA-table-retention": {
+      "operator": "equals",
+      "value": [
+        {
+          "archive_retention_days": 335,
+          "plan": "Analytics",
+          "provisioning_state": "Succeeded",
+          "retention_days": 30,
+          "retention_inherited": false,
+          "table_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/tables/audittable",
+          "total_retention_days": 365,
+          "total_retention_inherited": false
+        }
+      ]
+    },
     "PE-approval": {
       "operator": "equals",
       "value": [

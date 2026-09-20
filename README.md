@@ -1,6 +1,6 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** Version 0.15.1 includes [176 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
+**Current work: multi-control coverage is incomplete.** Version 0.16.0 includes [177 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
 
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 

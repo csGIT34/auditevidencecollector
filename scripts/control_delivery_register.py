@@ -10,6 +10,7 @@ from azure_at_rest.catalog import RULES
 # Explicit routing makes new collector operations fail the register gate until documented.
 ADAPTERS={
     'get':('collector','test_controls'),
+    'log_tables':('log_tables','test_log_tables'),
     'private_endpoint':('controls','test_controls'),
     'diagnostics':('collector','test_controls'),
     'diagnostic_routes':('diagnostic_routes','test_diagnostic_routes'),

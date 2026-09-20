@@ -321,6 +321,9 @@ class Collector:
         for check in (c for c in checks if c.operation=='automation_runtimes'):
             from .automation_assets import collect_runtimes
             record.setdefault('configuration',{})[check.id]=collect_runtimes(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='log_tables'):
+            from .log_tables import collect as collect_log_tables
+            record.setdefault('configuration',{})[check.id]=collect_log_tables(self.transport,rid,check,self.max_pages)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

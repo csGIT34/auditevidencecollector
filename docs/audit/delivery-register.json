@@ -6200,6 +6200,56 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:LA-table-retention": {
+      "api_version": "2025-07-01",
+      "catalog_objectives": [
+        "LA-L"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][LA-table-retention] with fallback to checks[LA-table-retention]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py",
+        "azure_at_rest/log_tables.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "log_tables",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "tables[].plan/retentionInDays/totalRetentionInDays",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.operationalinsights/workspaces",
+      "source_definition": "https://learn.microsoft.com/en-us/rest/api/loganalytics/tables/list-by-workspace?view=rest-loganalytics-2025-07-01",
+      "suffix": "/tables",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_log_tables.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:PE-approval": {
       "api_version": "2023-11-01",
       "catalog_objectives": [
@@ -16801,7 +16851,8 @@
       "configuration_predicates": [
         "LA-diagnostic-logs",
         "LA-diagnostic-routes",
-        "LA-retention"
+        "LA-retention",
+        "LA-table-retention"
       ],
       "criteria_requirements": "Required event categories/content, retention by dataset, clock accuracy, maximum ingestion lag/missing-event window, capacity threshold, destination protection and review frequency.",
       "disposition": {
@@ -16817,7 +16868,8 @@
       "implementation_refs": [
         "configuration:LA-diagnostic-logs",
         "configuration:LA-diagnostic-routes",
-        "configuration:LA-retention"
+        "configuration:LA-retention",
+        "configuration:LA-table-retention"
       ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
@@ -18139,7 +18191,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 176,
+  "configuration_predicate_count": 177,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215,
   "proposed_permission_profiles": {

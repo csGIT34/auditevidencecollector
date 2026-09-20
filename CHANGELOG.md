@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.16.0
+
+- Collect safe Log Analytics table plan/retention metadata and assess required table populations, allowed plans and minimum retention against approved criteria.
+- Retain denied/truncated lists, missing/inherited sentinel values, unstable provisioning and inconsistent retention as incomplete. Exclude schemas and search query payloads.
+- Regenerate the check-level delivery register with the new adapter/test/criteria links.
+
+
 ## 0.15.1
 
 - Resolve declared VM/VMSS managed disks through verified direct reads inside the selected subscription/resource-group scope, including disks absent from inventory.
