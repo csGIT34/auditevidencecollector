@@ -99,7 +99,9 @@ Deleting the assignment removes the identity with it. Because the identity never
 
 ## Reading the results as evidence
 
-Compliance state is read through Azure Resource Graph (`policyresources`), which is free and requires only reader access. Results enter this program as a distinct evidence kind alongside the encryption rules, the scoped predicates and attributed records, and they are labelled as provider-asserted throughout.
+Compliance state is read from Policy Insights. Azure registers `policyStates/latest/queryResults` for **POST only** — a GET against the same URL returns `ResourceTypeNotSupported`, because the query specification travels in a request body. The call changes nothing, but the verb is POST, so it lives in `policy_query.py` rather than the GET-only resource collector: one allowlisted path, one pinned API version, an empty request body and the same response bounding as every resource read. The assignment and its initiative are ordinary GETs.
+
+Policy evaluates at three scopes and all three are retained and labelled: `resource`, `resource_group` and `subscription`. In a real tenant most records are subscription scoped — 499 of 531 in the first lab run — so discarding them would throw away most of the evidence. A scoped result describes that scope, never each resource inside it, and the register records the mix. Results enter this program as a distinct evidence kind alongside the encryption rules, the scoped predicates and attributed records, and they are labelled as provider-asserted throughout.
 
 Two boundaries apply and are preserved in the register:
 
@@ -118,5 +120,8 @@ Policy compliance also carries its own completeness problem: a resource type wit
 | Overrides | 4 Guest Configuration definitions disabled |
 | Identity roles | none |
 | Created | 2026-09-20 |
+| First evaluation | 531 records: 14 Compliant, 36 NonCompliant, 481 Unknown |
+
+The 481 Unknown are the `Manual` definitions awaiting attestations, which is what an unattested organizational control should look like.
 
 This is the lab subscription, not a workplace tenant. Repeat the procedure at the approved workplace scope during handoff.

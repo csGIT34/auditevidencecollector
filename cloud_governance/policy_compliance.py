@@ -15,7 +15,7 @@ Two boundaries are preserved throughout:
 """
 import re
 
-from .safety import MISSING, get, now, resource_id
+from .safety import now, resource_group_name, resource_id, subscription_id
 
 # Microsoft names each control group in the initiative after the control it maps to.
 GROUP_PREFIX = 'NIST_SP_800-53_R5_'
@@ -56,6 +56,23 @@ def definition_controls(policy_set):
     return mapping
 
 
+SCOPES = ('resource', 'resource_group', 'subscription')
+
+
+def scope_of(target):
+    """Policy evaluates at resource, resource group and subscription scope; all three are evidence."""
+    if not isinstance(target, str) or len(target) > 1024:
+        return None
+    parts = target.strip('/').split('/')
+    if len(parts) == 2 and parts[0].lower() == 'subscriptions' and subscription_id(parts[1]):
+        return target.lower(), 'subscription'
+    if (len(parts) == 4 and parts[0].lower() == 'subscriptions' and subscription_id(parts[1])
+            and parts[2].lower() == 'resourcegroups' and resource_group_name(parts[3])):
+        return target.lower(), 'resource_group'
+    resource = resource_id(target)
+    return (resource.lower(), 'resource') if resource else None
+
+
 def project(record, controls):
     """Bounded facts from one policy state. Parameters and hierarchy are not retained."""
     if not isinstance(record, dict):
@@ -68,16 +85,17 @@ def project(record, controls):
         state = '[unrecognised]'
     if not isinstance(definition, str) or not re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', definition):
         definition = None
-    resource = resource_id(target) if isinstance(target, str) else None
-    if resource is None or definition is None:
+    scope = scope_of(target)
+    if scope is None or definition is None:
         return None
+    resource, scope_kind = scope
     action = record.get('policyDefinitionAction')
     if not isinstance(action, str) or not re.fullmatch(r'[A-Za-z]{1,40}', action):
         action = '[unrecognised]'
     evaluated = record.get('timestamp')
     if not isinstance(evaluated, str) or len(evaluated) > 40:
         evaluated = None
-    return {'reference': definition, 'resource_id': resource.lower(),
+    return {'reference': definition, 'resource_id': resource, 'scope': scope_kind,
             'assignment': (resource_id(assignment) or '[unrecognised]').lower()
                           if isinstance(assignment, str) else '[unrecognised]',
             'action': action, 'compliance_state': state,
@@ -105,18 +123,21 @@ def collect(records, policy_set, *, assignment_name=None):
     for row in rows:
         counts[row['result']] += 1
     unmapped = sum(1 for row in rows if not row['controls'])
+    scopes = {kind: sum(1 for row in rows if row['scope'] == kind) for kind in SCOPES}
     conclusion = ('FINDINGS_PRESENT' if counts['FAIL']
                   else 'INCOMPLETE' if not rows or counts['UNKNOWN'] or dropped
                   else 'PROVIDER_ASSERTED_COMPLIANT')
     return {'schema_version': '1.0', 'collected_at': now(), 'source': 'azure_policy',
             'assignment_filter': assignment_name,
             'summary': {'record_count': len(rows), 'counts': counts, 'conclusion': conclusion,
-                        'unreadable_records': dropped, 'records_without_control_mapping': unmapped},
+                        'unreadable_records': dropped, 'records_without_control_mapping': unmapped,
+                        'records_by_scope': scopes},
             'limits': [
                 'Microsoft asserts these results; this program did not observe the configuration behind them.',
                 'The control mapping is Microsoft\'s interpretation, frozen at collection time.',
                 'A resource type with no applicable definition produces no record. Absent evaluation is not compliance.',
-                'Definitions with the Manual effect record an attestation, not an automated observation.'],
+                'Definitions with the Manual effect record an attestation, not an automated observation.',
+                'A subscription or resource group scoped result describes that scope, not each resource inside it.'],
             'results': rows}
 
 
@@ -131,13 +152,15 @@ def validate(section):
         raise ValueError('Invalid policy compliance results')
     seen = set()
     for row in rows:
-        if not isinstance(row, dict) or set(row) != {'reference', 'resource_id', 'assignment', 'action',
+        if not isinstance(row, dict) or set(row) != {'reference', 'resource_id', 'scope', 'assignment', 'action',
                                                      'compliance_state', 'result', 'controls', 'evaluated_at'}:
             raise ValueError('Invalid policy compliance record')
         key = (row['resource_id'], row['reference'])
         if key in seen:
             raise ValueError('Duplicate policy compliance record')
         seen.add(key)
+        if row['scope'] not in SCOPES:
+            raise ValueError('Invalid policy compliance scope')
         if row['result'] not in ('PASS', 'FAIL', 'UNKNOWN'):
             raise ValueError('Invalid policy compliance result')
         if not isinstance(row['controls'], list) or any(not LABEL.fullmatch(str(c)) for c in row['controls']):

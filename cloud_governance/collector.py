@@ -1,4 +1,8 @@
-"""GET-only public Azure ARM adapter and deterministic fixture adapter."""
+"""GET-only public Azure ARM resource adapter and deterministic fixture adapter.
+
+Resource collection issues nothing but GET. Azure Policy compliance is only queryable
+by POST and therefore lives in policy_query.py, not here.
+"""
 import json
 import math
 import subprocess

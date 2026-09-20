@@ -16,6 +16,7 @@ Anything else — another path, another method, another API version, a caller-su
 is refused before a token is obtained.
 """
 import json
+import re
 from urllib.request import Request
 
 from .collector import MAX_RESPONSE_BYTES, CollectionError, NoRedirect, bounded_payload
@@ -26,6 +27,9 @@ HOST = 'https://management.azure.com'
 # The only query this transport may issue.
 PATH = '/providers/Microsoft.PolicyInsights/policyStates/latest/queryResults'
 MAX_RECORDS = 5000
+# The assignment and its initiative are ordinary resource reads, so they stay GET.
+ASSIGNMENT_API = '2023-04-01'
+SET_DEFINITION_API = '2023-04-01'
 
 
 def query_url(subscription, top):
@@ -50,6 +54,33 @@ class PolicyQueryTransport:
         self.timeout = timeout
         self.max_response_bytes = max_response_bytes
         self.opener = opener or build_opener(NoRedirect())
+        self._allowed = set()
+
+    def allow(self, *urls):
+        """Record the exact metadata URLs this run may read, built by the helpers below."""
+        self._allowed.update(urls)
+        return self
+
+    def _send(self, request):
+        try:
+            with self.opener.open(request, timeout=self.timeout) as response:
+                raw = response.read(self.max_response_bytes + 1)
+                if len(raw) > self.max_response_bytes:
+                    raise CollectionError('response_size_limit')
+                return bounded_payload(raw)
+        except CollectionError:
+            raise
+        except OSError:
+            raise CollectionError('network_error') from None
+        except (ValueError, TypeError):
+            raise CollectionError('malformed_response') from None
+
+    def read(self, url):
+        """GET one of the two allowlisted policy metadata URLs."""
+        if url not in self._allowed:
+            raise ValueError('Policy reads are restricted to the assignment and its initiative')
+        return self._send(Request(url, method='GET', headers={
+            'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json'}))
 
     def query(self, subscription, top=MAX_RECORDS):
         url = query_url(subscription, top)
@@ -58,18 +89,7 @@ class PolicyQueryTransport:
                           headers={'Authorization': 'Bearer ' + self.credential.get_token(),
                                    'Accept': 'application/json', 'Content-Type': 'application/json',
                                    'Content-Length': '0'})
-        try:
-            with self.opener.open(request, timeout=self.timeout) as response:
-                raw = response.read(self.max_response_bytes + 1)
-                if len(raw) > self.max_response_bytes:
-                    raise CollectionError('response_size_limit')
-                payload = bounded_payload(raw)
-        except CollectionError:
-            raise
-        except OSError:
-            raise CollectionError('network_error') from None
-        except (ValueError, TypeError):
-            raise CollectionError('malformed_response') from None
+        payload = self._send(request)
         if not isinstance(payload, dict) or not isinstance(payload.get('value'), list):
             raise CollectionError('malformed_response')
         if len(payload['value']) > MAX_RECORDS:
@@ -80,9 +100,19 @@ class PolicyQueryTransport:
 class FixturePolicyTransport:
     """Deterministic offline transport; the same projection path as a live query."""
 
-    def __init__(self, records_by_subscription):
+    def __init__(self, records_by_subscription, metadata=None):
         self.records = records_by_subscription
+        self.metadata = metadata or {}
         self.requested = []
+
+    def allow(self, *urls):
+        return self
+
+    def read(self, url):
+        document = self.metadata.get(url)
+        if document is None:
+            raise CollectionError('fixture_response_missing')
+        return document
 
     def query(self, subscription, top=MAX_RECORDS):
         query_url(subscription, top)  # Enforce the same argument contract offline.
@@ -106,3 +136,38 @@ def decode_records(text):
     if not isinstance(records, list) or len(records) > MAX_RECORDS:
         raise ValueError('Invalid policy export records')
     return records
+
+
+def assignment_url(subscription, name):
+    """GET URL for one policy assignment at subscription scope."""
+    if not isinstance(subscription, str) or subscription_id(subscription) != subscription:
+        raise ValueError('Policy reads require an exact subscription UUID')
+    if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', name):
+        raise ValueError('Invalid policy assignment name')
+    return (HOST + '/subscriptions/' + subscription + '/providers/Microsoft.Authorization/policyAssignments/'
+            + name + '?api-version=' + ASSIGNMENT_API)
+
+
+def set_definition_url(definition_id):
+    """GET URL for the built-in or custom initiative an assignment names."""
+    if not isinstance(definition_id, str) or not re.fullmatch(
+            r'(/subscriptions/[0-9a-f-]{36})?/providers/Microsoft\.Authorization/policySetDefinitions/[A-Za-z0-9_.\-]{1,128}',
+            definition_id, re.IGNORECASE):
+        raise ValueError('Invalid policy set definition reference')
+    return HOST + definition_id + '?api-version=' + SET_DEFINITION_API
+
+
+def fetch_mapping(transport, subscription, assignment_name):
+    """Read the assignment and its initiative so control mapping is frozen with the run."""
+    url = assignment_url(subscription, assignment_name)
+    transport.allow(url)
+    assignment = transport.read(url)
+    if not isinstance(assignment, dict) or not isinstance(assignment.get('properties'), dict):
+        raise CollectionError('malformed_response')
+    definition_id = assignment['properties'].get('policyDefinitionId')
+    definition_url = set_definition_url(definition_id)
+    transport.allow(definition_url)
+    policy_set = transport.read(definition_url)
+    if not isinstance(policy_set, dict) or not isinstance(policy_set.get('properties'), dict):
+        raise CollectionError('malformed_response')
+    return policy_set['properties']

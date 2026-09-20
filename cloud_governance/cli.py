@@ -45,6 +45,8 @@ def parser():
     collect.add_argument("--max-pages", type=int, default=1000, help="Per-list safety limit; reaching it records incomplete evidence.")
     replay = commands.add_parser("assess", help="Reassess a sanitized snapshot using the current rule version; no Azure calls.")
     replay.add_argument("--input", type=Path, required=True)
+    collect.add_argument("--policy-assignment", help="Also collect Azure Policy compliance for this assignment name; the control mapping is Microsoft's and is frozen with the run.")
+    collect.add_argument("--policy-export", type=Path, help="Use an operator-supplied policy export instead of querying, for tenants where the collector identity cannot read Policy Insights.")
     for subparser in (collect, replay):
         subparser.add_argument("--criteria", type=Path, help="Versioned configuration criteria JSON; absent or draft criteria leave checks UNKNOWN.")
         subparser.add_argument("--json", type=Path, help="Optional loose JSON export (default without --store: evidence/audit.json).")
@@ -292,7 +294,27 @@ def main(argv=None):
         else:
             snapshot = json.loads(args.input.read_text(encoding="utf-8"))
             validate_snapshot(snapshot)
-        report = assess_snapshot(snapshot, reassessed=args.command == "assess", criteria=criteria)
+        policy_section = None
+        if getattr(args, "policy_assignment", None) or getattr(args, "policy_export", None):
+            if args.command != "collect":
+                raise ValueError("Policy compliance is collected with a run, not during reassessment")
+            if not args.policy_assignment:
+                raise ValueError("A policy export still requires its assignment name for the control mapping")
+            from .policy_compliance import collect as collect_policy
+            from .policy_query import PolicyQueryTransport, decode_records, fetch_mapping
+            subscriptions = sorted({s["id"] for s in snapshot["inventory"]["subscriptions"]})
+            if len(subscriptions) != 1:
+                raise ValueError("Policy compliance requires exactly one selected subscription")
+            credential = getattr(transport, "credential", None)
+            if credential is None:
+                raise ValueError("Policy collection requires an authenticated transport")
+            policy_transport = PolicyQueryTransport(credential)
+            policy_set = fetch_mapping(policy_transport, subscriptions[0], args.policy_assignment)
+            records = (decode_records(args.policy_export.read_text(encoding="utf-8")) if args.policy_export
+                       else policy_transport.query(subscriptions[0]))
+            policy_section = collect_policy(records, policy_set, assignment_name=args.policy_assignment)
+        report = assess_snapshot(snapshot, reassessed=args.command == "assess", criteria=criteria,
+                                 policy=policy_section)
         if getattr(args, "store", None):
             from .archive import save_run
             from .storage import FileStore
@@ -306,6 +328,9 @@ def main(argv=None):
         print(f"{report_model.overall(report)['conclusion']}: {summary['resource_count']} resources; "
               f"{summary['counts']['FAIL']} failed; coverage incomplete={report_model.overall(report)['coverage_incomplete']}.")
         print("Configuration checks: " + json.dumps(report_model.configuration_summary(report), sort_keys=True))
+        if report_model.policy_compliance(report):
+            print("Azure Policy (provider asserted): "
+                  + json.dumps(report_model.policy_compliance(report)["summary"], sort_keys=True))
         if args.json:
             print(f"JSON: {args.json}")
         if args.report:

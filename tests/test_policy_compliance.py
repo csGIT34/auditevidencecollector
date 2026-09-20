@@ -80,8 +80,9 @@ class PolicyComplianceTests(unittest.TestCase):
 
     def test_a_projected_record_keeps_only_bounded_facts(self):
         row = project(record(), definition_controls(POLICY_SET))
-        self.assertEqual({'reference', 'resource_id', 'assignment', 'action', 'compliance_state',
+        self.assertEqual({'reference', 'resource_id', 'scope', 'assignment', 'action', 'compliance_state',
                           'result', 'controls', 'evaluated_at'}, set(row))
+        self.assertEqual('resource', row['scope'])
         self.assertEqual('FAIL', row['result'])
         self.assertEqual(['AC-6(7)', 'CM-6'], row['controls'])
         self.assertEqual(RESOURCE.lower(), row['resource_id'])
@@ -140,3 +141,23 @@ class PolicyComplianceTests(unittest.TestCase):
             mutate(broken)
             with self.assertRaises(ValueError):
                 validate(broken)
+
+    def test_policy_evaluates_at_three_scopes_and_each_is_kept_distinct(self):
+        # Most records in a real tenant are subscription scoped; discarding them loses the evidence.
+        subscription = record(resourceId='/subscriptions/' + SUB)
+        group = record(resourceId='/subscriptions/' + SUB + '/resourceGroups/audit-demo')
+        section = collect([subscription, group, record()], POLICY_SET)
+        self.assertEqual(3, section['summary']['record_count'])
+        self.assertEqual({'resource': 1, 'resource_group': 1, 'subscription': 1},
+                         section['summary']['records_by_scope'])
+        self.assertEqual(0, section['summary']['unreadable_records'])
+        self.assertTrue(any('describes that scope, not each resource inside it' in limit
+                            for limit in section['limits']))
+
+    def test_a_scoped_result_never_claims_the_resources_inside_it(self):
+        from cloud_governance.policy_compliance import scope_of
+        self.assertEqual('subscription', scope_of('/subscriptions/' + SUB)[1])
+        self.assertEqual('resource_group', scope_of('/subscriptions/' + SUB + '/resourceGroups/rg')[1])
+        self.assertEqual('resource', scope_of(RESOURCE)[1])
+        for bad in ('not-a-resource', '/subscriptions/not-a-uuid', '/subscriptions', '', None, 7):
+            self.assertIsNone(scope_of(bad))
