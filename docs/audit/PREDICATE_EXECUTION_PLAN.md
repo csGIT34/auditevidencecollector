@@ -23,6 +23,18 @@ Those 95 classify by the evidence plane their objective actually requires:
 | Kubernetes API | 2 | Through the existing restricted Kubernetes import |
 | Service data plane | 1 | Requires a reviewed data-plane contract |
 
+## Revision 2026-09-20: prefer the platform over bespoke predicates
+
+Azure Policy already evaluates most of this configuration surface, with Microsoft maintaining both the definitions and their SP 800-53 Rev. 5 control mapping, at no cost. Hand-writing the remaining ARM predicates would duplicate that and leave more Python for this team to maintain after handoff.
+
+Sections S2 to S6 are therefore superseded by a single new section, S8, which ingests Policy compliance as provider-asserted evidence. Bespoke predicates remain only where Policy cannot reach: a property with no alias, a non-ARM plane, or a conservative scope boundary a definition does not express. See [Azure Policy as an evidence source](../AZURE_POLICY_EVIDENCE.md).
+
+| # | Section | Status |
+| --- | --- | --- |
+| S8 | Ingest Azure Policy compliance as a `policy_compliance` evidence kind | NEXT |
+
+The audit-only assignment is in place, so real compliance data exists to build against.
+
 ## Sections
 
 Ordered by ARM density, so the largest verified gains land first.
@@ -30,11 +42,11 @@ Ordered by ARM density, so the largest verified gains land first.
 | # | Section | Objectives | Controls strengthened | Status |
 | --- | --- | --- | --- | --- |
 | S1 | Domain K — secrets, certificates and key lifecycle | 20 (19 ARM, 1 guest) | IA-5, SC-12, SC-17, IA-9 | IN PROGRESS — 4 of 20 |
-| S2 | Domain C — secure configuration, change approval and drift | 17 (16 ARM, 1 Graph) | CM-2, CM-3, CM-6, CM-7, CM-14, SI-10, SI-12 | NOT STARTED |
-| S3 | Domain B — backup, recovery and availability | 16 (15 ARM, 1 Graph) | CP-2, CP-4, CP-9, CP-9(1), CP-10 | NOT STARTED |
-| S4 | Domain V — vulnerabilities, versions and supply chain | 15 (6 ARM, 3 guest, 6 disposition) | RA-5, SA-9, SA-11, SA-22, SC-13, SI-2, SI-7, SR-4, SR-6 | NOT STARTED |
-| S5 | Domain T — transmission protection | 17 (5 ARM, 2 Kubernetes, 2 guest, 1 data plane, 6 disposition) | SC-8, SC-8(1), SC-17, IA-9, IA-13 | NOT STARTED |
-| S6 | Domains N, L and R — exposure, audit generation, remaining at-rest | 10 (7 ARM, 2 Graph, 1 disposition) | AC-4, SC-7, AU-2, AU-5, AU-12, SC-28, SC-28(1), IA-13 | NOT STARTED |
+| ~~S2~~ | Domain C — secure configuration, change approval and drift | 17 (16 ARM, 1 Graph) | CM-2, CM-3, CM-6, CM-7, CM-14, SI-10, SI-12 | SUPERSEDED BY S8 |
+| ~~S3~~ | Domain B — backup, recovery and availability | 16 (15 ARM, 1 Graph) | CP-2, CP-4, CP-9, CP-9(1), CP-10 | SUPERSEDED BY S8 |
+| ~~S4~~ | Domain V — vulnerabilities, versions and supply chain | 15 (6 ARM, 3 guest, 6 disposition) | RA-5, SA-9, SA-11, SA-22, SC-13, SI-2, SI-7, SR-4, SR-6 | SUPERSEDED BY S8 |
+| ~~S5~~ | Domain T — transmission protection | 17 (5 ARM, 2 Kubernetes, 2 guest, 1 data plane, 6 disposition) | SC-8, SC-8(1), SC-17, IA-9, IA-13 | SUPERSEDED BY S8 |
+| ~~S6~~ | Domains N, L and R — exposure, audit generation, remaining at-rest | 10 (7 ARM, 2 Graph, 1 disposition) | AC-4, SC-7, AU-2, AU-5, AU-12, SC-28, SC-28(1), IA-13 | NOT STARTED |
 | S7 | Dispositions and reconciliation | 13 disposition-only objectives | — | NOT STARTED |
 
 ## Section acceptance
