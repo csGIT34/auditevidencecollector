@@ -1,24 +1,88 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** The [control-indexed evidence register](docs/CONTROL_REGISTER.md) reports, per NIST control, which evidence exists and which controls remain unassessed; of the 48 controls implicated by the deployed Azure resource types, 38 have automated evidence today. Version 0.18.0 includes [188 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
+Automated, auditor-facing evidence collection for the NIST SP 800-53 Rev. 5 controls that the Azure resources this team deploys actually implicate. It reads configuration, never changes it, freezes what it saw into a tamper-evident archive, and answers the question an auditor asks: *for this control, what evidence do you have, and what is still missing?*
 
-Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
+Encryption at rest was where this started. It is now one rule family among several inputs.
 
-**Program scope: all applicable NIST controls across the authoritative 23 Azure services.** Start with the [program-wide control/evidence catalog](docs/audit/README.md), [service matrix](docs/audit/SERVICE_MATRIX.md), [all-family review](docs/audit/NIST_FAMILY_REVIEW.md) and [implementation backlog](docs/audit/IMPLEMENTATION_BACKLOG.md). The catalog records 215 proposed checks across 12 domains and all 20 NIST families; it is provisional research, not implemented control coverage or tenant findings.
+## How it works
 
-The executable CLI collects scoped encryption evidence and configuration/identity observations for Azure platform engineers. It inventories **every resource type returned by ARM in the selected subscriptions or optional resource-group scope**, applies exact service-specific rules, and reports unsupported types and incomplete evidence explicitly. Microsoft/provider-managed keys are accepted; customer-managed keys are not required.
+```mermaid
+flowchart LR
+  subgraph Sources
+    P[Azure Policy<br/>compliance]
+    A[Scoped predicates<br/>pinned ARM/Graph reads]
+    E[Encryption rules]
+    M[Attributed records<br/>operational and manual]
+  end
+  Sources --> R[(Immutable run archive<br/>hash-verified)]
+  C[Approved criteria] --> R
+  R --> G[Control-indexed register]
+  V[Declared purview] --> G
+  G --> D[Auditor PDF and<br/>per-control evidence]
+```
 
-**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md). The bounded [personal-lab validation](infra/personal-lab/REPEAT_VALIDATION.md) now passes repeated HTTP requests, managed-identity collection and current/historical PDF generation with original evidence preserved. Workplace acceptance is separate.
+Four kinds of evidence land in the same archive and are indexed by control:
 
-The [0.3.0 validation record](docs/VALIDATION_0_3_0.md) separates the completed offline checks from the remaining workplace deployment gates.
+| Evidence kind | Where it comes from | What it is good for |
+| --- | --- | --- |
+| `policy_compliance` | Azure Policy's built-in NIST SP 800-53 Rev. 5 initiative | Breadth. Microsoft maintains 693 definitions and their control mapping, at no cost. |
+| `configuration_predicate` | 192 scoped reads at pinned API versions | Depth and provenance where Policy has no alias, or where a conservative boundary matters. |
+| `encryption_rule` | 35 reviewed per-type at-rest rules | Documented service guarantees with explicit exclusions. |
+| `attributed_record` | Operational imports, attestations, provider assurance | The organizational controls no API can observe. |
 
-This is an initial technical evidence tool, provisionally mapped to NIST SP 800-53 SC-28 and SC-28(1). It is not a full RCSA assessment, certification, or claim that all application data is protected. A successful resource result applies to the stated scope and evidence basis.
+Supplements extend the same archive for facts ARM cannot reach: [restricted Kubernetes metadata](docs/KUBERNETES_EVIDENCE.md), [typed guest and agent reports](docs/GUEST_EVIDENCE.md), and [normalized Wiz evidence](docs/WIZ_INTEGRATION.md).
 
-The [home-only Terraform lab](infra/personal-lab/README.md) has a documented, stopped test deployment; each new deployment requires its own cost/resource review. Workplace infrastructure uses existing patterns through the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md). The optional RG scope confines collection to a single approved group.
+### Use the platform where the platform is better
+
+Azure Policy already evaluates most resource configuration and Microsoft maintains the control mappings. Duplicating that in Python would mean maintaining a second copy of Microsoft's work, so this program reads Policy compliance as **provider-asserted evidence** instead. See [Azure Policy as an evidence source](docs/AZURE_POLICY_EVIDENCE.md) for the audit-only assignment procedure and its safety posture.
+
+What the platform does **not** provide, and this program does:
+
+- **Evidence custody.** Hash-verified, immutable, exact-run archives and self-contained auditor PDFs. Policy compliance is a rolling state with limited history.
+- **Your criteria, not a vendor's defaults.** Thresholds come from an approved criteria file and are frozen into each run. Absent or draft criteria leave a result UNKNOWN rather than inventing policy.
+- **Pinned provenance.** Reads record the exact API version used. Resource Graph and Policy cannot pin an API version into the evidence.
+- **Purview and inheritance.** A declared register of which controls apply, who owns them, what is inherited from the provider and what is excluded — with a rationale and a named approver.
+- **Cross-plane reach.** Microsoft Graph, guest agents, Kubernetes and third-party scanners.
+
+### What it refuses to do
+
+The discipline is the product. It never writes to Azure, never reads secrets, keys, app settings or connection strings, and never invents an organizational threshold. Denied, missing, stale, contradictory and unsupported states are preserved rather than rounded up to a pass. **No status in any report means a control is satisfied** — that determination belongs to an assessor under SP 800-53A, and every collected control carries that limitation explicitly.
+
+## Where it stands
+
+Version **0.19.0**. Full detail in [current status](docs/STATUS.md) and the [control register](docs/CONTROL_REGISTER.md).
+
+| | |
+| --- | --- |
+| Controls implicated by the 23 deployed resource types | 48 |
+| Of those, with automated evidence | 38 |
+| Scoped configuration predicates | 192 |
+| Service objectives still without a predicate | 91 |
+| Research objectives catalogued | 215 across 12 domains and all 20 NIST families |
+
+The [predicate execution plan](docs/audit/PREDICATE_EXECUTION_PLAN.md) tracks the remaining work section by section with measured before-and-after numbers. Organization-wide controls with other owners — every `XX-1` policy control, and the PE, PS, AT, PM and PL families — are outside that plan by design; they close through declared inheritance and attributed records, not collectors.
+
+## Clone this to your work tenant
+
+The lab and the workplace deployment are deliberately separate. Nothing here hard-codes a tenant, subscription, identity or threshold:
+
+1. Clone the repository and run `python scripts/validate.py` — the full offline gate, no cloud access required.
+2. Assign the audit-only Policy initiative at the approved workplace scope using the [documented procedure](docs/AZURE_POLICY_EVIDENCE.md).
+3. Declare purview: `python -m azure_at_rest control-register --template purview.json` emits the controls your resource types implicate, ready to review and approve.
+4. Supply your approved criteria file; see [configuration assessments](docs/CONFIGURATION_ASSESSMENTS.md).
+5. Deploy the collector using existing workplace infrastructure patterns and the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md).
+
+Home Terraform is the temporary personal lab only; it is not the workplace deployment.
+
+## Start here
+
+[Current status](docs/STATUS.md) · [Architecture](docs/ARCHITECTURE.md) · [Control register](docs/CONTROL_REGISTER.md) · [Azure Policy evidence](docs/AZURE_POLICY_EVIDENCE.md) · [Program scope](docs/PROGRAM_SCOPE.md) · [All-family NIST review](docs/audit/NIST_FAMILY_REVIEW.md) · [Delivery register](docs/DELIVERY_REGISTER.md)
+
+**Development:** macOS or Linux with Python 3.12. **Production target:** Azure Functions with an explicitly selected user-assigned managed identity and separate retained-evidence Blob storage. Start with [portable setup](docs/MACOS_DEVELOPMENT.md) and the [workplace Functions guide](docs/AZURE_FUNCTIONS.md).
 
 ## Save a run and produce an auditor PDF
 
-Version **0.5.0** preserves the local archive and separate historical PDF operation and adds an optional Azure Functions/Blob hosting layer. The auditor receives one self-contained PDF; internal JSON preserves the collected facts and saved conclusions for reproducibility. The encryption predicates retain their scope; 0.5.0 adds configuration/Graph collection, approved-criteria evaluation and schema 1.1 reports. Version 0.4.0 introduced normalized offline Wiz evidence. Historical archives remain frozen.
+Collection and report generation are separate operations against separate archived objects. The auditor receives one self-contained PDF; the internal JSON preserves collected facts and saved conclusions so a result can be reproduced without recollecting Azure. Historical archives stay frozen: rendering an old run uses its saved facts, criteria and context, never today's rules. Release history is in [the changelog](CHANGELOG.md).
 
 ```sh
 python3 -m pip install '.[pdf]'
@@ -29,6 +93,12 @@ python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_
 ```
 
 Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
+
+Index any saved run by control, which is what an auditor asks for:
+
+```sh
+python3 -m azure_at_rest control-register --input evidence/demo.json --report evidence/controls.md
+```
 
 See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented, tested offline and validated in the personal lab; deployment and acceptance in the work tenant remain workplace steps. Both hosted operations default disabled. No database or runtime AI is required. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
 
