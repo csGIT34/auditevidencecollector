@@ -2,6 +2,8 @@
 import html
 import json
 
+from . import report_model
+
 
 def text(value):
     return html.escape(str(value)).replace("|", "&#124;").replace("\n", " ").replace("`", "&#96;")
@@ -21,8 +23,8 @@ def markdown(report):
              f"Known child traversal complete: {summary['child_collections_complete']}. "
              f"Coverage incomplete: {summary['coverage_incomplete']}. Collection errors: {summary['collection_error_count']}.", "",
              "| Result | Count |", "| --- | ---: |"]
-    if "configuration_assessment" in report:
-        lines[2:2] = ["**Configuration conclusion: " + report["configuration_assessment"]["summary"]["conclusion"] + "**", ""]
+    if report_model.configuration(report):
+        lines[2:2] = ["**Configuration conclusion: " + report_model.configuration_summary(report)["conclusion"] + "**", ""]
     lines.extend(f"| {status} | {count} |" for status, count in summary["counts"].items())
     lines.extend(["", "| Subscription | Listing complete | Pages | Items received |", "| --- | --- | ---: | ---: |"])
     for sub in report["inventory"]["subscriptions"]:
@@ -39,7 +41,7 @@ def markdown(report):
             lines.extend([text(value), ""])
     lines.append("[Azure CLI REST and query documentation](" + report["verification_guidance"]["sources"][0] + ").")
     lines.extend(["", "## Resource evidence", ""])
-    for row in report["results"]:
+    for row in report_model.resource_results(report):
         lines.extend([f"### {text(row['result'])} — {text(row['name'])}", "",
                       f"Resource: {text(row['id'])}", "",
                       f"Type: {text(row['type'])}; location: {text(row['location'])}; SKU: {text(row['sku'])}.",
@@ -67,8 +69,8 @@ def markdown(report):
             for source in command["sources"]:
                 lines.append("[Supporting service documentation](" + source + ").")
             lines.append("")
-    if "configuration_assessment" in report:
-        cfg = report["configuration_assessment"]
+    if report_model.configuration(report):
+        cfg = report_model.configuration(report)
         lines.extend(["## Configuration control assessments", "", text(cfg["limits"]), "",
                       "Criteria: " + text(json.dumps(cfg["policy"], sort_keys=True)), "",
                       "| Resource | Check / objective | Result | Observation | Criterion | Reason |",
@@ -94,7 +96,7 @@ def markdown(report):
 
 
 def exit_code(report):
-    configuration = report.get("configuration_assessment", {}).get("summary", {})
+    configuration = report_model.configuration_summary(report)
     if report["summary"]["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0):
         return 1
     return 2 if report["summary"]["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" else 0

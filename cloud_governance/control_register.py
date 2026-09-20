@@ -10,6 +10,8 @@ parameters and the organizational objectives remain outside this tool.
 """
 from collections import Counter
 import json
+
+from . import report_model
 from pathlib import Path
 import re
 
@@ -73,11 +75,11 @@ def _labels(values):
 def _evidence(report, operational):
     """Flatten saved results into per-control evidence items. Nothing is re-evaluated."""
     items = []
-    for row in report.get('results', []):
+    for row in report_model.resource_results(report):
         items.append({'kind': 'resource_rule', 'reference': row['rule_id'], 'resource_id': row['id'],
                       'result': row['result'], 'summary': row['reason'], 'controls': _labels(row.get('controls', [])),
                       'gaps': list(row.get('gaps', []))})
-    for row in report.get('configuration_assessment', {}).get('results', []):
+    for row in report_model.configuration_results(report):
         items.append({'kind': 'configuration_predicate', 'reference': row['check_id'],
                       'resource_id': row.get('resource_id', ''), 'result': row['result'], 'summary': row['title'],
                       'controls': _labels(row.get('control_refs', [])), 'gaps': []})

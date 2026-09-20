@@ -8,6 +8,7 @@ import sys
 import tempfile
 
 from .workflow import assess_snapshot
+from . import report_model
 from .catalog import RULES, RULE_VERSION
 from .collector import ArmTransport, Collector, FixtureTransport
 from .report import exit_code, markdown
@@ -302,9 +303,9 @@ def main(argv=None):
         if args.report:
             write_private(args.report, markdown(report))
         summary = report["summary"]
-        print(f"{report['overall_summary']['conclusion']}: {summary['resource_count']} resources; "
-              f"{summary['counts']['FAIL']} failed; coverage incomplete={report['overall_summary']['coverage_incomplete']}.")
-        print("Configuration checks: " + json.dumps(report["configuration_assessment"]["summary"], sort_keys=True))
+        print(f"{report_model.overall(report)['conclusion']}: {summary['resource_count']} resources; "
+              f"{summary['counts']['FAIL']} failed; coverage incomplete={report_model.overall(report)['coverage_incomplete']}.")
+        print("Configuration checks: " + json.dumps(report_model.configuration_summary(report), sort_keys=True))
         if args.json:
             print(f"JSON: {args.json}")
         if args.report:

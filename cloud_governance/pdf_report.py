@@ -2,6 +2,8 @@
 from io import BytesIO
 from pathlib import Path
 import json
+
+from . import report_model
 from xml.sax.saxutils import escape
 from functools import wraps
 from threading import Lock
@@ -72,8 +74,8 @@ def render_pdf(saved, generation):
 
     report, snapshot, context = saved['assessment'], saved['snapshot'], saved['context']
     program = context['program_scope']
-    configuration = report.get('configuration_assessment')
-    rows = report['results']
+    configuration = report_model.configuration(report)
+    rows = report_model.resource_results(report)
     references = {r['id'].lower(): f'E{i:03d}' for i, r in enumerate(rows, 1)}
     raw = {r['id'].lower(): r for r in snapshot['resources']}
     sources = sorted({s['url'] for r in rows for s in r['sources']} | set(report['control_mapping']['sources']) | {r['source'] for r in (configuration['results'] if configuration else [])})
@@ -161,12 +163,12 @@ def render_pdf(saved, generation):
         story.append(p(name + ': ' + clean(value)))
 
     story += [Spacer(1,25),p('Cloud governance\nEvidence assessment', 'Title'),Spacer(1,12)]
-    field('Overall saved assessment', report.get('overall_summary',report['summary'])['conclusion'])
+    field('Overall saved assessment', report_model.overall(report)['conclusion'])
     field('Saved encryption assessment conclusion',report['summary']['conclusion'])
     if configuration:
         field('Saved configuration assessment conclusion', configuration['summary']['conclusion'])
         field('Configuration check counts', configuration['summary'])
-    story.append(p('Evidence coverage is incomplete.' if report.get('overall_summary',report['summary'])['coverage_incomplete'] else 'Supported collected scope satisfied; broader audit controls remain unassessed.','Heading2'))
+    story.append(p('Evidence coverage is incomplete.' if report_model.overall(report)['coverage_incomplete'] else 'Supported collected scope satisfied; broader audit controls remain unassessed.','Heading2'))
     story += [p('One saved collection run. One self-contained auditor report. Evidence, criteria, findings and limitations are included below; access to JSON files, a database or a storage service is not needed to review the report.'),
               p('This document presents only the saved assessment. It neither recollects Azure state nor applies current rules to historical facts. Provider-managed at-rest keys are accepted. No full NIST control effectiveness or audit-period compliance conclusion is made.')]
     if synthetic:story.append(p('DEMONSTRATION ONLY. Every resource identifier and finding in this report comes from a synthetic local fixture. No Azure tenant was accessed.','Heading2'))
