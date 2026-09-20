@@ -37,7 +37,7 @@ class PolicyQueryTests(unittest.TestCase):
                     '', None, 7, ['x']):
             with self.assertRaises(ValueError):
                 query_url(bad, 10)
-        for limit in (0, -1, MAX_RECORDS + 1, 1.5, '10', True):
+        for limit in (0, -1, MAX_RECORDS + 2, 1.5, '10', True):
             with self.assertRaises(ValueError):
                 query_url(SUB, limit)
 
@@ -161,3 +161,42 @@ class PolicyComplianceTests(unittest.TestCase):
         self.assertEqual('resource', scope_of(RESOURCE)[1])
         for bad in ('not-a-resource', '/subscriptions/not-a-uuid', '/subscriptions', '', None, 7):
             self.assertIsNone(scope_of(bad))
+
+    def test_a_full_page_is_treated_as_truncated_because_the_api_gives_no_continuation(self):
+        # Policy Insights returns no nextLink and truncates to $top, so a full page and a
+        # truncated one are identical. The query asks for one extra record to tell them apart.
+        def distinct(count):
+            return [record(resourceId=RESOURCE + str(index)) for index in range(count)]
+        exact = collect(distinct(10), POLICY_SET, limit=10)
+        self.assertFalse(exact['summary']['truncated'])
+        self.assertEqual(10, exact['summary']['record_count'])
+        over = collect(distinct(11), POLICY_SET, limit=10)
+        self.assertTrue(over['summary']['truncated'])
+        self.assertEqual(10, over['summary']['record_count'])
+        # Truncated evidence still reports the findings it did read.
+        self.assertEqual('FINDINGS_PRESENT', over['summary']['conclusion'])
+        validate(over)
+
+    def test_truncated_evidence_can_never_conclude_compliant(self):
+        def compliant(count):
+            return [record('Compliant', resourceId=RESOURCE + str(index)) for index in range(count)]
+        whole = collect(compliant(5), POLICY_SET, limit=5)
+        self.assertEqual('PROVIDER_ASSERTED_COMPLIANT', whole['summary']['conclusion'])
+        # The same all-compliant records, truncated, must not read as a compliant estate.
+        cut = collect(compliant(6), POLICY_SET, limit=5)
+        self.assertEqual('INCOMPLETE', cut['summary']['conclusion'])
+        self.assertTrue(any('truncated sample' in limit for limit in cut['limits']))
+        # A saved section claiming otherwise is rejected.
+        forged = json.loads(json.dumps(cut))
+        forged['summary']['conclusion'] = 'PROVIDER_ASSERTED_COMPLIANT'
+        with self.assertRaises(ValueError):
+            validate(forged)
+
+    def test_the_query_asks_for_one_record_beyond_the_retained_limit(self):
+        from cloud_governance.policy_query import MAX_RECORDS, QUERY_TOP, query_url
+        self.assertEqual(MAX_RECORDS + 1, QUERY_TOP)
+        self.assertIn('$top=' + str(QUERY_TOP), query_url(SUB, QUERY_TOP))
+        transport = FixturePolicyTransport({SUB: [record()]})
+        transport.query(SUB)  # Default requests the extra record.
+        with self.assertRaises(ValueError):
+            query_url(SUB, QUERY_TOP + 1)

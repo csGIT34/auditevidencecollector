@@ -104,10 +104,17 @@ def project(record, controls):
             'evaluated_at': evaluated}
 
 
-def collect(records, policy_set, *, assignment_name=None):
-    """Project a query or export into frozen evidence. Nothing is re-evaluated."""
-    if not isinstance(records, list) or len(records) > MAX_RECORDS:
+def collect(records, policy_set, *, assignment_name=None, limit=MAX_RECORDS):
+    """Project a query or export into frozen evidence. Nothing is re-evaluated.
+
+    The query asks for one record beyond the limit, so receiving more than the limit is
+    how truncation is detected: Policy Insights returns no continuation link and a full
+    page looks identical to a truncated one.
+    """
+    if not isinstance(records, list) or len(records) > limit + 1:
         raise ValueError('Invalid policy compliance records')
+    truncated = len(records) > limit
+    records = records[:limit]
     controls = definition_controls(policy_set)
     rows, dropped = [], 0
     for record in records:
@@ -125,19 +132,21 @@ def collect(records, policy_set, *, assignment_name=None):
     unmapped = sum(1 for row in rows if not row['controls'])
     scopes = {kind: sum(1 for row in rows if row['scope'] == kind) for kind in SCOPES}
     conclusion = ('FINDINGS_PRESENT' if counts['FAIL']
-                  else 'INCOMPLETE' if not rows or counts['UNKNOWN'] or dropped
+                  else 'INCOMPLETE' if truncated or not rows or counts['UNKNOWN'] or dropped
                   else 'PROVIDER_ASSERTED_COMPLIANT')
     return {'schema_version': '1.0', 'collected_at': now(), 'source': 'azure_policy',
             'assignment_filter': assignment_name,
             'summary': {'record_count': len(rows), 'counts': counts, 'conclusion': conclusion,
                         'unreadable_records': dropped, 'records_without_control_mapping': unmapped,
-                        'records_by_scope': scopes},
+                        'records_by_scope': scopes, 'truncated': truncated},
             'limits': [
                 'Microsoft asserts these results; this program did not observe the configuration behind them.',
                 'The control mapping is Microsoft\'s interpretation, frozen at collection time.',
                 'A resource type with no applicable definition produces no record. Absent evaluation is not compliance.',
                 'Definitions with the Manual effect record an attestation, not an automated observation.',
-                'A subscription or resource group scoped result describes that scope, not each resource inside it.'],
+                'A subscription or resource group scoped result describes that scope, not each resource inside it.']
+            + (['The evaluation returned more records than this run retains. These results are a truncated '
+                'sample and the absence of a finding here does not mean one does not exist.'] if truncated else []),
             'results': rows}
 
 
@@ -170,4 +179,7 @@ def validate(section):
         counts[row['result']] += 1
     if section['summary'].get('counts') != counts or section['summary'].get('record_count') != len(rows):
         raise ValueError('Saved policy compliance summary mismatch')
+    # Truncation cannot produce a clean bill of health, but a finding found is still a finding.
+    if section['summary'].get('truncated') and section['summary'].get('conclusion') == 'PROVIDER_ASSERTED_COMPLIANT':
+        raise ValueError('Truncated policy evidence cannot report a compliant conclusion')
     return section

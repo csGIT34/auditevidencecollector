@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.26.0
+
+- Detect truncated policy compliance. Policy Insights truncates to `$top` and returns no continuation link, so a full page looked identical to a truncated one and a large tenant would have archived a partial sample as complete evidence. The query now asks for one record beyond the retained limit, which makes the difference observable.
+- A truncated section records that it is truncated, cannot conclude compliant, and states that the absence of a finding in it proves nothing. Findings it did read are still reported.
+
 ## 0.25.0
 
 - Collect Azure Policy compliance in a hosted run through `CG_POLICY_ASSIGNMENT`, empty by default. The evidence is archived beside the other kinds in the same immutable run and the control mapping is frozen with it.

@@ -108,6 +108,8 @@ Two boundaries apply and are preserved in the register:
 - **The control mapping is Microsoft's, not yours.** A definition's association with a control is Microsoft's interpretation. It is supporting evidence, not your tailoring decision, and it never becomes an assessor determination.
 - **`Compliant` is not control satisfaction.** It means a definition's condition matched at evaluation time, in the same way a scoped predicate meeting its criterion is not control satisfaction. The [control register](CONTROL_REGISTER.md) keeps that distinction in its status vocabulary.
 
+Policy Insights truncates a query to `$top` and returns no continuation link, so a full page is indistinguishable from a truncated one. The query therefore asks for one record beyond the limit it retains: receiving more is how truncation is detected. A truncated section is recorded as such, cannot conclude compliant, and carries a limitation saying the absence of a finding in it proves nothing. It still reports the findings it did read.
+
 Policy compliance also carries its own completeness problem: a resource type with no applicable definition simply produces no result, which must not read as a pass. Absent evaluation is recorded as absent, never as compliant.
 
 ## Collecting it unattended

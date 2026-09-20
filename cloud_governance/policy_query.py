@@ -27,6 +27,10 @@ HOST = 'https://management.azure.com'
 # The only query this transport may issue.
 PATH = '/providers/Microsoft.PolicyInsights/policyStates/latest/queryResults'
 MAX_RECORDS = 5000
+# Policy Insights truncates to $top and returns no continuation link, so a full page is
+# indistinguishable from a truncated one. Asking for one more than the limit makes the
+# difference observable, the same way a bounded response read does.
+QUERY_TOP = MAX_RECORDS + 1
 # The assignment and its initiative are ordinary resource reads, so they stay GET.
 ASSIGNMENT_API = '2023-04-01'
 SET_DEFINITION_API = '2023-04-01'
@@ -37,7 +41,7 @@ def query_url(subscription, top):
     # A non-string subscription must fail here, not later during URL construction.
     if not isinstance(subscription, str) or subscription_id(subscription) != subscription:
         raise ValueError('Policy queries require an exact subscription UUID')
-    if type(top) is not int or not 1 <= top <= MAX_RECORDS:
+    if type(top) is not int or not 1 <= top <= QUERY_TOP:
         raise ValueError('Invalid policy record limit')
     return (HOST + '/subscriptions/' + subscription + PATH + '?api-version=' + API_VERSION
             + '&$top=' + str(top))
@@ -82,7 +86,7 @@ class PolicyQueryTransport:
         return self._send(Request(url, method='GET', headers={
             'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json'}))
 
-    def query(self, subscription, top=MAX_RECORDS):
+    def query(self, subscription, top=QUERY_TOP):
         url = query_url(subscription, top)
         # An empty body: the URL carries the whole query, so no caller input is transmitted.
         request = Request(url, data=b'', method='POST',
@@ -92,7 +96,7 @@ class PolicyQueryTransport:
         payload = self._send(request)
         if not isinstance(payload, dict) or not isinstance(payload.get('value'), list):
             raise CollectionError('malformed_response')
-        if len(payload['value']) > MAX_RECORDS:
+        if len(payload['value']) > QUERY_TOP:
             raise CollectionError('response_size_limit')
         return payload['value']
 
@@ -114,7 +118,7 @@ class FixturePolicyTransport:
             raise CollectionError('fixture_response_missing')
         return document
 
-    def query(self, subscription, top=MAX_RECORDS):
+    def query(self, subscription, top=QUERY_TOP):
         query_url(subscription, top)  # Enforce the same argument contract offline.
         self.requested.append(subscription)
         value = self.records.get(subscription)
@@ -133,7 +137,7 @@ def decode_records(text):
     if not isinstance(document, dict) or document.get('schema_version') != '1.0':
         raise ValueError('Expected policy export schema_version 1.0')
     records = document.get('records')
-    if not isinstance(records, list) or len(records) > MAX_RECORDS:
+    if not isinstance(records, list) or len(records) > QUERY_TOP:
         raise ValueError('Invalid policy export records')
     return records
 
