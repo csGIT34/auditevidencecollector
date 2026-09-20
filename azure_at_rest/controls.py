@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.20.4'
+VERSION = '2026.09.20.5'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -99,8 +99,17 @@ add('Microsoft.DBforPostgreSQL/flexibleServers','2024-08-01','PG',[
  ('I','entra-auth','authConfig.activeDirectoryAuth',('Enabled','Disabled'),'Entra authentication configuration'),
  ('N','public-network','network.publicNetworkAccess',('Enabled','Disabled'),'Public network access configuration'),
  ('B','backup-retention','backup.backupRetentionDays',(),'Configured backup retention days; restore success remains separate')])
-add('Microsoft.Cache/redisEnterprise','2024-02-01','REDIS',[
- ('T','tls','minimumTlsVersion',('1.0','1.1','1.2'),'Minimum configured TLS version; database protocol remains separate')])
+add('Microsoft.Cache/redisEnterprise','2025-04-01','REDIS',[
+ ('T','tls','minimumTlsVersion',('1.0','1.1','1.2'),'Minimum configured TLS version; database protocol remains separate'),
+ ('B','high-availability','highAvailability',('Disabled','Enabled'),'Cluster replication configuration; recovery testing remains separate')])
+add('Microsoft.Cache/redisEnterprise/databases','2025-04-01','REDIS',[
+ ('I','access-keys','accessKeysAuthentication',('Disabled','Enabled'),'Database access-key authentication configuration; Entra role assignments remain separate'),
+ ('T','client-protocol','clientProtocol',('Encrypted','Plaintext'),'Configured client connection protocol'),
+ ('C','clustering-policy','clusteringPolicy',('EnterpriseCluster','OSSCluster'),'Database clustering policy; client compatibility remains separate'),
+ ('C','eviction-policy','evictionPolicy',('AllKeysLFU','AllKeysLRU','AllKeysRandom','NoEviction','VolatileLFU','VolatileLRU','VolatileRandom','VolatileTTL'),'Database eviction policy; data-loss impact remains an owner judgement'),
+ ('V','defer-upgrade','deferUpgrade',('Deferred','NotDeferred'),'Deferred Redis version upgrade configuration; the installed version remains separate'),
+ ('B','rdb-persistence','persistence.rdbEnabled',B,'RDB persistence configuration; snapshot recovery testing remains separate'),
+ ('B','aof-persistence','persistence.aofEnabled',B,'AOF persistence configuration; recovery testing remains separate')])
 add('Microsoft.Automation/automationAccounts','2023-11-01','AUTO',[
  ('I','local-auth','disableLocalAuth',B,'Local authentication disabled setting'),
  ('N','public-network','publicNetworkAccess',B,'Public network access configuration')])
@@ -146,11 +155,18 @@ for rt, service, prefix in [('Microsoft.Compute/virtualMachines','VM',''),('Micr
 
 
 
+def shared_tail(rt):
+    """Distinguish several registered types of one service; a collision would silently rebind a check."""
+    return ('-slot' if rt.endswith('/slots') else '-recovery' if rt == 'microsoft.recoveryservices/vaults'
+            else '-database' if rt.endswith('/databases') else '')
+
 # Explicit configuration scope only: no inference about event delivery or health.
 for rt in sorted({c.resource_type for c in CHECKS.values()}):
  base = next(c for c in CHECKS.values() if c.resource_type == rt)
  service = base.catalog_ref.split('-')[0]
- cid = service + '-diagnostic-logs' + ('-slot' if rt.endswith('/slots') else '-recovery' if rt=='microsoft.recoveryservices/vaults' else '')
+ cid = service + '-diagnostic-logs' + shared_tail(rt)
+ if cid in CHECKS:
+  raise ValueError('Duplicate configuration check')
  suffix = ('/blobServices/default' if service=='ST' else '') + '/providers/Microsoft.Insights/diagnosticSettings'
  CHECKS[cid] = Check(cid,rt,'2021-05-01-preview','logs[].category/categoryGroup',(),service+'-L',
      'Enabled diagnostic log categories/groups; configured destinations and ingestion health require separate evidence',
@@ -162,6 +178,8 @@ for rt in sorted({c.resource_type for c in CHECKS.values()}):
 for _logs in list(CHECKS.values()):
     if _logs.operation=='diagnostics':
         _cid=_logs.id.replace('diagnostic-logs','diagnostic-routes')
+        if _cid in CHECKS:
+            raise ValueError('Duplicate configuration check')
         CHECKS[_cid]=Check(_cid,_logs.resource_type,_logs.api,'logs and destination IDs per diagnostic setting',(),_logs.catalog_ref,
             'Enabled audit categories bound to configured destinations; delivery and retention remain separate',
             _logs.source,_logs.suffix,'diagnostic_routes','diagnostic_routes')
@@ -220,8 +238,9 @@ from .authorization import API as AUTH_API, SOURCE as AUTH_SOURCE, SUFFIX as AUT
 for _rt in sorted({c.resource_type for c in CHECKS.values() if not c.resource_type.startswith('graph.')}):
     _sample = next(c for c in CHECKS.values() if c.resource_type == _rt)
     _service = _sample.catalog_ref.split('-')[0]
-    _tail = '-slot' if _rt.endswith('/slots') else '-recovery' if _rt == 'microsoft.recoveryservices/vaults' else ''
-    _cid = _service + '-approved-arm-grants' + _tail
+    _cid = _service + '-approved-arm-grants' + shared_tail(_rt)
+    if _cid in CHECKS:
+        raise ValueError('Duplicate configuration check')
     CHECKS[_cid] = Check(_cid,_rt,AUTH_API,'assignments[].principalId/scope/roleDefinitionId/permissions/conditionSha256',(),_service+'-I',
         'Declared ARM assignments at or above this resource and resolved role permissions; effective access remains separate',
         AUTH_SOURCE,AUTH_SUFFIX,'arm_grants','authorization')

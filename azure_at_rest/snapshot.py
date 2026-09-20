@@ -107,6 +107,8 @@ def validate_snapshot(snapshot):
                     require(value in ("true", "false"))
                 elif key == "osDiskSizeGB":
                     require(type(value) is int and 0 <= value <= 65536)
+                elif key == "sku.capacity":
+                    require(type(value) is int and 0 <= value <= 64)
                 else:
                     require(type(value) is bool)
         if rule:

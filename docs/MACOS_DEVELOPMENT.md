@@ -22,7 +22,7 @@ python -m azure_at_rest runs --store evidence/archive
 python -m azure_at_rest pdf --store evidence/archive --run-id YOUR_EXACT_RUN_ID --export output/pdf/demo.pdf
 ```
 
-A repeated export requires a new filename; nothing in the archive is replaced. No Azure authentication occurs for fixture runs. The fixture contains 34 resources with three failed rows and incomplete coverage. Optional Poppler rendering helps visual review; Poppler is not a production PDF-generation dependency.
+A repeated export requires a new filename; nothing in the archive is replaced. No Azure authentication occurs for fixture runs. The fixture contains 35 resources with three failed rows and incomplete coverage. Optional Poppler rendering helps visual review; Poppler is not a production PDF-generation dependency.
 
 ## Functions development
 

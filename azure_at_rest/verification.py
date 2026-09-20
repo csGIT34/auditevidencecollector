@@ -112,12 +112,16 @@ def direct_commands(record, mode, include_children=True, *, resource_group=None)
     if rule.key == "container-app":
         fields["volumes"] = "properties.template.volumes[].{name: name, storageName: storageName, storageType: storageType}"
     explanation = "Compare selected fields with the saved observation; missing/contradictory fields or denied reads do not establish a PASS. "
-    if rule.mode in {"guarantee", "servicebus", "redis_enterprise"}:
+    if rule.mode in {"guarantee", "servicebus", "managed_redis", "redis_database"}:
         explanation += "Identity alone is not cryptographic proof; apply the linked mandatory-encryption guarantee only to its exact service/tier/scope. Optional CMK settings are not the base-encryption switch."
         if rule.mode == "servicebus":
             expected["sku.name"] = "Premium (required for this rule's guarantee)"
-        elif rule.mode == "redis_enterprise":
-            expected["sku.name"] = "Enterprise_* or EnterpriseFlash_* (reviewed SKUs only)"
+        elif rule.mode == "managed_redis":
+            expected["sku.name"] = "Enterprise_*, EnterpriseFlash_*, Balanced_*, MemoryOptimized_*, ComputeOptimized_* or FlashOptimized_* (reviewed families only)"
+        elif rule.mode == "redis_database":
+            explanation += " Persistence flags describe declared files only; read the owning cluster separately for its disk guarantee."
+    elif rule.mode == "redis":
+        explanation += "The returned tier, family and size select the documented statement: Basic and Standard C0/C1 have no disk encryption, and an enabled rdb/aof flag moves persisted data to a storage account this projection never resolves from a connection string."
     elif rule.mode == "kusto":
         explanation += "properties.enableDiskEncryption must be true for the VM cache check; false is a failure, missing is unknown. The linked guarantee covers backing storage separately."
     elif rule.mode in {"tde", "database_parent"}:

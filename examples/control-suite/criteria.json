@@ -991,14 +991,44 @@
       "operator": "equals",
       "value": "Disabled"
     },
+    "REDIS-access-keys": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "REDIS-aof-persistence": {
+      "operator": "equals",
+      "value": false
+    },
     "REDIS-approved-arm-grants": {
       "operator": "equals",
       "value": []
+    },
+    "REDIS-approved-arm-grants-database": {
+      "operator": "equals",
+      "value": []
+    },
+    "REDIS-client-protocol": {
+      "operator": "equals",
+      "value": "Encrypted"
+    },
+    "REDIS-clustering-policy": {
+      "operator": "equals",
+      "value": "OSSCluster"
+    },
+    "REDIS-defer-upgrade": {
+      "operator": "equals",
+      "value": "NotDeferred"
     },
     "REDIS-diagnostic-logs": {
       "operator": "equals",
       "value": [
         "category:AuditEvent"
+      ]
+    },
+    "REDIS-diagnostic-logs-database": {
+      "operator": "equals",
+      "value": [
+        "category:ConnectionEvents"
       ]
     },
     "REDIS-diagnostic-routes": {
@@ -1017,6 +1047,35 @@
           "workspace_table_mode": null
         }
       ]
+    },
+    "REDIS-diagnostic-routes-database": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:ConnectionEvents"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "REDIS-eviction-policy": {
+      "operator": "equals",
+      "value": "VolatileLRU"
+    },
+    "REDIS-high-availability": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "REDIS-rdb-persistence": {
+      "operator": "equals",
+      "value": true
     },
     "REDIS-tls": {
       "operator": "equals",

@@ -1,7 +1,7 @@
 """Versioned, exact ARM type rules. No wildcard service guarantees."""
 from dataclasses import dataclass, replace
 
-RULE_VERSION = "2026.09.20.1"
+RULE_VERSION = "2026.09.20.2"
 SOURCE_REVIEWED = "2026-09-19"
 LEARN = "https://learn.microsoft.com/en-us/"
 
@@ -115,12 +115,18 @@ add("Microsoft.Web/sites/slots", "web-slot", "2023-12-01", "workload",
     "Slot identity only; host/content storage, deployment packages and application stores unverified.",
     "azure/azure-functions/storage-considerations")
 add("Microsoft.Cache/Redis", "redis", "2024-03-01", "redis",
-    "Premium RDB/AOF persistence destinations require verification; export, external and temporary copies excluded.",
-    "azure/azure-cache-for-redis/cache-how-to-premium-persistence",
-    ("redisConfiguration.rdb-backup-enabled", "redisConfiguration.aof-backup-enabled"))
-add("Microsoft.Cache/redisEnterprise", "redis-enterprise", "2024-02-01", "redis_enterprise",
-    "Enterprise and Enterprise Flash service disks and persistence only; newer Managed Redis SKUs need a separate rule.",
-    "azure/azure-cache-for-redis/cache-how-to-premium-persistence")
+    "Mounted cache OS disk for a returned Basic, Standard or Premium tier and size. In-memory data is not encrypted; a configured RDB/AOF persistence destination is a separate storage account this read never identifies, and exported copies follow their destination.",
+    "azure/azure-cache-for-redis/cache-how-to-encryption",
+    ("sku.name", "sku.family", "sku.capacity",
+     "redisConfiguration.rdb-backup-enabled", "redisConfiguration.aof-backup-enabled"))
+add("Microsoft.Cache/redisEnterprise", "managed-redis", "2025-04-01", "managed_redis",
+    "Azure Managed Redis / Redis Enterprise cluster persistence, export-temporary and OS disks for a returned reviewed SKU family, plus the Flash families' transient NVMe disk. In-memory data is not encrypted, and exported copies are governed by their destination store.",
+    "azure/redis/how-to-encryption", (),
+    (("databases", "Microsoft.Cache/redisEnterprise/databases"),))
+add("Microsoft.Cache/redisEnterprise/databases", "managed-redis-database", "2025-04-01", "redis_database",
+    "Declared RDB/AOF persistence of one database, written to the owning cluster's encrypted persistence disk. In-memory keys and values, geo-replication link targets and exported copies are separate.",
+    "azure/redis/how-to-persistence",
+    ("persistence.rdbEnabled", "persistence.aofEnabled"))
 add("Microsoft.Dashboard/grafana", "grafana-storage", "2023-09-01", "guarantee",
     "Grafana-owned system metadata and instance user data in its provider-managed Cosmos DB/PostgreSQL stores only; data sources, exported dashboards and snapshots outside those stores are separate.",
     "azure/managed-grafana/encryption")
@@ -136,6 +142,19 @@ add("Microsoft.Insights/components", "app-insights", "2020-02-02", "linked",
 add("Microsoft.Network/virtualNetworks|Microsoft.Network/virtualNetworks/subnets|Microsoft.Network/networkInterfaces|Microsoft.Network/networkSecurityGroups|Microsoft.Network/routeTables|Microsoft.Network/publicIPAddresses|Microsoft.Network/privateEndpoints|Microsoft.ManagedIdentity/userAssignedIdentities", "non-data-plane", "", "na",
     "Resource is a networking or identity construct, not a customer data-at-rest store in this assessment. Network controls and diagnostic destinations are separate responsibilities.",
     "azure/security/fundamentals/shared-responsibility")
+
+# Reviewed Azure Managed Redis / Redis Enterprise SKU families. An unlisted SKU stays unknown.
+MANAGED_REDIS_FAMILIES = {"enterprise_": "Enterprise", "enterpriseflash_": "Enterprise Flash",
+                          "balanced_": "Balanced", "memoryoptimized_": "Memory Optimized",
+                          "computeoptimized_": "Compute Optimized", "flashoptimized_": "Flash Optimized"}
+FLASH_REDIS_FAMILIES = ("enterpriseflash_", "flashoptimized_")
+
+def managed_redis_family(sku):
+    """Return the reviewed family label for an exact SKU name, or None."""
+    if not isinstance(sku, str):
+        return None
+    prefix = next((p for p in MANAGED_REDIS_FAMILIES if sku.lower().startswith(p)), None)
+    return MANAGED_REDIS_FAMILIES[prefix] if prefix else None
 
 # Service-specific API/source overrides; Compute image versions differ from disk versions.
 RULES["microsoft.compute/images"] = replace(RULES["microsoft.compute/images"], api="2024-03-01")

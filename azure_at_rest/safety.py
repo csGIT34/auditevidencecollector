@@ -94,6 +94,8 @@ ENUMS = {
     "encryption.infrastructureEncryption": {"Enabled", "Disabled"},
     "osDiskType": {"Managed", "Ephemeral"},
     "captureDescription.destination.name": {"EventHubArchive.AzureBlockBlob", "EventHubArchive.AzureDataLake"},
+    "sku.name": {"Basic", "Standard", "Premium"},
+    "sku.family": {"C", "P"},
 }
 
 def project(raw, rule):
@@ -115,6 +117,8 @@ def project(raw, rule):
             value = value if isinstance(value, str) and value in {"true", "false"} else INVALID
         elif path == "osDiskSizeGB":
             value = value if type(value) is int and 0 <= value <= 65536 else INVALID
+        elif path == "sku.capacity":
+            value = value if type(value) is int and 0 <= value <= 64 else INVALID
         else:
             value = value if type(value) is bool else INVALID
         evidence[path] = value

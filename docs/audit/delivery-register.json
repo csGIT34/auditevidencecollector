@@ -6980,6 +6980,102 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:REDIS-access-keys": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-I"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-access-keys] with fallback to checks[REDIS-access-keys]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "accessKeysAuthentication",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-aof-persistence": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-B"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-aof-persistence] with fallback to checks[REDIS-aof-persistence]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "persistence.aofEnabled",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:REDIS-approved-arm-grants": {
       "api_version": "2022-04-01",
       "catalog_objectives": [
@@ -7030,6 +7126,200 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:REDIS-approved-arm-grants-database": {
+      "api_version": "2022-04-01",
+      "catalog_objectives": [
+        "REDIS-I"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-approved-arm-grants-database] with fallback to checks[REDIS-approved-arm-grants-database]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/authorization.py",
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "authorization",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "assignments[].principalId/scope/roleDefinitionId/permissions/conditionSha256",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/rest/api/authorization/role-assignments/list-for-scope?view=rest-authorization-2022-04-01",
+      "suffix": "/providers/Microsoft.Authorization/roleAssignments",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_authorization.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-client-protocol": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-T"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-client-protocol] with fallback to checks[REDIS-client-protocol]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "clientProtocol",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-clustering-policy": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-C"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-clustering-policy] with fallback to checks[REDIS-clustering-policy]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "clusteringPolicy",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-defer-upgrade": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-V"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-defer-upgrade] with fallback to checks[REDIS-defer-upgrade]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "deferUpgrade",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:REDIS-diagnostic-logs": {
       "api_version": "2021-05-01-preview",
       "catalog_objectives": [
@@ -7070,6 +7360,54 @@
         "saved-run comparison"
       ],
       "resource_type": "microsoft.cache/redisenterprise",
+      "source_definition": "https://learn.microsoft.com/en-us/rest/api/monitor/diagnostic-settings/list?view=rest-monitor-2021-05-01-preview",
+      "suffix": "/providers/Microsoft.Insights/diagnosticSettings",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-diagnostic-logs-database": {
+      "api_version": "2021-05-01-preview",
+      "catalog_objectives": [
+        "REDIS-L"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-diagnostic-logs-database] with fallback to checks[REDIS-diagnostic-logs-database]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "diagnostics",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "logs[].category/categoryGroup",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
       "source_definition": "https://learn.microsoft.com/en-us/rest/api/monitor/diagnostic-settings/list?view=rest-monitor-2021-05-01-preview",
       "suffix": "/providers/Microsoft.Insights/diagnosticSettings",
       "test_files": [
@@ -7128,8 +7466,202 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:REDIS-diagnostic-routes-database": {
+      "api_version": "2021-05-01-preview",
+      "catalog_objectives": [
+        "REDIS-L"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-diagnostic-routes-database] with fallback to checks[REDIS-diagnostic-routes-database]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py",
+        "azure_at_rest/diagnostic_routes.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "diagnostic_routes",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "logs and destination IDs per diagnostic setting",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/rest/api/monitor/diagnostic-settings/list?view=rest-monitor-2021-05-01-preview",
+      "suffix": "/providers/Microsoft.Insights/diagnosticSettings",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_diagnostic_routes.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-eviction-policy": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-C"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-eviction-policy] with fallback to checks[REDIS-eviction-policy]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "evictionPolicy",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-high-availability": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-B"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-high-availability] with fallback to checks[REDIS-high-availability]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "highAvailability",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:REDIS-rdb-persistence": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-B"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-rdb-persistence] with fallback to checks[REDIS-rdb-persistence]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "persistence.rdbEnabled",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise/databases",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise/databases",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:REDIS-tls": {
-      "api_version": "2024-02-01",
+      "api_version": "2025-04-01",
       "catalog_objectives": [
         "REDIS-T"
       ],
@@ -7168,7 +7700,7 @@
         "saved-run comparison"
       ],
       "resource_type": "microsoft.cache/redisenterprise",
-      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2024-02-01/redisenterprise",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise",
       "suffix": "",
       "test_files": [
         "tests/test_archive.py",
@@ -11956,7 +12488,9 @@
     },
     {
       "configuration_predicates": [
-        "REDIS-approved-arm-grants"
+        "REDIS-access-keys",
+        "REDIS-approved-arm-grants",
+        "REDIS-approved-arm-grants-database"
       ],
       "criteria_requirements": "Approved human/workload principals, role scopes, separation of duties, privileged elevation duration, access review frequency, emergency accounts and permitted authentication methods.",
       "disposition": {
@@ -11970,7 +12504,9 @@
       "guest_import_predicates": [],
       "id": "REDIS-I",
       "implementation_refs": [
-        "configuration:REDIS-approved-arm-grants"
+        "configuration:REDIS-access-keys",
+        "configuration:REDIS-approved-arm-grants",
+        "configuration:REDIS-approved-arm-grants-database"
       ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
@@ -12060,11 +12596,13 @@
           "tests/test_rules.py",
           "tests/test_collection.py",
           "tests/test_archive.py",
-          "tests/test_pdf_pipeline.py"
+          "tests/test_pdf_pipeline.py",
+          "tests/test_managed_redis.py"
         ]
       },
       "existing_encryption_rules": [
-        "redis-enterprise"
+        "managed-redis",
+        "managed-redis-database"
       ],
       "guest_import_predicates": [],
       "id": "REDIS-R",
@@ -12093,6 +12631,7 @@
     },
     {
       "configuration_predicates": [
+        "REDIS-client-protocol",
         "REDIS-tls"
       ],
       "criteria_requirements": "Approved protocols and minimum versions, certificate validation/trust and any protocol-specific exceptions; propose TLS 1.2 or stronger where supported, subject to approved architecture.",
@@ -12107,6 +12646,7 @@
       "guest_import_predicates": [],
       "id": "REDIS-T",
       "implementation_refs": [
+        "configuration:REDIS-client-protocol",
         "configuration:REDIS-tls"
       ],
       "new_configuration_live_validation": "NOT_VERIFIED",
@@ -12170,7 +12710,9 @@
     {
       "configuration_predicates": [
         "REDIS-diagnostic-logs",
-        "REDIS-diagnostic-routes"
+        "REDIS-diagnostic-logs-database",
+        "REDIS-diagnostic-routes",
+        "REDIS-diagnostic-routes-database"
       ],
       "criteria_requirements": "Required event categories/content, retention by dataset, clock accuracy, maximum ingestion lag/missing-event window, capacity threshold, destination protection and review frequency.",
       "disposition": {
@@ -12185,7 +12727,9 @@
       "id": "REDIS-L",
       "implementation_refs": [
         "configuration:REDIS-diagnostic-logs",
-        "configuration:REDIS-diagnostic-routes"
+        "configuration:REDIS-diagnostic-logs-database",
+        "configuration:REDIS-diagnostic-routes",
+        "configuration:REDIS-diagnostic-routes-database"
       ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
@@ -12212,7 +12756,10 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "REDIS-clustering-policy",
+        "REDIS-eviction-policy"
+      ],
       "criteria_requirements": "Approved baseline/version, change approval and emergency change process, drift interval/tolerance, permitted features, exception approver and expiry.",
       "disposition": {
         "exclusion": null,
@@ -12224,7 +12771,10 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "REDIS-C",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:REDIS-clustering-policy",
+        "configuration:REDIS-eviction-policy"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -12244,13 +12794,15 @@
       ],
       "required_evidence": "Database clustering/eviction/persistence/module configuration, approved code/IaC and change records.",
       "service_id": "REDIS",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Database policy and module drift",
       "whole_objective_complete": false,
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "REDIS-defer-upgrade"
+      ],
       "criteria_requirements": "Supported version policy, scan scope/frequency/freshness, severity-based remediation deadlines, trusted publishers/digests and compensating-control approval.",
       "disposition": {
         "exclusion": null,
@@ -12262,7 +12814,9 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "REDIS-V",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:REDIS-defer-upgrade"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -12280,13 +12834,17 @@
       ],
       "required_evidence": "Managed Redis service support/advisories and exposed engine/module version; customer client/library scan/version reports.",
       "service_id": "REDIS",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Managed server and Redis client components",
       "whole_objective_complete": false,
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "REDIS-aof-persistence",
+        "REDIS-high-availability",
+        "REDIS-rdb-persistence"
+      ],
       "criteria_requirements": "BIA-derived RPO/RTO, backup frequency/retention/isolation, integrity checks, restore-test interval and success measures, availability/capacity requirements.",
       "disposition": {
         "exclusion": null,
@@ -12298,7 +12856,11 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "REDIS-B",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:REDIS-aof-persistence",
+        "configuration:REDIS-high-availability",
+        "configuration:REDIS-rdb-persistence"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -12316,7 +12878,7 @@
       ],
       "required_evidence": "RDB/AOF persistence, supported geo-replication mode, export job/storage retention evidence and import/rebuild test from authoritative data.",
       "service_id": "REDIS",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Export backup versus persistence and replication",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -18257,7 +18819,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 177,
+  "configuration_predicate_count": 188,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215,
   "proposed_permission_profiles": {

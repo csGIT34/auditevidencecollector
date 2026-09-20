@@ -138,9 +138,14 @@ class RuleTests(unittest.TestCase):
         self.assertEqual("PASS", s.result(ns)["result"])
 
     def test_redis_persistence_is_not_assumed(self):
+        disabled = {"sku": {"name": "Premium", "family": "P", "capacity": 1},
+                    "redisConfiguration": {"rdb-backup-enabled": "false", "aof-backup-enabled": "false"}}
+        self.assertEqual("PASS", self.result("Microsoft.Cache/Redis", disabled)["result"])
+        self.assertEqual("UNKNOWN", self.result("Microsoft.Cache/Redis", {**disabled, "redisConfiguration": {"rdb-backup-enabled": "true"}})["result"])
         self.assertEqual("UNKNOWN", self.result("Microsoft.Cache/Redis", {"redisConfiguration": {"rdb-backup-enabled": "false", "aof-backup-enabled": "false"}})["result"])
         self.assertEqual("PASS", self.result("Microsoft.Cache/redisEnterprise", sku="Enterprise_E10")["result"])
-        self.assertEqual("UNKNOWN", self.result("Microsoft.Cache/redisEnterprise", sku="Balanced_B10")["result"])
+        self.assertEqual("PASS", self.result("Microsoft.Cache/redisEnterprise", sku="Balanced_B10")["result"])
+        self.assertEqual("UNKNOWN", self.result("Microsoft.Cache/redisEnterprise", sku="Unlisted_Z1")["result"])
 
     def test_network_is_justified_na_but_unknown_services_are_not(self):
         self.assertEqual("NOT_APPLICABLE", self.result("Microsoft.Network/virtualNetworks")["result"])

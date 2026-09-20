@@ -2,7 +2,7 @@
 from collections import Counter, defaultdict
 
 from . import __version__
-from .catalog import RULES, RULE_VERSION, SOURCE_REVIEWED
+from .catalog import RULES, RULE_VERSION, SOURCE_REVIEWED, FLASH_REDIS_FAMILIES, managed_redis_family
 from .safety import INVALID, identity, now
 from .verification import GUIDANCE, add_verification
 
@@ -117,14 +117,46 @@ class Assessor:
                 return finish("UNKNOWN", "This rule's documented service guarantee is scoped to Premium; no claim is made for a missing or different tier.")
             return finish("PASS", "Verified Premium resource identity is covered by the service-enforced encryption guarantee.", "documented_service_guarantee")
 
-        if rule.mode == "redis_enterprise":
-            if not record["sku"].lower().startswith(("enterprise_", "enterpriseflash_")):
-                return finish("UNKNOWN", "SKU is missing or outside the reviewed Enterprise / Enterprise Flash guarantee.")
-            return finish("PASS", "The documented guarantee covers service disks and persistence with Microsoft-managed keys.", "documented_service_guarantee")
+        if rule.mode == "managed_redis":
+            family = managed_redis_family(record["sku"])
+            if family is None:
+                return finish("UNKNOWN", "Cluster SKU is missing or outside the reviewed Azure Managed Redis / Redis Enterprise families; no disk guarantee is applied.")
+            child_results()
+            if result["gaps"]:
+                return finish("UNKNOWN", "Cluster disk encryption is documented, but the database enumeration or a database's persistence evidence is incomplete.",
+                              "documented_service_guarantee_with_gaps")
+            transient = " Its transient NVMe keys and values are covered by Microsoft-managed keys only." if record["sku"].lower().startswith(FLASH_REDIS_FAMILIES) else ""
+            return finish("PASS", "The verified " + family + " cluster's persistence, export-temporary and OS disks are encrypted with Microsoft-managed keys by default."
+                          + transient + " Data held in memory is not encrypted.", "documented_service_guarantee")
+
+        if rule.mode == "redis_database":
+            parent = self.records.get(rid.rsplit("/", 2)[0].lower())
+            # Examine the verified parent directly; the cluster already evaluates this database as a child.
+            if not parent or parent["collection_status"] != "ok" or parent.get("errors") or managed_redis_family(parent["sku"]) is None:
+                result["gaps"].append("The owning cluster's identity or reviewed SKU family could not be verified, so its disk guarantee cannot be applied to this database.")
+                return finish("UNKNOWN", "No verified cluster disk evidence is available for this database's persisted files.", "backing_storage_required")
+            result["sources"].append({"url": RULES[parent["type"].lower()].source, "reviewed_on": SOURCE_REVIEWED})
+            enabled = [path for path in rule.paths if evidence.get(path) is True]
+            declared = ("Declared " + " and ".join(p.split(".")[1] for p in enabled) + " files are written to"
+                        if enabled else "No persistence is declared; only cluster-managed files reach")
+            return finish("PASS", declared + " the owning cluster's Microsoft-managed-key encrypted disks. Keys and values held in memory are not encrypted.",
+                          "documented_service_guarantee")
 
         if rule.mode == "redis":
-            result["gaps"].append("Persistence account identifiers are not available safely from this read without inspecting connection strings. Supply separate destination evidence; no secret/listKeys calls are made.")
-            return finish("UNKNOWN", "Redis persistence flags do not establish the identity and encryption of every backing destination.", "backing_storage_required")
+            name, family, capacity = evidence.get("sku.name"), evidence.get("sku.family"), evidence.get("sku.capacity")
+            if name is None or family is None or type(capacity) is not int:
+                return finish("UNKNOWN", "The returned cache tier and size are incomplete; no documented disk-encryption statement can be applied.")
+            if name in ("Basic", "Standard") and family == "C" and capacity in (0, 1):
+                return finish("FAIL", "Microsoft documents that Basic and Standard C0 and C1 caches use no disk encryption.", "documented_service_guarantee")
+            persistence = {path: evidence.get("redisConfiguration." + path) for path in ("rdb-backup-enabled", "aof-backup-enabled")}
+            if any(value == "true" for value in persistence.values()):
+                result["gaps"].append("Data persistence is enabled and its destination is configured through a storage connection string that this read deliberately never retrieves. Supply separate destination evidence; no secret/listKeys calls are made.")
+                return finish("UNKNOWN", "Persisted RDB/AOF copies leave the cache for a storage account this read cannot identify.", "backing_storage_required")
+            if family == "P" and any(value is None for value in persistence.values()):
+                result["gaps"].append("Premium persistence settings were not returned; an enabled persistence destination cannot be ruled out.")
+                return finish("UNKNOWN", "Premium data-persistence configuration is missing from the returned cache settings.", "backing_storage_required")
+            return finish("PASS", "The verified " + name + " cache mounts an OS disk encrypted with Microsoft-managed keys and declares no persistence destination. Data held in memory is not encrypted.",
+                          "documented_service_guarantee")
 
         if rule.mode == "linked":
             workspace = evidence.get("WorkspaceResourceId")

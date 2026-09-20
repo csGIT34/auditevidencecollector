@@ -1,6 +1,6 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** Version 0.17.0 includes [177 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
+**Current work: multi-control coverage is incomplete.** Version 0.18.0 includes [188 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
 
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 
@@ -45,7 +45,7 @@ python3 -m azure_at_rest collect \
   --report evidence/demo.md
 ```
 
-The fixture is synthetic and makes **no Azure calls, authentication calls or chargeable cloud operations**. It deliberately produces exit code **1**: 34 resources, 21 PASS, 3 FAIL, 7 UNKNOWN, 1 ERROR, 1 UNSUPPORTED and 1 NOT_APPLICABLE. The three failed resource rows represent two underlying conditions: a database with TDE disabled (also reflected on its parent) and Kusto cache-disk encryption disabled. A denied Storage read and workload-storage gaps keep coverage incomplete.
+The fixture is synthetic and makes **no Azure calls, authentication calls or chargeable cloud operations**. It deliberately produces exit code **1**: 35 resources, 22 PASS, 3 FAIL, 7 UNKNOWN, 1 ERROR, 1 UNSUPPORTED and 1 NOT_APPLICABLE. The three failed resource rows represent two underlying conditions: a database with TDE disabled (also reflected on its parent) and Kusto cache-disk encryption disabled. A denied Storage read and workload-storage gaps keep coverage incomplete.
 
 Open [the committed synthetic report](examples/demo-report.md) to see the output without running anything. Its identifiers and findings are examples, not tenant evidence.
 

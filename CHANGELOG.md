@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.18.0
+
+- Replace the Enterprise-only cache rule with exact Azure Managed Redis / Redis Enterprise cluster and database rules on API 2025-04-01, covering every reviewed SKU family and the Flash families' transient NVMe disk.
+- Assess Azure Cache for Redis from its returned tier, family and size: Basic and Standard C0/C1 fail on Microsoft's documented absence of disk encryption, an enabled rdb/aof flag or missing Premium persistence settings stays incomplete, and no connection string is ever read.
+- Enumerate cluster databases as children and add eleven database and cluster predicates for access-key authentication, client protocol, clustering, eviction, deferred upgrade, persistence, replication, diagnostics and declared ARM grants.
+- Keep in-memory data, exported copies and geo-replication targets outside every new guarantee. Reject a shared predicate ID collision instead of silently rebinding a check to another resource type.
+
 ## 0.17.0
 
 - Add scoped, source-backed encryption rules for Grafana-owned storage, Azure Monitor/Prometheus workspace data and Automation secure assets/runbooks.
