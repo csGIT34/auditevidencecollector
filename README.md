@@ -17,7 +17,7 @@ flowchart LR
   Sources --> R[(Immutable run archive<br/>hash-verified)]
   C[Approved criteria] --> R
   R --> G[Control-indexed register]
-  V[Declared purview] --> G
+  V[Declared tailoring] --> G
   G --> D[Auditor PDF and<br/>per-control evidence]
 ```
 
@@ -27,7 +27,7 @@ Four kinds of evidence land in the same archive and are indexed by control:
 | --- | --- | --- |
 | `policy_compliance` | Azure Policy's built-in NIST SP 800-53 Rev. 5 initiative | Breadth. Microsoft maintains 693 definitions and their control mapping, at no cost. |
 | `configuration_predicate` | 192 scoped reads at pinned API versions | Depth and provenance where Policy has no alias, or where a conservative boundary matters. |
-| `encryption_rule` | 35 reviewed per-type at-rest rules | Documented service guarantees with explicit exclusions. |
+| `resource_rule` | 35 reviewed per-type at-rest rules | Documented service guarantees with explicit exclusions. |
 | `attributed_record` | Operational imports, attestations, provider assurance | The organizational controls no API can observe. |
 
 Supplements extend the same archive for facts ARM cannot reach: [restricted Kubernetes metadata](docs/KUBERNETES_EVIDENCE.md), [typed guest and agent reports](docs/GUEST_EVIDENCE.md), and [normalized Wiz evidence](docs/WIZ_INTEGRATION.md).
@@ -41,7 +41,7 @@ What the platform does **not** provide, and this program does:
 - **Evidence custody.** Hash-verified, immutable, exact-run archives and self-contained auditor PDFs. Policy compliance is a rolling state with limited history.
 - **Your criteria, not a vendor's defaults.** Thresholds come from an approved criteria file and are frozen into each run. Absent or draft criteria leave a result UNKNOWN rather than inventing policy.
 - **Pinned provenance.** Reads record the exact API version used. Resource Graph and Policy cannot pin an API version into the evidence.
-- **Purview and inheritance.** A declared register of which controls apply, who owns them, what is inherited from the provider and what is excluded — with a rationale and a named approver.
+- **Tailoring and inheritance.** A declared register of which controls apply, who owns them, what is inherited from the provider and what is excluded — with a rationale and a named approver.
 - **Cross-plane reach.** Microsoft Graph, guest agents, Kubernetes and third-party scanners.
 
 ### What it refuses to do
@@ -68,7 +68,7 @@ The lab and the workplace deployment are deliberately separate. Nothing here har
 
 1. Clone the repository and run `python scripts/validate.py` — the full offline gate, no cloud access required.
 2. Assign the audit-only Policy initiative at the approved workplace scope using the [documented procedure](docs/AZURE_POLICY_EVIDENCE.md).
-3. Declare purview: `python -m azure_at_rest control-register --template purview.json` emits the controls your resource types implicate, ready to review and approve.
+3. Declare tailoring: `python -m cloud_governance control-register --template tailoring.json` emits the controls your resource types implicate, ready to review and approve.
 4. Supply your approved criteria file; see [configuration assessments](docs/CONFIGURATION_ASSESSMENTS.md).
 5. Deploy the collector using existing workplace infrastructure patterns and the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md).
 
@@ -86,10 +86,10 @@ Collection and report generation are separate operations against separate archiv
 
 ```sh
 python3 -m pip install '.[pdf]'
-python3 -m azure_at_rest collect --fixture examples/demo-fixture.json --store ./evidence/archive
-python3 -m azure_at_rest runs --store ./evidence/archive
+python3 -m cloud_governance collect --fixture examples/demo-fixture.json --store ./evidence/archive
+python3 -m cloud_governance runs --store ./evidence/archive
 # Use the exact r-... ID printed above; the demo collection exits 1 intentionally.
-python3 -m azure_at_rest pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_ID
+python3 -m cloud_governance pdf --store ./evidence/archive --run-id YOUR_EXACT_RUN_ID
 ```
 
 Each collection and PDF generation creates new archived objects. Historical rendering verifies the selected run and uses its saved facts, conclusions and context without recollection or reassessment. Incomplete/corrupt runs cannot be reported as complete. The PDF contains findings, criteria, observations, dependency references, errors and broader audit gaps inside the document.
@@ -97,7 +97,7 @@ Each collection and PDF generation creates new archived objects. Historical rend
 Index any saved run by control, which is what an auditor asks for:
 
 ```sh
-python3 -m azure_at_rest control-register --input evidence/demo.json --report evidence/controls.md
+python3 -m cloud_governance control-register --input evidence/demo.json --report evidence/controls.md
 ```
 
 See [local workflow and failure semantics](docs/LOCAL_ARCHIVE_PDF.md), the [workplace Azure handoff](docs/WORKPLACE_AZURE_HANDOFF.md), and [ready-to-use implementation](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md) / [validation prompts](docs/prompts/AZURE_ADAPTER_VALIDATION.md). The optional Azure adapter and Functions triggers are implemented, tested offline and validated in the personal lab; deployment and acceptance in the work tenant remain workplace steps. Both hosted operations default disabled. No database or runtime AI is required. The local filesystem adapter requires POSIX support. ReportLab is optional for core collection and required for PDFs.
@@ -108,7 +108,7 @@ Python 3.11+ is required. Collection, assessment and JSON archiving use the Pyth
 
 ```sh
 # From the cloned repository root, with your virtual environment active
-python3 -m azure_at_rest collect \
+python3 -m cloud_governance collect \
   --fixture examples/demo-fixture.json \
   --snapshot evidence/demo-snapshot.json \
   --json evidence/demo.json \
@@ -121,8 +121,8 @@ Open [the committed synthetic report](examples/demo-report.md) to see the output
 
 ```sh
 python3 scripts/validate.py
-python3 -m azure_at_rest catalog
-python3 -m azure_at_rest assess \
+python3 -m cloud_governance catalog
+python3 -m cloud_governance assess \
   --input evidence/demo-snapshot.json \
   --json evidence/reassessment.json \
   --report evidence/reassessment.md
@@ -130,7 +130,7 @@ python3 -m azure_at_rest assess \
 
 `assess` does not refresh Azure state. It applies the current rules to the saved, timestamped observation. Reports record a canonical snapshot SHA-256 digest for correlation; snapshots are editable files, not signed attestations.
 
-Optional packaging, if you already have setuptools/pip available: `python3 -m pip install -e .` provides the `azure-at-rest` command. Running the module directly does not need installation.
+Optional packaging, if you already have setuptools/pip available: `python3 -m pip install -e .` provides the `cloud-governance` command. Running the module directly does not need installation.
 
 ## Live collection — optional and explicitly scoped
 
@@ -142,7 +142,7 @@ Requirements: Azure CLI installed, an existing authorized sign-in for the correc
 
 ```sh
 # Substitute an existing subscription UUID after live testing is authorized.
-python3 -m azure_at_rest collect \
+python3 -m cloud_governance collect \
   --subscription 11111111-1111-1111-1111-111111111111 \
   --snapshot evidence/snapshot.json \
   --json evidence/audit.json \

@@ -1,9 +1,9 @@
 import copy
 import json
 import unittest
-from azure_at_rest.blob_containers import collect
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS
+from cloud_governance.blob_containers import collect
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS
 from tests.helpers import resource
 
 
@@ -35,7 +35,7 @@ class BlobContainerTests(unittest.TestCase):
 
     def test_container_exposure_fails_even_when_account_disallows_public_access(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.workflow import assess_snapshot
+        from cloud_governance.workflow import assess_snapshot
         responses,policy=fixture();url=next(k for k in responses if '/containers?' in k)
         policy['checks']['ST-container-access']={'operator':'allowed_access','value':['None']}
         for level,expected in [('None','PASS'),('Blob','FAIL'),('Container','FAIL')]:
@@ -45,7 +45,7 @@ class BlobContainerTests(unittest.TestCase):
 
     def test_empty_complete_listing_and_missing_criteria_are_distinct(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.workflow import assess_snapshot
+        from cloud_governance.workflow import assess_snapshot
         responses,policy=fixture();url=next(k for k in responses if '/containers?' in k);responses[url]={'value':[]}
         policy['checks'][self.check.id]={'operator':'allowed_access','value':['None']}
         snapshot=collect_arm(responses)

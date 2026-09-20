@@ -9,11 +9,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from azure_at_rest.assessment import assess
-from azure_at_rest.catalog import RULES
-from azure_at_rest.report import markdown
-from azure_at_rest.snapshot import validate_snapshot
-from azure_at_rest.verification import direct_commands
+from cloud_governance.assessment import assess
+from cloud_governance.catalog import RULES
+from cloud_governance.report import markdown
+from cloud_governance.snapshot import validate_snapshot
+from cloud_governance.verification import direct_commands
 from tests.helpers import SUB, Scenario, resource
 
 
@@ -130,7 +130,7 @@ class VerificationTests(unittest.TestCase):
 
     def test_all_generated_commands_are_get_only_and_collector_urls(self):
         fixture=json.loads((Path(__file__).resolve().parents[1]/'examples/demo-fixture.json').read_text())
-        from azure_at_rest.collector import Collector, FixtureTransport
+        from cloud_governance.collector import Collector, FixtureTransport
         transport=FixtureTransport(fixture['responses']); snapshot=Collector(transport,mode='offline_fixture').collect()
         with patch('subprocess.run',side_effect=AssertionError('Rendering must not execute commands')):
             report=assess(snapshot); md=markdown(report)
@@ -174,7 +174,7 @@ except ImportError:
 @unittest.skipUnless(jmespath, 'Optional offline projection validation needs Azure CLI\'s installed jmespath package')
 class ProjectionTests(unittest.TestCase):
     def test_all_demo_projections_parse_and_exclude_sensitive_payload_fields(self):
-        from azure_at_rest.collector import Collector, FixtureTransport
+        from cloud_governance.collector import Collector, FixtureTransport
         fixture=json.loads((Path(__file__).resolve().parents[1]/'examples/demo-fixture.json').read_text())
         transport=FixtureTransport(fixture['responses'])
         report=assess(Collector(transport,mode='offline_fixture').collect())

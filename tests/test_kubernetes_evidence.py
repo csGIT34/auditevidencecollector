@@ -7,9 +7,9 @@ from pathlib import Path
 from contextlib import contextmanager,redirect_stdout
 from unittest.mock import patch,Mock
 from pypdf import PdfReader
-from azure_at_rest.archive import encode,save_run
-from azure_at_rest.kubernetes_evidence import publish,load,publish_pdf,MAX_BYTES,CHECKS
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.archive import encode,save_run
+from cloud_governance.kubernetes_evidence import publish,load,publish_pdf,MAX_BYTES,CHECKS
+from cloud_governance.workflow import assess_snapshot
 from tests.test_controls import fixture,collect
 from tests.test_archive import MemoryStore
 from tests.test_hosting import environment
@@ -123,7 +123,7 @@ class KubernetesEvidenceTests(unittest.TestCase):
 
     def test_historical_pdf_uses_frozen_projection_and_excludes_secret_canaries(self):
         m=self.save();original=dict(self.store.objects)
-        with patch('azure_at_rest.kubernetes_evidence.project',side_effect=AssertionError('reprojection')),patch('azure_at_rest.kubernetes_evidence.assess',side_effect=AssertionError('reassessment')):
+        with patch('cloud_governance.kubernetes_evidence.project',side_effect=AssertionError('reprojection')),patch('cloud_governance.kubernetes_evidence.assess',side_effect=AssertionError('reassessment')):
             pdf=publish_pdf(self.store,m['evidence_id'])
         text=''.join(p.extract_text() for p in PdfReader(io.BytesIO(self.store.read(pdf['pdf']['key']))).pages)
         self.assertIn('Kubernetes workload evidence',text);self.assertIn('run_as_non_root',text)
@@ -139,7 +139,7 @@ class KubernetesEvidenceTests(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):load(self.store,key.split('/')[1])
 
     def test_hosted_import_report_and_disabled_gate(self):
-        from azure_at_rest.hosting import execute
+        from cloud_governance.hosting import execute
         factory=Mock(side_effect=AssertionError('disabled should not open storage'))
         for op in ('workload-import','workload-report'):self.assertEqual('disabled',execute(op,env={},factory=factory)['state'])
         @contextmanager
@@ -150,8 +150,8 @@ class KubernetesEvidenceTests(unittest.TestCase):
         self.assertEqual('complete',pdf['state']);self.assertTrue(self.store.read(pdf['pdf_key']).startswith(b'%PDF'))
 
     def test_cli_import_show_and_function_route_contracts(self):
-        from azure_at_rest.cli import main
-        from azure_at_rest.storage import FileStore
+        from cloud_governance.cli import main
+        from cloud_governance.storage import FileStore
         import importlib
         import azure.functions as func
         import function_app

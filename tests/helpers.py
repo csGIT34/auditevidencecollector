@@ -1,6 +1,6 @@
-from azure_at_rest.catalog import RULES
-from azure_at_rest.collector import Collector, FixtureTransport, INVENTORY_API, SUBSCRIPTIONS_API, endpoint
-from azure_at_rest.assessment import assess
+from cloud_governance.catalog import RULES
+from cloud_governance.collector import Collector, FixtureTransport, INVENTORY_API, SUBSCRIPTIONS_API, endpoint
+from cloud_governance.assessment import assess
 
 SUB = "11111111-1111-1111-1111-111111111111"
 SUB2 = "22222222-2222-2222-2222-222222222222"

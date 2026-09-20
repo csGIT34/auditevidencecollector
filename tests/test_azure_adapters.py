@@ -17,9 +17,9 @@ try:
 except ImportError:
     HAS_AZURE = False
 
-from azure_at_rest.azure_adapters import ArmCredential, BlobStore, token_credential, verify_tenant
-from azure_at_rest.collector import CollectionError
-from azure_at_rest.workflow import Deadline, DeadlineExceeded
+from cloud_governance.azure_adapters import ArmCredential, BlobStore, token_credential, verify_tenant
+from cloud_governance.collector import CollectionError
+from cloud_governance.workflow import Deadline, DeadlineExceeded
 
 URL = 'https://fixturestore.blob.core.windows.net'
 TENANT = '22222222-2222-2222-2222-222222222222'

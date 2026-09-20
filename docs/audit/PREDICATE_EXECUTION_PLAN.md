@@ -2,7 +2,7 @@
 
 Working plan to close every remaining service objective for the Azure resource types this team deploys. Created 2026-09-20. Progress is recorded here as each section completes; a section is complete only when its predicates are API-verified, offline-tested, regenerated into the delivery register and passing the full gate.
 
-Scope is the 23 deployed service entries. Organization-wide candidate controls with other owners (PE, PS, AT, PM, PL and every `XX-1` policy control) are outside this plan; they close through declared purview inheritance and attributed records. See the [control register](../CONTROL_REGISTER.md).
+Scope is the 23 deployed service entries. Organization-wide candidate controls with other owners (PE, PS, AT, PM, PL and every `XX-1` policy control) are outside this plan; they close through declared tailoring inheritance and attributed records. See the [control register](../CONTROL_REGISTER.md).
 
 ## Starting position
 
@@ -63,7 +63,7 @@ An objective that turns out to have no safely readable ARM property is moved to 
 
 ## Disposition-only objectives
 
-These 13 have no technical collection plane and will not receive predicates. They close through attributed records or declared inheritance in the purview:
+These 13 have no technical collection plane and will not receive predicates. They close through attributed records or declared inheritance in the tailoring:
 
 `AI-T`, `APPC-T`, `APPC-V`, `APPREG-R`, `BV-T`, `COS-V`, `EG-V`, `EH-V`, `KV-T`, `KV-V`, `PE-T`, `ST-V`, `UAMI-T`
 

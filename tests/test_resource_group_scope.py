@@ -2,9 +2,9 @@ import copy
 import json
 from pathlib import Path
 import unittest
-from azure_at_rest.collector import Collector, FixtureTransport, endpoint, INVENTORY_API
-from azure_at_rest.hosting import Settings, ConfigurationError
-from azure_at_rest.snapshot import validate_snapshot
+from cloud_governance.collector import Collector, FixtureTransport, endpoint, INVENTORY_API
+from cloud_governance.hosting import Settings, ConfigurationError
+from cloud_governance.snapshot import validate_snapshot
 from tests.test_hosting import environment
 
 SID='11111111-1111-1111-1111-111111111111'
@@ -19,7 +19,7 @@ def resource(group=RG):
 
 class ResourceGroupScopeTests(unittest.TestCase):
     def test_scoped_inventory_never_lists_subscription_or_hydrates_outside_group(self):
-        from azure_at_rest.catalog import RULES
+        from cloud_governance.catalog import RULES
         row=resource();url=endpoint(SCOPE+'/resources',INVENTORY_API)
         transport=FixtureTransport({url:{'value':[row,resource('unrelated')]},endpoint(row['id'],RULES['microsoft.storage/storageaccounts'].api):row})
         snapshot=Collector(transport).collect([SID],resource_group=RG)
@@ -66,19 +66,19 @@ class ResourceGroupScopeTests(unittest.TestCase):
     def test_workflow_and_host_pass_scope_through(self):
         from unittest.mock import patch,Mock
         from contextlib import contextmanager
-        from azure_at_rest.hosting import execute
+        from cloud_governance.hosting import execute
         @contextmanager
         def factory(*args):yield Mock(),Mock()
-        with patch('azure_at_rest.hosting.verify_tenant'),patch('azure_at_rest.hosting.collect_run',return_value={}) as collect:
+        with patch('cloud_governance.hosting.verify_tenant'),patch('cloud_governance.hosting.collect_run',return_value={}) as collect:
             execute('collect',env={**environment(),'CG_RESOURCE_GROUP':RG},factory=factory)
         self.assertEqual(RG,collect.call_args.kwargs['resource_group'])
 
     def test_scoped_saved_run_pdf_retains_group(self):
         from io import BytesIO
         from pypdf import PdfReader
-        from azure_at_rest.workflow import collect_run
-        from azure_at_rest.archive import publish_pdf,load_run
-        from azure_at_rest.catalog import RULES
+        from cloud_governance.workflow import collect_run
+        from cloud_governance.archive import publish_pdf,load_run
+        from cloud_governance.catalog import RULES
         from tests.test_archive import MemoryStore
         row=resource()
         transport=FixtureTransport({endpoint(SCOPE+'/resources',INVENTORY_API):{'value':[row]},endpoint(row['id'],RULES['microsoft.storage/storageaccounts'].api):row})
@@ -89,7 +89,7 @@ class ResourceGroupScopeTests(unittest.TestCase):
         self.assertIn('resource_group',text);self.assertIn(RG,text)
 
     def test_reused_collector_does_not_carry_resources_across_scopes(self):
-        from azure_at_rest.catalog import RULES
+        from cloud_governance.catalog import RULES
         first=resource('first');second=resource(RG)
         transport=FixtureTransport({
             endpoint(f'/subscriptions/{SID}/resourceGroups/first/resources',INVENTORY_API):{'value':[first]},

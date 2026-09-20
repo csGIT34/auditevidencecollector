@@ -5,9 +5,9 @@ Version 0.8.0 accepts attributed operating records linked to one exact archived 
 The runnable synthetic input is [operational-evidence.json](../examples/operational-evidence.json). Use `synthetic` only with fixture runs; use `operator_supplied` with real collected runs. Every record supplies an owner, reviewer, objective IDs, observation time, evidence period and assertion (`SATISFIED`, `NOT_SATISFIED`, or `NOT_ASSESSED`). Resource-scoped records must name exact lower-case resource IDs present in the source run. Run-scoped records use an empty resource list and cover only that saved scope.
 
 ```sh
-python -m azure_at_rest operational-import --store /absolute/archive --run-id r_EXACT_ID --input records.json --as-of 2026-09-19T21:00:00Z --max-age-hours 24
-python -m azure_at_rest operational-show --store /absolute/archive --evidence-id o_EXACT_ID
-python -m azure_at_rest operational-pdf --store /absolute/archive --evidence-id o_EXACT_ID
+python -m cloud_governance operational-import --store /absolute/archive --run-id r_EXACT_ID --input records.json --as-of 2026-09-19T21:00:00Z --max-age-hours 24
+python -m cloud_governance operational-show --store /absolute/archive --evidence-id o_EXACT_ID
+python -m cloud_governance operational-pdf --store /absolute/archive --evidence-id o_EXACT_ID
 ```
 
 Replace example IDs with returned IDs (actual IDs use a hyphen, followed by 32 hexadecimal characters). Import returns an `evidence_id`; PDF publication returns the immutable PDF key and digest. Original run files and automated results remain unchanged. Publications write intent first and completion manifests last; incomplete publications cannot be loaded. Readers verify stored object hashes and the source manifest before replaying the saved review, without recomputing historical freshness.

@@ -2,10 +2,10 @@ import json
 import unittest
 from unittest.mock import patch
 
-from azure_at_rest.archive import load_run, publish_pdf, save_run
-from azure_at_rest.collector import Collector, FixtureTransport, INVENTORY_API, endpoint
-from azure_at_rest.verification import direct_commands
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.archive import load_run, publish_pdf, save_run
+from cloud_governance.collector import Collector, FixtureTransport, INVENTORY_API, endpoint
+from cloud_governance.verification import direct_commands
+from cloud_governance.workflow import assess_snapshot
 from tests.helpers import SUB, resource
 from tests.test_archive import MemoryStore
 
@@ -51,7 +51,7 @@ class ScopedVerificationTests(unittest.TestCase):
         store = MemoryStore()
         run = save_run(store, snapshot, old_report)
         original = dict(store.objects)
-        with patch('azure_at_rest.verification.inventory_command', side_effect=AssertionError('Historical commands must remain frozen')):
+        with patch('cloud_governance.verification.inventory_command', side_effect=AssertionError('Historical commands must remain frozen')):
             publication = publish_pdf(store, run['run_id'])
             saved = load_run(store, run['run_id'])
         self.assertEqual(old_report, saved['assessment'])

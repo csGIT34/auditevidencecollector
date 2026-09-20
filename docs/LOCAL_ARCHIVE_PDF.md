@@ -12,16 +12,16 @@ Python 3.11+; the local secure filesystem adapter currently requires POSIX `dir_
 
 ```sh
 python3 -m pip install '.[pdf]'
-python3 -m azure_at_rest collect \
+python3 -m cloud_governance collect \
   --fixture examples/demo-fixture.json \
   --store ./evidence/archive
-python3 -m azure_at_rest runs --store ./evidence/archive
+python3 -m cloud_governance runs --store ./evidence/archive
 ```
 
 The demo collection deliberately exits **1** because it contains confirmed failures; a complete archive is still created. The output prints its unique `r-...` run ID. Copy that exact ID into the separate operation:
 
 ```sh
-python3 -m azure_at_rest pdf \
+python3 -m cloud_governance pdf \
   --store ./evidence/archive \
   --run-id r-REPLACE_WITH_THE_EXACT_32_HEX_DIGIT_RUN_ID \
   --export ./output/pdf/auditor-report.pdf
@@ -81,11 +81,11 @@ The renderer operates in memory on one run; very large inventories may require f
 
 ## Modules and checks
 
-- `azure_at_rest/storage.py`: `ObjectStore` protocol and `FileStore` implementation (`put_new`, `read`, `keys`).
-- `azure_at_rest/archive.py`: context capture, versioned run publication/loading, listing, integrity checks and PDF publication.
-- `azure_at_rest/pdf_report.py`: saved-data-only ReportLab rendering, internal references and appendices.
-- `azure_at_rest/cli.py`: `collect --store`, `runs` and `pdf` entry points, preserving existing collect/assess use.
-- `azure_at_rest/program_scope.json`: packaged research outline copied into each run. Refresh deliberately after catalog changes with `python3 docs/audit/export_program_scope.py`; verify with `--check`.
+- `cloud_governance/storage.py`: `ObjectStore` protocol and `FileStore` implementation (`put_new`, `read`, `keys`).
+- `cloud_governance/archive.py`: context capture, versioned run publication/loading, listing, integrity checks and PDF publication.
+- `cloud_governance/pdf_report.py`: saved-data-only ReportLab rendering, internal references and appendices.
+- `cloud_governance/cli.py`: `collect --store`, `runs` and `pdf` entry points, preserving existing collect/assess use.
+- `cloud_governance/program_scope.json`: packaged research outline copied into each run. Refresh deliberately after catalog changes with `python3 docs/audit/export_program_scope.py`; verify with `--check`.
 - `tests/test_archive.py` and `tests/test_pdf_pipeline.py`: no-overwrite/concurrency, invalid paths/symlinks, partial/corrupt runs, historical selection, failure stages, PDF content and optional export semantics.
 
 ```sh

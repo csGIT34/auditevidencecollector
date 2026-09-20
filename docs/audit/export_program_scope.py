@@ -18,7 +18,7 @@ def main():
     outline['families']=[{k:f[k] for k in ['id','title','responsibility','review','candidate_controls']} for f in data['families']]
     outline['proposed_check_count']=len(data['checks'])
     expected=json.dumps(outline,indent=2)+'\n'
-    target=root/'azure_at_rest/program_scope.json'
+    target=root/'cloud_governance/program_scope.json'
     if args.check:
         if target.read_text()!=expected:
             raise SystemExit('Packaged applicability outline is stale; review and regenerate it.')

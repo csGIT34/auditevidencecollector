@@ -3,9 +3,9 @@
 Evidence is collected per resource. Auditors ask per control. This register inverts the index: for each NIST SP 800-53 control it lists every saved observation that references it, what failed, and what is still missing. It re-evaluates nothing — it reads a saved assessment, so a register regenerated from the same archived run is identical.
 
 ```sh
-python -m azure_at_rest control-register --input report.json --report register.md --json register.json
-python -m azure_at_rest control-register --input report.json --purview purview.json --report register.md
-python -m azure_at_rest control-register --template purview.json
+python -m cloud_governance control-register --input report.json --report register.md --json register.json
+python -m cloud_governance control-register --input report.json --tailoring tailoring.json --report register.md
+python -m cloud_governance control-register --template tailoring.json
 ```
 
 `--input` is the saved assessment JSON that `collect` or `assess` writes. `--operational` optionally contributes attributed operating records. No path overwrites its input, and no output replaces an existing file.
@@ -20,20 +20,20 @@ python -m azure_at_rest control-register --template purview.json
 | `INCOMPLETE_EVIDENCE` | Mapped observations exist but include UNKNOWN, ERROR, UNSUPPORTED or recorded gaps. |
 | `AUTOMATED_EVIDENCE_COLLECTED` | Every mapped observation met its criterion at collection time. Still not a control determination. |
 | `ATTRIBUTED_EVIDENCE_ONLY` | Only human or provider records reference this control; no automated observation. |
-| `INHERITED_CLAIMED` | An approved purview declares inheritance. This tool does not evaluate the provider assurance report, its scope, period or exceptions. |
-| `EXCLUDED` | An approved purview excludes the control, with a recorded rationale and approver. |
+| `INHERITED_CLAIMED` | An approved tailoring declares inheritance. This tool does not evaluate the provider assurance report, its scope, period or exceptions. |
+| `EXCLUDED` | An approved tailoring excludes the control, with a recorded rationale and approver. |
 | `NOT_ASSESSED` | Nothing in this run references the control. |
 
-## Declaring purview
+## Declaring tailoring
 
-Without a purview file every control reads `UNDECLARED`, nothing is excluded or inherited, and coverage cannot be judged complete. The register says so on its first page.
+Without a tailoring file every control reads `UNDECLARED`, nothing is excluded or inherited, and coverage cannot be judged complete. The register says so on its first page.
 
 `--template` writes a draft covering the controls your deployed resource types implicate, so the declaration starts from a file rather than a blank page. Review every row, then set `status` to `approved`.
 
 ```json
 {
   "schema_version": "1.0",
-  "id": "your-approved-purview-id",
+  "id": "your-approved-tailoring-id",
   "version": "1",
   "status": "approved",
   "controls": {
@@ -48,9 +48,9 @@ Without a purview file every control reads `UNDECLARED`, nothing is excluded or 
 }
 ```
 
-Rules the validator enforces: an inherited or excluded control requires a written rationale; an excluded control also requires a named approver; an unknown control label is rejected. **A draft purview never excludes or inherits anything** — those controls stay `NOT_ASSESSED` and the register records that the disposition was not honored. `approved` records an operator assertion; the application does not independently authenticate approval.
+Rules the validator enforces: an inherited or excluded control requires a written rationale; an excluded control also requires a named approver; an unknown control label is rejected. **A draft tailoring never excludes or inherits anything** — those controls stay `NOT_ASSESSED` and the register records that the disposition was not honored. `approved` records an operator assertion; the application does not independently authenticate approval.
 
-[examples/control-purview.json](../examples/control-purview.json) is a worked synthetic example, not organizational policy.
+[examples/control-tailoring.json](../examples/control-tailoring.json) is a worked synthetic example, not organizational policy.
 
 ## Scope: controls your resources implicate
 

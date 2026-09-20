@@ -1,7 +1,7 @@
 import json
 import unittest
-from azure_at_rest.controls import CHECKS, project
-from azure_at_rest.key_reference import SHAPES, project as project_key, valid
+from cloud_governance.controls import CHECKS, project
+from cloud_governance.key_reference import SHAPES, project as project_key, valid
 
 VAULT = 'https://example-vault.vault.azure.net'
 VERSIONED = VAULT + '/keys/audit-key/8f1d2c3b4a5e6f70819a2b3c4d5e6f70'

@@ -12,13 +12,13 @@ def main():
     target=args.output.resolve()
     if target.exists() or target==ROOT or ROOT in target.parents:parser.error('Use a new directory outside the checkout')
     os.umask(0o077)
-    from azure_at_rest.archive import load_run,publish_pdf,encode,digest
-    from azure_at_rest.collector import FixtureTransport
-    from azure_at_rest.graph import FixtureGraphTransport
-    from azure_at_rest.controls import decode_policy
-    from azure_at_rest.report import markdown
-    from azure_at_rest.storage import FileStore
-    from azure_at_rest.workflow import collect_run
+    from cloud_governance.archive import load_run,publish_pdf,encode,digest
+    from cloud_governance.collector import FixtureTransport
+    from cloud_governance.graph import FixtureGraphTransport
+    from cloud_governance.controls import decode_policy
+    from cloud_governance.report import markdown
+    from cloud_governance.storage import FileStore
+    from cloud_governance.workflow import collect_run
     source=ROOT/'examples/control-suite'
     arm=json.loads((source/'arm-fixture.json').read_text())['responses']
     graph=json.loads((source/'graph-fixture.json').read_text())['responses']

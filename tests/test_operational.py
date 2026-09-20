@@ -7,11 +7,11 @@ import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
 from pypdf import PdfReader
-from azure_at_rest.operational import publish,load,publish_pdf,MAX_BYTES
-from azure_at_rest.archive import save_run,encode
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.cli import main
-from azure_at_rest.storage import FileStore
+from cloud_governance.operational import publish,load,publish_pdf,MAX_BYTES
+from cloud_governance.archive import save_run,encode
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.cli import main
+from cloud_governance.storage import FileStore
 from tests.test_archive import MemoryStore
 from tests.test_controls import fixture,collect
 
@@ -34,7 +34,7 @@ class OperationalEvidenceTests(unittest.TestCase):
 
     def test_source_preserved_assertion_kept_separate_and_historical_load_frozen(self):
         originals=dict(self.store.objects);manifest=self.publish()
-        with patch('azure_at_rest.operational.review',side_effect=AssertionError('recomputed')):
+        with patch('cloud_governance.operational.review',side_effect=AssertionError('recomputed')):
             saved=load(self.store,manifest['evidence_id'])
         row=saved['report']['records'][0]
         self.assertEqual('CURRENT',row['freshness']);self.assertEqual('SATISFIED',row['assertion'])

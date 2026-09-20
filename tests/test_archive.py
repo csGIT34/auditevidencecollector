@@ -7,8 +7,8 @@ import unittest
 from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import patch
 
-from azure_at_rest.archive import encode, save_run, load_run, list_runs, snapshot_digest
-from azure_at_rest.storage import FileStore
+from cloud_governance.archive import encode, save_run, load_run, list_runs, snapshot_digest
+from cloud_governance.storage import FileStore
 from tests.helpers import Scenario, resource
 
 
@@ -75,7 +75,7 @@ class FileStoreTests(unittest.TestCase):
     def test_failed_publication_does_not_leave_visible_object(self):
         with tempfile.TemporaryDirectory() as tmp:
             store=FileStore(tmp)
-            with patch('azure_at_rest.storage.os.link',side_effect=OSError('disk full')):
+            with patch('cloud_governance.storage.os.link',side_effect=OSError('disk full')):
                 with self.assertRaises(OSError):store.put_new('runs/r/object',b'payload')
             self.assertEqual([],store.keys('runs/'))
             self.assertFalse(list(Path(tmp).rglob('.pending-*')))
@@ -97,9 +97,9 @@ class ArchiveTests(unittest.TestCase):
 
     def test_historical_load_never_reassesses_or_uses_current_catalog(self):
         snapshot,report=evidence();store=MemoryStore();m=save_run(store,snapshot,report)
-        with (patch('azure_at_rest.assessment.assess',side_effect=AssertionError('reassessment forbidden')),
-             patch('azure_at_rest.archive.validate_snapshot',side_effect=AssertionError('current schema/rules forbidden')),
-             patch('azure_at_rest.archive.make_context',side_effect=AssertionError('current context forbidden'))):
+        with (patch('cloud_governance.assessment.assess',side_effect=AssertionError('reassessment forbidden')),
+             patch('cloud_governance.archive.validate_snapshot',side_effect=AssertionError('current schema/rules forbidden')),
+             patch('cloud_governance.archive.make_context',side_effect=AssertionError('current context forbidden'))):
             self.assertEqual(report,load_run(store,m['run_id'])['assessment'])
 
     def test_each_partial_run_stage_is_unreportable_and_listed_failed(self):
@@ -151,7 +151,7 @@ class ArchiveTests(unittest.TestCase):
     def test_id_collision_cannot_overwrite_existing_run(self):
         from uuid import UUID
         s,r=evidence();store=MemoryStore()
-        with patch('azure_at_rest.archive.uuid4',return_value=UUID(int=1)):
+        with patch('cloud_governance.archive.uuid4',return_value=UUID(int=1)):
             save_run(store,s,r);original=dict(store.objects)
             with self.assertRaises(FileExistsError):save_run(store,s,r)
         self.assertEqual(original,store.objects)

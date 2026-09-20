@@ -1,10 +1,10 @@
 import copy
 import json
 import unittest
-from azure_at_rest.compute_instances import collect
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.compute_instances import collect
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS
+from cloud_governance.workflow import assess_snapshot
 from tests.helpers import resource
 from tests.test_controls import fixture,collect as collect_arm
 
@@ -48,7 +48,7 @@ class ComputeInstanceTests(unittest.TestCase):
             self.assertEqual('FAIL',next(row for row in results if row['check_id']==self.check.id)['result'])
 
     def test_flexible_membership_uses_declared_parent_and_discovers_vm_dependencies(self):
-        from azure_at_rest.collector import INVENTORY_API
+        from cloud_governance.collector import INVENTORY_API
         from tests.helpers import SUB
         responses,policy=fixture()
         vm_url=next(u for u,v in responses.items() if isinstance(v,dict) and v.get('type')=='microsoft.compute/virtualmachines')
@@ -68,15 +68,15 @@ class ComputeInstanceTests(unittest.TestCase):
         report=assess_snapshot(snapshot,criteria=policy)
         decision=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='VMSS-instance-members')
         self.assertEqual('PASS',decision['result']);self.assertEqual(listing.split('?')[0].removeprefix('https://management.azure.com'),decision['request_path'])
-        from azure_at_rest.archive import save_run,load_run
+        from cloud_governance.archive import save_run,load_run
         from tests.test_archive import MemoryStore
         store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];self.assertEqual(snapshot,load_run(store,run)['snapshot'])
-        from azure_at_rest.guest_evidence import population
+        from cloud_governance.guest_evidence import population
         expected,complete=population(load_run(store,run),[parent['id'].lower()])
         self.assertEqual({vm['id'].lower():'VMSS'},expected);self.assertTrue(complete)
 
     def test_flexible_listing_scope_denials_and_missing_association_are_explicit(self):
-        from azure_at_rest.compute_instances import collect_members
+        from cloud_governance.compute_instances import collect_members
         from tests.helpers import SUB
         check=CHECKS['VMSS-instance-members'];parent={'properties':{'orchestrationMode':'Flexible'}}
         vm=resource('Microsoft.Compute/virtualMachines','member');vm['properties']['virtualMachineScaleSet']={'id':self.rid}
@@ -92,7 +92,7 @@ class ComputeInstanceTests(unittest.TestCase):
         self.assertEqual('partial',result['state']);self.assertEqual([],result['value']['members'])
 
     def test_uniform_membership_reuses_model_population_without_additional_requests(self):
-        from azure_at_rest.compute_instances import collect_members
+        from cloud_governance.compute_instances import collect_members
         class NoRequests:
             def get(self,url):raise AssertionError('No duplicate instance read')
         models=self.read({'value':[self.row]})

@@ -15,7 +15,7 @@ def payload():
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--check',action='store_true');args=parser.parse_args()
-    target=ROOT/'azure_at_rest/control_objectives.json'
+    target=ROOT/'cloud_governance/control_objectives.json'
     data=json.dumps(payload(),sort_keys=True,indent=2)+'\n'
     if args.check:
         if not target.exists() or target.read_text()!=data:raise SystemExit('Control objective package differs from research catalog')

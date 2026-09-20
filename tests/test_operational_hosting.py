@@ -3,13 +3,13 @@ import json
 import unittest
 from contextlib import contextmanager
 from unittest.mock import Mock, patch
-from azure_at_rest.archive import encode, save_run
-from azure_at_rest.hosting import execute
+from cloud_governance.archive import encode, save_run
+from cloud_governance.hosting import execute
 from tests.test_archive import MemoryStore
 from tests.test_controls import fixture, collect
 from tests.test_operational import document
 from tests.test_hosting import environment
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.workflow import assess_snapshot
 
 
 class OperationalHostingTests(unittest.TestCase):

@@ -11,8 +11,8 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from azure_at_rest.collector import NoRedirect
-from azure_at_rest.archive import identity
+from cloud_governance.collector import NoRedirect
+from cloud_governance.archive import identity
 
 
 def main():

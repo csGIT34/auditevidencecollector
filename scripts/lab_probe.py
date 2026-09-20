@@ -3,9 +3,9 @@ from datetime import datetime, timezone
 import json
 import os
 from uuid import uuid4
-from azure_at_rest.azure_adapters import verify_tenant
-from azure_at_rest.hosting import Settings, resources
-from azure_at_rest.workflow import Deadline
+from cloud_governance.azure_adapters import verify_tenant
+from cloud_governance.hosting import Settings, resources
+from cloud_governance.workflow import Deadline
 
 
 def probe(env, factory=resources):

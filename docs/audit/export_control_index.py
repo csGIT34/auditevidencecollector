@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def payload():
     raw = (ROOT / 'docs/audit/nist-control-index.json').read_bytes()
     index = json.loads(raw)
-    scope = json.loads((ROOT / 'azure_at_rest/program_scope.json').read_text())
+    scope = json.loads((ROOT / 'cloud_governance/program_scope.json').read_text())
     catalog = json.loads((ROOT / 'docs/audit/catalog.json').read_text())
     family = {control: entry['id'] for entry in scope['families'] for control in entry['candidate_controls']}
     candidates = set(family)
@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
-    target = ROOT / 'azure_at_rest/control_index.json'
+    target = ROOT / 'cloud_governance/control_index.json'
     data = json.dumps(payload(), sort_keys=True, indent=2) + '\n'
     if args.check:
         if not target.exists() or target.read_text() != data:

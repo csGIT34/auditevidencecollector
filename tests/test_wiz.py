@@ -8,11 +8,11 @@ import unittest
 from contextlib import redirect_stdout, redirect_stderr
 from unittest.mock import patch
 
-from azure_at_rest.archive import encode, load_run, save_run
-from azure_at_rest.cli import main
-from azure_at_rest.reconciliation import load_comparison, publish_comparison, reconcile
-from azure_at_rest.storage import FileStore
-from azure_at_rest.wiz import MAX_INPUT_BYTES, decode, import_export, load_export, validate_export
+from cloud_governance.archive import encode, load_run, save_run
+from cloud_governance.cli import main
+from cloud_governance.reconciliation import load_comparison, publish_comparison, reconcile
+from cloud_governance.storage import FileStore
+from cloud_governance.wiz import MAX_INPUT_BYTES, decode, import_export, load_export, validate_export
 from tests.test_archive import evidence, MemoryStore
 from tests.test_azure_adapters import SUB, TENANT
 
@@ -50,7 +50,7 @@ class WizContractTests(unittest.TestCase):
         self.export = document(self.snapshot)
 
     def test_committed_example_satisfies_contract_and_documented_enums_match(self):
-        from azure_at_rest.wiz import SEVERITIES, STATUSES
+        from cloud_governance.wiz import SEVERITIES, STATUSES
         root = Path(__file__).resolve().parents[1]
         example = decode((root/'examples/wiz/normalized-export.json').read_bytes())
         validate_export(example)
@@ -134,7 +134,7 @@ class WizReconciliationTests(unittest.TestCase):
     def test_open_wiz_finding_does_not_replace_saved_azure_pass(self):
         store = MemoryStore();run, imported, _ = setup(store)
         original = dict(store.objects)
-        with patch('azure_at_rest.assessment.assess', side_effect=AssertionError('no reassessment')), patch('azure_at_rest.collector.Collector.collect', side_effect=AssertionError('no recollection')):
+        with patch('cloud_governance.assessment.assess', side_effect=AssertionError('no reassessment')), patch('cloud_governance.collector.Collector.collect', side_effect=AssertionError('no recollection')):
             result = compare(store, run, imported)
         self.assertEqual({'BOTH':1, 'AZURE_ONLY':0, 'WIZ_ONLY':0}, result['presence_counts'])
         self.assertEqual('PASS', result['resources'][0]['azure']['result'])
@@ -162,7 +162,7 @@ class WizReconciliationTests(unittest.TestCase):
         self.assertEqual('REVIEW_REQUIRED', result['state'])
         self.assertTrue({'wiz_inventory_incomplete', 'wiz_findings_incomplete'} <= set(result['gaps']))
         self.assertEqual([], result['resources'][0]['wiz_findings'])
-        from azure_at_rest.reconciliation import markdown
+        from cloud_governance.reconciliation import markdown
         self.assertIn('None supplied; no PASS implied', markdown(result))
 
     def test_freshness_and_time_skew_include_findings(self):
@@ -204,7 +204,7 @@ class WizReconciliationTests(unittest.TestCase):
         self.assertIn(a['source_run_manifest_sha256'], text)
 
     def test_common_blob_store_supports_import_comparison_and_verified_replay(self):
-        from azure_at_rest.azure_adapters import BlobStore
+        from cloud_governance.azure_adapters import BlobStore
         from tests.test_azure_adapters import FakeContainer, URL
         store = BlobStore(URL, 'evidence', None, 'fixture', client=FakeContainer())
         run, imported, exported = setup(store)
@@ -215,7 +215,7 @@ class WizReconciliationTests(unittest.TestCase):
     def test_saved_comparison_verifies_both_sources_and_rejects_tampering(self):
         store = MemoryStore();run, imported, exported = setup(store)
         manifest = publish_comparison(store, run['run_id'], imported['wiz_import_id'], as_of=exported['source']['exported_at'], max_age_hours=24, max_skew_hours=1)
-        with patch('azure_at_rest.reconciliation.reconcile', side_effect=AssertionError('no recomputation')):
+        with patch('cloud_governance.reconciliation.reconcile', side_effect=AssertionError('no recomputation')):
             self.assertEqual('REVIEW_REQUIRED', load_comparison(store, manifest['comparison_id'])['report']['state'])
         original = dict(store.objects)
         for key in (manifest['objects']['comparison.md']['key'], imported['object']['key'], run['objects']['snapshot']['key']):

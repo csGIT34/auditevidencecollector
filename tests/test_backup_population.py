@@ -1,9 +1,9 @@
 import copy
 import json
 import unittest
-from azure_at_rest.backup_population import collect,valid_population
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS
+from cloud_governance.backup_population import collect,valid_population
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS
 from tests.helpers import resource
 
 SOURCE=resource('Microsoft.Compute/disks','protected')['id']
@@ -47,7 +47,7 @@ class BackupPopulationTests(unittest.TestCase):
 
     def test_missing_or_unhealthy_protected_source_fails_expected_population(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.workflow import assess_snapshot
+        from cloud_governance.workflow import assess_snapshot
         responses,policy=fixture()
         for check,vault,raw in self.cases():
             target_url=next(url for url in responses if url.endswith(check.suffix+'?api-version='+check.api))

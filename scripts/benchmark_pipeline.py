@@ -15,8 +15,8 @@ SUB = '11111111-1111-1111-1111-111111111111'
 
 
 def fixture(count):
-    from azure_at_rest.catalog import RULES
-    from azure_at_rest.collector import endpoint, INVENTORY_API
+    from cloud_governance.catalog import RULES
+    from cloud_governance.collector import endpoint, INVENTORY_API
     kinds = ('Microsoft.Storage/storageAccounts', 'Microsoft.Kusto/clusters',
              'Microsoft.Web/sites', 'Microsoft.Network/networkSecurityGroups', 'Microsoft.Example/widgets')
     rows, responses = [], {}
@@ -45,11 +45,11 @@ def fixture(count):
 
 
 def worker(count, output):
-    from azure_at_rest import __version__
-    from azure_at_rest.archive import digest, load_run, publish_pdf
-    from azure_at_rest.collector import FixtureTransport
-    from azure_at_rest.storage import FileStore
-    from azure_at_rest.workflow import collect_run
+    from cloud_governance import __version__
+    from cloud_governance.archive import digest, load_run, publish_pdf
+    from cloud_governance.collector import FixtureTransport
+    from cloud_governance.storage import FileStore
+    from cloud_governance.workflow import collect_run
     from pypdf import PdfReader
     from io import BytesIO
     from unittest.mock import patch

@@ -6,11 +6,11 @@ import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
 
-from azure_at_rest.archive import save_run, load_run
-from azure_at_rest.cli import main
-from azure_at_rest.run_comparison import compare, publish, load
-from azure_at_rest.storage import FileStore
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.archive import save_run, load_run
+from cloud_governance.cli import main
+from cloud_governance.run_comparison import compare, publish, load
+from cloud_governance.storage import FileStore
+from cloud_governance.workflow import assess_snapshot
 from tests.test_archive import MemoryStore
 from tests.test_controls import fixture, collect
 
@@ -65,7 +65,7 @@ class SavedRunComparisonTests(unittest.TestCase):
     def test_publication_preserves_sources_and_historical_load_does_not_recompute(self):
         originals = dict(self.store.objects)
         result = publish(self.store, self.before, self.before)
-        with patch('azure_at_rest.run_comparison.compare', side_effect=AssertionError('recomputed')):
+        with patch('cloud_governance.run_comparison.compare', side_effect=AssertionError('recomputed')):
             saved = load(self.store, result['comparison_id'])
         self.assertEqual(saved['report']['counts'].keys(), {'UNCHANGED'})
         for key, value in originals.items():

@@ -1,14 +1,14 @@
 import copy
 import json
 import unittest
-from azure_at_rest.log_tables import collect,project,valid,valid_criterion,meets
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS,validate_policy
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.log_tables import collect,project,valid,valid_criterion,meets
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS,validate_policy
+from cloud_governance.workflow import assess_snapshot
 from tests.helpers import resource
 from tests.test_controls import fixture,collect as collect_arm
 from tests.test_archive import MemoryStore
-from azure_at_rest.archive import save_run,load_run,publish_pdf
+from cloud_governance.archive import save_run,load_run,publish_pdf
 
 
 def table(rid):

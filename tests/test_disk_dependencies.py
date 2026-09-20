@@ -1,10 +1,10 @@
 import copy
 import json
 import unittest
-from azure_at_rest.catalog import RULES
-from azure_at_rest.collector import Collector,FixtureTransport,INVENTORY_API,endpoint
-from azure_at_rest.snapshot import validate_snapshot
-from azure_at_rest.assessment import assess
+from cloud_governance.catalog import RULES
+from cloud_governance.collector import Collector,FixtureTransport,INVENTORY_API,endpoint
+from cloud_governance.snapshot import validate_snapshot
+from cloud_governance.assessment import assess
 from tests.helpers import SUB,SUB2,Scenario,resource
 
 

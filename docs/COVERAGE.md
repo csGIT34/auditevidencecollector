@@ -6,7 +6,7 @@ Rule version: `2026.09.19.1`. Sources reviewed: 2026-09-19. Exact registered typ
 
 For the authoritative 23-service program boundary and current gaps, see [PROGRAM_SCOPE.md](PROGRAM_SCOPE.md). The table below is the existing handler catalog, not a complete program control matrix; extra dependency handlers are intentionally retained. Private endpoints remain explicitly in program scope even though this particular encryption mechanism is N/A.
 
-Any type not in this table remains UNSUPPORTED. Child collections are limited to those declared here. Use `python3 -m azure_at_rest catalog` for machine-readable definitions.
+Any type not in this table remains UNSUPPORTED. Child collections are limited to those declared here. Use `python3 -m cloud_governance catalog` for machine-readable definitions.
 
 | ARM resource type | Assessment | API version | Scope and source | Extra child enumeration |
 | --- | --- | --- | --- | --- |

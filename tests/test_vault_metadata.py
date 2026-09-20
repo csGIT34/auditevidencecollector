@@ -2,11 +2,11 @@ import copy
 import json
 import unittest
 from unittest.mock import Mock,patch
-from azure_at_rest.vault_metadata import API,collect,assess,valid_url,valid_objects,Credential,VaultTransport
-from azure_at_rest.collector import CollectionError
-from azure_at_rest.controls import CHECKS
-from azure_at_rest.archive import save_run,load_run,publish_pdf
-from azure_at_rest.workflow import assess_snapshot,Deadline
+from cloud_governance.vault_metadata import API,collect,assess,valid_url,valid_objects,Credential,VaultTransport
+from cloud_governance.collector import CollectionError
+from cloud_governance.controls import CHECKS
+from cloud_governance.archive import save_run,load_run,publish_pdf
+from cloud_governance.workflow import assess_snapshot,Deadline
 from tests.test_controls import fixture,collect as run_collection
 from tests.test_archive import MemoryStore
 
@@ -77,7 +77,7 @@ class VaultMetadataTests(unittest.TestCase):
         row=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='KV-secrets-lifecycle')
         self.assertEqual('FAIL',row['result']);self.assertTrue(row['lifecycle_evaluation']['coverage_incomplete'])
         store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];before=dict(store.objects)
-        with patch('azure_at_rest.vault_metadata.assess',side_effect=AssertionError('No reassessment')):
+        with patch('cloud_governance.vault_metadata.assess',side_effect=AssertionError('No reassessment')):
             self.assertEqual(report,load_run(store,run)['assessment']);publish_pdf(store,run)
         for key,data in before.items():self.assertEqual(data,store.objects[key])
 
@@ -90,11 +90,11 @@ class VaultMetadataTests(unittest.TestCase):
         credential.get_token.assert_not_called()
 
     def test_host_factory_creates_only_opted_in_vault_transport_and_closes_identity(self):
-        from azure_at_rest.hosting import Settings,resources,ConfigurationError
+        from cloud_governance.hosting import Settings,resources,ConfigurationError
         from tests.test_hosting import environment
         for flag in ('false','true'):
             settings=Settings.parse({**environment(),'CG_VAULT_METADATA_ENABLED':flag});credential=Mock();store=Mock()
-            with patch('azure_at_rest.hosting.token_credential',return_value=credential),patch('azure_at_rest.hosting.BlobStore',return_value=store):
+            with patch('cloud_governance.hosting.token_credential',return_value=credential),patch('cloud_governance.hosting.BlobStore',return_value=store):
                 with resources(settings,Deadline(30),'collect') as (_,arm):
                     self.assertEqual(flag=='true',hasattr(arm,'vault_transport_factory'))
                     if flag=='true':self.assertIsInstance(arm.vault_transport_factory(BASE),VaultTransport)

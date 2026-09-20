@@ -10,9 +10,9 @@ import unittest
 from unittest.mock import Mock, patch
 import zipfile
 
-from azure_at_rest.archive import load_run, publish_pdf, save_run
-from azure_at_rest.collector import FixtureTransport, SUBSCRIPTIONS_API, endpoint
-from azure_at_rest.hosting import ConfigurationError, ExecutionError, LOCKS, Settings, execute, resources, schedule
+from cloud_governance.archive import load_run, publish_pdf, save_run
+from cloud_governance.collector import FixtureTransport, SUBSCRIPTIONS_API, endpoint
+from cloud_governance.hosting import ConfigurationError, ExecutionError, LOCKS, Settings, execute, resources, schedule
 from tests.test_archive import evidence, MemoryStore
 from tests.test_azure_adapters import CLIENT, TENANT, SUB, URL, FakeContainer, HAS_AZURE
 
@@ -69,10 +69,10 @@ class ConfigurationTests(unittest.TestCase):
             self.assertIn('started',''.join(logs.output))
 
     def test_resources_always_close_credential_when_blob_close_fails(self):
-        from azure_at_rest.workflow import Deadline
+        from cloud_governance.workflow import Deadline
         credential, store = Mock(), Mock()
         store.close.side_effect = RuntimeError('synthetic cleanup failure')
-        with patch('azure_at_rest.hosting.token_credential', return_value=credential), patch('azure_at_rest.hosting.BlobStore', return_value=store):
+        with patch('cloud_governance.hosting.token_credential', return_value=credential), patch('cloud_governance.hosting.BlobStore', return_value=store):
             with self.assertRaisesRegex(RuntimeError, 'synthetic cleanup failure'):
                 with resources(Settings.parse(environment()), Deadline(30), 'report'):
                     pass
@@ -80,9 +80,9 @@ class ConfigurationTests(unittest.TestCase):
         credential.close.assert_called_once_with()
 
     def test_resources_close_credential_when_store_construction_fails(self):
-        from azure_at_rest.workflow import Deadline
+        from cloud_governance.workflow import Deadline
         credential = Mock()
-        with patch('azure_at_rest.hosting.token_credential', return_value=credential), patch('azure_at_rest.hosting.BlobStore', side_effect=ValueError('synthetic')):
+        with patch('cloud_governance.hosting.token_credential', return_value=credential), patch('cloud_governance.hosting.BlobStore', side_effect=ValueError('synthetic')):
             with self.assertRaises(ValueError):
                 with resources(Settings.parse(environment()), Deadline(30), 'report'):
                     self.fail('must not enter')
@@ -108,7 +108,7 @@ class HostingTests(unittest.TestCase):
         return factory
 
     def test_hosted_fixture_through_blob_adapter_preserves_failures_and_exact_history(self):
-        from azure_at_rest.azure_adapters import BlobStore
+        from cloud_governance.azure_adapters import BlobStore
         from pypdf import PdfReader
         client=FakeContainer();store=BlobStore(URL,'evidence',None,'project',client=client)
         factory=self.fixture_factory(store)
@@ -119,7 +119,7 @@ class HostingTests(unittest.TestCase):
             self.assertNotEqual(first['run_id'],second['run_id'])
             self.assertEqual('complete',first['state']);self.assertEqual('FAILURES_FOUND',first['assessment_conclusion'])
             self.assertEqual(3,first['counts']['FAIL'])
-            with patch('azure_at_rest.collector.Collector.collect',side_effect=AssertionError('No recollect')),patch('azure_at_rest.assessment.assess',side_effect=AssertionError('No reassess')),patch('azure_at_rest.archive.make_context',side_effect=AssertionError('No fresh context')):
+            with patch('cloud_governance.collector.Collector.collect',side_effect=AssertionError('No recollect')),patch('cloud_governance.assessment.assess',side_effect=AssertionError('No reassess')),patch('cloud_governance.archive.make_context',side_effect=AssertionError('No fresh context')):
                 a=execute('report',run_id=first['run_id'],env=environment(),factory=factory)
                 b=execute('report',run_id=first['run_id'],env=environment(),factory=factory)
         self.assertNotEqual(a['report_id'],b['report_id'])
@@ -195,7 +195,7 @@ class HostingTests(unittest.TestCase):
             self.assertIn('safe-store',''.join(p.extract_text() for p in reader.pages))
 
     def test_budget_expiry_after_render_leaves_failure_without_completed_report(self):
-        from azure_at_rest.workflow import DeadlineExceeded
+        from cloud_governance.workflow import DeadlineExceeded
         snapshot,report=evidence();store=MemoryStore();run=save_run(store,snapshot,report);old=dict(store.objects)
         class Budget:
             expired=False
@@ -203,7 +203,7 @@ class HostingTests(unittest.TestCase):
                 if self.expired:raise DeadlineExceeded('execution_budget_exceeded')
         budget=Budget()
         def render(*args):budget.expired=True;return b'%PDF-1.4\n%%EOF'
-        with patch('azure_at_rest.pdf_report.render_pdf',side_effect=render),self.assertRaises(RuntimeError):
+        with patch('cloud_governance.pdf_report.render_pdf',side_effect=render),self.assertRaises(RuntimeError):
             publish_pdf(store,run['run_id'],deadline=budget)
         self.assertEqual(old,{k:store.objects[k] for k in old})
         reports=[k for k in store.objects if k.startswith('reports/')]
@@ -215,12 +215,12 @@ class HostingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path=Path(tmp)/'function.zip';package(path)
             names=zipfile.ZipFile(path).namelist()
-            self.assertTrue({'function_app.py','host.json','requirements.txt','constraints.txt','azure_at_rest/program_scope.json'} <= set(names))
+            self.assertTrue({'function_app.py','host.json','requirements.txt','constraints.txt','cloud_governance/program_scope.json'} <= set(names))
             self.assertFalse(any(n.startswith(('tests/','examples/','evidence/','output/','.git','local.settings')) for n in names))
             with self.assertRaises(FileExistsError):package(path)
 
     def test_hosted_all_service_configuration_and_graph_pipeline(self):
-        from azure_at_rest.graph import FixtureGraphTransport
+        from cloud_governance.graph import FixtureGraphTransport
         from tests.test_graph import TENANT as GRAPH_TENANT
         from tests.helpers import SUB as GRAPH_SUB
         source=ROOT/'examples/control-suite'
@@ -237,7 +237,7 @@ class HostingTests(unittest.TestCase):
              'CG_ASSESSMENT_CRITERIA_JSON':(source/'criteria.json').read_text()}
         outcome=execute('collect',env=env,factory=factory)
         self.assertEqual('complete',outcome['state'])
-        from azure_at_rest.controls import CHECKS
+        from cloud_governance.controls import CHECKS
         self.assertEqual({'PASS':len(CHECKS)-1,'FAIL':1,'UNKNOWN':0,'ERROR':0},outcome['configuration_summary']['counts'])
         saved=load_run(store,outcome['run_id'])
         self.assertTrue(saved['snapshot']['identity_evidence']['verified_tenant'])

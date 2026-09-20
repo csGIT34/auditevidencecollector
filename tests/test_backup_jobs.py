@@ -2,9 +2,9 @@ import copy
 import json
 import unittest
 from unittest.mock import patch
-from azure_at_rest.backup_jobs import collect,assess,valid_criterion
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS,validate_policy
+from cloud_governance.backup_jobs import collect,assess,valid_criterion
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS,validate_policy
 from tests.helpers import resource
 
 SOURCE=resource('Microsoft.Compute/disks','protected')['id'].lower()
@@ -69,18 +69,18 @@ class BackupJobTests(unittest.TestCase):
 
     def test_full_pipeline_uses_frozen_assessment_time_and_policy(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.workflow import assess_snapshot
-        from azure_at_rest.archive import save_run,load_run
+        from cloud_governance.workflow import assess_snapshot
+        from cloud_governance.archive import save_run,load_run
         from tests.test_archive import MemoryStore
         responses,policy=fixture();policy['checks']['BV-backup-jobs']={'operator':'recent_jobs','value':criterion()}
         policy['checks']['BV-recovery-jobs']={'operator':'recent_jobs','value':criterion('vault')}
         validate_policy(policy)
         snapshot=collect_arm(responses)
-        with patch('azure_at_rest.controls.now',return_value=AS_OF):report=assess_snapshot(snapshot,criteria=policy)
+        with patch('cloud_governance.controls.now',return_value=AS_OF):report=assess_snapshot(snapshot,criteria=policy)
         self.assertTrue(all(r['result']=='PASS' for r in report['configuration_assessment']['results']))
         store=MemoryStore();manifest=save_run(store,snapshot,report)
         # Replay does not reinterpret old observations using today's age.
-        with patch('azure_at_rest.backup_jobs.assess',side_effect=AssertionError('must not reassess')):
+        with patch('cloud_governance.backup_jobs.assess',side_effect=AssertionError('must not reassess')):
             load_run(store,manifest['run_id'])
 
 
@@ -95,7 +95,7 @@ class BackupJobTests(unittest.TestCase):
 
 
     def test_known_failure_does_not_hide_unfinished_required_restore(self):
-        from azure_at_rest.controls import overall_summary
+        from cloud_governance.controls import overall_summary
         c,rid,raw=next(self.cases());backup=normalized(raw,c);backup['status']='Failed'
         restore={**backup,'job_id':backup['job_id']+'-restore','operation':'Restore','status':'InProgress','end_time':None}
         result,reason,details=assess([backup,restore],{**criterion(),'operation':'BackupAndRestore'},AS_OF)

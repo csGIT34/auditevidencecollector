@@ -2,11 +2,11 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from azure_at_rest.control_register import (CONTROLS, SERVICE_APPLICABLE, STATUSES, build, markdown,
-                                            template, validate_purview)
-from azure_at_rest.cli import main
+from cloud_governance.control_register import (CONTROLS, SERVICE_APPLICABLE, STATUSES, build, markdown,
+                                            template, validate_tailoring)
+from cloud_governance.cli import main
 from tests.test_controls import collect, fixture
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.workflow import assess_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,8 +16,8 @@ def report():
     return assess_snapshot(collect(responses), criteria=policy)
 
 
-def purview(disposition='IN_SCOPE', status='approved', control='AC-6', **extra):
-    return {'schema_version': '1.0', 'id': 'example-purview', 'version': '1', 'status': status,
+def tailoring(disposition='IN_SCOPE', status='approved', control='AC-6', **extra):
+    return {'schema_version': '1.0', 'id': 'example-tailoring', 'version': '1', 'status': status,
             'controls': {control: {'disposition': disposition, 'owner': 'Platform security', **extra}}}
 
 
@@ -30,7 +30,7 @@ class ControlRegisterTests(unittest.TestCase):
         register = build(report())
         self.assertEqual(189, register['summary']['controls'])
         encryption = row(register, 'SC-28(1)')
-        self.assertTrue(any(item['kind'] == 'encryption_rule' for item in encryption['evidence']))
+        self.assertTrue(any(item['kind'] == 'resource_rule' for item in encryption['evidence']))
         access = row(register, 'AC-6')
         self.assertTrue(all(item['kind'] == 'configuration_predicate' for item in access['evidence']))
         self.assertEqual(access['counts']['PASS'], access['evidence_count'])
@@ -62,14 +62,14 @@ class ControlRegisterTests(unittest.TestCase):
         self.assertEqual('NOT_ASSESSED', physical['status'])
         self.assertEqual(0, physical['evidence_count'])
         self.assertTrue(any('No automated observation' in gap for gap in physical['gaps']))
-        self.assertEqual('UNDECLARED', physical['purview'])
+        self.assertEqual('UNDECLARED', physical['tailoring'])
 
     def test_approved_exclusion_is_honored_and_a_draft_exclusion_is_not(self):
         source = report()
-        approved = build(source, purview('EXCLUDED', 'approved', 'PE-3', rationale='Provider datacenter control',
+        approved = build(source, tailoring('EXCLUDED', 'approved', 'PE-3', rationale='Provider datacenter control',
                                          approver='Security officer'))
         self.assertEqual('EXCLUDED', row(approved, 'PE-3')['status'])
-        draft = build(source, purview('EXCLUDED', 'draft', 'PE-3', rationale='Provider datacenter control',
+        draft = build(source, tailoring('EXCLUDED', 'draft', 'PE-3', rationale='Provider datacenter control',
                                       approver='Security officer'))
         entry = row(draft, 'PE-3')
         self.assertEqual('NOT_ASSESSED', entry['status'])
@@ -77,25 +77,25 @@ class ControlRegisterTests(unittest.TestCase):
 
     def test_claimed_inheritance_records_a_gap_until_assurance_is_referenced(self):
         source = report()
-        bare = build(source, purview('INHERITED', 'approved', 'PE-2', rationale='Azure datacenter'))
+        bare = build(source, tailoring('INHERITED', 'approved', 'PE-2', rationale='Azure datacenter'))
         entry = row(bare, 'PE-2')
         self.assertEqual('INHERITED_CLAIMED', entry['status'])
         self.assertTrue(any('assurance reference' in gap for gap in entry['gaps']))
-        cited = build(source, purview('INHERITED', 'approved', 'PE-2', rationale='Azure datacenter',
+        cited = build(source, tailoring('INHERITED', 'approved', 'PE-2', rationale='Azure datacenter',
                                       assurance_reference='SOC 2 Type II 2026, section 4'))
         self.assertFalse(any('assurance reference' in gap for gap in row(cited, 'PE-2')['gaps']))
 
-    def test_invalid_purview_documents_are_rejected(self):
-        cases = [purview(control='AC-6') | {'schema_version': '2.0'},
-                 purview(control='AC-6') | {'status': 'signed'},
-                 {**purview(), 'controls': {'NOPE-9': {'disposition': 'IN_SCOPE', 'owner': 'x'}}},
-                 {**purview(), 'controls': {'AC-6': {'disposition': 'MAYBE', 'owner': 'x'}}},
-                 {**purview(), 'controls': {'AC-6': {'disposition': 'EXCLUDED', 'owner': 'x', 'rationale': 'r'}}},
-                 {**purview(), 'controls': {'AC-6': {'disposition': 'INHERITED', 'owner': 'x'}}}]
+    def test_invalid_tailoring_documents_are_rejected(self):
+        cases = [tailoring(control='AC-6') | {'schema_version': '2.0'},
+                 tailoring(control='AC-6') | {'status': 'signed'},
+                 {**tailoring(), 'controls': {'NOPE-9': {'disposition': 'IN_SCOPE', 'owner': 'x'}}},
+                 {**tailoring(), 'controls': {'AC-6': {'disposition': 'MAYBE', 'owner': 'x'}}},
+                 {**tailoring(), 'controls': {'AC-6': {'disposition': 'EXCLUDED', 'owner': 'x', 'rationale': 'r'}}},
+                 {**tailoring(), 'controls': {'AC-6': {'disposition': 'INHERITED', 'owner': 'x'}}}]
         for document in cases:
             with self.assertRaises(ValueError):
-                validate_purview(document)
-        self.assertIsNone(validate_purview(None))
+                validate_tailoring(document)
+        self.assertIsNone(validate_tailoring(None))
 
     def test_attributed_records_are_kept_distinct_from_automated_observations(self):
         operational = {'records': [{'id': 'IR-drill-2026Q3', 'title': 'Tabletop exercise', 'scope': 'tenant',
@@ -124,7 +124,7 @@ class ControlRegisterTests(unittest.TestCase):
             self.assertEqual(before, source.read_text())
             saved = json.loads((path / 'register.json').read_text())
             self.assertEqual(189, saved['summary']['controls'])
-            self.assertFalse(saved['purview']['declared'])
+            self.assertFalse(saved['tailoring']['declared'])
             self.assertIn('# Control-indexed evidence register', (path / 'register.md').read_text())
             # Refusing to overwrite the input is reported as a failure code, not a traceback.
             self.assertNotEqual(0, main(['control-register', '--input', str(source), '--json', str(source)]))
@@ -137,7 +137,7 @@ class ControlRegisterTests(unittest.TestCase):
                        check=True, cwd=ROOT)
         self.assertEqual(208, len(CONTROLS))
 
-    def test_purview_template_defaults_to_the_deployed_resource_types(self):
+    def test_tailoring_template_defaults_to_the_deployed_resource_types(self):
         service = template()
         self.assertEqual(SERVICE_APPLICABLE, set(service['controls']))
         self.assertEqual(48, len(service['controls']))

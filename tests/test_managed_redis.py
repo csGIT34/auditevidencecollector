@@ -1,9 +1,9 @@
 import json
 import unittest
-from azure_at_rest.catalog import MANAGED_REDIS_FAMILIES, RULES
-from azure_at_rest.collector import endpoint
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.archive import save_run, load_run, publish_pdf
+from cloud_governance.catalog import MANAGED_REDIS_FAMILIES, RULES
+from cloud_governance.collector import endpoint
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.archive import save_run, load_run, publish_pdf
 from tests.helpers import Scenario, resource
 from tests.test_archive import MemoryStore
 

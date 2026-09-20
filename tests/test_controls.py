@@ -6,13 +6,13 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from pypdf import PdfReader
-from azure_at_rest.controls import CHECKS, for_type, validate_policy
-from azure_at_rest.collector import Collector, FixtureTransport, endpoint, INVENTORY_API
-from azure_at_rest.catalog import RULES
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.snapshot import validate_snapshot
-from azure_at_rest.archive import save_run, load_run, publish_pdf, validate_pair
-from azure_at_rest.report import markdown, exit_code
+from cloud_governance.controls import CHECKS, for_type, validate_policy
+from cloud_governance.collector import Collector, FixtureTransport, endpoint, INVENTORY_API
+from cloud_governance.catalog import RULES
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.snapshot import validate_snapshot
+from cloud_governance.archive import save_run, load_run, publish_pdf, validate_pair
+from cloud_governance.report import markdown, exit_code
 from tests.helpers import resource, SUB
 from tests.test_archive import MemoryStore
 
@@ -58,14 +58,14 @@ def fixture():
             value=sample(c)
             criteria[c.id]={'operator':'equals','value':value}
             if c.operation == 'diagnostic_routes':
-                from azure_at_rest.diagnostic_routes import project as project_routes
+                from cloud_governance.diagnostic_routes import project as project_routes
                 settings=responses[endpoint(row['id']+c.suffix,c.api)]['value']
                 value=project_routes(settings,row['id']+c.suffix,{'complete':True,'pages':1,'items_received':1},[])['value']
                 criteria[c.id]={'operator':'equals','value':value}
                 continue
             if c.operation=='log_tables':
                 from tests.test_log_tables import table
-                from azure_at_rest.log_tables import project
+                from cloud_governance.log_tables import project
                 item=table(row['id']);responses[endpoint(row['id']+c.suffix,c.api)]={'value':[item]}
                 criteria[c.id]={'operator':'equals','value':[project(item)]}
                 continue
@@ -76,7 +76,7 @@ def fixture():
                 continue
             if c.operation=='automation_assets':
                 from tests.test_automation_assets import asset
-                from azure_at_rest.automation_assets import project
+                from cloud_governance.automation_assets import project
                 item=asset(row['id'],c.path)
                 responses[endpoint(row['id']+c.suffix,c.api)]={'value':[item]}
                 criteria[c.id]={'operator':'equals','value':[project(item,c.path)]}
@@ -86,7 +86,7 @@ def fixture():
                 criteria[c.id]={'operator':'equals','value':{'orchestration':'Uniform','scope':'scale_set','members':[instance_id]}}
                 continue
             if c.operation=='vault_metadata':
-                from azure_at_rest.vault_metadata import API,project
+                from cloud_governance.vault_metadata import API,project
                 base='https://'+row['id'].rsplit('/',1)[1].lower()+'.vault.azure.net'
                 row['properties']['vaultUri']=base+'/'
                 item={'kid' if c.path=='keys' else 'id':base+'/'+c.path+'/example','attributes':{'enabled':True,'created':1700000000,'updated':1700000000,'exp':2000000000},'tags':{'secret':'DO-NOT-ARCHIVE-SECRET'}}
@@ -186,7 +186,7 @@ class ConfigurationTests(unittest.TestCase):
                         if c.kind=='key_reference':
                             # Absence of a key block is a valid provider-managed observation, so corrupt
                             # the reviewed selector instead to exercise the unreadable path.
-                            from azure_at_rest.key_reference import SHAPES
+                            from cloud_governance.key_reference import SHAPES
                             shape=SHAPES[c.id];setpath(raw['properties'],shape.get('source') or shape['key_uri'],value or 0)
                             continue
                         setpath(raw['properties'],c.path,value)
@@ -243,7 +243,7 @@ class ConfigurationTests(unittest.TestCase):
         report=assess_snapshot(snapshot,criteria=policy);store=MemoryStore()
         manifest=save_run(store,snapshot,report)
         original=dict(store.objects)
-        with patch('azure_at_rest.controls.evaluate',side_effect=AssertionError('historical re-evaluation')):
+        with patch('cloud_governance.controls.evaluate',side_effect=AssertionError('historical re-evaluation')):
             saved=load_run(store,manifest['run_id'])
             pdf=publish_pdf(store,manifest['run_id'])
         self.assertEqual(report,saved['assessment'])
@@ -284,7 +284,7 @@ class ConfigurationTests(unittest.TestCase):
         self.assertEqual(policy,load_run(store,manifest['run_id'])['assessment']['configuration_assessment']['policy'])
 
     def test_duplicate_or_nonfinite_criteria_json_is_rejected(self):
-        from azure_at_rest.controls import decode_policy
+        from cloud_governance.controls import decode_policy
         for text in ('{"checks":{},"checks":{}}','{"value":NaN}','{"value":Infinity}'):
             with self.assertRaises(ValueError):decode_policy(text)
 
@@ -328,7 +328,7 @@ class ConfigurationTests(unittest.TestCase):
         self.assertFalse(any(r['result']=='PASS' for r in reassessed['configuration_assessment']['results']))
 
     def test_new_archive_cannot_omit_predicates_or_forge_mapping(self):
-        from azure_at_rest.controls import overall_summary
+        from cloud_governance.controls import overall_summary
         responses,policy=fixture();snapshot=collect(responses);report=assess_snapshot(snapshot,criteria=policy)
         for change in ('missing','mapping'):
             bad=copy.deepcopy(report);cfg=bad['configuration_assessment']
@@ -351,14 +351,14 @@ class FreshnessTests(unittest.TestCase):
         for assessed_at, state in [('2026-09-19T13:00:00+00:00','fresh'),
                                    ('2026-09-19T13:00:01+00:00','stale'),
                                    ('2026-09-19T11:59:59+00:00','future')]:
-            with patch('azure_at_rest.controls.now', return_value=assessed_at):
+            with patch('cloud_governance.controls.now', return_value=assessed_at):
                 report = assess_snapshot(snapshot, criteria=policy)
             rows = report['configuration_assessment']['results']
             self.assertTrue(all(row['freshness']['state'] == state for row in rows))
             self.assertTrue(all(row['result'] == ('PASS' if state == 'fresh' else 'UNKNOWN') for row in rows))
             store = MemoryStore()
             run = save_run(store, snapshot, report)
-            with patch('azure_at_rest.controls.now', side_effect=AssertionError('historical clock called')):
+            with patch('cloud_governance.controls.now', side_effect=AssertionError('historical clock called')):
                 self.assertEqual(load_run(store,run['run_id'])['assessment'], report)
 
     def test_invalid_freshness_limits_and_forged_fresh_result(self):
@@ -369,7 +369,7 @@ class FreshnessTests(unittest.TestCase):
                 validate_policy(policy)
         policy['max_observation_age_seconds'] = 3600
         snapshot = collect(responses)
-        with patch('azure_at_rest.controls.now',return_value='2040-01-01T00:00:00+00:00'):
+        with patch('cloud_governance.controls.now',return_value='2040-01-01T00:00:00+00:00'):
             report = assess_snapshot(snapshot,criteria=policy)
         report['configuration_assessment']['results'][0]['freshness']['state'] = 'fresh'
         with self.assertRaises(ValueError):
@@ -378,7 +378,7 @@ class FreshnessTests(unittest.TestCase):
 
 class OverallCoverageTests(unittest.TestCase):
     def test_failure_does_not_hide_unknown_configuration_coverage(self):
-        from azure_at_rest.controls import overall_summary
+        from cloud_governance.controls import overall_summary
         report = {'summary':{'counts':{'FAIL':0},'coverage_incomplete':False},
                   'configuration_assessment':{'identity_complete':True,'summary':{
                       'conclusion':'FAILURES_FOUND','counts':{'FAIL':1,'UNKNOWN':1,'ERROR':0}}}}

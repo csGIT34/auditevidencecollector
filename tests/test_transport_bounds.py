@@ -1,11 +1,11 @@
 import io
 import json
 import unittest
-from azure_at_rest.collector import ArmTransport,CollectionError,Collector,MAX_RESPONSE_BYTES,INVENTORY_API,endpoint
-from azure_at_rest.graph import GraphTransport
-from azure_at_rest.snapshot import validate_snapshot
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.archive import save_run,load_run,publish_pdf
+from cloud_governance.collector import ArmTransport,CollectionError,Collector,MAX_RESPONSE_BYTES,INVENTORY_API,endpoint
+from cloud_governance.graph import GraphTransport
+from cloud_governance.snapshot import validate_snapshot
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.archive import save_run,load_run,publish_pdf
 from tests.test_archive import MemoryStore
 from tests.helpers import SUB
 

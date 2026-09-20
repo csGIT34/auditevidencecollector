@@ -6,12 +6,12 @@ import unittest
 from contextlib import contextmanager
 from unittest.mock import Mock,patch
 from urllib.error import HTTPError
-from azure_at_rest.archive import encode,save_run
-from azure_at_rest.collector import CollectionError
-from azure_at_rest.hosting import Settings,execute,ExecutionError
-from azure_at_rest.kubernetes_collect import target,listing,collect,KubernetesTransport,AUDIENCE
-from azure_at_rest.kubernetes_evidence import load,publish
-from azure_at_rest.workflow import Deadline,assess_snapshot
+from cloud_governance.archive import encode,save_run
+from cloud_governance.collector import CollectionError
+from cloud_governance.hosting import Settings,execute,ExecutionError
+from cloud_governance.kubernetes_collect import target,listing,collect,KubernetesTransport,AUDIENCE
+from cloud_governance.kubernetes_evidence import load,publish
+from cloud_governance.workflow import Deadline,assess_snapshot
 from tests.test_kubernetes_evidence import document,criteria,AS_OF
 from tests.test_controls import fixture,collect as fixture_collect
 from tests.test_archive import MemoryStore
@@ -81,7 +81,7 @@ class KubernetesCollectionTests(unittest.TestCase):
         credential=Mock();credential.get_token.return_value=Mock(token='PRIVATE-TOKEN',expires_on=time.time()+300)
         opener=Mock();response=io.BytesIO(encode(self.pods));opener.open.return_value=response
         deadline=Mock();deadline.remaining.return_value=30
-        with patch('azure_at_rest.kubernetes_collect.ssl.create_default_context') as tls:
+        with patch('cloud_governance.kubernetes_collect.ssl.create_default_context') as tls:
             transport=KubernetesTransport(self.config,credential,deadline,opener=opener)
             tls.assert_called_once_with(cadata=self.config['ca_pem'])
         for path in ('/api/v1/secrets','https://evil.test','/api/v1/pods'):
@@ -110,7 +110,7 @@ class KubernetesCollectionTests(unittest.TestCase):
         env['CG_SUBSCRIPTION_IDS']=self.cluster.split('/')[2]
         @contextmanager
         def resources(*args):yield self.store,self.arm
-        with patch('azure_at_rest.hosting.verify_tenant'),patch('azure_at_rest.kubernetes_collect.collect') as operation:
+        with patch('cloud_governance.hosting.verify_tenant'),patch('cloud_governance.kubernetes_collect.collect') as operation:
             operation.return_value={'evidence_id':'k-'+'b'*32,'source_run_id':self.run,'generated_at':AS_OF,'summary':{}}
             result=execute('workload-collect',run_id=self.run,env=env,factory=resources)
             self.assertEqual('complete',result['state']);operation.assert_called_once()
@@ -119,7 +119,7 @@ class KubernetesCollectionTests(unittest.TestCase):
             operation.assert_not_called()
 
     def test_denied_collection_pdf_exposes_failure_state_and_preserves_archive(self):
-        from azure_at_rest.kubernetes_evidence import publish_pdf
+        from cloud_governance.kubernetes_evidence import publish_pdf
         from pypdf import PdfReader
         transport=Mock();transport.get.side_effect=[CollectionError('http_error',403),self.nodes]
         manifest=collect(self.store,self.run,self.config,self.arm,Mock(),Deadline(30),provenance=self.provenance,transport_factory=Mock(return_value=transport))
@@ -132,7 +132,7 @@ class KubernetesCollectionTests(unittest.TestCase):
     def test_invalid_token_and_oversize_response_never_leak_provider_details(self):
         credential=Mock();credential.get_token.return_value=Mock(token='PRIVATE-TOKEN',expires_on=0)
         opener=Mock()
-        with patch('azure_at_rest.kubernetes_collect.ssl.create_default_context'):
+        with patch('cloud_governance.kubernetes_collect.ssl.create_default_context'):
             transport=KubernetesTransport(self.config,credential,Deadline(30),opener=opener)
         with self.assertRaises(CollectionError) as caught:transport.get('/api/v1/nodes','')
         self.assertEqual('authentication_failed',str(caught.exception));opener.open.assert_not_called()

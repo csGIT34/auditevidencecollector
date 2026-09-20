@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 import sys
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-from azure_at_rest.controls import CHECKS
-from azure_at_rest.catalog import RULES
+from cloud_governance.controls import CHECKS
+from cloud_governance.catalog import RULES
 
 # Explicit routing makes new collector operations fail the register gate until documented.
 ADAPTERS={
@@ -37,14 +37,14 @@ def configuration_capability(check):
         'implementation_state':'IMPLEMENTED_OFFLINE_TESTED','live_validation':'NOT_VERIFIED',
         'collection_plane':plane,'resource_type':check.resource_type,
         'api_version':check.api,'operation':check.operation,'suffix':check.suffix,'property':check.path,
-        'implementation_files':sorted({'azure_at_rest/'+module+'.py','azure_at_rest/controls.py','azure_at_rest/collector.py'}),
+        'implementation_files':sorted({'cloud_governance/'+module+'.py','cloud_governance/controls.py','cloud_governance/collector.py'}),
         'test_files':sorted({'tests/'+test+'.py','tests/test_controls.py','tests/test_archive.py','tests/test_pdf_pipeline.py'}),
         'criteria':{'source':'approved policy overrides[resource_id]['+check.id+'] with fallback to checks['+check.id+']',
-                    'missing_or_draft':'UNKNOWN','validation':'azure_at_rest/controls.py:validate_policy'},
+                    'missing_or_draft':'UNKNOWN','validation':'cloud_governance/controls.py:validate_policy'},
         'permissions_guide':'docs/CONFIGURATION_ASSESSMENTS.md',
         'permission_boundary':'Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.',
         'reporting':['saved JSON assessment','Markdown','exact-run PDF','saved-run comparison'],
-        'report_files':['azure_at_rest/archive.py','azure_at_rest/report.py','azure_at_rest/pdf_report.py','azure_at_rest/run_comparison.py'],
+        'report_files':['cloud_governance/archive.py','cloud_governance/report.py','cloud_governance/pdf_report.py','cloud_governance/run_comparison.py'],
         'source_definition':check.source,
         'remaining_dependencies':['Approved scoped criteria and population','Live API, permission and variant acceptance','Whole-objective acceptance boundary'],
     }
@@ -57,7 +57,7 @@ def supplement_capability(name,predicate,objectives):
         'kind':name+'_predicate','catalog_objectives':sorted(objectives),
         'implementation_state':'IMPLEMENTED_OFFLINE_TESTED','live_validation':'NOT_VERIFIED',
         'collection_plane':'KUBERNETES_METADATA' if name=='workload' else 'NORMALIZED_GUEST_EXPORT',
-        'implementation_files':['azure_at_rest/'+module+'.py']+(['azure_at_rest/kubernetes_collect.py'] if name=='workload' else []),
+        'implementation_files':['cloud_governance/'+module+'.py']+(['cloud_governance/kubernetes_collect.py'] if name=='workload' else []),
         'test_files':['tests/test_'+module+'.py']+(['tests/test_kubernetes_collect.py'] if name=='workload' else []),
         'criteria':{'source':guide,'predicate':predicate,'missing_or_draft':'UNKNOWN'},
         'permissions_guide':guide,'reporting':['separate immutable supplement','Markdown','exact-supplement PDF'],
@@ -68,8 +68,8 @@ def supplement_capability(name,predicate,objectives):
 
 def register():
     research=json.loads((ROOT/'docs/audit/catalog.json').read_text())
-    from azure_at_rest.kubernetes_evidence import CHECKS as KUBE_CHECKS
-    from azure_at_rest.guest_evidence import CHECKS as GUEST_CHECKS
+    from cloud_governance.kubernetes_evidence import CHECKS as KUBE_CHECKS
+    from cloud_governance.guest_evidence import CHECKS as GUEST_CHECKS
     capabilities={'configuration:'+c.id:configuration_capability(c) for c in CHECKS.values()}
     capabilities.update({'workload:'+key:supplement_capability('workload',key,[objective]) for key,objective in KUBE_CHECKS.items()})
     capabilities.update({'guest:'+key:supplement_capability('guest',key,['VM-'+domain,'VMSS-'+domain]) for key,domain in GUEST_CHECKS.items()})
@@ -82,14 +82,14 @@ def register():
         encryption=sorted({RULES[t].key for t in service_types if t in RULES and RULES[t].mode!='na'}) if proposed['domain']=='R' else []
         rows.append({'id':proposed['id'],'service_id':proposed['service_id'],'domain':proposed['domain'],'title':proposed['title'],
                      'state':'PARTIAL_EXECUTABLE_SUPPORT' if predicates or encryption or workload_predicates or guest_predicates else 'NOT_IMPLEMENTED',
-                     'configuration_predicates':predicates,'guest_import_predicates':guest_predicates,'workload_import_predicates':workload_predicates,'existing_encryption_rules':encryption,
+                     'configuration_predicates':predicates,'guest_import_predicates':guest_predicates,'workload_import_predicates':workload_predicates,'existing_resource_rules':encryption,
                      'implementation_refs':['configuration:'+key for key in predicates]+['workload:'+key for key in workload_predicates]+['guest:'+key for key in guest_predicates],
                      'required_collection_planes':[research['permission_profiles'][key]['plane'] for key in proposed['permission_profiles']],
                      'proposed_permission_profiles':proposed['permission_profiles'],
                      'criteria_requirements':research['organization_parameters'][proposed['organization_parameters']],
                      'required_evidence':proposed['evidence'],'owner_requirement':proposed['owner'],
                      'disposition':{'exclusion':None,'manual_or_inherited_acceptance':'NOT_ASSESSED','live_acceptance':'NOT_VERIFIED'},
-                     'encryption_support':{'implementation_files':['azure_at_rest/catalog.py','azure_at_rest/assessment.py','azure_at_rest/collector.py'],
+                     'encryption_support':{'implementation_files':['cloud_governance/catalog.py','cloud_governance/assessment.py','cloud_governance/collector.py'],
                                            'test_files':['tests/test_rules.py','tests/test_collection.py','tests/test_archive.py','tests/test_pdf_pipeline.py']+(['tests/test_additional_encryption.py'] if set(encryption)&{'grafana-storage','prometheus-storage','automation-secure-assets'} else [])+(['tests/test_managed_redis.py'] if set(encryption)&{'managed-redis','managed-redis-database'} else []),
                                            'reporting':['saved JSON assessment','Markdown','exact-run PDF'],
                                            'criteria':'Pinned scoped encryption rules; no blanket CMK requirement',

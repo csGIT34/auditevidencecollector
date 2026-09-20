@@ -1,11 +1,11 @@
 import copy
 import json
 import unittest
-from azure_at_rest.authorization import API, SUFFIX, collect, valid_grants
-from azure_at_rest.collector import FixtureTransport, endpoint
-from azure_at_rest.controls import CHECKS, validate_policy
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.archive import save_run, load_run
+from cloud_governance.authorization import API, SUFFIX, collect, valid_grants
+from cloud_governance.collector import FixtureTransport, endpoint
+from cloud_governance.controls import CHECKS, validate_policy
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.archive import save_run, load_run
 from tests.test_archive import MemoryStore
 from tests.helpers import SUB, resource
 
@@ -90,7 +90,7 @@ class AuthorizationTests(unittest.TestCase):
 
     def test_actual_collection_assessment_archive_and_markdown(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.report import markdown
+        from cloud_governance.report import markdown
         arm,policy=fixture()
         snapshot=collect_arm(arm)
         row=next(row for row in snapshot['resources'] if row['type']=='microsoft.storage/storageaccounts')

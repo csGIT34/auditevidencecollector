@@ -19,12 +19,12 @@ The [example export](../examples/wiz/normalized-export.json) contains synthetic 
 ## Import, compare, verify
 
 ```sh
-python -m azure_at_rest wiz-import --input /private/normalized-wiz.json --store /private/archive
+python -m cloud_governance wiz-import --input /private/normalized-wiz.json --store /private/archive
 # Use the exact w-... printed above and an existing r-... in the same archive.
-python -m azure_at_rest wiz-reconcile --store /private/archive \
+python -m cloud_governance wiz-reconcile --store /private/archive \
   --run-id r-REPLACE_WITH_EXACT_ID --wiz-import-id w-REPLACE_WITH_EXACT_ID \
   --as-of 2026-09-19T15:00:00Z --max-age-hours 24 --max-skew-hours 1
-python -m azure_at_rest wiz-show --store /private/archive --comparison-id c-REPLACE_WITH_EXACT_ID
+python -m cloud_governance wiz-show --store /private/archive --comparison-id c-REPLACE_WITH_EXACT_ID
 ```
 
 The dates/thresholds shown are examples, not organizational policy. Supply an explicit comparison time and approved freshness/time-skew limits. CLI commands use local files; the Python functions take the shared `ObjectStore` interface and can use an existing Blob adapter when a separately configured workplace host supplies it. No Wiz HTTP route, timer or live transport is enabled.

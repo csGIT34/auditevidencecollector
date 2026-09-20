@@ -16,10 +16,10 @@ The complete gate requires Azure SDKs, ReportLab, pypdf and jmespath. It checks 
 For a demonstration:
 
 ```sh
-python -m azure_at_rest collect --fixture examples/demo-fixture.json --store evidence/archive
-python -m azure_at_rest runs --store evidence/archive
+python -m cloud_governance collect --fixture examples/demo-fixture.json --store evidence/archive
+python -m cloud_governance runs --store evidence/archive
 # Use the exact newly printed run ID. The collection exits 1 intentionally.
-python -m azure_at_rest pdf --store evidence/archive --run-id YOUR_EXACT_RUN_ID --export output/pdf/demo.pdf
+python -m cloud_governance pdf --store evidence/archive --run-id YOUR_EXACT_RUN_ID --export output/pdf/demo.pdf
 ```
 
 A repeated export requires a new filename; nothing in the archive is replaced. No Azure authentication occurs for fixture runs. The fixture contains 35 resources with three failed rows and incomplete coverage. Optional Poppler rendering helps visual review; Poppler is not a production PDF-generation dependency.

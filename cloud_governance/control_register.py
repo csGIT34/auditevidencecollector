@@ -29,29 +29,29 @@ LABEL = re.compile(r'[A-Z]{2}-\d{1,2}(?:\(\d{1,2}\))?')
 LIMITS = [
     'Evidence is indexed by control; it is not a control determination. No status in this register means a control is satisfied.',
     'AUTOMATED_EVIDENCE_COLLECTED means every mapped observation met its supplied criterion at collection time. It does not establish operating effectiveness over an assessment period, organization-defined parameter values, or the parts of a control no API can observe.',
-    'A control absent from this register was never referenced by collected evidence or declared in purview. Absence is not evidence of applicability or of satisfaction.',
+    'A control absent from this register was never referenced by collected evidence or declared in tailoring. Absence is not evidence of applicability or of satisfaction.',
     'INHERITED_CLAIMED repeats a declared inheritance; this tool does not evaluate a provider assurance report, its scope, period or exceptions.',
     'EXCLUDED repeats an approved written exclusion. An unapproved or draft exclusion is not honored and remains NOT_ASSESSED.',
 ]
 
 
-def validate_purview(document):
-    """Approved control purview. Absent or draft dispositions never exclude a control."""
+def validate_tailoring(document):
+    """Approved control tailoring. Absent or draft dispositions never exclude a control."""
     if document is None:
         return None
     if not isinstance(document, dict) or set(document) - {'controls'} != {'schema_version', 'id', 'version', 'status'}:
-        raise ValueError('Invalid control purview')
+        raise ValueError('Invalid control tailoring')
     if document['schema_version'] != '1.0' or document['status'] not in ('draft', 'approved'):
-        raise ValueError('Invalid purview version/status')
+        raise ValueError('Invalid tailoring version/status')
     if any(not isinstance(document[key], str) or not re.fullmatch(r'[A-Za-z0-9_.-]{1,80}', document[key])
            for key in ('id', 'version')):
-        raise ValueError('Invalid purview identity')
+        raise ValueError('Invalid tailoring identity')
     controls = document.get('controls', {})
     if not isinstance(controls, dict) or len(controls) > 2000:
-        raise ValueError('Invalid purview controls')
+        raise ValueError('Invalid tailoring controls')
     for label, entry in controls.items():
         if label not in CONTROLS:
-            raise ValueError('Unknown control in purview: ' + str(label)[:40])
+            raise ValueError('Unknown control in tailoring: ' + str(label)[:40])
         if not isinstance(entry, dict) or entry.get('disposition') not in DISPOSITIONS:
             raise ValueError('Invalid control disposition')
         allowed = {'disposition', 'owner', 'rationale', 'assurance_reference', 'approver', 'reviewed_on'}
@@ -74,7 +74,7 @@ def _evidence(report, operational):
     """Flatten saved results into per-control evidence items. Nothing is re-evaluated."""
     items = []
     for row in report.get('results', []):
-        items.append({'kind': 'encryption_rule', 'reference': row['rule_id'], 'resource_id': row['id'],
+        items.append({'kind': 'resource_rule', 'reference': row['rule_id'], 'resource_id': row['id'],
                       'result': row['result'], 'summary': row['reason'], 'controls': _labels(row.get('controls', [])),
                       'gaps': list(row.get('gaps', []))})
     for row in report.get('configuration_assessment', {}).get('results', []):
@@ -104,11 +104,11 @@ def _status(entry, counts, gaps, approved):
     return 'NOT_ASSESSED'
 
 
-def build(report, purview=None, operational=None):
+def build(report, tailoring=None, operational=None):
     """Index a saved assessment by control. Deterministic from frozen inputs."""
-    purview = validate_purview(purview)
-    approved = bool(purview) and purview['status'] == 'approved'
-    declared = (purview or {}).get('controls', {})
+    tailoring = validate_tailoring(tailoring)
+    approved = bool(tailoring) and tailoring['status'] == 'approved'
+    declared = (tailoring or {}).get('controls', {})
     items = _evidence(report, operational)
     selected = sorted({label for item in items for label in item['controls']} | set(declared)
                       | {label for label, control in CONTROLS.items() if control['candidate']},
@@ -125,7 +125,7 @@ def build(report, purview=None, operational=None):
         status = _status(entry, counts, gaps, approved)
         missing = list(gaps)
         if entry and not approved and entry['disposition'] != 'IN_SCOPE':
-            missing.append('A ' + entry['disposition'].lower() + ' disposition is recorded in a draft purview; it is not honored here.')
+            missing.append('A ' + entry['disposition'].lower() + ' disposition is recorded in a draft tailoring; it is not honored here.')
         if status == 'NOT_ASSESSED':
             missing.append('No automated observation or attributed record references this control in this run.')
         if status == 'INHERITED_CLAIMED' and not entry.get('assurance_reference'):
@@ -134,7 +134,7 @@ def build(report, purview=None, operational=None):
             missing.append('Assessor determination, organization-defined parameters and operating effectiveness over the assessment period are outside this evidence.')
         rows.append({'control': label, 'title': CONTROLS[label]['title'], 'family': CONTROLS[label]['family'],
                      'candidate': CONTROLS[label]['candidate'],
-                     'service_applicable': label in SERVICE_APPLICABLE, 'purview': disposition,
+                     'service_applicable': label in SERVICE_APPLICABLE, 'tailoring': disposition,
                      'owner': (entry or {}).get('owner', ''), 'rationale': (entry or {}).get('rationale', ''),
                      'assurance_reference': (entry or {}).get('assurance_reference', ''),
                      'approver': (entry or {}).get('approver', ''), 'status': status, 'counts': counts,
@@ -151,8 +151,8 @@ def build(report, purview=None, operational=None):
     return {'schema_version': '1.0', 'generated_at': now(), 'catalog_source': INDEX['source'],
             'references': REFERENCES,
             'control_index_sha256': INDEX['index_sha256'],
-            'purview': {'declared': bool(purview), 'status': (purview or {}).get('status'),
-                        'id': (purview or {}).get('id'), 'version': (purview or {}).get('version'),
+            'tailoring': {'declared': bool(tailoring), 'status': (tailoring or {}).get('status'),
+                        'id': (tailoring or {}).get('id'), 'version': (tailoring or {}).get('version'),
                         'declared_controls': len(declared)},
             'assessment': {'generated_at': report.get('generated_at'), 'tool_version': report.get('tool_version'),
                            'rule_version': report.get('rule_version'), 'mode': report.get('mode')},
@@ -165,13 +165,13 @@ def build(report, purview=None, operational=None):
 
 
 def template(scope='service'):
-    """Starter purview. Default scope is the controls the deployed resource types implicate."""
+    """Starter tailoring. Default scope is the controls the deployed resource types implicate."""
     if scope not in ('service', 'candidate'):
-        raise ValueError('Unknown purview template scope')
+        raise ValueError('Unknown tailoring template scope')
     controls = {label: {'disposition': 'IN_SCOPE', 'owner': ''}
                 for label, control in sorted(CONTROLS.items())
                 if (label in SERVICE_APPLICABLE if scope == 'service' else control['candidate'])}
-    return {'schema_version': '1.0', 'id': 'REPLACE-WITH-APPROVED-PURVIEW-ID', 'version': '1',
+    return {'schema_version': '1.0', 'id': 'REPLACE-WITH-APPROVED-TAILORING-ID', 'version': '1',
             'status': 'draft', 'controls': controls}
 
 
@@ -182,10 +182,10 @@ def markdown(register):
            str(register['assessment']['generated_at']) + ' (' + str(register['assessment']['mode']) + ', tool ' +
            str(register['assessment']['tool_version']) + ').', '',
            'NIST catalog: ' + register['catalog_source']['version'] + '.', '']
-    purview = register['purview']
-    out += ['**Purview: ' + ('declared ' + str(purview['id']) + ' v' + str(purview['version']) + ' (' +
-            str(purview['status']) + '), ' + str(purview['declared_controls']) + ' controls'
-            if purview['declared'] else 'NOT DECLARED — every control below is UNDECLARED and no exclusion or '
+    tailoring = register['tailoring']
+    out += ['**Tailoring: ' + ('declared ' + str(tailoring['id']) + ' v' + str(tailoring['version']) + ' (' +
+            str(tailoring['status']) + '), ' + str(tailoring['declared_controls']) + ' controls'
+            if tailoring['declared'] else 'NOT DECLARED — every control below is UNDECLARED and no exclusion or '
             'inheritance is recognized') + '**', '']
     summary = register['summary']
     out += ['Controls indexed: **' + str(summary['controls']) + '**; with evidence: **' +
@@ -208,13 +208,13 @@ def markdown(register):
         if not members:
             continue
         out += ['', '## ' + family['family'].upper() + ' — ' + family['title'], '',
-                '| Control | Title | Applies to our resources | Purview | Status | PASS | FAIL | Other | Evidence |',
+                '| Control | Title | Applies to our resources | Tailoring | Status | PASS | FAIL | Other | Evidence |',
                 '| --- | --- | --- | --- | --- | --- | --- | --- | --- |']
         for row in members:
             counts = row['counts']
             other = sum(counts[state] for state in ('UNKNOWN', 'ERROR', 'UNSUPPORTED', 'NOT_APPLICABLE'))
             out.append('| ' + row['control'] + ' | ' + row['title'] + ' | ' +
-                       ('yes' if row['service_applicable'] else 'no') + ' | ' + row['purview'] + ' | ' + row['status'] +
+                       ('yes' if row['service_applicable'] else 'no') + ' | ' + row['tailoring'] + ' | ' + row['status'] +
                        ' | ' + str(counts['PASS']) + ' | ' + str(counts['FAIL']) + ' | ' + str(other) + ' | ' +
                        str(row['evidence_count']) + ' |')
     out += ['', '## Limitations', ''] + ['- ' + limit for limit in register['limits']] + ['']

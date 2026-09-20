@@ -1,11 +1,11 @@
 import copy
 import json
 import unittest
-from azure_at_rest.automation_assets import collect,project,baseline
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.archive import save_run,load_run,publish_pdf
+from cloud_governance.automation_assets import collect,project,baseline
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.archive import save_run,load_run,publish_pdf
 from tests.helpers import resource
 from tests.test_controls import fixture,collect as collect_arm
 from tests.test_archive import MemoryStore
@@ -65,7 +65,7 @@ class AutomationAssetTests(unittest.TestCase):
             self.assertTrue(all(r['result']=='UNKNOWN' for r in report['configuration_assessment']['results'] if r['check_id'] in ('AUTO-runbooks-metadata','AUTO-modules-metadata')))
 
     def test_baseline_ignores_modification_time_but_keeps_typed_expected_fields(self):
-        from azure_at_rest.automation_assets import valid_criterion
+        from cloud_governance.automation_assets import valid_criterion
         for kind in ('runbooks','modules'):
             value=project(asset(self.rid,kind),kind);expected=baseline([value]);self.assertTrue(valid_criterion(expected,kind))
             value['last_modified']='2026-09-02T00:00:00Z';self.assertEqual(expected,baseline([value]))
@@ -85,14 +85,14 @@ def runtime_fixture(rid):
 
 class AutomationRuntimeTests(unittest.TestCase):
     def test_runtime_and_package_reads_keep_versions_without_links_or_messages(self):
-        from azure_at_rest.automation_assets import collect_runtimes
+        from cloud_governance.automation_assets import collect_runtimes
         rid=resource('Microsoft.Automation/automationAccounts','example')['id'];responses,expected=runtime_fixture(rid)
         transport=FixtureTransport(responses);result=collect_runtimes(transport,rid,CHECKS['AUTO-runtime-packages'],10)
         self.assertEqual('observed',result['state']);self.assertEqual(expected,result['value']);self.assertEqual(2,len(transport.calls))
         self.assertNotIn('SECRET-CANARY',json.dumps(result))
 
     def test_missing_denied_duplicate_and_wrong_environment_package_cannot_complete(self):
-        from azure_at_rest.automation_assets import collect_runtimes
+        from cloud_governance.automation_assets import collect_runtimes
         rid=resource('Microsoft.Automation/automationAccounts','example')['id']
         for mutation in ('denied','missing_version','duplicate','wrong_parent','missing_runtime'):
             responses,_=runtime_fixture(rid);key=next(u for u in responses if '/packages?' in u);package=responses[key]['value'][0]

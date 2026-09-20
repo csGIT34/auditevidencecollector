@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 from tests.test_hosting import environment
 from tests.test_archive import MemoryStore
 from tests.test_azure_adapters import SUB,TENANT
-from azure_at_rest.hosting import execute
+from cloud_governance.hosting import execute
 from scripts.lab_probe import probe
 
 

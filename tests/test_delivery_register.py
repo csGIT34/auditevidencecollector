@@ -1,7 +1,7 @@
 from pathlib import Path
 import unittest
 from scripts.control_delivery_register import register,ROOT
-from azure_at_rest.controls import CHECKS
+from cloud_governance.controls import CHECKS
 
 
 class DeliveryRegisterTests(unittest.TestCase):
@@ -28,13 +28,13 @@ class DeliveryRegisterTests(unittest.TestCase):
             self.assertFalse(row['whole_objective_complete'])
             self.assertIsNone(row['disposition']['exclusion'])
             self.assertEqual('NOT_ASSESSED',row['disposition']['manual_or_inherited_acceptance'])
-            support=bool(row['implementation_refs'] or row['existing_encryption_rules'])
+            support=bool(row['implementation_refs'] or row['existing_resource_rules'])
             self.assertEqual('PARTIAL_EXECUTABLE_SUPPORT' if support else 'NOT_IMPLEMENTED',row['state'])
 
     def test_planes_and_specialized_adapters_are_not_inferred_from_parent_arm_type(self):
         caps=register()['capabilities']
         self.assertEqual('MICROSOFT_GRAPH',caps['configuration:APPREG-delegated-grants']['collection_plane'])
         self.assertEqual('KEY_VAULT_DATA_METADATA',caps['configuration:KV-secrets-lifecycle']['collection_plane'])
-        self.assertIn('azure_at_rest/automation_assets.py',caps['configuration:AUTO-runtime-packages']['implementation_files'])
+        self.assertIn('cloud_governance/automation_assets.py',caps['configuration:AUTO-runtime-packages']['implementation_files'])
         self.assertEqual('NORMALIZED_GUEST_EXPORT',caps['guest:missing_critical_patches']['collection_plane'])
         self.assertEqual('KUBERNETES_METADATA',caps['workload:privileged']['collection_plane'])

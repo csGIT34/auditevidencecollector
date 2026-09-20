@@ -22,11 +22,11 @@ This is a synchronous on-demand report operation. Measure PDF duration and memor
 | File/module | Responsibility |
 | --- | --- |
 | `function_app.py` | Trigger registration, POST input validation, safe HTTP response. |
-| `azure_at_rest/hosting.py` | Strict settings, scoped tenant preflight, per-process overlap guard, structured safe execution errors and dependency construction/cleanup. |
-| `azure_at_rest/azure_adapters.py` | Explicit credential factory, ARM SDK-credential wrapper, budget-aware ARM transport, Blob `ObjectStore`. |
-| `azure_at_rest/workflow.py` | Shared assessment/digest logic and deterministic collect-assess-archive operation. |
-| `azure_at_rest/archive.py` | Versioned facts, saved conclusions, context, exact historical selection and PDF publication. |
-| `azure_at_rest/pdf_report.py` | In-memory PDF rendering; serialized per process to protect shared font state. |
+| `cloud_governance/hosting.py` | Strict settings, scoped tenant preflight, per-process overlap guard, structured safe execution errors and dependency construction/cleanup. |
+| `cloud_governance/azure_adapters.py` | Explicit credential factory, ARM SDK-credential wrapper, budget-aware ARM transport, Blob `ObjectStore`. |
+| `cloud_governance/workflow.py` | Shared assessment/digest logic and deterministic collect-assess-archive operation. |
+| `cloud_governance/archive.py` | Versioned facts, saved conclusions, context, exact historical selection and PDF publication. |
+| `cloud_governance/pdf_report.py` | In-memory PDF rendering; serialized per process to protect shared font state. |
 | `host.json` | Functions v4-compatible host configuration; a 10-minute execution timeout. |
 | `requirements.txt`, `constraints.txt` | Azure/PDF runtime packages and exact tested dependency versions. |
 | `deploy/app-settings.example.json` | Empty workplace settings and disabled operations; not a deployable resource template. |
@@ -100,7 +100,7 @@ ReportLab's licensed Vera fonts ship in its installed package and are embedded i
 python -m pip install -r requirements.txt --target .python_packages/lib/site-packages
 ```
 
-The final deployable package needs `host.json` at its root and the Linux dependency directory. Select the deployment method supported by the approved hosting plan; do not assume a ZIP deploy command works identically for every plan. Neither packaging command authenticates to Azure or deploys. Verify function indexing and required package data after the Linux build. The CLI remains available independently through `python -m azure_at_rest` or the installed console command.
+The final deployable package needs `host.json` at its root and the Linux dependency directory. Select the deployment method supported by the approved hosting plan; do not assume a ZIP deploy command works identically for every plan. Neither packaging command authenticates to Azure or deploys. Verify function indexing and required package data after the Linux build. The CLI remains available independently through `python -m cloud_governance` or the installed console command.
 
 ## Workplace acceptance sequence
 

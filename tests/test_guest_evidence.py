@@ -3,9 +3,9 @@ import io
 import json
 import unittest
 from unittest.mock import patch
-from azure_at_rest.archive import encode,save_run
-from azure_at_rest.guest_evidence import publish,load,publish_pdf,CHECKS,BOOL
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.archive import encode,save_run
+from cloud_governance.guest_evidence import publish,load,publish_pdf,CHECKS,BOOL
+from cloud_governance.workflow import assess_snapshot
 from tests.test_archive import MemoryStore
 from tests.test_controls import fixture,collect
 from pypdf import PdfReader
@@ -90,7 +90,7 @@ class GuestEvidenceTests(unittest.TestCase):
 
     def test_archives_and_pdf_are_frozen_and_tampering_rejected(self):
         manifest=self.save();before=dict(self.store.objects)
-        with patch('azure_at_rest.guest_evidence.assess',side_effect=AssertionError('No historical reassessment')):
+        with patch('cloud_governance.guest_evidence.assess',side_effect=AssertionError('No historical reassessment')):
             report=publish_pdf(self.store,manifest['evidence_id'])
         text=' '.join(p.extract_text() for p in PdfReader(io.BytesIO(self.store.read(report['pdf']['key']))).pages)
         self.assertIn('Guest and agent evidence',text);self.assertIn('missing_critical_patches',text)
@@ -107,7 +107,7 @@ class GuestEvidenceTests(unittest.TestCase):
 
     def test_hosted_import_and_report_opt_in(self):
         from contextlib import contextmanager
-        from azure_at_rest.hosting import execute
+        from cloud_governance.hosting import execute
         from tests.test_hosting import environment
         from unittest.mock import Mock
         factory=Mock();self.assertEqual('disabled',execute('guest-import',env={},factory=factory)['state']);factory.assert_not_called()
@@ -123,7 +123,7 @@ class GuestEvidenceTests(unittest.TestCase):
         from tempfile import TemporaryDirectory
         from pathlib import Path
         from contextlib import redirect_stdout
-        from azure_at_rest.cli import main
+        from cloud_governance.cli import main
         with TemporaryDirectory() as directory:
             root=Path(directory);store=root/'archive'
             for key,value in self.store.objects.items():
@@ -147,8 +147,8 @@ class GuestEvidenceTests(unittest.TestCase):
         with self.assertRaises((KeyError,FileNotFoundError)):load(self.store,key.split('/')[1])
 
     def test_overlapping_flexible_parent_and_vm_selection_has_stable_objective(self):
-        from azure_at_rest.guest_evidence import population
-        from azure_at_rest.archive import load_run
+        from cloud_governance.guest_evidence import population
+        from cloud_governance.archive import load_run
         saved=load_run(self.store,self.run)
         parent=next(r for r in saved['snapshot']['resources'] if r['id'].lower()==self.vmss)
         parent['configuration']['VMSS-instance-members']={'state':'observed','value':{'orchestration':'Flexible','scope':'subscription','members':[self.vm]}}

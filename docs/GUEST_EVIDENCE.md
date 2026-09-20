@@ -48,12 +48,12 @@ These support parts of VM-V and VMSS-V. They do not prove scanner coverage, expl
 ## Local commands
 
 ```sh
-python -m azure_at_rest guest-import \
+python -m cloud_governance guest-import \
   --store /path/to/archive --run-id r-EXACT_SOURCE_RUN \
   --input examples/guest-export.json --criteria examples/guest-criteria.json \
   --as-of 2026-09-20T02:00:00Z --max-age-seconds 3600
-python -m azure_at_rest guest-show --store /path/to/archive --evidence-id g-EXACT_SUPPLEMENT
-python -m azure_at_rest guest-pdf --store /path/to/archive --evidence-id g-EXACT_SUPPLEMENT
+python -m cloud_governance guest-show --store /path/to/archive --evidence-id g-EXACT_SUPPLEMENT
+python -m cloud_governance guest-pdf --store /path/to/archive --evidence-id g-EXACT_SUPPLEMENT
 ```
 
 Import success means the supplement was archived, not that the findings passed. Inspect its summary. Reports retain original measurements, criteria, time, source-manifest hash and frozen decisions. Replay checks object hashes and linkage without reassessing history. Publication writes its completion manifest last; interrupted writes are not completed evidence.

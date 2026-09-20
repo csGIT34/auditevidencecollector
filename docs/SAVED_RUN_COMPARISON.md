@@ -3,8 +3,8 @@
 Both runs must already be in the same local archive. No Azure calls or reassessment occur.
 
 ```sh
-azure-at-rest compare-runs --store /private/archive --before r_EXACT_BEFORE --after r_EXACT_AFTER
-azure-at-rest comparison-show --store /private/archive --comparison-id d_EXACT_COMPARISON
+cloud-governance compare-runs --store /private/archive --before r_EXACT_BEFORE --after r_EXACT_AFTER
+cloud-governance comparison-show --store /private/archive --comparison-id d_EXACT_COMPARISON
 ```
 
 Replace placeholders with actual `r-` / `d-` identifiers. The first command writes immutable JSON and Markdown under `run-comparisons/`, with a completion manifest written last. The second verifies both source archives and every saved comparison object before showing the original Markdown. The source runs are unchanged. An intent without a manifest is an incomplete publication.

@@ -2,11 +2,11 @@ import copy
 import json
 import unittest
 from unittest.mock import Mock, patch
-from azure_at_rest.graph import GraphCollector, FixtureGraphTransport, GraphTransport, valid_url, validate_identity_evidence
-from azure_at_rest.collector import CollectionError
-from azure_at_rest.snapshot import validate_snapshot
-from azure_at_rest.workflow import assess_snapshot
-from azure_at_rest.archive import save_run,load_run
+from cloud_governance.graph import GraphCollector, FixtureGraphTransport, GraphTransport, valid_url, validate_identity_evidence
+from cloud_governance.collector import CollectionError
+from cloud_governance.snapshot import validate_snapshot
+from cloud_governance.workflow import assess_snapshot
+from cloud_governance.archive import save_run,load_run
 from tests.test_archive import MemoryStore
 from tests.test_controls import fixture as arm_fixture,collect
 
@@ -108,7 +108,7 @@ class GraphTests(unittest.TestCase):
         self.assertEqual('PASS',checks['APPREG-owner-count']['result'])
         self.assertEqual('FAILURES_FOUND',report['overall_summary']['conclusion'])
         store=MemoryStore();manifest=save_run(store,snapshot,report)
-        with patch('azure_at_rest.controls.evaluate',side_effect=AssertionError('reassess')):
+        with patch('cloud_governance.controls.evaluate',side_effect=AssertionError('reassess')):
             self.assertEqual(report,load_run(store,manifest['run_id'])['assessment'])
 
     def test_exact_owners_and_role_tuples_are_checked_independently_of_count(self):
@@ -128,7 +128,7 @@ class GraphTests(unittest.TestCase):
         self.assertFalse(bad['complete']);self.assertNotIn('NEVER',json.dumps(bad))
 
     def test_graph_sdk_audience_and_token_errors_are_sanitized(self):
-        from azure_at_rest.graph import GraphCredential
+        from cloud_governance.graph import GraphCredential
         import time
         sdk=Mock();sdk.get_token.return_value=Mock(token='fixture-token',expires_on=time.time()+60)
         self.assertEqual('fixture-token',GraphCredential(sdk).get_token())

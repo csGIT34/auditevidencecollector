@@ -7,10 +7,10 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from azure_at_rest.cli import main
-from azure_at_rest.assessment import assess
-from azure_at_rest.report import exit_code, markdown
-from azure_at_rest.snapshot import validate_snapshot
+from cloud_governance.cli import main
+from cloud_governance.assessment import assess
+from cloud_governance.report import exit_code, markdown
+from cloud_governance.snapshot import validate_snapshot
 from tests.helpers import Scenario, resource
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,7 +27,7 @@ class CliReportTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary)
             snapshot = path/'snapshot.json'; report = path/'report.json'; readable = path/'report.md'
-            with patch('azure_at_rest.collector.AzureCliCredential.get_token', side_effect=AssertionError('Offline must not authenticate')):
+            with patch('cloud_governance.collector.AzureCliCredential.get_token', side_effect=AssertionError('Offline must not authenticate')):
                 code, _ = self.invoke(['collect', '--fixture', str(ROOT/'examples/demo-fixture.json'), '--json', str(report), '--report', str(readable), '--snapshot', str(snapshot)])
             self.assertEqual(1, code)
             data = json.loads(report.read_text())

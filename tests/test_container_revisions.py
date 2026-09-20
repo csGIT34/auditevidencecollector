@@ -1,9 +1,9 @@
 import copy
 import json
 import unittest
-from azure_at_rest.container_revisions import collect
-from azure_at_rest.collector import FixtureTransport,endpoint
-from azure_at_rest.controls import CHECKS
+from cloud_governance.container_revisions import collect
+from cloud_governance.collector import FixtureTransport,endpoint
+from cloud_governance.controls import CHECKS
 from tests.helpers import resource
 
 
@@ -38,7 +38,7 @@ class ContainerRevisionTests(unittest.TestCase):
 
     def test_changed_image_or_activation_fails_saved_criteria(self):
         from tests.test_controls import fixture,collect as collect_arm
-        from azure_at_rest.workflow import assess_snapshot
+        from cloud_governance.workflow import assess_snapshot
         for change in ('image','active','missing'):
             responses,policy=fixture();url=next(k for k in responses if '/revisions?' in k)
             if change=='image':responses[url]['value'][0]['properties']['template']['initContainers'][0]['image']='example.azurecr.io/init:old'

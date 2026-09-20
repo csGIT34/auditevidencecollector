@@ -1,8 +1,8 @@
 import copy
 import unittest
 
-from azure_at_rest.catalog import RULES
-from azure_at_rest.collector import endpoint
+from cloud_governance.catalog import RULES
+from cloud_governance.collector import endpoint
 from tests.helpers import Scenario, resource
 
 

@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from scripts.check_docs import broken_links
 from scripts.benchmark_pipeline import fixture, SUB
-from azure_at_rest.collector import Collector, FixtureTransport
+from cloud_governance.collector import Collector, FixtureTransport
 
 
 class DeveloperToolTests(unittest.TestCase):
@@ -17,7 +17,7 @@ class DeveloperToolTests(unittest.TestCase):
             self.assertEqual(['README.md: missing relative target missing.md'], broken_links(root, [doc]))
 
     def test_scale_fixture_exercises_pagination_denial_and_mixed_outcomes(self):
-        from azure_at_rest.assessment import assess
+        from cloud_governance.assessment import assess
         transport = FixtureTransport(fixture(101))
         snapshot = Collector(transport, mode='offline_fixture').collect([SUB])
         self.assertEqual(101, len(snapshot['resources']))

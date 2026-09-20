@@ -3,8 +3,8 @@ import json
 import logging
 import os
 import azure.functions as func
-from azure_at_rest.archive import identity
-from azure_at_rest.hosting import ExecutionError, execute, schedule, enabled
+from cloud_governance.archive import identity
+from cloud_governance.hosting import ExecutionError, execute, schedule, enabled
 
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 # Our handlers emit fixed safe envelopes. Keep SDK response diagnostics out of host logs.
@@ -47,9 +47,9 @@ if enabled(os.environ,'operational'):
     @app.function_name(name='ImportOperationalEvidence')
     @app.route(route='operational/import',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def import_operational_evidence(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.operational import MAX_BYTES
-        from azure_at_rest.archive import encode
-        from azure_at_rest.wiz import decode
+        from cloud_governance.operational import MAX_BYTES
+        from cloud_governance.archive import encode
+        from cloud_governance.wiz import decode
         try:
             raw=req.get_body()
             if len(raw)>MAX_BYTES+4096:raise ValueError()
@@ -70,7 +70,7 @@ if enabled(os.environ,'operational'):
     @app.function_name(name='GenerateOperationalReport')
     @app.route(route='operational/reports',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def generate_operational_report(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.wiz import decode
+        from cloud_governance.wiz import decode
         try:
             if len(req.get_body())>1024:raise ValueError()
             body=decode(req.get_body())
@@ -90,9 +90,9 @@ if enabled(os.environ,'workload'):
     @app.function_name(name='ImportKubernetesEvidence')
     @app.route(route='workloads/kubernetes/import',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def import_kubernetes_evidence(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.kubernetes_evidence import MAX_BYTES
-        from azure_at_rest.archive import encode
-        from azure_at_rest.wiz import decode
+        from cloud_governance.kubernetes_evidence import MAX_BYTES
+        from cloud_governance.archive import encode
+        from cloud_governance.wiz import decode
         try:
             raw=req.get_body()
             if len(raw)>MAX_BYTES+4096:raise ValueError()
@@ -112,7 +112,7 @@ if enabled(os.environ,'workload'):
     @app.function_name(name='GenerateKubernetesReport')
     @app.route(route='workloads/kubernetes/reports',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def generate_kubernetes_report(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.wiz import decode
+        from cloud_governance.wiz import decode
         try:
             if len(req.get_body())>1024:raise ValueError()
             body=decode(req.get_body())
@@ -132,7 +132,7 @@ if enabled(os.environ,'kubernetes_collection'):
     @app.function_name(name='CollectKubernetesEvidence')
     @app.route(route='workloads/kubernetes/collect',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def collect_kubernetes_evidence(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.wiz import decode
+        from cloud_governance.wiz import decode
         try:
             if len(req.get_body())>1024:raise ValueError()
             body=decode(req.get_body())
@@ -151,9 +151,9 @@ if enabled(os.environ,'guest'):
     @app.function_name(name='ImportGuestEvidence')
     @app.route(route='guests/import',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def import_guest_evidence(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.guest_evidence import MAX_BYTES
-        from azure_at_rest.archive import encode
-        from azure_at_rest.wiz import decode
+        from cloud_governance.guest_evidence import MAX_BYTES
+        from cloud_governance.archive import encode
+        from cloud_governance.wiz import decode
         try:
             raw=req.get_body()
             if len(raw)>MAX_BYTES+4096:raise ValueError()
@@ -173,7 +173,7 @@ if enabled(os.environ,'guest'):
     @app.function_name(name='GenerateGuestReport')
     @app.route(route='guests/reports',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
     def generate_guest_report(req: func.HttpRequest) -> func.HttpResponse:
-        from azure_at_rest.wiz import decode
+        from cloud_governance.wiz import decode
         try:
             if len(req.get_body())>1024:raise ValueError()
             body=decode(req.get_body())

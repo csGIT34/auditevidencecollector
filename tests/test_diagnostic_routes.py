@@ -1,10 +1,10 @@
 import copy
 import json
 import unittest
-from azure_at_rest.collector import Collector, FixtureTransport, endpoint
-from azure_at_rest.controls import CHECKS
-from azure_at_rest.diagnostic_routes import project, valid_routes
-from azure_at_rest.workflow import assess_snapshot
+from cloud_governance.collector import Collector, FixtureTransport, endpoint
+from cloud_governance.controls import CHECKS
+from cloud_governance.diagnostic_routes import project, valid_routes
+from cloud_governance.workflow import assess_snapshot
 from tests.helpers import resource, SUB
 from tests.test_controls import fixture
 

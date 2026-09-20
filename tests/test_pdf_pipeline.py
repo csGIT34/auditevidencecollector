@@ -8,11 +8,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from azure_at_rest.archive import digest, encode, load_run, publish_pdf, save_run, snapshot_digest
-from azure_at_rest.cli import main
-from azure_at_rest.collector import Collector, FixtureTransport
-from azure_at_rest.storage import FileStore
-from azure_at_rest.assessment import assess
+from cloud_governance.archive import digest, encode, load_run, publish_pdf, save_run, snapshot_digest
+from cloud_governance.cli import main
+from cloud_governance.collector import Collector, FixtureTransport
+from cloud_governance.storage import FileStore
+from cloud_governance.assessment import assess
 from tests.test_archive import evidence, MemoryStore
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -30,7 +30,7 @@ class ArchiveCliTests(unittest.TestCase):
     def test_collection_archives_failures_and_preserves_previous_run(self):
         with tempfile.TemporaryDirectory() as tmp:
             args=['collect','--fixture',str(ROOT/'examples/demo-fixture.json'),'--store',tmp]
-            with patch('azure_at_rest.collector.AzureCliCredential.get_token',side_effect=AssertionError('No cloud')):
+            with patch('cloud_governance.collector.AzureCliCredential.get_token',side_effect=AssertionError('No cloud')):
                 code,out=invoke(args)
                 self.assertEqual(1,code);self.assertIn('Local archive complete',out)
                 store=FileStore(tmp);old={k:store.read(k) for k in store.keys('runs/')}
@@ -41,7 +41,7 @@ class ArchiveCliTests(unittest.TestCase):
             self.assertTrue(all(r['coverage_incomplete'] and r['assessment_conclusion']=='FAILURES_FOUND' for r in runs))
 
     def test_invalid_saved_run_does_not_trigger_collection(self):
-        with tempfile.TemporaryDirectory() as tmp,patch('azure_at_rest.collector.Collector.collect',side_effect=AssertionError('No recollection')):
+        with tempfile.TemporaryDirectory() as tmp,patch('cloud_governance.collector.Collector.collect',side_effect=AssertionError('No recollection')):
             code,out=invoke(['pdf','--store',tmp,'--run-id','latest'])
             self.assertEqual(3,code)
 
@@ -49,7 +49,7 @@ class ArchiveCliTests(unittest.TestCase):
         s,r=evidence()
         with tempfile.TemporaryDirectory() as tmp:
             store=FileStore(tmp);m=save_run(store,s,r);old={k:store.read(k) for k in store.keys('runs/')}
-            with patch('azure_at_rest.pdf_report.renderer_dependencies',side_effect=RuntimeError('PDF_DEPENDENCY_MISSING')):
+            with patch('cloud_governance.pdf_report.renderer_dependencies',side_effect=RuntimeError('PDF_DEPENDENCY_MISSING')):
                 code,out=invoke(['pdf','--store',tmp,'--run-id',m['run_id']])
             self.assertEqual(3,code);self.assertIn('[pdf] extra',out)
             self.assertEqual(old,{k:store.read(k) for k in old});self.assertEqual([],store.keys('reports/'))
@@ -67,7 +67,7 @@ class PdfPipelineTests(unittest.TestCase):
         snapshot=Collector(FixtureTransport(fixture['responses']),mode='offline_fixture').collect()
         report=assess(snapshot);report['snapshot_sha256']=snapshot_digest(snapshot);report['reassessed_from_snapshot']=False
         store=MemoryStore();run=save_run(store,snapshot,report)
-        with patch('azure_at_rest.collector.Collector.collect',side_effect=AssertionError('No recollection')),patch('azure_at_rest.assessment.assess',side_effect=AssertionError('No reassessment')):
+        with patch('cloud_governance.collector.Collector.collect',side_effect=AssertionError('No recollection')),patch('cloud_governance.assessment.assess',side_effect=AssertionError('No reassessment')):
             manifest=publish_pdf(store,run['run_id'])
         pdf=store.read(manifest['pdf']['key']);reader,text=self.text(pdf)
         compact=''.join(text.split())
@@ -101,8 +101,8 @@ class PdfPipelineTests(unittest.TestCase):
         s2,r2=evidence();s2['resources'][0]['name']='second-name';s2['resources'][0]['id']=s2['resources'][0]['id'].replace('safe-store','second-name')
         s2['resources'][0]['request_path']=s2['resources'][0]['id'];r2=assess(s2);r2['snapshot_sha256']=snapshot_digest(s2);r2['reassessed_from_snapshot']=False
         save_run(store,s2,r2)
-        with (patch('azure_at_rest.archive.make_context',side_effect=AssertionError('No current catalog')),
-             patch.dict('azure_at_rest.catalog.RULES',{},clear=True)):
+        with (patch('cloud_governance.archive.make_context',side_effect=AssertionError('No current catalog')),
+             patch.dict('cloud_governance.catalog.RULES',{},clear=True)):
             a=publish_pdf(store,first['run_id']);b=publish_pdf(store,first['run_id'])
         self.assertNotEqual(a['report_id'],b['report_id']);self.assertNotEqual(a['pdf']['key'],b['pdf']['key'])
         self.assertEqual(before,{k:store.objects[k] for k in before})
@@ -114,7 +114,7 @@ class PdfPipelineTests(unittest.TestCase):
         for suffix in ('report.pdf','manifest.json',None):
             s,r=evidence();store=MemoryStore();run=save_run(store,s,r);original=dict(store.objects)
             store.fail_suffix=suffix
-            manager=patch('azure_at_rest.pdf_report.render_pdf',side_effect=RuntimeError('TOP-SECRET')) if suffix is None else contextlib.nullcontext()
+            manager=patch('cloud_governance.pdf_report.render_pdf',side_effect=RuntimeError('TOP-SECRET')) if suffix is None else contextlib.nullcontext()
             with manager,self.assertRaises(RuntimeError):publish_pdf(store,run['run_id'])
             self.assertEqual(original,{k:store.objects[k] for k in original})
             reports={k:v for k,v in store.objects.items() if k.startswith('reports/')}
@@ -148,7 +148,7 @@ class PdfPipelineTests(unittest.TestCase):
 class PackagedScopeTests(unittest.TestCase):
     def test_program_scope_matches_research_catalog(self):
         source=ROOT/'docs/audit/catalog.json';d=json.loads(source.read_text())
-        packaged=json.loads((ROOT/'azure_at_rest/program_scope.json').read_text())
+        packaged=json.loads((ROOT/'cloud_governance/program_scope.json').read_text())
         self.assertEqual(digest(source.read_bytes()),packaged['catalog_sha256'])
         self.assertEqual([s['name'] for s in d['services']],[s['name'] for s in packaged['services']])
         self.assertEqual(d['domains'],packaged['domains'])

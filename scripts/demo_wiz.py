@@ -17,13 +17,13 @@ def main(argv=None):
     if target.exists() or target == ROOT or ROOT in target.parents:
         parser.error('Use a new output directory outside the checkout.')
     os.umask(0o077)
-    from azure_at_rest.archive import encode, digest, load_run
-    from azure_at_rest.catalog import RULES
-    from azure_at_rest.collector import FixtureTransport, endpoint, INVENTORY_API
-    from azure_at_rest.storage import FileStore
-    from azure_at_rest.workflow import collect_run
-    from azure_at_rest.wiz import import_export
-    from azure_at_rest.reconciliation import publish_comparison, load_comparison
+    from cloud_governance.archive import encode, digest, load_run
+    from cloud_governance.catalog import RULES
+    from cloud_governance.collector import FixtureTransport, endpoint, INVENTORY_API
+    from cloud_governance.storage import FileStore
+    from cloud_governance.workflow import collect_run
+    from cloud_governance.wiz import import_export
+    from cloud_governance.reconciliation import publish_comparison, load_comparison
     exported = json.loads((ROOT/'examples/wiz/normalized-export.json').read_text())
     sub = exported['source']['scope']['subscription_ids'][0]
     kind = 'Microsoft.Storage/storageAccounts'

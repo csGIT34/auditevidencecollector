@@ -1,11 +1,18 @@
 # Release notes
 
+## 0.20.0
+
+- Rename the package and distribution from `azure_at_rest` / `azure-at-rest` to `cloud_governance` / `cloud-governance`. Encryption at rest is one rule family, not the identity of the program; the CLI is now `python -m cloud_governance`.
+- Rename the `encryption_rule` evidence kind to `resource_rule`: it is a reviewed rule for an exact ARM type, not a topic.
+- Rename the control scope declaration from "purview" to "tailoring", NIST's own term, so it no longer collides with the Microsoft Purview product. The CLI flag is `--tailoring`.
+- Package `control_index.json` with the distribution; the control register would have failed on an installed wheel without it.
+
 ## 0.19.0
 
-- Separate the controls the deployed Azure resource types implicate (48) from organization-wide candidates (189); the purview template defaults to the former and every control row records which it is.
+- Separate the controls the deployed Azure resource types implicate (48) from organization-wide candidates (189); the tailoring template defaults to the former and every control row records which it is.
 - Record NIST SP 800-53 Rev. 5 and NIST SP 800-144 as governing references. SP 800-144 publishes recommendations rather than assessable control identifiers, so it produces no control status.
 - Add a control-indexed evidence register: `control-register` inverts saved runs so each NIST SP 800-53 control lists its observations, findings and gaps without re-evaluating anything.
-- Add an approved control purview with IN_SCOPE, INHERITED and EXCLUDED dispositions, required rationale and approver, and a `--template` starter covering every candidate control. A draft purview never excludes or inherits.
+- Add an approved control tailoring with IN_SCOPE, INHERITED and EXCLUDED dispositions, required rationale and approver, and a `--template` starter covering every candidate control. A draft tailoring never excludes or inherits.
 - Package control labels, titles and families from the reviewed NIST index, gated like the other packaged research exports.
 - No status asserts that a control is satisfied; assessor determination, organization-defined parameters and operating effectiveness stay outside this evidence.
 

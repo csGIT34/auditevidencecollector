@@ -4,10 +4,10 @@ import json
 import unittest
 from urllib.error import HTTPError
 
-from azure_at_rest.assessment import assess
-from azure_at_rest.catalog import RULES
-from azure_at_rest.collector import ArmTransport, CollectionError, Collector, FixtureTransport, SUBSCRIPTIONS_API, endpoint
-from azure_at_rest.safety import identity
+from cloud_governance.assessment import assess
+from cloud_governance.catalog import RULES
+from cloud_governance.collector import ArmTransport, CollectionError, Collector, FixtureTransport, SUBSCRIPTIONS_API, endpoint
+from cloud_governance.safety import identity
 from tests.helpers import SUB, SUB2, Scenario, resource
 
 

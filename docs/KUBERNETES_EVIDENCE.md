@@ -41,9 +41,9 @@ Supply `as_of` and a positive `max_age_seconds` up to one year. Stale/future exp
 ## Local CLI
 
 ```sh
-python -m azure_at_rest kubernetes-import --store /absolute/archive --run-id r-EXACT --input export.json --criteria criteria.json --as-of 2026-09-20T02:00:00Z --max-age-seconds 3600
-python -m azure_at_rest kubernetes-show --store /absolute/archive --evidence-id k-EXACT
-python -m azure_at_rest kubernetes-pdf --store /absolute/archive --evidence-id k-EXACT
+python -m cloud_governance kubernetes-import --store /absolute/archive --run-id r-EXACT --input export.json --criteria criteria.json --as-of 2026-09-20T02:00:00Z --max-age-seconds 3600
+python -m cloud_governance kubernetes-show --store /absolute/archive --evidence-id k-EXACT
+python -m cloud_governance kubernetes-pdf --store /absolute/archive --evidence-id k-EXACT
 ```
 
 Use actual returned identifiers: prefix plus 32 hexadecimal characters. Criteria may be omitted to retain unassessed evidence. Import completion/exit zero means publication succeeded, not that workload criteria passed. The manifest includes the assessment summary. Each publication writes an intent first and a completion manifest last; hash verification rejects tampered or incomplete archives. PDF commands return the immutable object key and digest.
