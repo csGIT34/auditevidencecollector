@@ -282,6 +282,13 @@ class Collector:
         for check in (c for c in checks if c.operation=='vmss_instances'):
             from .compute_instances import collect as collect_instances
             record.setdefault('configuration',{})[check.id]=collect_instances(self.transport,rid,check,self.max_pages,parent_detail)
+        for check in (c for c in checks if c.operation=='vmss_members'):
+            from .compute_instances import collect_members
+            observation,members=collect_members(self.transport,rid,check,self.max_pages,parent_detail,record.get('configuration',{}).get('VMSS-instance-models',{}),self.resource_group)
+            for member in members:
+                if self.add_resource(member,record['subscription_id'],expected_type='Microsoft.Compute/virtualMachines') is None:
+                    observation['state']='partial';observation['collection']['malformed']=True
+            record.setdefault('configuration',{})[check.id]=observation
         for check in (c for c in checks if c.operation=='container_revisions'):
             from .container_revisions import collect as collect_revisions
             record.setdefault('configuration',{})[check.id]=collect_revisions(self.transport,rid,check,self.max_pages)

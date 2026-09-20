@@ -25,6 +25,7 @@ def setpath(obj,path,value):
 
 
 def sample(check, negative=False):
+    if check.kind=='vmss_members':return {'orchestration':'Uniform','scope':'scale_set','members':[]}
     if check.kind in ('vmss_instances','container_revisions','backup_jobs','container_access','vault_objects'):return []
     if check.kind in ('dp_population','rs_population'):return []
     if check.kind=='diagnostic_routes':return []
@@ -58,6 +59,10 @@ def fixture():
                 settings=responses[endpoint(row['id']+c.suffix,c.api)]['value']
                 value=project_routes(settings,row['id']+c.suffix,{'complete':True,'pages':1,'items_received':1},[])['value']
                 criteria[c.id]={'operator':'equals','value':value}
+                continue
+            if c.operation=='vmss_members':
+                instance_id=(row['id']+'/virtualMachines/0').lower()
+                criteria[c.id]={'operator':'equals','value':{'orchestration':'Uniform','scope':'scale_set','members':[instance_id]}}
                 continue
             if c.operation=='vault_metadata':
                 from azure_at_rest.vault_metadata import API,project

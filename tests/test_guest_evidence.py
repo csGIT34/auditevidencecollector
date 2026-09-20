@@ -145,3 +145,13 @@ class GuestEvidenceTests(unittest.TestCase):
             with self.assertRaises(OSError):self.save()
         key=next(k for k in self.store.objects if k.startswith('guests/'))
         with self.assertRaises((KeyError,FileNotFoundError)):load(self.store,key.split('/')[1])
+
+    def test_overlapping_flexible_parent_and_vm_selection_has_stable_objective(self):
+        from azure_at_rest.guest_evidence import population
+        from azure_at_rest.archive import load_run
+        saved=load_run(self.store,self.run)
+        parent=next(r for r in saved['snapshot']['resources'] if r['id'].lower()==self.vmss)
+        parent['configuration']['VMSS-instance-members']={'state':'observed','value':{'orchestration':'Flexible','scope':'subscription','members':[self.vm]}}
+        for selection in ([self.vm,self.vmss],[self.vmss,self.vm]):
+            expected,complete=population(saved,selection)
+            self.assertEqual({self.vm:'VMSS'},expected);self.assertTrue(complete)

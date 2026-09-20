@@ -46,3 +46,55 @@ class ComputeInstanceTests(unittest.TestCase):
             else:responses[url]['value']=[]
             results=assess_snapshot(collect_arm(responses),criteria=policy)['configuration_assessment']['results']
             self.assertEqual('FAIL',next(row for row in results if row['check_id']==self.check.id)['result'])
+
+    def test_flexible_membership_uses_declared_parent_and_discovers_vm_dependencies(self):
+        from azure_at_rest.collector import INVENTORY_API
+        from tests.helpers import SUB
+        responses,policy=fixture()
+        vm_url=next(u for u,v in responses.items() if isinstance(v,dict) and v.get('type')=='microsoft.compute/virtualmachines')
+        vm=responses[vm_url]
+        parent_url=next(u for u,v in responses.items() if isinstance(v,dict) and v.get('type')=='microsoft.compute/virtualmachinescalesets')
+        parent=responses[parent_url];parent['properties']['orchestrationMode']='Flexible'
+        vm['properties']['virtualMachineScaleSet']={'id':parent['id']};vm['properties']['customData']='SECRET-CANARY'
+        inventory_url=endpoint('/subscriptions/'+SUB+'/resources',INVENTORY_API)
+        responses[inventory_url]['value']=[v for v in responses[inventory_url]['value'] if v['id']!=vm['id']]
+        listing=endpoint('/subscriptions/'+SUB+'/providers/Microsoft.Compute/virtualMachines','2026-03-01')
+        responses[listing]={'value':[vm]}
+        policy['checks']['VMSS-instance-members']={'operator':'equals','value':{'orchestration':'Flexible','scope':'subscription','members':[vm['id'].lower()]}}
+        snapshot=collect_arm(responses);rows={r['id']:r for r in snapshot['resources']}
+        self.assertIn(vm['id'],rows);self.assertEqual('ok',rows[vm['id']]['collection_status'])
+        observed=rows[parent['id']]['configuration']['VMSS-instance-members']
+        self.assertEqual('observed',observed['state']);self.assertNotIn('SECRET-CANARY',json.dumps(snapshot))
+        report=assess_snapshot(snapshot,criteria=policy)
+        decision=next(r for r in report['configuration_assessment']['results'] if r['check_id']=='VMSS-instance-members')
+        self.assertEqual('PASS',decision['result']);self.assertEqual(listing.split('?')[0].removeprefix('https://management.azure.com'),decision['request_path'])
+        from azure_at_rest.archive import save_run,load_run
+        from tests.test_archive import MemoryStore
+        store=MemoryStore();run=save_run(store,snapshot,report)['run_id'];self.assertEqual(snapshot,load_run(store,run)['snapshot'])
+        from azure_at_rest.guest_evidence import population
+        expected,complete=population(load_run(store,run),[parent['id'].lower()])
+        self.assertEqual({vm['id'].lower():'VMSS'},expected);self.assertTrue(complete)
+
+    def test_flexible_listing_scope_denials_and_missing_association_are_explicit(self):
+        from azure_at_rest.compute_instances import collect_members
+        from tests.helpers import SUB
+        check=CHECKS['VMSS-instance-members'];parent={'properties':{'orchestrationMode':'Flexible'}}
+        vm=resource('Microsoft.Compute/virtualMachines','member');vm['properties']['virtualMachineScaleSet']={'id':self.rid}
+        group=vm['id'].split('/')[4]
+        url=endpoint('/subscriptions/'+SUB+'/resourceGroups/'+group+'/providers/Microsoft.Compute/virtualMachines',check.api)
+        for response,expected in [({'value':[vm]},'observed'),({'fixture_error':403},'partial'),({'value':[vm,vm]},'partial'),({'value':[{'id':vm['id']}]},'partial')]:
+            transport=FixtureTransport({url:response})
+            result,members=collect_members(transport,self.rid,check,10,parent,{},group)
+            self.assertEqual(expected,result['state']);self.assertEqual([url],transport.calls)
+            self.assertEqual('resource_group',result['value']['scope'])
+        outside=copy.deepcopy(vm);outside['id']=outside['id'].replace('/resourceGroups/'+group+'/', '/resourceGroups/other/')
+        result,_=collect_members(FixtureTransport({url:{'value':[outside]}}),self.rid,check,10,parent,{},group)
+        self.assertEqual('partial',result['state']);self.assertEqual([],result['value']['members'])
+
+    def test_uniform_membership_reuses_model_population_without_additional_requests(self):
+        from azure_at_rest.compute_instances import collect_members
+        class NoRequests:
+            def get(self,url):raise AssertionError('No duplicate instance read')
+        models=self.read({'value':[self.row]})
+        result,raw=collect_members(NoRequests(),self.rid,CHECKS['VMSS-instance-members'],10,self.parent,models)
+        self.assertEqual('observed',result['state']);self.assertEqual([self.row['id'].lower()],result['value']['members']);self.assertEqual([],raw)

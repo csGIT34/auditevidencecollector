@@ -1138,6 +1138,16 @@
         }
       ]
     },
+    "VMSS-instance-members": {
+      "operator": "equals",
+      "value": {
+        "members": [
+          "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualmachines/0"
+        ],
+        "orchestration": "Uniform",
+        "scope": "scale_set"
+      }
+    },
     "VMSS-instance-models": {
       "operator": "equals",
       "value": [

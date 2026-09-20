@@ -8,7 +8,7 @@ from .safety import now
 from .wiz import decode,fields,require,timestamp,token
 
 MAX_BYTES=4*1024*1024
-RULE_VERSION='2026.09.20.1'
+RULE_VERSION='2026.09.20.2'
 CHECKS={'patch_age_seconds':'V','missing_critical_patches':'V','missing_security_patches':'V','reboot_pending':'V',
         'protection_age_seconds':'V','protection_enabled':'V','protection_healthy':'V',
         'scan_age_seconds':'V','critical_vulnerabilities':'V','high_vulnerabilities':'V'}
@@ -31,12 +31,19 @@ def population(saved,selected):
     for rid in selected:
         require(rid in resources);resource=resources[rid];rt=resource['type'].lower()
         require(rt in ('microsoft.compute/virtualmachines','microsoft.compute/virtualmachinescalesets'))
-        if rt.endswith('/virtualmachines'):expected[rid]='VM'
+        if rt.endswith('/virtualmachines'):expected.setdefault(rid,'VM')
         else:
-            observation=resource.get('configuration',{}).get('VMSS-instance-models',{})
-            complete=complete and observation.get('state')=='observed'
-            for item in observation.get('value',[]):expected[item['instance_id']]='VMSS'
-            if not observation.get('value'):complete=False
+            configuration=resource.get('configuration',{})
+            membership=configuration.get('VMSS-instance-members',{})
+            if membership.get('value',{}).get('orchestration')=='Flexible':
+                complete=complete and membership.get('state')=='observed'
+                members=membership['value']['members']
+            else:
+                observation=configuration.get('VMSS-instance-models',{})
+                complete=complete and observation.get('state')=='observed'
+                members=[item['instance_id'] for item in observation.get('value',[])]
+            for member in members:expected[member]='VMSS'
+            if not members:complete=False
     require(len(expected)<=10000)
     return expected,complete
 
@@ -116,7 +123,7 @@ def publish(store,run_id,data,*,criteria,as_of,max_age_seconds,deadline=None,pro
         source_manifest_sha256=saved['manifest_sha256'],source_input_sha256=digest(data),generated_at=now(),mode=document['mode'],
         objective_definitions={key:OBJECTIVES['checks'][key] for row in report['records'] for key in row['objective_ids']},
         limitations=['Typed operator export; vendor authentication, source identity, measurements and normalization are not independently verified.',
-        'Only the selected saved VM population is assessed. Uniform VMSS instances come from saved instance evidence; missing/partial populations remain incomplete. Flexible VMs must be selected by their individual saved ARM IDs.',
+        'Only the selected saved VM population is assessed. VMSS instances come from saved Uniform instance evidence or Flexible membership evidence; missing/partial populations remain incomplete. Individual VM selection is also supported.',
         'No guest commands, agent installation, remediation, package paths, usernames or raw vendor payloads are collected.',
         'Patch and vulnerability counts need succeeded, current source assessments. Endpoint protection values need a current report. Missing criteria or facts remain UNKNOWN.',
         'Multiple source reports are assessed separately. A passing source never suppresses another source failure or missing evidence.',

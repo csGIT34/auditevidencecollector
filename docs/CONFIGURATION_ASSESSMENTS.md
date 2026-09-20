@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.13.0 includes **172 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.14.0 includes **173 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -346,3 +346,13 @@ This illustrative criterion is not a workplace recommendation. It assesses expir
 Access-policy vaults require the `list` permission for keys, secrets and certificates, without `get` of secrets or cryptographic permissions. For RBAC vaults, review a narrowly scoped metadata-read role; Microsoft's [Key Vault Reader definition](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#key-vault-reader) describes metadata access without sensitive values. Scope grants to the intended vaults and validate actual denials at work.
 
 API contracts: [keys list](https://learn.microsoft.com/en-us/rest/api/keyvault/keys/get-keys/get-keys?view=rest-keyvault-keys-2025-07-01), [secrets list](https://learn.microsoft.com/en-us/rest/api/keyvault/secrets/get-secrets/get-secrets?view=rest-keyvault-secrets-2025-07-01), [certificates list](https://learn.microsoft.com/en-us/rest/api/keyvault/certificates/get-certificates/get-certificates?view=rest-keyvault-certificates-2025-07-01). Local fixtures exercise the path; live UAMI, firewall and API acceptance remain pending.
+
+## Flexible scale-set membership (0.14.0)
+
+`VMSS-instance-members` records `{orchestration, scope, members}` for the actual observed population. Uniform membership reuses the existing instance-model read and inherits its completeness. Flexible membership lists standard VMs in the selected subscription, or only the configured resource group, and matches `properties.virtualMachineScaleSet.id` to the exact parent. No name-pattern inference or numeric Uniform instance-ID assumption is used for Flexible VMs.
+
+The read uses Compute API `2026-03-01` and requires VM read permission. Newly discovered matching VMs are hydrated through the existing bounded-scope collector; raw OS profiles, custom data and passwords are not saved. Unknown/malformed associations, duplicate VM IDs, denials, changed pagination scope and out-of-group identities keep membership partial. `scope` explicitly records `subscription`, `resource_group` or `scale_set`. Resource-group membership does not claim visibility outside that group.
+
+Use an explicit `equals` criterion containing the approved orchestration/scope/member IDs. A complete empty listing only proves the reported population is empty; it cannot satisfy a nonempty approved baseline. Guest supplements expand Flexible parents from saved membership and mark absent guest records UNKNOWN. Flexible membership does not establish Uniform `latestModelApplied` semantics or guest drift, so the separate Uniform model predicate remains unassessed on Flexible sets.
+
+Primary contracts: [subscription VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machines/list-all?view=rest-compute-2026-03-01), [resource-group VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machines/list?view=rest-compute-2026-03-01), [instance identities](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-instance-ids). The implementation is fixture-tested; live Flexible responses and permissions remain workplace acceptance items.

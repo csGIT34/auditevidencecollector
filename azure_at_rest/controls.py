@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.20.1'
+VERSION = '2026.09.20.2'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -261,6 +261,11 @@ CHECKS['ST-container-access']=Check('ST-container-access','microsoft.storage/sto
  'https://learn.microsoft.com/en-us/rest/api/storagerp/blob-containers/list?view=rest-storagerp-2023-05-01',
  '/blobServices/default/containers','container_access','blob_containers')
 
+CHECKS['VMSS-instance-members']=Check('VMSS-instance-members','microsoft.compute/virtualmachinescalesets','2026-03-01',
+ 'instance_membership',(),'VMSS-C','Actual Uniform/Flexible VM membership in the selected collection scope',
+ 'https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes',
+ '/virtualMachines','vmss_members','vmss_members')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
@@ -274,6 +279,9 @@ for _kind in ('keys','secrets','certificates'):
 
 
 def valid_value(check, value):
+    if check.kind=='vmss_members':
+        from .compute_instances import valid_members
+        return valid_members(value)
     if check.kind=='vault_objects':
         from .vault_metadata import valid_objects
         return valid_objects(value,check.path)
@@ -355,7 +363,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -438,6 +446,10 @@ def evaluate(snapshot, policy=None):
                    'observed_at':record['collected_at'], 'observation':observation,
                    'criterion':criterion, 'source':check.source, 'api_version':check.api,
                    'property':check.path, 'request_path':record.get('request_path',record['id']) + check.suffix, 'result':'UNKNOWN', 'reason':'Required observation is missing or invalid.'}
+            if check.operation=='vmss_members' and observation.get('value',{}).get('orchestration')=='Flexible':
+                scope='/subscriptions/'+record['subscription_id']
+                if observation['value']['scope']=='resource_group':scope+='/resourceGroups/'+record['resource_group']
+                row['request_path']=scope+'/providers/Microsoft.Compute/virtualMachines'
             if check.operation=='vault_metadata':row['request_path']='https://'+record['id'].rsplit('/',1)[1].lower()+'.vault.azure.net/'+check.path
             if (record['collection_status'] == 'error' and not check.suffix) or observation['state'] == 'error' or observation.get('collection',{}).get('errors'):
                 row.update(result='ERROR',reason='Resource configuration read failed.')

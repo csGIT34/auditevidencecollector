@@ -8,7 +8,7 @@ Use [sample export](../examples/guest-export.json) and [sample criteria](../exam
 
 The exact envelope contains `schema_version: "1.0"`, `kind: "guest_export"`, `mode`, `resource_ids`, and `records`. Mode is `synthetic` for fixture runs or `operator_export` for live source runs. Select one or more lowercase saved VM or VMSS ARM IDs in `resource_ids`.
 
-Individual VMs are expected guests. Uniform VMSS resources expand to the instance IDs retained in the source run's instance-model observation. Missing or partial instance listings keep coverage incomplete even if every supplied record passes. An empty VMSS population remains incomplete. Select Flexible instances by their individual VM ARM IDs; a scale-set parent cannot stand in for an instance.
+Individual VMs are expected guests. Uniform VMSS resources expand to the instance IDs retained in the source run's instance-model observation. Flexible parents use their saved instance-membership observation when available. Missing or partial instance listings keep coverage incomplete even if every supplied record passes. An empty VMSS population remains incomplete. Older runs without Flexible membership require selecting each saved VM ARM ID individually. Parent selection expands to actual saved member IDs; it never substitutes a model for guest measurements. Overlapping VM/parent selections are deduplicated and use the VMSS objective consistently.
 
 Each record contains exactly:
 

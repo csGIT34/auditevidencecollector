@@ -1,4 +1,4 @@
-"""Read-only Uniform VMSS instance model evidence; no guest or secret projection."""
+"""Read-only Uniform model and Uniform/Flexible membership evidence; no guest secrets."""
 import json
 import re
 from .safety import resource_id
@@ -33,3 +33,46 @@ def collect(transport,rid,check,max_pages,parent):
     values.sort(key=lambda r:r['instance_id'])
     return {'state':'observed' if listing['complete'] and not malformed else 'partial','value':values,
             'collection':{**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}}
+
+
+def valid_members(value):
+    if not isinstance(value,dict) or set(value)!={'orchestration','scope','members'}:return False
+    mode=value['orchestration'];scope=value['scope'];members=value['members']
+    if mode not in ('Uniform','Flexible') or scope not in ('scale_set','subscription','resource_group'):return False
+    if (mode=='Uniform')!=(scope=='scale_set'):return False
+    if not isinstance(members,list) or len(members)>10000 or not all(isinstance(v,str) and v==v.lower() and resource_id(v) for v in members):return False
+    pattern=r'.*/providers/microsoft.compute/virtualmachinescalesets/[^/]+/virtualmachines/[0-9]+' if mode=='Uniform' else r'.*/providers/microsoft.compute/virtualmachines/[^/]+'
+    return members==sorted(set(members)) and all(re.fullmatch(pattern,v) for v in members)
+
+
+def collect_members(transport,rid,check,max_pages,parent,models,resource_group=None):
+    """Uniform IDs reuse the actual-instance read; Flexible VMs use their declared parent."""
+    from .collector import Collector,endpoint
+    mode=parent.get('properties',{}).get('orchestrationMode') if isinstance(parent,dict) else None
+    if mode=='Uniform':
+        if models.get('state') not in ('observed','partial'):return {'state':'missing'},[]
+        return {**models,'value':{'orchestration':mode,'scope':'scale_set','members':[v['instance_id'] for v in models['value']]}},[]
+    if mode!='Flexible':return {'state':'missing'},[]
+    sid=rid.split('/')[2].lower();scope='/subscriptions/'+sid
+    if resource_group:scope+='/resourceGroups/'+resource_group
+    scope+='/providers/Microsoft.Compute/virtualMachines'
+    reader=Collector(transport,max_pages);rows,listing=reader.paged(endpoint(scope,check.api),rid,'flexible_members')
+    members=[];seen=set();malformed=False;matched=[]
+    for raw in rows:
+        try:
+            vm=raw['id'].lower();properties=raw['properties']
+            if not isinstance(properties,dict) or not resource_id(vm) or not re.fullmatch(r'/subscriptions/'+re.escape(sid)+r'/resourcegroups/[^/]+/providers/microsoft.compute/virtualmachines/[^/]+',vm):raise ValueError()
+            if resource_group and vm.split('/')[4]!=resource_group.lower():raise ValueError()
+            if vm in seen:raise ValueError()
+            seen.add(vm)
+            association=properties.get('virtualMachineScaleSet')
+            if association is None:continue
+            if not isinstance(association,dict) or not isinstance(association.get('id'),str):raise ValueError()
+            parent_id=association['id'].lower()
+            if not resource_id(parent_id) or not re.fullmatch(r'.*/providers/microsoft.compute/virtualmachinescalesets/[^/]+',parent_id):raise ValueError()
+            if parent_id==rid.lower():members.append(vm);matched.append(raw)
+        except (KeyError,TypeError,AttributeError,ValueError):malformed=True
+    value={'orchestration':mode,'scope':'resource_group' if resource_group else 'subscription','members':sorted(members)}
+    if not valid_members(value):return {'state':'invalid'},[]
+    return {'state':'observed' if listing['complete'] and not malformed else 'partial','value':value,
+            'collection':{**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}},matched

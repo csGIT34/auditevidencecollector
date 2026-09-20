@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.14.0
+
+- Add an actual-membership predicate for Uniform and Flexible scale sets. Uniform membership reuses the existing instance read; Flexible membership filters VM declarations within the selected subscription/resource-group scope.
+- Bring newly discovered Flexible member VMs into normal hydration and assessment, without storing raw guest properties.
+- Expand guest evidence populations from saved Flexible membership, preserving missing/partial coverage and stable deduplication of overlapping selections. Live Flexible acceptance remains pending.
+
+
 ## 0.13.0
 
 - Add three opt-in Key Vault data-plane LIST predicates for base key, secret and certificate expiration metadata, using the existing Functions identity and archive pipeline.
