@@ -15,9 +15,11 @@ Work in progress: 0.15.0 supplies 176 scoped configuration/identity predicates a
 ### 1. Account for every proposed check
 
 - [x] Turn the [215-check research catalog](audit/catalog.json) into a check-level delivery register, preserving its IDs and service/domain/control relationships.
-- [ ] For every check, record collection plane, implementation files, criteria, permissions, test evidence, reporting support, live validation state and outstanding dependencies.
-- [ ] Distinguish proposed, implemented/offline-tested, live-verified, manual/inherited and explicitly excluded checks. Link exclusion decisions and rationale; do not silently drop difficult checks.
-- [ ] Separate engineering coverage from tenant findings. One working property never marks a service or NIST control complete.
+- [x] For every check, record collection plane, implementation files, criteria, permissions, test evidence, reporting support, live validation state and outstanding dependencies.
+- [x] Distinguish proposed, implemented/offline-tested, live-verified, manual/inherited and explicitly excluded checks. Link exclusion decisions and rationale; do not silently drop difficult checks.
+- [x] Separate engineering coverage from tenant findings. One working property never marks a service or NIST control complete.
+
+Implementation: the generated [register and objective lookup](DELIVERY_REGISTER.md) link executable capabilities, tests and criteria while explicitly retaining unverified/manual/unimplemented states. No exclusion is currently approved.
 
 Acceptance: every catalog check has a traceable disposition; completion counts derive from evidence, not prose. Manual evidence support does not mean the underlying organizational control is satisfied.
 
