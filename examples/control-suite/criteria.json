@@ -35,6 +35,27 @@
       "operator": "equals",
       "value": false
     },
+    "ACA-revision-images": {
+      "operator": "equals",
+      "value": [
+        {
+          "active": true,
+          "containers": [
+            {
+              "image": "example.azurecr.io/web@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "kind": "app",
+              "name": "web"
+            },
+            {
+              "image": "example.azurecr.io/init:v1",
+              "kind": "init",
+              "name": "initialize"
+            }
+          ],
+          "revision_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.app/containerapps/demo0/revisions/revision-1"
+        }
+      ]
+    },
     "ACR-admin-user": {
       "operator": "equals",
       "value": false

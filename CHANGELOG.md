@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.8.2 — Container Apps revision image evidence
+
+- Compare actual revision populations, active flags and declared application/init-container images with approved criteria.
+- Reject incomplete/malformed listings and exclude environment variables, commands and secret payloads. Digest resolution, running-container attestation and vulnerability scans remain separate.
+
 ## 0.8.1 — scale-set instance drift
 
 - Read and compare actual Uniform VMSS instance identities and latest-model flags with supplied criteria. Preserve denied, malformed and incomplete listings.

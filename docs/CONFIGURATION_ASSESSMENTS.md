@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.8.1 includes **165 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.8.2 includes **166 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -272,3 +272,12 @@ This comparison proves the returned population/configuration matches the supplie
 The parent must explicitly identify `orchestrationMode: Uniform`. Flexible, missing or unreadable parent evidence remains unassessed. Duplicate IDs, wrong parents, missing/nonboolean model status, denied reads and incomplete pagination cannot pass. Empty populations pass only when explicitly expected by supplied criteria. Exact population criteria should be maintained for autoscaling environments. The provider's latest-model flag does not prove guest configuration, patch compliance or image safety.
 
 API contract: [VM scale-set VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machine-scale-set-vms/list?view=rest-compute-2026-03-01).
+
+
+### Container Apps revision images
+
+`ACA-revision-images` reads the paginated `/revisions` collection with API `2026-01-01`. It compares exact revision IDs, active flags and named application/init-container image references with supplied criteria. Both active and inactive revisions are retained, so activation changes and historical revision population changes are explicit. Use `Microsoft.App/containerApps/revisions/read`. Collection never activates/deactivates a revision or pulls an image.
+
+Only the image declaration, container name/kind and revision identity/active flag are retained. Environment variables, commands, arguments, volume contents, secrets and provisioning-error text are excluded. Missing init-container image metadata, malformed identities, duplicate revisions, incomplete pagination and denied reads cannot pass. Image references preserve their case. A tag remains a tag: collection does not resolve it to a running digest or claim scan, signature or vulnerability validation. Supply approved digest-pinned expectations when that is your policy. Exact population criteria must account for intentional revision churn.
+
+API contract: [Container Apps revisions list](https://learn.microsoft.com/en-us/rest/api/resource-manager/containerapps/container-apps-revisions/list-revisions?view=rest-resource-manager-containerapps-2026-01-01).

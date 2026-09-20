@@ -274,6 +274,9 @@ class Collector:
         for check in (c for c in checks if c.operation=='vmss_instances'):
             from .compute_instances import collect as collect_instances
             record.setdefault('configuration',{})[check.id]=collect_instances(self.transport,rid,check,self.max_pages,parent_detail)
+        for check in (c for c in checks if c.operation=='container_revisions'):
+            from .container_revisions import collect as collect_revisions
+            record.setdefault('configuration',{})[check.id]=collect_revisions(self.transport,rid,check,self.max_pages)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):
