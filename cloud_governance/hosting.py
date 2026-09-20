@@ -83,6 +83,7 @@ class Settings:
     criteria: dict | None = None
     graph_enabled: bool = False
     vault_metadata_enabled: bool = False
+    policy_assignment: str | None = None
 
     @classmethod
     def parse(cls, env):
@@ -127,12 +128,16 @@ class Settings:
             if env.get('CG_VAULT_METADATA_ENABLED','false') not in ('true','false'):raise ValueError()
             if env.get('CG_GRAPH_ENABLED','false') not in ('true','false'):
                 raise ValueError()
+            policy_assignment = env.get('CG_POLICY_ASSIGNMENT') or None
+            if policy_assignment is not None and (not re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', policy_assignment)
+                                                  or len(subscriptions) != 1):
+                raise ValueError()
             from .controls import decode_policy
             criteria = decode_policy(env['CG_ASSESSMENT_CRITERIA_JSON']) if env.get('CG_ASSESSMENT_CRITERIA_JSON') else None
             return cls(tenant.lower(), client.lower() if client else None, subscriptions, url, container, prefix, development,
                        number('CG_COLLECTION_BUDGET_SECONDS', 480, 30, 540), number('CG_REPORT_BUDGET_SECONDS', 180, 10, 180),
                        number('CG_ARM_RETRIES', 2, 0, 3), number('CG_BLOB_RETRIES', 2, 0, 3),
-                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group, criteria, env.get('CG_GRAPH_ENABLED')=='true',env.get('CG_VAULT_METADATA_ENABLED')=='true')
+                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group, criteria, env.get('CG_GRAPH_ENABLED')=='true',env.get('CG_VAULT_METADATA_ENABLED')=='true',policy_assignment)
         except (KeyError, TypeError, ValueError):
             raise ConfigurationError('invalid_host_configuration') from None
 
@@ -160,6 +165,9 @@ def resources(settings, deadline, operation):
         if operation=='collect' and settings.graph_enabled:
             from .graph import BudgetGraphTransport
             transport.graph_transport = BudgetGraphTransport(credential,deadline,settings.arm_retries)
+        if operation=='collect' and settings.policy_assignment:
+            from .policy_query import PolicyQueryTransport
+            transport.policy_transport = PolicyQueryTransport(credential)
         yield store, transport
     finally:
         try:
@@ -207,12 +215,16 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
             if operation == 'collect':
                 stage = 'tenant_preflight'
                 verify_tenant(transport, settings.subscriptions, settings.tenant)
+                if settings.policy_assignment and getattr(transport,'policy_transport',None) is None:
+                    raise ValueError('Policy collection is configured without a policy transport')
                 if settings.graph_enabled and getattr(transport,'graph_transport',None) is None:
                     raise ConfigurationError('graph_transport_required')
                 stage = 'collection_assessment_archive'
                 result = collect_run(store, transport, settings.subscriptions, mode='azure_live', max_pages=settings.max_pages,
                                      provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group, criteria=settings.criteria,
-                                     graph_transport=getattr(transport,'graph_transport',None) if settings.graph_enabled else None, tenant_id=settings.tenant)
+                                     graph_transport=getattr(transport,'graph_transport',None) if settings.graph_enabled else None, tenant_id=settings.tenant,
+                                     policy_transport=getattr(transport,'policy_transport',None) if settings.policy_assignment else None,
+                                     policy_assignment=settings.policy_assignment)
             elif operation=='workload-collect':
                 from .kubernetes_collect import collect, target
                 from .wiz import decode, require

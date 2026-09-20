@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.25.0
+
+- Collect Azure Policy compliance in a hosted run through `CG_POLICY_ASSIGNMENT`, empty by default. The evidence is archived beside the other kinds in the same immutable run and the control mapping is frozen with it.
+- Fail the operation when a configured assignment's compliance cannot be read, rather than archiving an empty result that would be indistinguishable from a compliant estate.
+- Report the policy summary in the hosted outcome alongside the resource and configuration summaries.
+
 ## 0.24.0
 
 - Read application web settings from Microsoft Graph and assess implicit access-token issuance, implicit ID-token issuance and the transport of declared redirect URIs. These give IA-13 an evidence path it previously had nowhere, at no cloud cost.

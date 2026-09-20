@@ -36,7 +36,7 @@ def assess_snapshot(snapshot, *, reassessed=False, criteria=None, policy=None):
     return report
 
 
-def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None, resource_group=None, criteria=None, graph_transport=None, tenant_id=None):
+def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture', max_pages=1000, provenance=None, deadline=None, resource_group=None, criteria=None, graph_transport=None, tenant_id=None, policy_transport=None, policy_assignment=None):
     if deadline:
         deadline.check()
     snapshot = Collector(transport, max_pages, mode).collect(subscriptions, resource_group=resource_group)
@@ -47,7 +47,19 @@ def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture',
         from .safety import now
         snapshot['identity_evidence'] = GraphCollector(graph_transport,tenant_id,max_pages).collect()
         snapshot['completed_at'] = now()
-    report = assess_snapshot(snapshot, criteria=criteria)
+    policy = None
+    if policy_transport is not None and policy_assignment:
+        from .policy_compliance import collect as collect_policy
+        from .policy_query import fetch_mapping
+        selected = sorted({s['id'] for s in snapshot['inventory']['subscriptions']})
+        if len(selected) != 1:
+            raise ValueError('Policy compliance requires exactly one selected subscription')
+        policy_set = fetch_mapping(policy_transport, selected[0], policy_assignment)
+        if deadline:
+            deadline.check()
+        policy = collect_policy(policy_transport.query(selected[0]), policy_set,
+                                assignment_name=policy_assignment)
+    report = assess_snapshot(snapshot, criteria=criteria, policy=policy)
     if deadline:
         deadline.check()
     manifest = save_run(store, snapshot, report, provenance=provenance)
@@ -56,4 +68,5 @@ def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture',
             'coverage_incomplete': report_model.overall(report)['coverage_incomplete'],
             'resource_count': report_model.resource_summary(report)['resource_count'],
             'counts': report_model.resource_summary(report)['counts'],
-            'configuration_summary': report_model.configuration_summary(report)}
+            'configuration_summary': report_model.configuration_summary(report),
+            'policy_summary': (report_model.policy_compliance(report) or {}).get('summary')}

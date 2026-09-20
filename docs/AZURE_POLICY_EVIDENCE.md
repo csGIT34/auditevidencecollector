@@ -110,6 +110,16 @@ Two boundaries apply and are preserved in the register:
 
 Policy compliance also carries its own completeness problem: a resource type with no applicable definition simply produces no result, which must not read as a pass. Absent evaluation is recorded as absent, never as compliant.
 
+## Collecting it unattended
+
+A hosted run collects policy compliance when `CG_POLICY_ASSIGNMENT` names an assignment; it is empty by default, so nothing changes for an existing deployment. The evidence is archived beside the resource rules and configuration predicates in the same immutable run, and the control mapping is frozen with it, so replaying an old run cannot silently pick up a later revision of Microsoft's initiative.
+
+```sh
+python -m cloud_governance collect --subscription <SUBSCRIPTION_ID> --policy-assignment nist-800-53-r5-audit
+```
+
+A configured assignment whose compliance cannot be read fails the operation. An empty result would be indistinguishable from a compliant estate, and this program does not archive that ambiguity.
+
 ## Current assignment
 
 | | |
