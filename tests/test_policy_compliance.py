@@ -200,3 +200,22 @@ class PolicyComplianceTests(unittest.TestCase):
         transport.query(SUB)  # Default requests the extra record.
         with self.assertRaises(ValueError):
             query_url(SUB, QUERY_TOP + 1)
+
+    def test_a_denied_query_reports_its_status_not_a_network_fault(self):
+        from urllib.error import HTTPError
+        from cloud_governance.policy_query import PolicyQueryTransport
+
+        class Credential:
+            def get_token(self):
+                return 'token'
+
+        class Denying:
+            def open(self, request, timeout=None):
+                raise HTTPError(request.full_url, 403, 'Forbidden', {}, None)
+
+        transport = PolicyQueryTransport(Credential(), opener=Denying())
+        with self.assertRaises(CollectionError) as caught:
+            transport.query(SUB)
+        # HTTPError subclasses OSError; catching OSError first would hide the 403.
+        self.assertEqual('http_error', caught.exception.code)
+        self.assertEqual(403, caught.exception.status)

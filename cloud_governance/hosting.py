@@ -166,8 +166,10 @@ def resources(settings, deadline, operation):
             from .graph import BudgetGraphTransport
             transport.graph_transport = BudgetGraphTransport(credential,deadline,settings.arm_retries)
         if operation=='collect' and settings.policy_assignment:
+            from .azure_adapters import ArmCredential
             from .policy_query import PolicyQueryTransport
-            transport.policy_transport = PolicyQueryTransport(credential)
+            # The SDK credential needs its scope; ArmCredential supplies it and owns refresh.
+            transport.policy_transport = PolicyQueryTransport(ArmCredential(credential))
         yield store, transport
     finally:
         try:
@@ -281,9 +283,23 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
         LOG.info(json.dumps(result, sort_keys=True))
         return result
     except Exception as exc:
+        # The exception class and, for a collection error, its own sanitized code. Neither
+        # carries a request, payload or SDK message, and an operator cannot diagnose a
+        # failed unattended run without knowing which kind of failure occurred.
+        from .collector import CollectionError
+        from .policy_query import ASSIGNMENT_READ, INITIATIVE_READ, STATES_READ
+        POLICY_READS = (ASSIGNMENT_READ, INITIATIVE_READ, STATES_READ)
         result = {'operation': operation if operation in LOCKS else 'invalid', 'state': 'failed',
                   'invocation_id': invocation_id, 'stage': stage,
+                  'failure': type(exc).__name__,
                   'code': 'operation_busy' if isinstance(exc, OperationBusy) else 'operation_failed'}
+        if isinstance(exc, CollectionError) and isinstance(getattr(exc, 'code', None), str):
+            result['read_failure'] = exc.code
+            if isinstance(getattr(exc, 'status', None), int):
+                result['http_status'] = exc.status
+            # Policy reads are authorized at three different scopes; name the one refused.
+            if getattr(exc, 'read', None) in POLICY_READS:
+                result['policy_read'] = exc.read
         LOG.error(json.dumps(result, sort_keys=True))  # No raw exception, request or SDK data.
         raise ExecutionError(result) from None
     finally:

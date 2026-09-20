@@ -143,3 +143,40 @@ class HostedPolicyCollectionTests(unittest.TestCase):
         text = '\n'.join(page.extract_text() or '' for page in
                          PdfReader(BytesIO(store.read(published['pdf']['key']))).pages)
         self.assertIn('truncated sample', text)
+
+    def test_the_hosted_policy_transport_receives_a_scoped_credential(self):
+        """The SDK credential needs a scope; the policy transport calls get_token() with none."""
+        from contextlib import ExitStack
+        from unittest.mock import patch
+        from cloud_governance.hosting import resources
+        from cloud_governance.workflow import Deadline
+        captured = {}
+
+        class FakeCredential:
+            def get_token(self, *scopes):
+                captured['scopes'] = scopes
+                class Token:
+                    token, expires_on = 'x', 2 ** 31
+                return Token()
+
+        settings = Settings.parse({**environment(), 'CG_SUBSCRIPTION_IDS': SUB,
+                                   'CG_POLICY_ASSIGNMENT': ASSIGNMENT})
+        with ExitStack() as stack:
+            stack.enter_context(patch('cloud_governance.hosting.token_credential', return_value=FakeCredential()))
+            stack.enter_context(patch('cloud_governance.hosting.BlobStore'))
+            try:
+                with resources(settings, Deadline(60), 'collect') as (_, transport):
+                    transport.policy_transport.credential.get_token()
+            except Exception:
+                pass  # Only the credential contract is under test here.
+        # A raw SDK credential would have been called with no scope and failed at runtime.
+        self.assertTrue(captured.get('scopes'), 'policy transport must receive a scoped credential')
+
+    def test_a_denied_policy_read_names_which_read_was_refused(self):
+        """Three reads are authorized at three scopes; a bare 403 is not actionable."""
+        from cloud_governance.policy_query import assignment_url
+        # Only the assignment resolves, so the initiative read is the one that fails.
+        partial = {assignment_url(SUB, ASSIGNMENT): policy_metadata()[assignment_url(SUB, ASSIGNMENT)]}
+        with self.assertRaises(ExecutionError) as caught:
+            hosted(MemoryStore(), metadata=partial)
+        self.assertEqual('initiative', caught.exception.outcome['policy_read'])

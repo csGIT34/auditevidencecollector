@@ -35,6 +35,10 @@ class DeveloperToolTests(unittest.TestCase):
             subprocess.run([sys.executable, str(root/'scripts/package_functions.py'), '--output', str(target)],
                            check=True, cwd=root, capture_output=True)
             names = set(zipfile.ZipFile(target).namelist())
-        # Any JSON the package loads at import time must ship with it.
+        # Every module and data file in the package must ship. The allowlist is a review
+        # gate, not a place for a new module to be forgotten: a missing one only surfaces
+        # as an ImportError after deployment.
+        for source in sorted(p.name for p in (root/'cloud_governance').glob('*.py')):
+            self.assertIn('cloud_governance/'+source, names, source)
         for data in sorted(p.name for p in (root/'cloud_governance').glob('*.json')):
             self.assertIn('cloud_governance/'+data, names, data)

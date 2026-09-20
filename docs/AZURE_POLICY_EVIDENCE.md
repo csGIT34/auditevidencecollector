@@ -122,6 +122,28 @@ python -m cloud_governance collect --subscription <SUBSCRIPTION_ID> --policy-ass
 
 A configured assignment whose compliance cannot be read fails the operation. An empty result would be indistinguishable from a compliant estate, and this program does not archive that ambiguity.
 
+### The reader's permissions
+
+The collecting identity needs read access at three different places, and a denial at any one
+of them stops the operation. A failed run names the read that was refused — `assignment`,
+`initiative` or `policy_states` — because a bare `403` does not say which permission is
+missing.
+
+A custom role at subscription scope covers all three:
+
+| Action | Read it authorizes |
+| --- | --- |
+| `Microsoft.Authorization/policyAssignments/read` | the assignment |
+| `Microsoft.Authorization/policySetDefinitions/read` | its initiative |
+| `Microsoft.Authorization/policyDefinitions/read` | the definitions the initiative names |
+| `Microsoft.PolicyInsights/policyStates/queryResults/read` | the compliance query |
+| `Microsoft.PolicyInsights/policyStates/queryResults/action` | the compliance query |
+| `Microsoft.PolicyInsights/policyStates/read` | the compliance query |
+
+The two `queryResults` entries are not interchangeable: the POST is authorized against both,
+so a role holding only the `/action` is denied. Every action is a read; none of them permits
+creating an assignment, changing one, or triggering remediation.
+
 ## Current assignment
 
 | | |

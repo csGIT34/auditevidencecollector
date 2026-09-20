@@ -17,6 +17,7 @@ is refused before a token is obtained.
 """
 import json
 import re
+from urllib.error import HTTPError, URLError
 from urllib.request import Request
 
 from .collector import MAX_RESPONSE_BYTES, CollectionError, NoRedirect, bounded_payload
@@ -34,6 +35,19 @@ QUERY_TOP = MAX_RECORDS + 1
 # The assignment and its initiative are ordinary resource reads, so they stay GET.
 ASSIGNMENT_API = '2023-04-01'
 SET_DEFINITION_API = '2023-04-01'
+
+
+# Each policy read is authorized at a different scope, so a denial is only actionable if
+# the run says which one was refused.
+ASSIGNMENT_READ = 'assignment'
+INITIATIVE_READ = 'initiative'
+STATES_READ = 'policy_states'
+
+
+def denial(error, read):
+    """Label a failure with the read that produced it."""
+    error.read = read
+    return error
 
 
 def query_url(subscription, top):
@@ -65,7 +79,7 @@ class PolicyQueryTransport:
         self._allowed.update(urls)
         return self
 
-    def _send(self, request):
+    def _send(self, request, read):
         try:
             with self.opener.open(request, timeout=self.timeout) as response:
                 raw = response.read(self.max_response_bytes + 1)
@@ -74,17 +88,22 @@ class PolicyQueryTransport:
                 return bounded_payload(raw)
         except CollectionError:
             raise
-        except OSError:
-            raise CollectionError('network_error') from None
+        except HTTPError as exc:
+            # HTTPError subclasses OSError, so a denial must be caught first or it reads
+            # as a network fault and hides the status an operator needs.
+            status = exc.code if isinstance(getattr(exc, 'code', None), int) else None
+            raise denial(CollectionError('http_error', status), read) from None
+        except (URLError, TimeoutError, OSError):
+            raise denial(CollectionError('network_error'), read) from None
         except (ValueError, TypeError):
-            raise CollectionError('malformed_response') from None
+            raise denial(CollectionError('malformed_response'), read) from None
 
-    def read(self, url):
+    def read(self, url, read=ASSIGNMENT_READ):
         """GET one of the two allowlisted policy metadata URLs."""
         if url not in self._allowed:
             raise ValueError('Policy reads are restricted to the assignment and its initiative')
         return self._send(Request(url, method='GET', headers={
-            'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json'}))
+            'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json'}), read)
 
     def query(self, subscription, top=QUERY_TOP):
         url = query_url(subscription, top)
@@ -93,7 +112,7 @@ class PolicyQueryTransport:
                           headers={'Authorization': 'Bearer ' + self.credential.get_token(),
                                    'Accept': 'application/json', 'Content-Type': 'application/json',
                                    'Content-Length': '0'})
-        payload = self._send(request)
+        payload = self._send(request, STATES_READ)
         if not isinstance(payload, dict) or not isinstance(payload.get('value'), list):
             raise CollectionError('malformed_response')
         if len(payload['value']) > QUERY_TOP:
@@ -112,10 +131,10 @@ class FixturePolicyTransport:
     def allow(self, *urls):
         return self
 
-    def read(self, url):
+    def read(self, url, read=ASSIGNMENT_READ):
         document = self.metadata.get(url)
         if document is None:
-            raise CollectionError('fixture_response_missing')
+            raise denial(CollectionError('fixture_response_missing'), read)
         return document
 
     def query(self, subscription, top=QUERY_TOP):
@@ -165,13 +184,13 @@ def fetch_mapping(transport, subscription, assignment_name):
     """Read the assignment and its initiative so control mapping is frozen with the run."""
     url = assignment_url(subscription, assignment_name)
     transport.allow(url)
-    assignment = transport.read(url)
+    assignment = transport.read(url, ASSIGNMENT_READ)
     if not isinstance(assignment, dict) or not isinstance(assignment.get('properties'), dict):
         raise CollectionError('malformed_response')
     definition_id = assignment['properties'].get('policyDefinitionId')
     definition_url = set_definition_url(definition_id)
     transport.allow(definition_url)
-    policy_set = transport.read(definition_url)
+    policy_set = transport.read(definition_url, INITIATIVE_READ)
     if not isinstance(policy_set, dict) or not isinstance(policy_set.get('properties'), dict):
         raise CollectionError('malformed_response')
     return policy_set['properties']
