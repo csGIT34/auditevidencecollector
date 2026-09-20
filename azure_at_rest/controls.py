@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.20.2'
+VERSION = '2026.09.20.3'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -266,6 +266,17 @@ CHECKS['VMSS-instance-members']=Check('VMSS-instance-members','microsoft.compute
  'https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-orchestration-modes',
  '/virtualMachines','vmss_members','vmss_members')
 
+for _kind,_domain,_title in [('runbooks','C','Runbook publication, type, runtime reference and logging metadata'),('modules','V','Classic module population, declared versions and provisioning states')]:
+    _id='AUTO-'+_kind+'-metadata'
+    CHECKS[_id]=Check(_id,'microsoft.automation/automationaccounts','2024-10-23',_kind,(),'AUTO-'+_domain,_title,
+        'https://learn.microsoft.com/en-us/rest/api/automation/'+('runbook' if _kind=='runbooks' else 'module')+'/list-by-automation-account?view=rest-automation-2024-10-23',
+        '/'+_kind,'automation_assets','automation_assets')
+
+CHECKS['AUTO-runtime-packages']=Check('AUTO-runtime-packages','microsoft.automation/automationaccounts','2024-10-23',
+ 'runtimeEnvironments[].runtime/defaultPackages/packages',(),'AUTO-V','Runtime environment language/version, default packages and imported package metadata',
+ 'https://learn.microsoft.com/en-us/rest/api/automation/runtime-environments/list-by-automation-account?view=rest-automation-2024-10-23',
+ '/runtimeEnvironments','automation_runtimes','automation_runtimes')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
@@ -279,6 +290,12 @@ for _kind in ('keys','secrets','certificates'):
 
 
 def valid_value(check, value):
+    if check.kind=='automation_runtimes':
+        from .automation_assets import valid_runtimes
+        return valid_runtimes(value)
+    if check.kind=='automation_assets':
+        from .automation_assets import valid_assets
+        return valid_assets(value,check.path)
     if check.kind=='vmss_members':
         from .compute_instances import valid_members
         return valid_members(value)
@@ -363,7 +380,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members','automation_assets','automation_runtimes') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -408,7 +425,10 @@ def validate_policy(policy):
         if not isinstance(criterion, dict) or set(criterion) != {'operator','value'}:
             raise ValueError('Invalid criterion')
         op, value = criterion['operator'], criterion['value']
-        if op=='lifecycle':
+        if op=='asset_baseline':
+            from .automation_assets import valid_criterion
+            good=CHECKS[cid].kind=='automation_assets' and valid_criterion(value,CHECKS[cid].path)
+        elif op=='lifecycle':
             from .vault_metadata import valid_criterion
             good=CHECKS[cid].kind=='vault_objects' and valid_criterion(value)
         elif op=='allowed_access':
@@ -457,7 +477,11 @@ def evaluate(snapshot, policy=None):
                 row['reason'] = 'Approved criterion is not supplied; observation retained without a positive or negative assessment.'
             elif observation['state'] == 'observed':
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
-                if op=='lifecycle':
+                if op=='asset_baseline':
+                    from .automation_assets import baseline
+                    passed=baseline(actual)==expected
+                    row.update(result='PASS' if passed else 'FAIL',reason='Returned asset population and selected metadata match the approved baseline.' if passed else 'Returned asset population or selected metadata differ from the approved baseline.')
+                elif op=='lifecycle':
                     from .vault_metadata import assess as assess_lifecycle
                     result,reason,details=assess_lifecycle(actual,expected,generated_at)
                     row.update(result=result,reason=reason,lifecycle_evaluation=details)

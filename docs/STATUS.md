@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.14.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.15.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Updated 2026-09-19. **Source release 0.14.0 (local tests passed; expanded reads 
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
-| Multi-control configuration/identity predicates | Implemented; local validation | 173 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 176 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
 | Kubernetes pod security/image supplement | Implemented locally | [Restricted export import](KUBERNETES_EVIDENCE.md), eight typed predicates per app/init/ephemeral container; raw secrets excluded. Includes an opt-in UAMI-authenticated AKS collection endpoint; API, identity and network behavior are locally tested, not live-verified. |
@@ -69,3 +69,5 @@ Version 0.12.0 passed 271 local tests with zero skips and 43 checks in the final
 Version 0.13.0 passed 280 local tests with zero skips and 43 checks in the packaged Functions runtime. Its synthetic all-service report evaluates 172 predicates (171 PASS, one intentional expired-credential FAIL). A separate lifecycle report preserves a failed expiration criterion and unknown object coverage; its decision page was rendered and visually reviewed. Original 0.3.1, 0.5.0 and 0.9.0 archives remained readable with every object hash unchanged. No Azure resources or live vault APIs were used.
 
 Version 0.14.0 passed 284 local tests with zero skips and 43 checks in the final packaged Functions runtime. Flexible membership tests verify resource-group boundaries, newly discovered VM hydration, denied/duplicate listings and guest-population linkage. The synthetic Flexible membership PDF page was rendered and visually reviewed. No live Flexible scale-set collection or cloud changes were made.
+
+Version 0.15.0 passed 292 local tests with zero skips and 43 checks in the packaged Functions runtime. The synthetic all-service report evaluates 176 predicates (175 PASS, one intentional expired-credential FAIL); its Automation metadata pages were rendered and visually reviewed. Runbook publication and module/runtime-package baselines retain incomplete reads as UNKNOWN and exclude content/parameter canaries. Original source objects remained unchanged during report generation. No live Automation reads or cloud changes were made.

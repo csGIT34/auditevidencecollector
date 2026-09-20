@@ -301,6 +301,12 @@ class Collector:
         for check in (c for c in checks if c.operation=='vault_metadata'):
             from .vault_metadata import collect as collect_vault_metadata
             record.setdefault('configuration',{})[check.id]=collect_vault_metadata(self.transport,rid,check,self.max_pages,parent_detail)
+        for check in (c for c in checks if c.operation=='automation_assets'):
+            from .automation_assets import collect as collect_automation_assets
+            record.setdefault('configuration',{})[check.id]=collect_automation_assets(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='automation_runtimes'):
+            from .automation_assets import collect_runtimes
+            record.setdefault('configuration',{})[check.id]=collect_runtimes(self.transport,rid,check,self.max_pages)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

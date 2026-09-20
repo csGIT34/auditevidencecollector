@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.14.0 includes **173 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.15.0 includes **176 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -356,3 +356,21 @@ The read uses Compute API `2026-03-01` and requires VM read permission. Newly di
 Use an explicit `equals` criterion containing the approved orchestration/scope/member IDs. A complete empty listing only proves the reported population is empty; it cannot satisfy a nonempty approved baseline. Guest supplements expand Flexible parents from saved membership and mark absent guest records UNKNOWN. Flexible membership does not establish Uniform `latestModelApplied` semantics or guest drift, so the separate Uniform model predicate remains unassessed on Flexible sets.
 
 Primary contracts: [subscription VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machines/list-all?view=rest-compute-2026-03-01), [resource-group VM list](https://learn.microsoft.com/en-us/rest/api/compute/virtual-machines/list?view=rest-compute-2026-03-01), [instance identities](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-instance-ids). The implementation is fixture-tested; live Flexible responses and permissions remain workplace acceptance items.
+
+## Automation runbooks, modules and runtime packages (0.15.0)
+
+Three predicates extend the existing scoped ARM collector, all using API `2024-10-23`:
+
+- `AUTO-runbooks-metadata` (AUTO-C): account runbook IDs, type, publication state, runtime-environment reference, progress/verbose logging booleans and modification timestamp.
+- `AUTO-modules-metadata` (AUTO-V): classic account module IDs, declared version, provisioning state and modification timestamp.
+- `AUTO-runtime-packages` (AUTO-V): runtime-environment IDs, language/version, default package declarations and each environment's separately listed imported package IDs, versions and provisioning states.
+
+The collector only reads metadata list endpoints. It does not fetch runbook content, published/draft content links, parameter values, descriptions, identity names, credential/variable assets, certificate private keys, webhook URLs, job output or provider error messages. It does not start runbooks or import packages. Missing module/package versions and missing runtime declarations remain partial/UNKNOWN; the API's null version cannot become an approved version by assumption.
+
+Runbook and classic-module criteria may use `asset_baseline` with an exact list of projected records excluding `last_modified`. This compares population and stable selected fields while retaining observed modification times separately. Module baseline versions must be non-null. Runbook criteria include `asset_id`, `runbook_type`, `state`, `runtime_environment`, `log_progress`, and `log_verbose`; module criteria include `asset_id`, `version`, and `provisioning_state`. A null runbook runtime reference is allowed for classic runbooks and does not establish their effective runtime version. Runtime/package criteria use `equals` against the complete projected environment/package list. All criteria require explicit approved policy; examples are test data.
+
+A missing expected asset, unexpected asset, changed publication state, runtime reference or version fails an exact baseline. Denied/truncated listings, duplicate/wrong-parent IDs, malformed metadata and future modification times keep evidence incomplete. Empty complete listings can only match an explicitly empty approved population. Classic modules and runtime-environment packages are distinct inventories; neither substitutes for the other. Observed versions do not prove vulnerability-free code, support status, content integrity, signing, change approval, Hybrid Worker patching or job effectiveness. Runbook references are reported, not asserted to prove successful execution in that environment.
+
+Reads require the corresponding scoped Automation runbook, module, runtime-environment and package read actions. Runtime collection is limited to 100 environments, 1000 imported packages per environment and 10000 imported packages total; pagination uses the configured limit and execution deadline. No additional role assignments or infrastructure are created. Actual permissions and service responses still need live workplace acceptance.
+
+Contracts: [runbooks](https://learn.microsoft.com/en-us/rest/api/automation/runbook/list-by-automation-account?view=rest-automation-2024-10-23), [classic modules](https://learn.microsoft.com/en-us/rest/api/automation/module/list-by-automation-account?view=rest-automation-2024-10-23), [runtime environments](https://learn.microsoft.com/en-us/rest/api/automation/runtime-environments/list-by-automation-account?view=rest-automation-2024-10-23), [runtime packages](https://learn.microsoft.com/en-us/rest/api/automation/package/list-by-runtime-environment?view=rest-automation-2024-10-23).

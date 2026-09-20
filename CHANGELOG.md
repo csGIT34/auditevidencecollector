@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.15.0
+
+- Collect safe Automation runbook publication/type/runtime/logging metadata, classic module versions, and runtime environment/default/imported package versions.
+- Add exact population/version baseline assessment and preserve denied, missing-version, duplicate, future-dated and malformed evidence as incomplete.
+- Exclude scripts, content links, parameters, asset values, webhook URLs and job streams. No runtime or package support/vulnerability guarantee is inferred from a returned version.
+
+
 ## 0.14.0
 
 - Add an actual-membership predicate for Uniform and Flexible scale sets. Uniform membership reuses the existing instance read; Flexible membership filters VM declarations within the selected subscription/resource-group scope.

@@ -297,9 +297,57 @@
       "operator": "equals",
       "value": true
     },
+    "AUTO-modules-metadata": {
+      "operator": "equals",
+      "value": [
+        {
+          "asset_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/modules/example",
+          "last_modified": "2026-09-01T00:00:00Z",
+          "provisioning_state": "Succeeded",
+          "version": "1.2.3"
+        }
+      ]
+    },
     "AUTO-public-network": {
       "operator": "equals",
       "value": false
+    },
+    "AUTO-runbooks-metadata": {
+      "operator": "equals",
+      "value": [
+        {
+          "asset_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runbooks/example",
+          "last_modified": "2026-09-01T00:00:00Z",
+          "log_progress": true,
+          "log_verbose": false,
+          "runbook_type": "PowerShell",
+          "runtime_environment": "reviewed-runtime",
+          "state": "Published"
+        }
+      ]
+    },
+    "AUTO-runtime-packages": {
+      "operator": "equals",
+      "value": [
+        {
+          "default_packages": [
+            {
+              "name": "Az",
+              "version": "12.3.0"
+            }
+          ],
+          "environment_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeenvironments/reviewed",
+          "language": "PowerShell",
+          "packages": [
+            {
+              "package_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeenvironments/reviewed/packages/example.package",
+              "provisioning_state": "Succeeded",
+              "version": "1.0.0"
+            }
+          ],
+          "version": "7.4"
+        }
+      ]
     },
     "BV-approved-arm-grants": {
       "operator": "equals",

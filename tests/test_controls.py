@@ -26,7 +26,7 @@ def setpath(obj,path,value):
 
 def sample(check, negative=False):
     if check.kind=='vmss_members':return {'orchestration':'Uniform','scope':'scale_set','members':[]}
-    if check.kind in ('vmss_instances','container_revisions','backup_jobs','container_access','vault_objects'):return []
+    if check.kind in ('vmss_instances','container_revisions','backup_jobs','container_access','vault_objects','automation_assets','automation_runtimes'):return []
     if check.kind in ('dp_population','rs_population'):return []
     if check.kind=='diagnostic_routes':return []
     if check.kind=='arm_grants':
@@ -59,6 +59,18 @@ def fixture():
                 settings=responses[endpoint(row['id']+c.suffix,c.api)]['value']
                 value=project_routes(settings,row['id']+c.suffix,{'complete':True,'pages':1,'items_received':1},[])['value']
                 criteria[c.id]={'operator':'equals','value':value}
+                continue
+            if c.operation=='automation_runtimes':
+                from tests.test_automation_assets import runtime_fixture
+                source,expected=runtime_fixture(row['id'])
+                responses.update(source);criteria[c.id]={'operator':'equals','value':expected}
+                continue
+            if c.operation=='automation_assets':
+                from tests.test_automation_assets import asset
+                from azure_at_rest.automation_assets import project
+                item=asset(row['id'],c.path)
+                responses[endpoint(row['id']+c.suffix,c.api)]={'value':[item]}
+                criteria[c.id]={'operator':'equals','value':[project(item,c.path)]}
                 continue
             if c.operation=='vmss_members':
                 instance_id=(row['id']+'/virtualMachines/0').lower()
@@ -159,7 +171,7 @@ class ConfigurationTests(unittest.TestCase):
                     if isinstance(raw,dict) and 'properties' in raw and (raw.get('type','').lower()==c.resource_type if not c.suffix else raw.get('id','').endswith(c.suffix)):
                         setpath(raw['properties'],c.path,value)
             for url in list(responses):
-                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url or '/containers?' in url or '.vault.azure.net/' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
+                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url or '/containers?' in url or '.vault.azure.net/' in url or '/runbooks?' in url or '/modules?' in url or '/runtimeEnvironments?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
                 elif '/privateendpoints/' in url and 'properties' in responses[url]:responses[url]['properties']['privateLinkServiceConnections']=None
             snapshot=collect(responses);validate_snapshot(snapshot)
             results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']

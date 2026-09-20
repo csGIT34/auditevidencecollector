@@ -3288,7 +3288,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "AUTO-runbooks-metadata"
+      ],
       "domain": "C",
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
@@ -3296,13 +3298,16 @@
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Only approved tested runbooks and dependencies execute; no raw script or source-control token retrieval required for inventory.",
       "service_id": "AUTO",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Published code, source control and execution changes",
       "whole_objective_complete": false,
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "AUTO-modules-metadata",
+        "AUTO-runtime-packages"
+      ],
       "domain": "V",
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
@@ -3310,7 +3315,7 @@
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Supported worker/runtime/modules and remediated host vulnerabilities; provider service maintenance does not patch hybrid hosts or customer modules.",
       "service_id": "AUTO",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Runtime, modules and Hybrid Worker hosts",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -3331,7 +3336,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 173,
+  "configuration_predicate_count": 176,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }
