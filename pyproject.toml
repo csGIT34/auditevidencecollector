@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cloud-governance"
-version = "0.21.0"
+version = "0.22.0"
 description = "Read-only Azure technical evidence and configurable control assessments"
 requires-python = ">=3.11"
 dependencies = []

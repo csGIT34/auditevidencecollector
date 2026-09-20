@@ -139,10 +139,14 @@ def build(report, tailoring=None, operational=None):
             missing.append('No automated observation or attributed record references this control in this run.')
         if status == 'INHERITED_CLAIMED' and not entry.get('assurance_reference'):
             missing.append('No provider assurance reference is recorded for the claimed inheritance.')
+        if CONTROLS[label].get('withdrawn') and evidence:
+            missing.append('This control is withdrawn in the pinned catalog revision; evidence referencing it '
+                           'should be re-pointed at its replacement.')
         if status in ('AUTOMATED_EVIDENCE_COLLECTED', 'FINDINGS_PRESENT', 'INCOMPLETE_EVIDENCE'):
             missing.append('Assessor determination, organization-defined parameters and operating effectiveness over the assessment period are outside this evidence.')
         rows.append({'control': label, 'title': CONTROLS[label]['title'], 'family': CONTROLS[label]['family'],
                      'candidate': CONTROLS[label]['candidate'],
+                     'withdrawn': CONTROLS[label].get('withdrawn', False),
                      'service_applicable': label in SERVICE_APPLICABLE, 'tailoring': disposition,
                      'owner': (entry or {}).get('owner', ''), 'rationale': (entry or {}).get('rationale', ''),
                      'assurance_reference': (entry or {}).get('assurance_reference', ''),

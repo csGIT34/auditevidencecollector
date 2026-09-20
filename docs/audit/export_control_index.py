@@ -8,7 +8,8 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def payload():
-    raw = (ROOT / 'docs/audit/nist-control-index.json').read_bytes()
+    # The full standard, verified against the pinned digest by export_nist_catalog.py.
+    raw = (ROOT / 'docs/audit/nist-control-catalog.json').read_bytes()
     index = json.loads(raw)
     scope = json.loads((ROOT / 'cloud_governance/program_scope.json').read_text())
     catalog = json.loads((ROOT / 'docs/audit/catalog.json').read_text())
@@ -18,6 +19,7 @@ def payload():
     service = {reference['label'] for check in catalog['checks'] if check['service_id'] != 'shared'
                for reference in check['nist']}
     return {'schema_version': '1.0', 'source': index['source'], 'index_sha256': hashlib.sha256(raw).hexdigest(),
+            'control_count': len(index['controls']),
             'families': {entry['id']: {'title': entry['title'], 'responsibility': entry['responsibility']}
                          for entry in scope['families']},
             'references': [{'id': 'sp800-53r5', 'label': 'NIST SP 800-53 Rev. 5',
@@ -31,11 +33,11 @@ def payload():
                                       '4.5': 'Identity and Access Management', '4.6': 'Software Isolation',
                                       '4.7': 'Data Protection', '4.8': 'Availability', '4.9': 'Incident Response'},
                             'url': 'https://csrc.nist.gov/pubs/sp/800/144/final'}],
-            'controls': {control['label']: {'oscal_id': key, 'title': control['title'],
-                                            'family': family.get(key, key.split('-')[0]),
-                                            'candidate': key in candidates,
-                                            'service_applicable': control['label'] in service}
-                         for key, control in sorted(index['controls'].items())}}
+            'controls': {label: {'oscal_id': control['oscal_id'], 'title': control['title'],
+                                 'family': control['family'], 'withdrawn': control['withdrawn'],
+                                 'candidate': control['oscal_id'] in candidates,
+                                 'service_applicable': label in service}
+                         for label, control in sorted(index['controls'].items())}}
 
 
 if __name__ == '__main__':

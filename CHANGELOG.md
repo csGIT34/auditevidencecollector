@@ -1,5 +1,13 @@
 # Release notes
 
+## 0.22.0
+
+- Collect Azure Policy compliance with a run through `--policy-assignment`, or from an operator export with `--policy-export`, freezing Microsoft's control mapping into the evidence.
+- Retain all three policy evaluation scopes. A first live run discarded 499 of 531 records because only resource scope was accepted; subscription and resource group scoped results are evidence too, and a scoped result never claims the resources inside it.
+- Package the complete NIST SP 800-53 control list, verified against the SHA-256 already pinned in the program scope. Evidence for enhancements such as `AC-17(1)` now has somewhere to land: a live lab register went from 139 to 330 controls with evidence and from 191 unindexable control references to none.
+- Mark withdrawn controls and flag any evidence that lands on one.
+- State where the single read-only query POST lives, in the module docstring, the README and the auditor guidance embedded in every PDF.
+
 ## 0.21.0
 
 - Assessment reports move to schema 1.2, where evidence kinds are peers under `evidence` instead of one kind holding the top-level `results` slot while the rest nest beneath it.

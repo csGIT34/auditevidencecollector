@@ -134,9 +134,23 @@ class ControlRegisterTests(unittest.TestCase):
     def test_packaged_control_index_matches_the_reviewed_catalog(self):
         import subprocess
         import sys
-        subprocess.run([sys.executable, str(ROOT / 'docs/audit/export_control_index.py'), '--check'],
-                       check=True, cwd=ROOT)
-        self.assertEqual(208, len(CONTROLS))
+        for script in ('export_nist_catalog.py', 'export_control_index.py'):
+            subprocess.run([sys.executable, str(ROOT / 'docs/audit' / script), '--check'], check=True, cwd=ROOT)
+        # The complete standard, so evidence for any control or enhancement has somewhere to land.
+        self.assertEqual(1196, len(CONTROLS))
+        self.assertEqual(189, sum(1 for c in CONTROLS.values() if c['candidate']))
+        self.assertEqual(48, len(SERVICE_APPLICABLE))
+
+    def test_withdrawn_controls_are_marked_and_flagged_when_evidence_lands_on_them(self):
+        withdrawn = [label for label, control in CONTROLS.items() if control['withdrawn']]
+        self.assertTrue(withdrawn)
+        # A withdrawn control is never a candidate for assessment.
+        self.assertFalse(any(CONTROLS[label]['candidate'] for label in withdrawn))
+        source = report()
+        report_model.configuration_results(source)[0]['control_refs'] = [withdrawn[0]]
+        entry = row(build(source), withdrawn[0])
+        self.assertTrue(entry['withdrawn'])
+        self.assertTrue(any('withdrawn in the pinned catalog revision' in gap for gap in entry['gaps']))
 
     def test_tailoring_template_defaults_to_the_deployed_resource_types(self):
         service = template()
