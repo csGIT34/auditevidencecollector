@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.8'
+VERSION = '2026.09.19.9'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -249,11 +249,21 @@ CHECKS['ACA-revision-images']=Check('ACA-revision-images','microsoft.app/contain
  'https://learn.microsoft.com/en-us/rest/api/resource-manager/containerapps/container-apps-revisions/list-revisions?view=rest-resource-manager-containerapps-2026-01-01',
  '/revisions','container_revisions','container_revisions')
 
+for _cid,_rt,_api,_source in (
+ ('BV-backup-jobs','microsoft.dataprotection/backupvaults','2026-03-01','https://learn.microsoft.com/en-us/rest/api/dataprotection/jobs/list?view=rest-dataprotection-2026-03-01'),
+ ('BV-recovery-jobs','microsoft.recoveryservices/vaults','2026-02-01','https://learn.microsoft.com/en-us/rest/api/backup/backup-jobs/list?view=rest-backup-2026-02-01')):
+    CHECKS[_cid]=Check(_cid,_rt,_api,'backupJobs[].operation/status/startTime/endTime',(),'BV-B',
+        'Backup and restore job outcomes and approved recency window; restore quality remains separate',
+        _source,'/backupJobs','backup_jobs','backup_jobs')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
 
 def valid_value(check, value):
+    if check.kind=='backup_jobs':
+        from .backup_jobs import valid_jobs
+        return valid_jobs(value)
     if check.kind=='container_revisions':
         from .container_revisions import valid_revisions
         return valid_revisions(value)
@@ -326,7 +336,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -371,7 +381,10 @@ def validate_policy(policy):
         if not isinstance(criterion, dict) or set(criterion) != {'operator','value'}:
             raise ValueError('Invalid criterion')
         op, value = criterion['operator'], criterion['value']
-        if op == 'equals':
+        if op=='recent_jobs':
+            from .backup_jobs import valid_criterion
+            good=CHECKS[cid].kind=='backup_jobs' and valid_criterion(CHECKS[cid],value)
+        elif op == 'equals':
             good = valid_value(CHECKS[cid], value)
         elif op == 'one_of':
             good = isinstance(value, list) and 1 <= len(value) <= 16 and all(valid_value(CHECKS[cid],v) for v in value)
@@ -407,8 +420,13 @@ def evaluate(snapshot, policy=None):
                 row['reason'] = 'Approved criterion is not supplied; observation retained without a positive or negative assessment.'
             elif observation['state'] == 'observed':
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
-                passed = actual == expected if op == 'equals' else actual in expected if op == 'one_of' else set(expected) <= set(actual) if op == 'contains_all' else actual >= expected
-                row.update(result='PASS' if passed else 'FAIL', reason='Observed configuration matches the supplied criterion.' if passed else 'Observed configuration does not match the supplied criterion.')
+                if op=='recent_jobs':
+                    from .backup_jobs import assess as assess_jobs
+                    result,reason=assess_jobs(actual,expected,generated_at)
+                    row.update(result=result,reason=reason)
+                else:
+                    passed = actual == expected if op == 'equals' else actual in expected if op == 'one_of' else set(expected) <= set(actual) if op == 'contains_all' else actual >= expected
+                    row.update(result='PASS' if passed else 'FAIL', reason='Observed configuration matches the supplied criterion.' if passed else 'Observed configuration does not match the supplied criterion.')
             if policy and 'max_observation_age_seconds' in policy:
                 age = (datetime.fromisoformat(generated_at) - datetime.fromisoformat(record['collected_at'])).total_seconds()
                 state = 'future' if age < 0 else 'stale' if age > policy['max_observation_age_seconds'] else 'fresh'
@@ -419,7 +437,7 @@ def evaluate(snapshot, policy=None):
     counts = {s:0 for s in ('PASS','FAIL','UNKNOWN','ERROR')}
     counts.update(Counter(r['result'] for r in results))
     return {'schema_version':'1.0','rule_version':VERSION,'generated_at':generated_at, 'policy':policy, 'identity_complete':snapshot.get('identity_evidence',{}).get('complete',True),
-            'limits':'Point-in-time configuration predicates only. Criteria approval is an operator assertion, not independently authenticated. Catalog references do not close whole objectives, effective access, network reachability or operating effectiveness.',
+            'limits':'Selected configuration, identity and reported-job predicates. Criteria approval is an operator assertion, not independently authenticated. Catalog references do not close whole objectives, effective access, network reachability or operating effectiveness.',
             'summary':{'check_count':len(results),'counts':counts,
                        'conclusion':'FAILURES_FOUND' if counts['FAIL'] else 'INCOMPLETE' if not results or counts['UNKNOWN'] or counts['ERROR'] or not snapshot.get('identity_evidence',{}).get('complete',True) else 'SELECTED_CONFIGURATION_CRITERIA_SATISFIED'},
             'results':results}

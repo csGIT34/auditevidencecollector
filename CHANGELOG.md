@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.9.0 — backup and restore job evidence
+
+- Read both vault families’ safe job statuses and times. Add explicit source/vault-scoped latest-job recency criteria, including requiring both backup and restore success.
+- Preserve failed, missing, unfinished, stale and future evidence; never equate successful job status with restored-data integrity. Historical assessment time and results remain frozen.
+
 ## 0.8.2 — Container Apps revision image evidence
 
 - Compare actual revision populations, active flags and declared application/init-container images with approved criteria.

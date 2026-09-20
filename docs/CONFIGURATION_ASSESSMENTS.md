@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.8.2 includes **166 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.9.0 includes **168 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -10,7 +10,7 @@ With the project's development dependencies installed:
 python scripts/demo_controls.py --output /tmp/cloud-governance-control-demo
 ```
 
-Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 163 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
+Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 167 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
 
 The [example inputs](../examples/control-suite/) are reproducible HTTP fixtures and fictional criteria. They deliberately include secret canaries to verify projection; no real tenant IDs or credentials are present.
 
@@ -281,3 +281,30 @@ API contract: [VM scale-set VM list](https://learn.microsoft.com/en-us/rest/api/
 Only the image declaration, container name/kind and revision identity/active flag are retained. Environment variables, commands, arguments, volume contents, secrets and provisioning-error text are excluded. Missing init-container image metadata, malformed identities, duplicate revisions, incomplete pagination and denied reads cannot pass. Image references preserve their case. A tag remains a tag: collection does not resolve it to a running digest or claim scan, signature or vulnerability validation. Supply approved digest-pinned expectations when that is your policy. Exact population criteria must account for intentional revision churn.
 
 API contract: [Container Apps revisions list](https://learn.microsoft.com/en-us/rest/api/resource-manager/containerapps/container-apps-revisions/list-revisions?view=rest-resource-manager-containerapps-2026-01-01).
+
+
+### Backup and restore job outcomes
+
+`BV-backup-jobs` and `BV-recovery-jobs` enumerate `/backupJobs` for Data Protection (`2026-03-01`) and Recovery Services (`2026-02-01`). They retain job IDs, operation category, status, start/end timestamps and, for Data Protection, the source ARM ID. Job error messages, extended property bags, URLs and credential-bearing payloads are excluded. Required reads are `Microsoft.DataProtection/backupVaults/backupJobs/read` and `Microsoft.RecoveryServices/vaults/backupJobs/read` respectively. No backup or restore is initiated.
+
+For these checks, `recent_jobs` evaluates the latest-started matching job independently for each expected source and operation. Example draft criterion:
+
+```json
+{
+  "operator": "recent_jobs",
+  "value": {
+    "scope": "sources",
+    "source_ids": ["/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/example/providers/microsoft.compute/disks/required"],
+    "operation": "BackupAndRestore",
+    "max_age_seconds": 86400
+  }
+}
+```
+
+Choose `Backup`, `Restore` or `BackupAndRestore`; the combined option requires both, so a backup cannot substitute for a restore. The duration is an operator-supplied criterion, not a built-in recommendation. Each latest job must have status `Completed` and an end time within the supplied window. Failed/cancelled/warning jobs, absent required jobs and stale completion fail. Unfinished or future-dated job evidence is UNKNOWN unless another required population already fails. Conflicting equal-start-time jobs cannot hide a failure. All supplied job evidence remains in the report. Missing end times on completed jobs, malformed timestamps, unknown statuses/operations, denied reads and truncated pagination cannot pass.
+
+Recovery Services' common job response does not supply a reliable source ARM identity. Its `recent_jobs` criterion therefore requires `scope: "vault"` and `source_ids: []`. A vault result says only that the selected latest job(s) completed; it never establishes backup/restore coverage for every protected item. Data Protection also permits this explicit vault scope, or exact source-scoped populations. Jobs are limited to the provider-returned history; absence is a missing-evidence finding, not proof a job never ran. Successful restore-job status does not establish restored-data integrity, application consistency, RPO/RTO or exercise approval. Use operational evidence for those additional assertions.
+
+The evaluation time and criterion are frozen in the assessment. Historical reports replay the saved result without reassessing recency today. Collection retains jobs even when no approved criterion is supplied.
+
+API contracts: [Data Protection jobs](https://learn.microsoft.com/en-us/rest/api/dataprotection/jobs/list?view=rest-dataprotection-2026-03-01), [Recovery Services jobs](https://learn.microsoft.com/en-us/rest/api/backup/backup-jobs/list?view=rest-backup-2026-02-01).

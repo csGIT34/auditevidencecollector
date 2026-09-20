@@ -277,6 +277,9 @@ class Collector:
         for check in (c for c in checks if c.operation=='container_revisions'):
             from .container_revisions import collect as collect_revisions
             record.setdefault('configuration',{})[check.id]=collect_revisions(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='backup_jobs'):
+            from .backup_jobs import collect as collect_jobs
+            record.setdefault('configuration',{})[check.id]=collect_jobs(self.transport,rid,check,self.max_pages)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

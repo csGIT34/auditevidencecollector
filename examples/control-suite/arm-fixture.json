@@ -397,6 +397,31 @@
         }
       ]
     },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupJobs?api-version=2026-03-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupJobs/job-1",
+          "properties": {
+            "dataSourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+            "endTime": "2026-09-20T00:30:00Z",
+            "errorDetails": [
+              {
+                "message": "SECRET-CANARY"
+              }
+            ],
+            "extendedInfo": {
+              "propertyBag": {
+                "password": "SECRET-CANARY"
+              }
+            },
+            "operation": "Backup",
+            "operationCategory": "Backup",
+            "startTime": "2026-09-20T00:00:00Z",
+            "status": "Completed"
+          }
+        }
+      ]
+    },
     "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
       "value": []
     },
@@ -776,6 +801,31 @@
         "secretCanary": "DO-NOT-ARCHIVE-SECRET"
       },
       "type": "microsoft.operationalinsights/workspaces"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupJobs?api-version=2026-02-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupJobs/job-1",
+          "properties": {
+            "dataSourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+            "endTime": "2026-09-20T00:30:00Z",
+            "errorDetails": [
+              {
+                "message": "SECRET-CANARY"
+              }
+            ],
+            "extendedInfo": {
+              "propertyBag": {
+                "password": "SECRET-CANARY"
+              }
+            },
+            "operation": "Backup",
+            "operationCategory": "Backup",
+            "startTime": "2026-09-20T00:00:00Z",
+            "status": "Completed"
+          }
+        }
+      ]
     },
     "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupProtectedItems?api-version=2026-02-01": {
       "value": [

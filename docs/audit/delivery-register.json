@@ -1897,9 +1897,11 @@
     {
       "configuration_predicates": [
         "BV-backup-immutability",
+        "BV-backup-jobs",
         "BV-backup-population",
         "BV-backup-soft-delete",
         "BV-recovery-immutability",
+        "BV-recovery-jobs",
         "BV-recovery-population"
       ],
       "domain": "B",
@@ -2860,7 +2862,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 166,
+  "configuration_predicate_count": 168,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }
