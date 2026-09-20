@@ -126,3 +126,23 @@ if enabled(os.environ,'workload'):
         except ExecutionError as error:
             result=error.outcome;status=409 if result['code']=='operation_busy' else 500
         return func.HttpResponse(json.dumps(result),status_code=status,mimetype='application/json',headers={'Cache-Control':'no-store'})
+
+
+if enabled(os.environ,'kubernetes_collection'):
+    @app.function_name(name='CollectKubernetesEvidence')
+    @app.route(route='workloads/kubernetes/collect',methods=['POST'],auth_level=func.AuthLevel.FUNCTION)
+    def collect_kubernetes_evidence(req: func.HttpRequest) -> func.HttpResponse:
+        from azure_at_rest.wiz import decode
+        try:
+            if len(req.get_body())>1024:raise ValueError()
+            body=decode(req.get_body())
+            if not isinstance(body,dict) or set(body)!={'run_id'}:raise ValueError()
+            run_id=identity(body['run_id'],'r')
+        except (ValueError,TypeError,KeyError):
+            return func.HttpResponse('{"code":"exact_run_id_required"}',status_code=400,mimetype='application/json')
+        try:
+            result=execute('workload-collect',run_id=run_id)
+            status=201 if result['state']=='complete' else 503
+        except ExecutionError as error:
+            result=error.outcome;status=409 if result['code']=='operation_busy' else 500
+        return func.HttpResponse(json.dumps(result),status_code=status,mimetype='application/json',headers={'Cache-Control':'no-store'})

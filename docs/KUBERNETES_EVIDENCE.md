@@ -1,6 +1,6 @@
 # Restricted Kubernetes workload evidence
 
-This path imports a Kubernetes API export against one exact saved AKS resource. It projects safe fields before publication, assesses explicit criteria and archives a separate workload supplement. Source run facts and results are unchanged. This release does not contain an authenticated Kubernetes API collector: exporter identity, cluster association, export time and completeness are operator assertions.
+This path imports a Kubernetes API export against one exact saved AKS resource. It projects safe fields before publication, assesses explicit criteria and archives a separate workload supplement. Source run facts and results are unchanged. For operator imports, exporter identity, cluster association, export time and completeness remain operator assertions. The separately enabled authenticated Functions collection path is described below.
 
 Use [synthetic export](../examples/kubernetes-export.json) and [synthetic criteria](../examples/kubernetes-criteria.json) only with fixture runs. These intentionally contain secret canaries that must disappear from every archived/exported result. The criteria are software-test expectations, not a recommended or approved workplace baseline.
 
@@ -58,3 +58,28 @@ Set `CG_WORKLOAD_ENABLED=true` to register two optional Function-key-protected P
 Use `x-functions-key`. Success returns 201; malformed envelopes return 400; overlapping same-process operations return 409; execution failures return a sanitized 500. Semantic document validation runs before publication. No raw input or provider exception is emitted to logs. Source authenticity and automatic live collection require a separate authorized collection path; possession of an upload key does not authenticate the original Kubernetes export.
 
 References: [Pod API](https://kubernetes.io/docs/reference/kubernetes-api/core/pod-v1/), [security context defaults/inheritance](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/), [Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/). These scoped predicates do not certify the full standards or close whole NIST objectives.
+
+## Authenticated collection in Azure Functions
+
+Version 0.11.0 adds an independently enabled, read-only collection endpoint. Set `CG_KUBERNETES_COLLECTION_ENABLED=true` and configure `CG_KUBERNETES_TARGET_JSON` as a JSON object with exactly:
+
+- `cluster_id`: the lowercase ARM ID of one AKS cluster in the configured subscription/resource-group scope and the exact saved source run.
+- `endpoint`: its HTTPS API server DNS name, with no credentials, port override, query or custom path.
+- `ca_pem`: the public PEM CA certificate for that API server. No private key or kubeconfig is accepted.
+- `namespace`: one namespace or `null` for cluster-wide pod listing.
+- `criteria`: the same explicit workload criteria object used by the importer, or `null` for observations without approved decisions.
+- `max_age_seconds`: a positive freshness limit, at most 31536000.
+
+POST `{"run_id":"r-<saved-run-id>"}` to `/api/workloads/kubernetes/collect` with its Function key. No target, bearer token or criteria override is accepted in the request. The source run must be a live Azure run. The response identifies a separately archived Kubernetes supplement; generate its PDF through the existing workload report endpoint. Enable `CG_WORKLOAD_ENABLED` if that report endpoint is needed. A 201 means the archive completed: inspect `summary.coverage_incomplete` and `summary.conclusion` for evidence coverage and findings.
+
+The host uses its configured UAMI to validate subscription/tenant metadata, read the exact AKS ARM resource, compare the configured API endpoint with its current `fqdn` or `privateFQDN`, and require managed Entra integration. It requests the public-cloud AKS server audience, then makes GET-only pod and node list requests with CA and hostname verification. It does not obtain administrator credentials or call credential-listing actions. Redirects and environment proxy forwarding are disabled. Private clusters require working Function-to-cluster routing and DNS.
+
+Grant only the required ARM reads and Kubernetes `list` access to pods in the selected namespace (or cluster scope) and nodes at cluster scope, using the cluster's configured authorization system. Those API permissions can expose raw pod specifications in memory, including literal environment values. The collector discards excluded fields before archiving and never logs response bodies or tokens. Function-key authorization permits collection of the one configured target and still requires the existing host identity, evidence storage and execution settings.
+
+Collection is bounded to 100 pages per list, 1000 pods, 10000 nodes, 1000 projected containers, and 4 MiB per response and assembled import document. Paging requires a consistent resource version within each list. Pod and node lists are independent snapshots. Denials, interrupted pagination, repeated tokens, version changes and population limits retain explicit collection states and incomplete coverage. Invalid projected data, combined document overflow, expired execution deadlines or archive failures fail the operation without publishing a completed supplement. The collection deadline and retry settings reuse the host settings. This endpoint is on demand; ARM's existing timer does not silently add Kubernetes collection.
+
+Authenticated collection provenance is internal to this path. The external import endpoint cannot label an uploaded document as an authenticated live collection. Operator exports and prior supplements remain readable without reassessment. The adapter and Functions endpoint are tested locally; live AKS identity, RBAC, TLS and networking acceptance remain required at work. No AKS cluster was provisioned in the personal subscription.
+
+Primary references: [AKS authentication and server audience](https://learn.microsoft.com/en-us/azure/aks/kubelogin-authentication), [Kubernetes consistent list pagination](https://kubernetes.io/docs/reference/using-api/api-concepts/).
+
+The fresh cluster read uses [AKS ARM API 2024-10-01](https://github.com/Azure/azure-rest-api-specs/blob/main/specification/containerservice/resource-manager/Microsoft.ContainerService/aks/stable/2024-10-01/managedClusters.json).

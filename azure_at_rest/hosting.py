@@ -15,7 +15,7 @@ from .storage import parts
 from .workflow import Deadline, collect_run
 
 LOG = logging.getLogger('cloud_governance')
-LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report','workload-import','workload-report')}
+LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report','workload-import','workload-report','workload-collect')}
 
 
 class ConfigurationError(ValueError):
@@ -138,7 +138,7 @@ class Settings:
         return {'schema_version': '1.0', 'invocation_id': invocation_id, 'environment': 'local' if self.development else 'azure_functions',
                 'authentication': 'azure_cli' if self.development else 'managed_identity', 'tenant_id': self.tenant,
                 'identity_client_id': None if self.development else self.client_id,
-                'tenant_validation': 'arm_subscription_metadata' if operation == 'collect' else 'deployment_configuration',
+                'tenant_validation': 'arm_subscription_metadata' if operation in ('collect','workload-collect') else 'deployment_configuration',
                 'storage': {'backend': 'azure_blob', 'retention_policy': 'not_verified', 'account_url': self.blob_url,
                             'container': self.container, 'prefix': self.prefix}}
 
@@ -150,8 +150,9 @@ def resources(settings, deadline, operation):
     try:
         store = BlobStore(settings.blob_url, settings.container, credential, settings.prefix,
                           retries=settings.blob_retries, deadline=deadline)
-        transport = BudgetArmTransport(credential, deadline, settings.arm_retries) if operation == 'collect' else None
-        if transport is not None and settings.graph_enabled:
+        transport = BudgetArmTransport(credential, deadline, settings.arm_retries) if operation in ('collect','workload-collect') else None
+        if operation=='workload-collect':transport.kubernetes_credential=credential
+        if operation=='collect' and settings.graph_enabled:
             from .graph import BudgetGraphTransport
             transport.graph_transport = BudgetGraphTransport(credential,deadline,settings.arm_retries)
         yield store, transport
@@ -173,7 +174,7 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
     try:
         if operation not in LOCKS:
             raise ConfigurationError('invalid_operation')
-        setting = 'workload' if operation.startswith('workload-') else 'collection' if operation == 'collect' else 'operational' if operation.startswith('operational-') else 'report'
+        setting = 'kubernetes_collection' if operation=='workload-collect' else 'workload' if operation.startswith('workload-') else 'collection' if operation == 'collect' else 'operational' if operation.startswith('operational-') else 'report'
         if not enabled(env, setting):
             return {'operation': operation, 'state': 'disabled', 'invocation_id': invocation_id}
         if operation == 'collect':
@@ -189,7 +190,7 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
             if expires.tzinfo is None or datetime.now(timezone.utc) >= expires:
                 raise ConfigurationError('execution_window_expired')
         settings = Settings.parse(env)
-        deadline = Deadline(settings.collection_budget if operation == 'collect' else settings.report_budget)
+        deadline = Deadline(settings.collection_budget if operation in ('collect','workload-collect') else settings.report_budget)
         stage = 'overlap_guard'
         locked = LOCKS[operation].acquire(timeout=settings.lock_wait)
         if not locked:
@@ -205,6 +206,22 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
                 result = collect_run(store, transport, settings.subscriptions, mode='azure_live', max_pages=settings.max_pages,
                                      provenance=settings.provenance(operation, invocation_id), deadline=deadline, resource_group=settings.resource_group, criteria=settings.criteria,
                                      graph_transport=getattr(transport,'graph_transport',None) if settings.graph_enabled else None, tenant_id=settings.tenant)
+            elif operation=='workload-collect':
+                from .kubernetes_collect import collect, target
+                from .wiz import decode, require
+                stage='kubernetes_configuration'
+                raw=env.get('CG_KUBERNETES_TARGET_JSON','')
+                require(len(raw)<=73728)
+                configuration=target(decode(raw.encode()))
+                parts=configuration['cluster_id'].split('/')
+                require(parts[2] in settings.subscriptions and (settings.resource_group is None or parts[4]==settings.resource_group.lower()))
+                stage='tenant_preflight'
+                verify_tenant(transport,settings.subscriptions,settings.tenant)
+                stage='kubernetes_collection_archive'
+                manifest=collect(store,run_id,configuration,transport,transport.kubernetes_credential,deadline,
+                    provenance=settings.provenance(operation,invocation_id),max_pages=settings.max_pages,retries=settings.arm_retries)
+                result={key:manifest[key] for key in ('evidence_id','source_run_id','generated_at','summary')}
+                result['archive_state']='complete'
             elif operation=='workload-import':
                 from .kubernetes_evidence import publish
                 stage='workload_evidence_archive'

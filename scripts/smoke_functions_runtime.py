@@ -53,7 +53,7 @@ def check_runtime(package, output, operational=False, workload=False):
                             'CG_REPORT_ENABLED=false', 'CG_LAB_PROBE_ENABLED=false', 'CG_COLLECTION_SCHEDULE=']:
                 command += ['-e', setting]
             command += ['-e', 'CG_OPERATIONAL_ENABLED='+str(operational).lower()]
-            command += ['-e', 'CG_WORKLOAD_ENABLED='+str(workload).lower()]
+            command += ['-e', 'CG_WORKLOAD_ENABLED='+str(workload).lower(), '-e', 'CG_KUBERNETES_COLLECTION_ENABLED='+str(workload).lower()]
             command.append(IMAGE)
             subprocess.run(command, check=True, capture_output=True, text=True, timeout=300)
             container_started = True
@@ -117,11 +117,11 @@ def check_runtime(package, output, operational=False, workload=False):
                             summary['checks'].append({'name':route+'-'+label,'status':status,'expected':expected,'seconds':elapsed})
                             if status!=expected or (status==400 and json.loads(body)!={'code':code}):
                                 raise RuntimeError('Operational route validation failed')
-                workload_names={'ImportKubernetesEvidence','GenerateKubernetesReport'}
+                workload_names={'ImportKubernetesEvidence','GenerateKubernetesReport','CollectKubernetesEvidence'}
                 if workload_names.intersection(summary['functions']) != (workload_names if workload else set()):
                     raise RuntimeError('Unexpected workload route registration')
                 if workload:
-                    for route,code in [('import','invalid_kubernetes_request'),('reports','exact_kubernetes_id_required')]:
+                    for route,code in [('import','invalid_kubernetes_request'),('reports','exact_kubernetes_id_required'),('collect','exact_run_id_required')]:
                         for label,key,expected in [('missing-key',None,401),('wrong-key','invalid-local-test-key',401),('invalid-body',function_key,400)]:
                             status,body,elapsed=request('POST','/api/workloads/kubernetes/'+route,{},key)
                             summary['checks'].append({'name':'workload-'+route+'-'+label,'status':status,'expected':expected,'seconds':elapsed})

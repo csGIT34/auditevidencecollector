@@ -1,5 +1,13 @@
 # Release notes
 
+## 0.11.0
+
+- Add opt-in Functions collection of AKS pods/nodes using the configured host identity, a fixed AKS audience, an ARM-verified endpoint and an explicit public CA.
+- Restrict collection to configured source-run membership, subscription/resource-group scope and namespace; reject caller-supplied endpoints and admin credential retrieval.
+- Preserve partial/denied paging states, enforce list versions and bounded populations, and prevent operator imports from claiming authenticated collection.
+- Local validation only; workplace AKS permissions, TLS, network and live response acceptance remain outstanding.
+
+
 ## 0.10.0 — restricted Kubernetes workload evidence
 
 - Project PodList/NodeList exports into exact saved AKS run supplements, excluding raw environment variables, commands, annotations, addresses and secrets.

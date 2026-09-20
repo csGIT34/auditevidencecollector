@@ -41,10 +41,10 @@ def image_digest(value):
     return match[1] if match else None
 
 
-def project(document,saved):
+def project(document,saved,*,authenticated=False):
     fields(document,'schema_version kind mode cluster_id collected_at scope pods nodes')
     require(document['schema_version']=='1.0' and document['kind']=='kubernetes_export')
-    require(document['mode'] in ('synthetic','operator_export'))
+    require(document['mode'] in (('azure_live',) if authenticated else ('synthetic','operator_export')))
     require((document['mode']=='synthetic')==(saved['snapshot']['mode']=='offline_fixture'))
     cluster=document['cluster_id']
     require(isinstance(cluster,str) and cluster==cluster.lower())
@@ -146,10 +146,10 @@ def markdown(report):
     return '# Kubernetes workload evidence\n\n```json\n'+json.dumps(report,indent=2,sort_keys=True)+'\n```\n'
 
 
-def publish(store,run_id,data,*,criteria,as_of,max_age_seconds,deadline=None,provenance=None):
+def publish(store,run_id,data,*,criteria,as_of,max_age_seconds,deadline=None,provenance=None,collection_source=None):
     require(isinstance(data,bytes) and len(data)<=MAX_BYTES)
     saved=load_run(store,run_id)
-    try:projection=project(decode(data),saved)
+    try:projection=project(decode(data),saved,authenticated=collection_source is not None)
     except (AttributeError,KeyError,TypeError,RecursionError):raise ValueError('invalid_kubernetes_export') from None
     report=assess(projection,criteria,as_of,max_age_seconds)
     evidence_id='k-'+uuid4().hex;prefix='workloads/'+evidence_id
@@ -163,6 +163,10 @@ def publish(store,run_id,data,*,criteria,as_of,max_age_seconds,deadline=None,pro
         'Results apply only to the supplied population. Unknown OS leaves Linux security checks unassessed; Windows controls require separate evidence.',
         'Container status may lag actual runtime. Image digests do not establish scan freshness, signatures or absence of vulnerabilities.',
         'These scoped predicates do not certify Kubernetes Pod Security Standards or close whole NIST objectives.'])
+    if collection_source is not None:
+        require(provenance is not None)
+        report['collection_source']=collection_source
+        report['limitations'][0]='Collected using the configured host identity against an ARM-verified AKS endpoint. Pod and node lists are separate snapshots; permissions, pagination limits and collection errors remain explicit.'
     if provenance is not None:
         from .provenance import validate_provenance
         report['execution_provenance']=validate_provenance(provenance)

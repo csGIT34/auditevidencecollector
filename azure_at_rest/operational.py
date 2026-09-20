@@ -185,6 +185,7 @@ def render_pdf(report):
         story.append(Paragraph(escape(report.get('title','Operational evidence supplement')),styles['Heading1']))
         for key in ('evidence_id','source_run_id','source_manifest_sha256','source_scope','mode','as_of','max_age_hours'):add(key,report[key])
         if 'execution_provenance' in report:add('Execution provenance',report['execution_provenance'])
+        if 'collection_source' in report:add('Collection results',report['collection_source'])
         for limit in report['limitations']:add('Limit',limit)
         if report.get('requirements'):
             story.append(PageBreak());story.append(Paragraph('Required operational evidence',styles['Heading1']))
