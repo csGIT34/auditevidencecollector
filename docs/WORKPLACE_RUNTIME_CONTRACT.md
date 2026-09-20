@@ -28,7 +28,7 @@ Both operations remain independently disabled by default. Collection produces a 
 
 Configure approved work-tenant App Service authentication and explicit caller authorization plus inbound network restrictions before enabling reports. Function keys remain in request headers; they are not substitutes for named corporate authorization. The personal lab's operator /32 plus function-key model is deliberately limited to a temporary personal test, not a production recommendation. Do not copy its probe or public-storage network posture into the workplace.
 
-Validate the existing workplace patterns against: successful runtime indexing and host-storage identity; correct UAMI/tenant; expected metadata/data grants and denials; absence of anonymous access; exact-run PDF behavior and archived hashes; conditional conflicts/ambiguous-response handling; audit FAIL versus execution failure; budget/HTTP headroom; overlap/schedule controls; safe logs and recovery. Preserve failed attempts and old binaries. Track actual workload duration/memory before enabling a cadence. The executable rules still cover scoped encryption at rest; 215 proposed checks across 23 services/20 families remain applicability research.
+Validate the existing workplace patterns against: successful runtime indexing and host-storage identity; correct UAMI/tenant; expected metadata/data grants and denials; absence of anonymous access; exact-run PDF behavior and archived hashes; conditional conflicts/ambiguous-response handling; audit FAIL versus execution failure; budget/HTTP headroom; overlap/schedule controls; safe logs and recovery. Preserve failed attempts and old binaries. Track actual workload duration/memory before enabling a cadence. Current executable coverage includes encryption and 169 ARM/Graph configuration predicates, plus separate Kubernetes and guest measurements. The 215 whole objectives remain incomplete; use the delivery register for exact support and boundaries.
 
 ## Configuration assessments added in 0.5.0
 
@@ -37,3 +37,5 @@ Optional `CG_ASSESSMENT_CRITERIA_JSON` contains the versioned criteria document.
 Optional operating-record imports and PDF generation use `CG_OPERATIONAL_ENABLED=true`; see the [endpoint and evidence contract](OPERATIONAL_EVIDENCE.md).
 
 `CG_WORKLOAD_ENABLED=true` enables the restricted Kubernetes export import/report routes. See the [workload evidence contract](KUBERNETES_EVIDENCE.md); these endpoints require evidence-storage access and do not obtain Kubernetes credentials.
+
+`CG_KUBERNETES_COLLECTION_ENABLED=true` enables the authenticated AKS collection endpoint with an explicit configured target and public CA; see [AKS collection](KUBERNETES_EVIDENCE.md#authenticated-collection-in-azure-functions). `CG_GUEST_ENABLED=true` enables normalized guest import/report endpoints; see [guest evidence](GUEST_EVIDENCE.md). All are disabled by default.

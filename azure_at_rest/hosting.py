@@ -15,7 +15,7 @@ from .storage import parts
 from .workflow import Deadline, collect_run
 
 LOG = logging.getLogger('cloud_governance')
-LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report','workload-import','workload-report','workload-collect')}
+LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report','workload-import','workload-report','workload-collect','guest-import','guest-report')}
 
 
 class ConfigurationError(ValueError):
@@ -174,11 +174,13 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
     try:
         if operation not in LOCKS:
             raise ConfigurationError('invalid_operation')
-        setting = 'kubernetes_collection' if operation=='workload-collect' else 'workload' if operation.startswith('workload-') else 'collection' if operation == 'collect' else 'operational' if operation.startswith('operational-') else 'report'
+        setting = 'guest' if operation.startswith('guest-') else 'kubernetes_collection' if operation=='workload-collect' else 'workload' if operation.startswith('workload-') else 'collection' if operation == 'collect' else 'operational' if operation.startswith('operational-') else 'report'
         if not enabled(env, setting):
             return {'operation': operation, 'state': 'disabled', 'invocation_id': invocation_id}
         if operation == 'collect':
             schedule(env)
+        elif operation=='guest-report':
+            identity(evidence_id,'g')
         elif operation=='workload-report':
             identity(evidence_id,'k')
         elif operation=='operational-report':
@@ -222,14 +224,20 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
                     provenance=settings.provenance(operation,invocation_id),max_pages=settings.max_pages,retries=settings.arm_retries)
                 result={key:manifest[key] for key in ('evidence_id','source_run_id','generated_at','summary')}
                 result['archive_state']='complete'
-            elif operation=='workload-import':
-                from .kubernetes_evidence import publish
+            elif operation in ('workload-import','guest-import'):
+                if operation=='guest-import':
+                    from .guest_evidence import publish
+                else:
+                    from .kubernetes_evidence import publish
                 stage='workload_evidence_archive'
                 manifest=publish(store,run_id,document,criteria=criteria,as_of=as_of,max_age_seconds=max_age_seconds,deadline=deadline,provenance=settings.provenance(operation,invocation_id))
                 result={key:manifest[key] for key in ('evidence_id','source_run_id','generated_at','summary')}
                 result['archive_state']='complete'
-            elif operation=='workload-report':
-                from .kubernetes_evidence import publish_pdf as workload_pdf
+            elif operation in ('workload-report','guest-report'):
+                if operation=='guest-report':
+                    from .guest_evidence import publish_pdf as workload_pdf
+                else:
+                    from .kubernetes_evidence import publish_pdf as workload_pdf
                 stage='workload_pdf_archive'
                 manifest=workload_pdf(store,evidence_id,deadline=deadline)
                 result={key:manifest[key] for key in ('evidence_id','report_id','generated_at')}

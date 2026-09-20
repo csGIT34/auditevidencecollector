@@ -6,11 +6,11 @@ Created 2026-09-19. Project status: **INCOMPLETE**. This is the delivery checkli
 
 Deliver an Azure-hosted, deterministic evidence collection and assessment system covering applicable controls for all [23 services](PROGRAM_SCOPE.md). Develop and test on macOS/Linux; run unattended in Azure Functions with managed identity and retained evidence in Azure Storage. Reuse workplace infrastructure patterns. Terraform is for the temporary personal lab only.
 
-Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.11.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
+Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.12.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
 
 ## Required deliverables, in execution order
 
-Work in progress: 0.11.0 supplies 169 scoped configuration/identity predicates across the 23 services, including tenant-verified Graph metadata. Separate Kubernetes supplements assess eight per-container predicates through operator imports or an opt-in authenticated Functions collector. The [delivery register](audit/delivery-register.json) records partial support and remaining objective boundaries. Unchecked deliverables remain incomplete; predicate count is not completion.
+Work in progress: 0.12.0 supplies 169 scoped configuration/identity predicates across the 23 services, including tenant-verified Graph metadata. Separate Kubernetes supplements assess eight per-container predicates through operator imports or an opt-in authenticated Functions collector. Typed guest supplements add ten patch/protection/vulnerability predicates per guest/source, with missing-population and freshness checks. The [delivery register](audit/delivery-register.json) records partial support and remaining objective boundaries. Unchecked deliverables remain incomplete; predicate count is not completion.
 
 ### 1. Account for every proposed check
 

@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.12.0
+
+- Add typed guest/agent evidence for VM and saved Uniform VMSS instance populations: patch counts/recency, pending reboot, endpoint protection health/recency, vulnerability counts/recency.
+- Preserve missing guests, incomplete instance populations, stale/failed source assessments and conflicting sources without implicit PASS.
+- Add opt-in Functions import/report endpoints, local CLI, frozen archive replay, sample exports and normalized integration documentation. Vendor-native authentication and mappings remain unverified.
+
+
 ## 0.11.0
 
 - Add opt-in Functions collection of AKS pods/nodes using the configured host identity, a fixed AKS audience, an ARM-verified endpoint and an explicit public CA.

@@ -1,0 +1,18 @@
+{
+  "checks": {
+    "critical_vulnerabilities": 0,
+    "high_vulnerabilities": 0,
+    "missing_critical_patches": 0,
+    "missing_security_patches": 0,
+    "patch_age_seconds": 3600,
+    "protection_age_seconds": 3600,
+    "protection_enabled": true,
+    "protection_healthy": true,
+    "reboot_pending": false,
+    "scan_age_seconds": 3600
+  },
+  "id": "synthetic",
+  "schema_version": "1.0",
+  "status": "approved",
+  "version": "1"
+}

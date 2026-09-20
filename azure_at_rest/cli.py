@@ -96,18 +96,32 @@ def parser():
         sub=commands.add_parser(command)
         sub.add_argument('--store',type=Path,required=True)
         sub.add_argument('--evidence-id',required=True)
+    kube=commands.add_parser('guest-import',help='Assess a typed guest/agent export against the saved VM population and archive its measurements.')
+    kube.add_argument('--store',type=Path,required=True)
+    kube.add_argument('--run-id',required=True)
+    kube.add_argument('--input',type=Path,required=True)
+    kube.add_argument('--criteria',type=Path)
+    kube.add_argument('--as-of',required=True)
+    kube.add_argument('--max-age-seconds',type=int,required=True)
+    for command in ('guest-show','guest-pdf'):
+        sub=commands.add_parser(command)
+        sub.add_argument('--store',type=Path,required=True)
+        sub.add_argument('--evidence-id',required=True)
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
-        if args.command in ('kubernetes-import','kubernetes-show','kubernetes-pdf'):
+        if args.command in ('kubernetes-import','kubernetes-show','kubernetes-pdf','guest-import','guest-show','guest-pdf'):
             from .storage import FileStore
-            from .kubernetes_evidence import MAX_BYTES,publish,load,publish_pdf
+            if args.command.startswith('guest-'):
+                from .guest_evidence import MAX_BYTES,publish,load,publish_pdf
+            else:
+                from .kubernetes_evidence import MAX_BYTES,publish,load,publish_pdf
             from .wiz import decode
             store=FileStore(args.store)
-            if args.command=='kubernetes-import':
+            if args.command.endswith('-import'):
                 with args.input.open('rb') as stream:data=stream.read(MAX_BYTES+1)
                 criteria=None
                 if args.criteria:
@@ -115,7 +129,7 @@ def main(argv=None):
                     if len(raw_criteria)>4096:raise ValueError('Criteria too large')
                     criteria=decode(raw_criteria)
                 print(json.dumps(publish(store,args.run_id,data,criteria=criteria,as_of=args.as_of,max_age_seconds=args.max_age_seconds),indent=2))
-            elif args.command=='kubernetes-show':print(load(store,args.evidence_id)['markdown'],end='')
+            elif args.command.endswith('-show'):print(load(store,args.evidence_id)['markdown'],end='')
             else:print(json.dumps(publish_pdf(store,args.evidence_id),indent=2))
             return 0
         if args.command in {"operational-import", "operational-show", "operational-pdf"}:

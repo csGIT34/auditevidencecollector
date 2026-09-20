@@ -1,0 +1,61 @@
+{
+  "kind": "guest_export",
+  "mode": "synthetic",
+  "records": [
+    {
+      "observed_at": "2026-09-20T01:50:00Z",
+      "os": "linux",
+      "patch": {
+        "assessed_at": "2026-09-20T01:40:00Z",
+        "missing_critical": 0,
+        "missing_security": 0,
+        "reboot_pending": false,
+        "state": "succeeded"
+      },
+      "protection": {
+        "enabled": true,
+        "healthy": true,
+        "reported_at": "2026-09-20T01:40:00Z"
+      },
+      "record_id": "record-1",
+      "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4",
+      "source": "synthetic",
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "scanned_at": "2026-09-20T01:40:00Z",
+        "state": "succeeded"
+      }
+    },
+    {
+      "observed_at": "2026-09-20T01:50:00Z",
+      "os": "linux",
+      "patch": {
+        "assessed_at": "2026-09-20T01:40:00Z",
+        "missing_critical": 0,
+        "missing_security": 0,
+        "reboot_pending": false,
+        "state": "succeeded"
+      },
+      "protection": {
+        "enabled": true,
+        "healthy": true,
+        "reported_at": "2026-09-20T01:40:00Z"
+      },
+      "record_id": "record-1",
+      "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualmachines/0",
+      "source": "synthetic",
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 0,
+        "scanned_at": "2026-09-20T01:40:00Z",
+        "state": "succeeded"
+      }
+    }
+  ],
+  "resource_ids": [
+    "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4",
+    "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5"
+  ],
+  "schema_version": "1.0"
+}
