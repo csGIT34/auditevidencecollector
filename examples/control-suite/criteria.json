@@ -964,6 +964,12 @@
       "operator": "equals",
       "value": true
     },
+    "ST-container-access": {
+      "operator": "allowed_access",
+      "value": [
+        "None"
+      ]
+    },
     "ST-container-soft-delete": {
       "operator": "equals",
       "value": true

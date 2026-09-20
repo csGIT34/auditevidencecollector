@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.9.0 includes **168 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.9.1 includes **169 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -10,7 +10,7 @@ With the project's development dependencies installed:
 python scripts/demo_controls.py --output /tmp/cloud-governance-control-demo
 ```
 
-Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 167 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
+Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 168 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
 
 The [example inputs](../examples/control-suite/) are reproducible HTTP fixtures and fictional criteria. They deliberately include secret canaries to verify projection; no real tenant IDs or credentials are present.
 
@@ -308,3 +308,14 @@ Recovery Services' common job response does not supply a reliable source ARM ide
 The evaluation time and criterion are frozen in the assessment. Historical reports replay the saved result without reassessing recency today. Collection retains jobs even when no approved criterion is supplied.
 
 API contracts: [Data Protection jobs](https://learn.microsoft.com/en-us/rest/api/dataprotection/jobs/list?view=rest-dataprotection-2026-03-01), [Recovery Services jobs](https://learn.microsoft.com/en-us/rest/api/backup/backup-jobs/list?view=rest-backup-2026-02-01).
+
+
+### Container-level anonymous access
+
+`ST-container-access` reads ARM `/blobServices/default/containers` with API `2023-05-01`, requiring `Microsoft.Storage/storageAccounts/blobServices/containers/read`. Only container IDs and `publicAccess` values (`None`, `Blob`, `Container`) are retained. User metadata, legal-hold identities/tags and blob contents are excluded. Special containers such as `$web` and `$root` are supported. This makes no data-plane requests and reads no account keys.
+
+Use `{"operator":"allowed_access","value":["None"]}` to require that all returned containers declare private access, or supply another explicit sorted set of approved levels. `equals` can instead compare an exact container population. With approved `allowed_access` criteria, a complete empty listing satisfies the narrow absence-of-disallowed-declarations predicate; it does not establish data recovery, inventory ownership or service availability. Missing/draft criteria remain UNKNOWN. Missing flags, duplicate/wrong-scope identities, malformed rows and truncated/denied reads cannot pass. Account restrictions and container declarations are assessed independently: an account-level block does not hide a public container declaration, and a declared public level is not proof of actual network reachability.
+
+API contract: [Blob containers list](https://learn.microsoft.com/en-us/rest/api/storagerp/blob-containers/list?view=rest-storagerp-2023-05-01).
+
+Job-recency results additionally freeze the selected job IDs and outcome for each source/operation. Missing or unfinished required evidence keeps overall coverage incomplete even when a different required job fails. JSON, Markdown and PDF expose these saved decisions; no current-time reassessment occurs during historical rendering.

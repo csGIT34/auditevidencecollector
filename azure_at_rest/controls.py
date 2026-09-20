@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.9'
+VERSION = '2026.09.19.10'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -256,11 +256,19 @@ for _cid,_rt,_api,_source in (
         'Backup and restore job outcomes and approved recency window; restore quality remains separate',
         _source,'/backupJobs','backup_jobs','backup_jobs')
 
+CHECKS['ST-container-access']=Check('ST-container-access','microsoft.storage/storageaccounts','2023-05-01',
+ 'containers[].publicAccess',(),'ST-N','Container-level anonymous access declarations; account restrictions and actual reachability remain separate',
+ 'https://learn.microsoft.com/en-us/rest/api/storagerp/blob-containers/list?view=rest-storagerp-2023-05-01',
+ '/blobServices/default/containers','container_access','blob_containers')
+
 def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
 
 def valid_value(check, value):
+    if check.kind=='container_access':
+        from .blob_containers import valid_containers
+        return valid_containers(value)
     if check.kind=='backup_jobs':
         from .backup_jobs import valid_jobs
         return valid_jobs(value)
@@ -336,7 +344,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -381,7 +389,9 @@ def validate_policy(policy):
         if not isinstance(criterion, dict) or set(criterion) != {'operator','value'}:
             raise ValueError('Invalid criterion')
         op, value = criterion['operator'], criterion['value']
-        if op=='recent_jobs':
+        if op=='allowed_access':
+            good=CHECKS[cid].kind=='container_access' and isinstance(value,list) and 1<=len(value)<=3 and all(isinstance(v,str) and v in ('None','Blob','Container') for v in value) and value==sorted(set(value))
+        elif op=='recent_jobs':
             from .backup_jobs import valid_criterion
             good=CHECKS[cid].kind=='backup_jobs' and valid_criterion(CHECKS[cid],value)
         elif op == 'equals':
@@ -420,10 +430,13 @@ def evaluate(snapshot, policy=None):
                 row['reason'] = 'Approved criterion is not supplied; observation retained without a positive or negative assessment.'
             elif observation['state'] == 'observed':
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
-                if op=='recent_jobs':
+                if op=='allowed_access':
+                    passed=all(item['public_access'] in expected for item in actual)
+                    row.update(result='PASS' if passed else 'FAIL',reason='Returned containers use only approved anonymous-access declarations.' if passed else 'A returned container has an unapproved anonymous-access declaration.')
+                elif op=='recent_jobs':
                     from .backup_jobs import assess as assess_jobs
-                    result,reason=assess_jobs(actual,expected,generated_at)
-                    row.update(result=result,reason=reason)
+                    result,reason,details=assess_jobs(actual,expected,generated_at)
+                    row.update(result=result,reason=reason,job_evaluation=details)
                 else:
                     passed = actual == expected if op == 'equals' else actual in expected if op == 'one_of' else set(expected) <= set(actual) if op == 'contains_all' else actual >= expected
                     row.update(result='PASS' if passed else 'FAIL', reason='Observed configuration matches the supplied criterion.' if passed else 'Observed configuration does not match the supplied criterion.')
@@ -449,6 +462,7 @@ def overall_summary(report):
     failures = encryption['counts']['FAIL'] + (config['counts']['FAIL'] if config else 0)
     incomplete = encryption['coverage_incomplete'] or bool(config and (config['conclusion']=='INCOMPLETE' or config['counts']['UNKNOWN'] or config['counts']['ERROR']))
     incomplete = incomplete or not report.get('configuration_assessment', {}).get('identity_complete', True)
+    incomplete = incomplete or any(row.get('job_evaluation',{}).get('coverage_incomplete',False) for row in report.get('configuration_assessment',{}).get('results',[]))
     return {'conclusion':'FAILURES_FOUND' if failures else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED',
             'coverage_incomplete':bool(incomplete), 'failed_check_count':failures}
 

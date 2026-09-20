@@ -75,6 +75,7 @@ def markdown(report):
                       "| --- | --- | --- | --- | --- | --- |"] )
         for row in cfg["results"]:
             lines.append("| " + " | ".join(text(v) for v in (row["resource_id"],row["check_id"] + " / " + row["catalog_ref"],row["result"],json.dumps(row["observation"]),json.dumps(row["criterion"]),row["reason"])) + " |")
+            if "job_evaluation" in row:lines.append("| " + text(row["resource_id"]) + " | Saved job evaluation | | " + text(json.dumps(row["job_evaluation"])) + " | | |")
         lines.extend(["", "Sources: " + ", ".join("[Microsoft API schema](" + url + ")" for url in sorted({r["source"] for r in cfg["results"]})), ""])
     lines.extend(["## Collection errors", ""])
     if not report["errors"]:

@@ -305,6 +305,7 @@ def render_pdf(saved, generation):
             field('Read path / API', row.get('request_path',row['resource_id'])+' / '+row['api_version'])
             field('Property', row['property'])
             field('Saved observation', row['observation'])
+            if 'job_evaluation' in row:field('Saved job scope and recency evaluation',row['job_evaluation'])
             field('Saved criterion', row['criterion'])
             if 'freshness' in row:
                 field('Saved freshness assessment',row['freshness'])

@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.9.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.9.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Updated 2026-09-19. **Source release 0.9.0 (local tests passed; expanded reads n
 | Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
-| Multi-control configuration/identity predicates | Implemented; local validation | 168 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 169 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
 | All-service NIST program | Incomplete | 215 research objectives; every objective remains open or partially supported in the [delivery register](audit/delivery-register.json). |
@@ -55,3 +55,5 @@ Version 0.8.2 passed 226 tests with zero skips and 28 packaged Functions runtime
 Version 0.9.0 adds both vault families’ job evidence and an explicit latest-job recency criterion, including separate required backup/restore operations. Source-scoped assessment is supported for Data Protection; Recovery Services is explicitly vault-scoped because its common job response has no dependable source ARM ID. All 232 local tests passed with zero skips.
 
 The 0.9.0 package passed 28 local Functions runtime checks. Its synthetic all-service report includes 168 predicates (167 PASS, one intentional expired-credential FAIL); the new job-evidence pages were rendered and visually reviewed. No live API validation or restore execution is implied.
+
+Version 0.9.1 passed 237 local tests with zero skips and 28 packaged Functions runtime checks. The storage scope regression now verifies the additional container read stays in the selected resource group. A synthetic failed-backup/unfinished-restore report preserves both failures and incomplete coverage; its job and container pages were rendered and visually reviewed. Archives from 0.3.1, 0.5.0 and 0.9.0 remained readable with every original file hash unchanged. No cloud changes were made.

@@ -25,7 +25,7 @@ def setpath(obj,path,value):
 
 
 def sample(check, negative=False):
-    if check.kind in ('vmss_instances','container_revisions','backup_jobs'):return []
+    if check.kind in ('vmss_instances','container_revisions','backup_jobs','container_access'):return []
     if check.kind in ('dp_population','rs_population'):return []
     if check.kind=='diagnostic_routes':return []
     if check.kind=='arm_grants':
@@ -58,6 +58,12 @@ def fixture():
                 settings=responses[endpoint(row['id']+c.suffix,c.api)]['value']
                 value=project_routes(settings,row['id']+c.suffix,{'complete':True,'pages':1,'items_received':1},[])['value']
                 criteria[c.id]={'operator':'equals','value':value}
+                continue
+            if c.operation=='blob_containers':
+                from tests.test_blob_containers import container,normalized
+                item=container(row['id'])
+                responses[endpoint(row['id']+c.suffix,c.api)]={'value':[item]}
+                criteria[c.id]={'operator':'equals','value':[normalized(item)]}
                 continue
             if c.operation=='backup_jobs':
                 from tests.test_backup_jobs import job,normalized
@@ -140,7 +146,7 @@ class ConfigurationTests(unittest.TestCase):
                     if isinstance(raw,dict) and 'properties' in raw and (raw.get('type','').lower()==c.resource_type if not c.suffix else raw.get('id','').endswith(c.suffix)):
                         setpath(raw['properties'],c.path,value)
             for url in list(responses):
-                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
+                if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url or '/containers?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}
                 elif '/privateendpoints/' in url and 'properties' in responses[url]:responses[url]['properties']['privateLinkServiceConnections']=None
             snapshot=collect(responses);validate_snapshot(snapshot)
             results=assess_snapshot(snapshot,criteria=policy)['configuration_assessment']['results']

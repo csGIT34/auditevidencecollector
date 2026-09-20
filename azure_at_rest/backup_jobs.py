@@ -68,15 +68,19 @@ def assess(jobs,criterion,as_of):
     operations=('Backup','Restore') if criterion['operation']=='BackupAndRestore' else (criterion['operation'],)
     for source,operation in ((source,operation) for source in sources for operation in operations):
         matches=[j for j in jobs if j['operation']==operation and (source is None or j['source_id']==source)]
-        if not matches:outcomes.append('missing');continue
-        if any(timestamp(j['start_time'])>reference or j['end_time'] is not None and timestamp(j['end_time'])>reference for j in matches):
-            outcomes.append('future');continue
-        latest_time=max(timestamp(j['start_time']) for j in matches)
-        latest=[j for j in matches if timestamp(j['start_time'])==latest_time]
-        if any(j['status'] in ('Failed','Cancelled','Canceled','CompletedWithWarnings') for j in latest):outcomes.append('unsuccessful');continue
-        if any(j['status']!='Completed' for j in latest):outcomes.append('unfinished');continue
-        outcomes.append('current' if all((reference-timestamp(j['end_time'])).total_seconds()<=criterion['max_age_seconds'] for j in latest) else 'stale')
-    if any(s in ('missing','unsuccessful','stale') for s in outcomes):
-        return 'FAIL','Required latest job evidence is missing, unsuccessful, or older than the supplied window.'
-    if any(s!='current' for s in outcomes):return 'UNKNOWN','Latest job evidence is unfinished or future-dated.'
-    return 'PASS','Latest jobs completed within the supplied window for the selected scope; recoverability and restore quality are not established.'
+        latest=[]
+        if not matches:state='missing'
+        elif any(timestamp(j['start_time'])>reference or j['end_time'] is not None and timestamp(j['end_time'])>reference for j in matches):state='future'
+        else:
+            latest_time=max(timestamp(j['start_time']) for j in matches)
+            latest=[j for j in matches if timestamp(j['start_time'])==latest_time]
+            if any(j['status'] in ('Failed','Cancelled','Canceled','CompletedWithWarnings') for j in latest):state='unsuccessful'
+            elif any(j['status']!='Completed' for j in latest):state='unfinished'
+            else:state='current' if all((reference-timestamp(j['end_time'])).total_seconds()<=criterion['max_age_seconds'] for j in latest) else 'stale'
+        outcomes.append({'source_id':source,'operation':operation,'state':state,'job_ids':sorted(j['job_id'] for j in (latest or matches))})
+    states={row['state'] for row in outcomes}
+    if states & {'missing','unsuccessful','stale'}:
+        result,reason='FAIL','Required latest job evidence is missing, unsuccessful, or older than the supplied window.'
+    elif states-{'current'}:result,reason='UNKNOWN','Latest job evidence is unfinished or future-dated.'
+    else:result,reason='PASS','Latest jobs completed within the supplied window for the selected scope; recoverability and restore quality are not established.'
+    return result,reason,{'as_of':as_of,'outcomes':outcomes,'coverage_incomplete':bool(states & {'future','unfinished','missing'})}

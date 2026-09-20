@@ -92,3 +92,14 @@ class BackupJobTests(unittest.TestCase):
         self.assertEqual('PASS',assess([backup,restore],expected,AS_OF)[0])
         restore['status']='Failed'
         self.assertEqual('FAIL',assess([backup,restore],expected,AS_OF)[0])
+
+
+    def test_known_failure_does_not_hide_unfinished_required_restore(self):
+        from azure_at_rest.controls import overall_summary
+        c,rid,raw=next(self.cases());backup=normalized(raw,c);backup['status']='Failed'
+        restore={**backup,'job_id':backup['job_id']+'-restore','operation':'Restore','status':'InProgress','end_time':None}
+        result,reason,details=assess([backup,restore],{**criterion(),'operation':'BackupAndRestore'},AS_OF)
+        self.assertEqual('FAIL',result);self.assertTrue(details['coverage_incomplete'])
+        report={'summary':{'counts':{'FAIL':0},'coverage_incomplete':False},'configuration_assessment':{
+            'summary':{'conclusion':'FAILURES_FOUND','counts':{'FAIL':1,'UNKNOWN':0,'ERROR':0}},'results':[{'job_evaluation':details}]}}
+        self.assertEqual({'conclusion':'FAILURES_FOUND','coverage_incomplete':True,'failed_check_count':1},overall_summary(report))

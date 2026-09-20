@@ -290,6 +290,20 @@ def validate_configuration_pair(snapshot, assessment):
             raise ValueError('Saved configuration observation mismatch')
         if row['criterion'] != criterion_for(policy,row['resource_id'],row['check_id']):
             raise ValueError('Saved configuration criterion mismatch')
+        if 'job_evaluation' in row:
+            details=row['job_evaluation']
+            if not isinstance(details,dict) or set(details)!={'as_of','outcomes','coverage_incomplete'} or details['as_of']!=assessment['generated_at'] or type(details['coverage_incomplete']) is not bool or not isinstance(details['outcomes'],list) or not details['outcomes']:
+                raise ValueError('Invalid saved job evaluation')
+            criterion=row['criterion']
+            if not criterion or criterion['operator']!='recent_jobs':raise ValueError('Job evaluation without criterion')
+            expected=criterion['value'];sources=expected['source_ids'] if expected['scope']=='sources' else [None]
+            operations=('Backup','Restore') if expected['operation']=='BackupAndRestore' else (expected['operation'],)
+            if not all(isinstance(item,dict) for item in details['outcomes']):raise ValueError('Invalid saved job outcome')
+            if [(item.get('source_id'),item.get('operation')) for item in details['outcomes']]!=[(source,operation) for source in sources for operation in operations]:raise ValueError('Saved job population mismatch')
+            ids={item['job_id'] for item in row['observation']['value']}
+            for item in details['outcomes']:
+                if set(item)!={'source_id','operation','state','job_ids'} or item['state'] not in ('missing','future','unfinished','unsuccessful','current','stale') or not isinstance(item['job_ids'],list) or any(i not in ids for i in item['job_ids']):raise ValueError('Invalid saved job scope')
+            if details['coverage_incomplete']!=any(item['state'] in ('missing','future','unfinished') for item in details['outcomes']):raise ValueError('Saved job coverage mismatch')
         if 'freshness' in row:
             from datetime import datetime
             freshness = row['freshness']

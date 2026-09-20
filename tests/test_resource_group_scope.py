@@ -27,7 +27,8 @@ class ResourceGroupScopeTests(unittest.TestCase):
         self.assertEqual([row['id']],[r['id'] for r in snapshot['resources']])
         self.assertFalse(snapshot['inventory']['complete'])
         self.assertEqual(RG,snapshot['inventory']['subscriptions'][0]['resource_group'])
-        self.assertEqual(5,len(transport.calls))
+        self.assertEqual(6,len(transport.calls))
+        self.assertIn(endpoint(row['id']+'/blobServices/default/containers','2023-05-01'),transport.calls)
         self.assertTrue(all(u.startswith('https://management.azure.com'+SCOPE+'/') for u in transport.calls))
         self.assertNotIn(endpoint('/subscriptions/'+SID+'/resources',INVENTORY_API),transport.calls)
 

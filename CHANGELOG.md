@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.9.1 — container access and operating-evidence coverage
+
+- Assess actual container anonymous-access declarations, including special containers, with explicit approved levels or exact populations. Exclude user metadata and legal-hold identities.
+- Keep missing/unfinished job coverage visible alongside known failures; freeze per-source/operation job decisions in JSON, Markdown and PDFs.
+
 ## 0.9.0 — backup and restore job evidence
 
 - Read both vault families’ safe job statuses and times. Add explicit source/vault-scoped latest-job recency criteria, including requiring both backup and restore success.

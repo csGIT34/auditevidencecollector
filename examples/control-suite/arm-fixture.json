@@ -878,6 +878,26 @@
       },
       "type": "microsoft.recoveryservices/vaults"
     },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/containers?api-version=2023-05-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/containers/private",
+          "properties": {
+            "legalHold": {
+              "tags": [
+                {
+                  "upn": "SECRET-CANARY"
+                }
+              ]
+            },
+            "metadata": {
+              "secret": "SECRET-CANARY"
+            },
+            "publicAccess": "None"
+          }
+        }
+      ]
+    },
     "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
       "value": [
         {
