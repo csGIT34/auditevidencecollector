@@ -207,7 +207,7 @@ def render_pdf(saved, generation):
     heading('3. Wider audit applicability and missing evidence','program')
     field('Saved applicability research',program['catalog_version']+'; reviewed '+program['reviewed_on'])
     story.append(p('All 23 services remain in scope across applicable controls. Encryption findings appear in section 2. Additional saved configuration findings, when present, appear in section 8. Neither section establishes whole-control operating effectiveness. The following research context is not tenant deployment presence.'))
-    story.append(table([['Domain','Evidence state in this run']]+[[d+' - '+name,'Scoped encryption results only; see E references and limitations.' if d=='R' else ('Scoped configuration evidence in section 8; wider objective remains incomplete.' if configuration and any(r['domain']==d for r in configuration['results']) else 'NOT COLLECTED / NOT ASSESSED. Approved criteria and scoped evidence required.')] for d,name in program['domains'].items()],[230,width-230]))
+    story.append(table([['Domain','Evidence state in this run']]+[[d+' - '+name,'Scoped encryption results only; see E references and limitations.' if d=='R' else ('Scoped configuration evidence in section 8; provider-asserted policy results, when collected, appear in section 9. Wider objective remains incomplete.' if configuration and any(r['domain']==d for r in configuration['results']) else 'NOT COLLECTED / NOT ASSESSED. Approved criteria and scoped evidence required.')] for d,name in program['domains'].items()],[230,width-230]))
     story.append(table([['Service','Existing encryption capability / broader evidence gap']]+[[s['name'],s['current_encryption_maturity']+'. Additional saved predicates, if present, appear in section 8; wider coverage remains incomplete. '+s['shared_context']] for s in program['services']],[135,width-135]))
     story.append(p('Resource-local exclusions: private endpoints and user-assigned identities have no customer at-rest store, but retain authorization, trust, change, lifecycle, incident and governance obligations. Private endpoint approval is not proof of correct routing, DNS, target access control or disabled public access. Shared networking evidence remains with the network owner.'))
     story.append(table([['NIST family','Owner / missing shared or process evidence']]+[[f['id'].upper()+' - '+f['title'],f['responsibility']+'. NOT ASSESSED. '+f['review']] for f in program['families']],[170,width-170]))
@@ -314,5 +314,29 @@ def render_pdf(saved, generation):
                 field('Saved freshness assessment',row['freshness'])
             field('Finding', row['reason'])
             field('API definition source', row['source'])
+    policy_section = report_model.policy_compliance(report)
+    if policy_section:
+        story.append(PageBreak())
+        heading('9. Azure Policy compliance (provider asserted)','policy')
+        story.append(p(policy_section['limits']))
+        field('Source / assignment', policy_section['source'] + ' / ' + str(policy_section['assignment_filter']))
+        field('Collected at', policy_section['collected_at'])
+        field('Saved policy summary', policy_section['summary'])
+        story.append(p('Microsoft evaluated these results and supplied the control mapping. This program did not '
+                       'observe the configuration behind them and does not restate them as its own findings. A '
+                       'resource type with no applicable definition produces no record, so the absence of a record '
+                       'below is not evidence of compliance. Records evaluated at subscription or resource group '
+                       'scope describe that scope and not each resource inside it.'))
+        if policy_section['summary'].get('truncated'):
+            story.append(p('This evaluation returned more records than the run retains. The results below are a '
+                           'truncated sample; the absence of a finding in them does not mean none exists.','Heading2'))
+        for row in policy_section['results']:
+            story.append(KeepTogether([p(row['reference']+' | '+row['result']+' | '+row['compliance_state'],'Heading2'),
+                                       p('Resource: '+row['resource_id'])]))
+            field('Evaluation scope', row['scope'])
+            field('Supporting NIST references', ', '.join(row['controls']) or 'No control mapping declared')
+            field('Policy effect', row['action'])
+            field('Assignment', row['assignment'])
+            field('Evaluated at', row['evaluated_at'] or 'not reported')
     doc.multiBuild(story)
     return output.getvalue()

@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.27.0
+
+- Render Azure Policy compliance in the auditor PDF as section 9. The evidence kind covering most controls was archived in the run and the control register but omitted from the document handed to an auditor.
+- State provider attribution, evaluation scope and truncation in that section, so a reader cannot mistake a Microsoft assertion for this program's observation or a truncated sample for a complete one.
+
 ## 0.26.0
 
 - Detect truncated policy compliance. Policy Insights truncates to `$top` and returns no continuation link, so a full page looked identical to a truncated one and a large tenant would have archived a partial sample as complete evidence. The query now asks for one record beyond the retained limit, which makes the difference observable.

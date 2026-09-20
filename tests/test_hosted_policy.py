@@ -113,3 +113,33 @@ class HostedPolicyCollectionTests(unittest.TestCase):
         outcome = hosted(store, records=policy_records('NonCompliant'))
         self.assertEqual({'PASS': 0, 'FAIL': 1, 'UNKNOWN': 0}, outcome['policy_summary']['counts'])
         self.assertEqual('FINDINGS_PRESENT', outcome['policy_summary']['conclusion'])
+
+    def test_the_auditor_pdf_carries_the_policy_evidence(self):
+        from cloud_governance.archive import publish_pdf
+        from pypdf import PdfReader
+        from io import BytesIO
+        store = MemoryStore()
+        outcome = hosted(store)
+        published = publish_pdf(store, outcome['run_id'])
+        text = '\n'.join(page.extract_text() or '' for page in
+                         PdfReader(BytesIO(store.read(published['pdf']['key']))).pages)
+        # The kind that covers most controls must not be missing from the auditor artifact.
+        self.assertIn('Azure Policy compliance', text)
+        self.assertIn('Microsoft evaluated these results', text)
+        self.assertIn(REFERENCE, text)
+        self.assertIn('CM-6', text)
+
+    def test_a_truncated_evaluation_is_stated_in_the_pdf(self):
+        from cloud_governance.archive import publish_pdf
+        from pypdf import PdfReader
+        from io import BytesIO
+        from cloud_governance.policy_compliance import MAX_RECORDS
+        resource = '/subscriptions/' + SUB + '/resourceGroups/audit-demo/providers/Microsoft.Storage/storageAccounts/'
+        many = [dict(policy_records()[0], resourceId=resource + str(index)) for index in range(MAX_RECORDS + 1)]
+        store = MemoryStore()
+        outcome = hosted(store, records=many)
+        self.assertTrue(outcome['policy_summary']['truncated'])
+        published = publish_pdf(store, outcome['run_id'])
+        text = '\n'.join(page.extract_text() or '' for page in
+                         PdfReader(BytesIO(store.read(published['pdf']['key']))).pages)
+        self.assertIn('truncated sample', text)
