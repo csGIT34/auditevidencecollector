@@ -83,6 +83,11 @@ def _evidence(report, operational):
         items.append({'kind': 'configuration_predicate', 'reference': row['check_id'],
                       'resource_id': row.get('resource_id', ''), 'result': row['result'], 'summary': row['title'],
                       'controls': _labels(row.get('control_refs', [])), 'gaps': []})
+    for row in report_model.policy_results(report):
+        items.append({'kind': 'policy_compliance', 'reference': row['reference'],
+                      'resource_id': row['resource_id'], 'result': row['result'],
+                      'summary': 'Azure Policy asserted ' + row['compliance_state'],
+                      'controls': _labels(row['controls']), 'gaps': []})
     for row in (operational or {}).get('records', []):
         items.append({'kind': 'attributed_record', 'reference': row.get('id', ''), 'resource_id': row.get('scope', ''),
                       'result': 'ATTRIBUTED', 'summary': row.get('title', ''),
@@ -112,6 +117,8 @@ def build(report, tailoring=None, operational=None):
     approved = bool(tailoring) and tailoring['status'] == 'approved'
     declared = (tailoring or {}).get('controls', {})
     items = _evidence(report, operational)
+    outside = sorted({label for row in report_model.policy_results(report)
+                      for label in row['controls'] if label not in CONTROLS})
     selected = sorted({label for item in items for label in item['controls']} | set(declared)
                       | {label for label, control in CONTROLS.items() if control['candidate']},
                       key=lambda label: (CONTROLS[label]['family'], CONTROLS[label]['oscal_id']))
@@ -162,7 +169,8 @@ def build(report, tailoring=None, operational=None):
                         'service_applicable': sum(1 for row in rows if row['service_applicable']),
                         'service_applicable_with_evidence': sum(1 for row in rows if row['service_applicable'] and row['evidence_count']),
                         'statuses': {state: status_counts.get(state, 0) for state in STATUSES},
-                        'evidence_items': len(items)},
+                        'evidence_items': len(items),
+                        'controls_outside_packaged_catalog': outside},
             'families': families, 'limits': LIMITS, 'controls': rows}
 
 

@@ -29,8 +29,8 @@ class Deadline:
         time.sleep(seconds)
 
 
-def assess_snapshot(snapshot, *, reassessed=False, criteria=None):
-    report = assess(snapshot, criteria)
+def assess_snapshot(snapshot, *, reassessed=False, criteria=None, policy=None):
+    report = assess(snapshot, criteria, policy)
     report['snapshot_sha256'] = snapshot_digest(snapshot)
     report['reassessed_from_snapshot'] = reassessed
     return report

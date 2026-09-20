@@ -16,10 +16,11 @@ MAPPING_SOURCES = ["https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
                    "https://csrc.nist.gov/pubs/sp/800/53/a/r5/final"]
 
 
-def control_mapping(results, configuration):
+def control_mapping(results, configuration, policy=None):
     """Derive the referenced controls from the evidence actually collected."""
     controls = {label for row in results for label in row.get("controls", ())}
     controls |= {label for row in (configuration or {}).get("results", ()) for label in row.get("control_refs", ())}
+    controls |= {label for row in (policy or {}).get("results", ()) for label in row.get("controls", ())}
     return {"framework": FRAMEWORK, "controls": sorted(controls), "assessment": MAPPING_LIMIT,
             "sources": list(MAPPING_SOURCES)}
 LIMITATIONS = [
@@ -239,7 +240,7 @@ class Assessor:
         return finish("UNSUPPORTED", "Rule evaluation mode is not implemented.")
 
 
-def assess(snapshot, criteria=None):
+def assess(snapshot, criteria=None, policy=None):
     assessor = Assessor(snapshot)
     results = [assessor.evaluate(r) for r in snapshot["resources"]]
     resource_groups = {s["id"].lower(): s["resource_group"] for s in snapshot["inventory"]["subscriptions"] if s.get("resource_group")}
@@ -258,7 +259,7 @@ def assess(snapshot, criteria=None):
     report = {"schema_version": "1.2", "tool_version": __version__, "rule_version": RULE_VERSION,
             "generated_at": now(), "mode": snapshot["mode"], "collection_started_at": snapshot["started_at"],
             "collection_completed_at": snapshot["completed_at"],
-            "control_mapping": control_mapping(results, configuration),
+            "control_mapping": control_mapping(results, configuration, policy),
             "verification_guidance": GUIDANCE, "inventory": snapshot["inventory"], "limitations": LIMITATIONS,
             "errors": snapshot["errors"],
             "evidence": {
@@ -271,5 +272,8 @@ def assess(snapshot, criteria=None):
                                 "unsupported_types": sorted({r["type"] for r in results if r["result"] == "UNSUPPORTED"})},
                     "results": results},
                 "configuration": configuration}}
+    if policy is not None:
+        from .policy_compliance import validate as validate_policy_evidence
+        report["evidence"]["policy_compliance"] = validate_policy_evidence(policy)
     report["summary"] = overall_summary(report)
     return report

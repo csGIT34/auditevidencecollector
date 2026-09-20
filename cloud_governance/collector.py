@@ -63,6 +63,37 @@ class AzureCliCredential:
         except (OSError, subprocess.TimeoutExpired, ValueError, TypeError, AttributeError):
             raise CollectionError("authentication_failed") from None
 
+def bounded_payload(raw):
+    """Parse a provider response under the same limits for every transport.
+
+    Duplicate members, nonfinite numbers, invalid UTF-8 and excessive nesting are rejected
+    before any value reaches a projection.
+    """
+    def unique(pairs):
+        result={}
+        for key,value in pairs:
+            if key in result:raise ValueError('Duplicate provider member')
+            result[key]=value
+        return result
+    def invalid_constant(value):raise ValueError('Nonfinite provider value')
+    def finite_float(value):
+        number=float(value)
+        if not math.isfinite(number):raise ValueError('Nonfinite provider value')
+        return number
+    text=raw.decode('utf-8')
+    depth=0;quoted=False;escaped=False
+    for char in text:
+        if quoted:
+            if escaped:escaped=False
+            elif char=='\\':escaped=True
+            elif char=='"':quoted=False
+        elif char=='"':quoted=True
+        elif char in '{[':
+            depth+=1
+            if depth>64:raise CollectionError('malformed_response')
+        elif char in '}]':depth-=1
+    return json.loads(text,object_pairs_hook=unique,parse_constant=invalid_constant,parse_float=finite_float)
+
 class ArmTransport:
     validate_url = staticmethod(valid_url)
     def __init__(self, credential=None, retries=3, timeout=30, sleep=time.sleep, opener=None, *, max_response_bytes=MAX_RESPONSE_BYTES):
@@ -82,30 +113,7 @@ class ArmTransport:
                 with self.opener.open(req, timeout=self.timeout) as response:
                     raw=response.read(self.max_response_bytes+1)
                     if len(raw)>self.max_response_bytes:raise CollectionError('response_size_limit')
-                    def unique(pairs):
-                        result={}
-                        for key,value in pairs:
-                            if key in result:raise ValueError('Duplicate provider member')
-                            result[key]=value
-                        return result
-                    def invalid_constant(value):raise ValueError('Nonfinite provider value')
-                    def finite_float(value):
-                        number=float(value)
-                        if not math.isfinite(number):raise ValueError('Nonfinite provider value')
-                        return number
-                    text=raw.decode('utf-8')
-                    depth=0;quoted=False;escaped=False
-                    for char in text:
-                        if quoted:
-                            if escaped:escaped=False
-                            elif char=='\\':escaped=True
-                            elif char=='"':quoted=False
-                        elif char=='"':quoted=True
-                        elif char in '{[':
-                            depth+=1
-                            if depth>64:raise CollectionError('malformed_response')
-                        elif char in '}]':depth-=1
-                    payload=json.loads(text,object_pairs_hook=unique,parse_constant=invalid_constant,parse_float=finite_float)
+                    payload=bounded_payload(raw)
                 if not isinstance(payload, dict):
                     raise CollectionError("malformed_response")
                 return payload
