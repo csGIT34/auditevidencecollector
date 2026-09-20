@@ -1,6 +1,6 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** Version 0.9.1 includes [169 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register](docs/audit/delivery-register.json) for remaining objectives.
+**Current work: multi-control coverage is incomplete.** Version 0.10.0 includes [169 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register](docs/audit/delivery-register.json) for remaining objectives.
 
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 
@@ -146,3 +146,5 @@ Optional future consumers may include MCP clients used by internal AI tools, upl
 Compare changes between exact archived runs with the [saved-run comparison commands](docs/SAVED_RUN_COMPARISON.md).
 
 Dated restore, access-review, change and incident records can be archived and reported through the [operational evidence supplement](docs/OPERATIONAL_EVIDENCE.md), including explicit missing-evidence requirements.
+
+[Restricted Kubernetes evidence](docs/KUBERNETES_EVIDENCE.md) adds eight per-container workload predicates through exact-run export supplements and opt-in Functions endpoints.

@@ -11,12 +11,14 @@ def register():
     research=json.loads((ROOT/'docs/audit/catalog.json').read_text())
     rows=[]
     for proposed in research['checks']:
+        from azure_at_rest.kubernetes_evidence import CHECKS as KUBE_CHECKS
+        workload_predicates=sorted(key for key,objective in KUBE_CHECKS.items() if objective==proposed['id'])
         predicates=sorted(c.id for c in CHECKS.values() if c.catalog_ref==proposed['id'])
         service_types={c.resource_type for c in CHECKS.values() if c.catalog_ref.split('-')[0]==proposed['service_id']}
         encryption=sorted({RULES[t].key for t in service_types if t in RULES and RULES[t].mode!='na'}) if proposed['domain']=='R' else []
         rows.append({'id':proposed['id'],'service_id':proposed['service_id'],'domain':proposed['domain'],'title':proposed['title'],
                      'state':'PARTIAL_EXECUTABLE_SUPPORT' if predicates or encryption else 'NOT_IMPLEMENTED',
-                     'configuration_predicates':predicates,'existing_encryption_rules':encryption,
+                     'configuration_predicates':predicates,'workload_import_predicates':workload_predicates,'existing_encryption_rules':encryption,
                      'whole_objective_complete':False,'new_configuration_live_validation':'NOT_VERIFIED',
                      'remaining_acceptance_boundary':proposed['acceptance_candidate']})
     return {'catalog_version':research['catalog_version'],'objective_count':len(rows),'configuration_predicate_count':len(CHECKS),

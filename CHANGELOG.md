@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.10.0 — restricted Kubernetes workload evidence
+
+- Project PodList/NodeList exports into exact saved AKS run supplements, excluding raw environment variables, commands, annotations, addresses and secrets.
+- Assess eight explicit pod/container security and image-identity predicates with inherited settings, freshness and population completeness. Unknown/Windows OS leaves Linux predicates unassessed.
+- Add immutable JSON/Markdown/PDF archives, CLI commands and opt-in key-protected Functions endpoints. Export origin remains operator-supplied; no Kubernetes credentials or live API access are fetched.
+
 ## 0.9.1 — container access and operating-evidence coverage
 
 - Assess actual container anonymous-access declarations, including special containers, with explicit approved levels or exact populations. Exclude user metadata and legal-hold identities.

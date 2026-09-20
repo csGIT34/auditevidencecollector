@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.9.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.10.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -13,6 +13,7 @@ Updated 2026-09-19. **Source release 0.9.1 (local tests passed; expanded reads n
 | Multi-control configuration/identity predicates | Implemented; local validation | 169 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
+| Kubernetes pod security/image supplement | Implemented locally | [Restricted export import](KUBERNETES_EVIDENCE.md), eight typed predicates per app/init/ephemeral container; raw secrets excluded. This is an operator-export path, not an authenticated Kubernetes collector. |
 | All-service NIST program | Incomplete | 215 research objectives; every objective remains open or partially supported in the [delivery register](audit/delivery-register.json). |
 | Workplace deployment | Pending workplace inputs and acceptance | Use existing workplace infrastructure patterns and [runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). Home Terraform is not the workplace deployment. |
 
@@ -57,3 +58,5 @@ Version 0.9.0 adds both vault families’ job evidence and an explicit latest-jo
 The 0.9.0 package passed 28 local Functions runtime checks. Its synthetic all-service report includes 168 predicates (167 PASS, one intentional expired-credential FAIL); the new job-evidence pages were rendered and visually reviewed. No live API validation or restore execution is implied.
 
 Version 0.9.1 passed 237 local tests with zero skips and 28 packaged Functions runtime checks. The storage scope regression now verifies the additional container read stays in the selected resource group. A synthetic failed-backup/unfinished-restore report preserves both failures and incomplete coverage; its job and container pages were rendered and visually reviewed. Archives from 0.3.1, 0.5.0 and 0.9.0 remained readable with every original file hash unchanged. No cloud changes were made.
+
+Version 0.10.0 passed 249 local tests with zero skips and 34 packaged Functions runtime checks, including the optional Kubernetes import/report endpoints. Both pages of the synthetic workload PDF were rendered and visually reviewed. Raw pod secret canaries were excluded from the retained projection and PDF. This release adds eight workload predicates per container without changing the 169 ARM/Graph predicates; no live Kubernetes collection or Azure deployment is implied.

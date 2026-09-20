@@ -182,7 +182,7 @@ def render_pdf(report):
         def add(label,value):
             text=json.dumps(value,ensure_ascii=True) if isinstance(value,(list,dict)) else str(value)
             story.extend([Paragraph(escape(label)+': '+escape(text.encode('ascii','backslashreplace').decode()).replace('\n','<br/>'),styles['Normal']),Spacer(1,6)])
-        story.append(Paragraph('Operational evidence supplement',styles['Heading1']))
+        story.append(Paragraph(escape(report.get('title','Operational evidence supplement')),styles['Heading1']))
         for key in ('evidence_id','source_run_id','source_manifest_sha256','source_scope','mode','as_of','max_age_hours'):add(key,report[key])
         if 'execution_provenance' in report:add('Execution provenance',report['execution_provenance'])
         for limit in report['limitations']:add('Limit',limit)
@@ -190,11 +190,14 @@ def render_pdf(report):
             story.append(PageBreak());story.append(Paragraph('Required operational evidence',styles['Heading1']))
             for item in report['requirements']:add('Requirement',item)
             for item in report['requirement_results']:add('Outcome',item)
+        if 'summary' in report:add('Assessment summary',report['summary'])
+        if 'criteria' in report:add('Supplied criteria',report['criteria'])
+        if 'freshness' in report:add('Evidence freshness',report['freshness'])
         for row in report['records']:
             story.append(PageBreak());story.append(Paragraph(escape(row['record_id']),styles['Heading2']))
             for key,value in row.items():add(key,value)
             for objective in row['objective_ids']:add(objective,report['objective_definitions'][objective])
-        SimpleDocTemplate(stream,title='Operational evidence supplement',author='Cloud governance',leftMargin=42,rightMargin=42).build(story)
+        SimpleDocTemplate(stream,title=report.get('title','Operational evidence supplement'),author='Cloud governance',leftMargin=42,rightMargin=42).build(story)
         return stream.getvalue()
     return render()
 

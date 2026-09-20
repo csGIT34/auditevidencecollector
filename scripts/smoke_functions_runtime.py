@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 IMAGE = 'mcr.microsoft.com/azure-functions/python@sha256:ecdc82ecd47f144f5aa55c14086d6e67684bb3b4b5577ba00d11bb9a47dacd5e'
 
 
-def check_runtime(package, output, operational=False):
+def check_runtime(package, output, operational=False, workload=False):
     package, output = Path(package).resolve(), Path(output).resolve()
     if output.is_relative_to(ROOT) or output.exists():
         raise ValueError('Use a new private output directory outside the checkout')
@@ -53,6 +53,7 @@ def check_runtime(package, output, operational=False):
                             'CG_REPORT_ENABLED=false', 'CG_LAB_PROBE_ENABLED=false', 'CG_COLLECTION_SCHEDULE=']:
                 command += ['-e', setting]
             command += ['-e', 'CG_OPERATIONAL_ENABLED='+str(operational).lower()]
+            command += ['-e', 'CG_WORKLOAD_ENABLED='+str(workload).lower()]
             command.append(IMAGE)
             subprocess.run(command, check=True, capture_output=True, text=True, timeout=300)
             container_started = True
@@ -116,6 +117,15 @@ def check_runtime(package, output, operational=False):
                             summary['checks'].append({'name':route+'-'+label,'status':status,'expected':expected,'seconds':elapsed})
                             if status!=expected or (status==400 and json.loads(body)!={'code':code}):
                                 raise RuntimeError('Operational route validation failed')
+                workload_names={'ImportKubernetesEvidence','GenerateKubernetesReport'}
+                if workload_names.intersection(summary['functions']) != (workload_names if workload else set()):
+                    raise RuntimeError('Unexpected workload route registration')
+                if workload:
+                    for route,code in [('import','invalid_kubernetes_request'),('reports','exact_kubernetes_id_required')]:
+                        for label,key,expected in [('missing-key',None,401),('wrong-key','invalid-local-test-key',401),('invalid-body',function_key,400)]:
+                            status,body,elapsed=request('POST','/api/workloads/kubernetes/'+route,{},key)
+                            summary['checks'].append({'name':'workload-'+route+'-'+label,'status':status,'expected':expected,'seconds':elapsed})
+                            if status!=expected or (status==400 and json.loads(body)!={'code':code}):raise RuntimeError('Workload route validation failed')
                 summary['passed'] = True
             finally:
                 try:
@@ -139,5 +149,6 @@ if __name__ == '__main__':
     parser.add_argument('--package', type=Path, required=True, help='Linux amd64 Python 3.12 deployment ZIP')
     parser.add_argument('--output', type=Path, required=True, help='New private directory outside this checkout')
     parser.add_argument('--operational',action='store_true',help='Also verify opt-in operational endpoints')
+    parser.add_argument('--workload',action='store_true',help='Also verify opt-in Kubernetes import/report endpoints')
     args = parser.parse_args()
-    check_runtime(args.package, args.output, args.operational)
+    check_runtime(args.package, args.output, args.operational, args.workload)

@@ -11,7 +11,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Effective access and privileged human access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -23,7 +24,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Inventory, ownership and information location",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -35,7 +37,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Audit retention, integrity and collection health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -47,7 +50,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Approved change and configuration baseline",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -59,7 +63,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Vulnerability evidence and remediation accountability",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -71,7 +76,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Recovery requirements and demonstrated restore",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -83,7 +89,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Security detection and incident response",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -95,7 +102,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Tailoring, risk, authorization and continuous assessment",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -107,7 +115,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Privacy, retention and information lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -119,7 +128,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "People, training and access lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -131,7 +141,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Provider assurance, procurement and software suppliers",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -143,7 +154,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Maintenance, media and physical dependencies",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -155,7 +167,8 @@
       "service_id": "shared",
       "state": "NOT_IMPLEMENTED",
       "title": "Customer application security and resiliency",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -170,7 +183,8 @@
       "service_id": "EH",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Publisher, receiver and namespace privileges",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -184,7 +198,8 @@
       "service_id": "EH",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Namespace ingress and Capture egress boundary",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -198,7 +213,8 @@
       "service_id": "EH",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Retained events and Capture data",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -212,7 +228,8 @@
       "service_id": "EH",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Publisher, consumer and delivery transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -224,7 +241,8 @@
       "service_id": "EH",
       "state": "NOT_IMPLEMENTED",
       "title": "SAS and optional CMK lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -239,7 +257,8 @@
       "service_id": "EH",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Access, operational and Capture audit",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -251,7 +270,8 @@
       "service_id": "EH",
       "state": "NOT_IMPLEMENTED",
       "title": "Hub retention and consumer configuration drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -263,7 +283,8 @@
       "service_id": "EH",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed broker versus customer clients",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -275,7 +296,8 @@
       "service_id": "EH",
       "state": "NOT_IMPLEMENTED",
       "title": "Replay, Capture recovery and regional resilience",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -292,7 +314,8 @@
       "service_id": "AKS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Cluster access and workload identity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -306,7 +329,10 @@
       "service_id": "AKS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "API server and workload network isolation",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": [
+        "host_namespaces"
+      ]
     },
     {
       "configuration_predicates": [],
@@ -320,7 +346,8 @@
       "service_id": "AKS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Secrets, nodes and workload storage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -332,7 +359,8 @@
       "service_id": "AKS",
       "state": "NOT_IMPLEMENTED",
       "title": "API, ingress and service-to-service encryption",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -344,7 +372,8 @@
       "service_id": "AKS",
       "state": "NOT_IMPLEMENTED",
       "title": "Workload secrets and federation lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -359,7 +388,8 @@
       "service_id": "AKS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Control-plane audit and workload log health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -371,7 +401,13 @@
       "service_id": "AKS",
       "state": "NOT_IMPLEMENTED",
       "title": "Admission and workload hardening",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": [
+        "allow_escalation",
+        "privileged",
+        "readonly_root",
+        "run_as_non_root"
+      ]
     },
     {
       "configuration_predicates": [],
@@ -383,7 +419,12 @@
       "service_id": "AKS",
       "state": "NOT_IMPLEMENTED",
       "title": "Cluster, node and image vulnerability lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": [
+        "declared_digest",
+        "declared_runtime_digest_match",
+        "runtime_digest_known"
+      ]
     },
     {
       "configuration_predicates": [],
@@ -395,7 +436,8 @@
       "service_id": "AKS",
       "state": "NOT_IMPLEMENTED",
       "title": "Cluster rebuild and stateful recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -416,7 +458,8 @@
       "service_id": "APPREG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Requested permissions versus effective consent",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -428,7 +471,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Application audience and redirect trust boundary",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -440,7 +484,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Directory metadata and external credential custody",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -452,7 +497,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "OAuth redirect and token transport security",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -466,7 +512,8 @@
       "service_id": "APPREG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Application credential and federation hygiene",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -478,7 +525,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Application changes and sign-in monitoring",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -490,7 +538,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Registration and consent change control",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -502,7 +551,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Identity integration and application code security",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -514,7 +564,8 @@
       "service_id": "APPREG",
       "state": "NOT_IMPLEMENTED",
       "title": "Identity configuration recovery and credential replacement",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -529,7 +580,8 @@
       "service_id": "EG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Publish, subscribe and delivery authorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -543,7 +595,8 @@
       "service_id": "EG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Ingress restrictions and delivery destination trust",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -555,7 +608,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Retained events and dead-letter storage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -567,7 +621,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Event delivery and MQTT transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -579,7 +634,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Publisher keys, webhook credentials and MQTT certificates",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -594,7 +650,8 @@
       "service_id": "EG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Publish/delivery/MQTT failure observability",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -606,7 +663,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Subscription filters and MQTT routing baseline",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -618,7 +676,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Provider broker and customer event handlers",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -630,7 +689,8 @@
       "service_id": "EG",
       "state": "NOT_IMPLEMENTED",
       "title": "Delivery recovery and replay strategy",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -645,7 +705,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Data authorization, shared keys and anonymous access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -662,7 +723,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Firewall, bypass and private subresource coverage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -676,7 +738,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Storage service encryption and copies",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -691,7 +754,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Secure transfer and service-specific protocols",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -703,7 +767,8 @@
       "service_id": "ST",
       "state": "NOT_IMPLEMENTED",
       "title": "Account/SAS and optional encryption-key lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -718,7 +783,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Per-service read/write/delete audit and retention",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -730,7 +796,8 @@
       "service_id": "ST",
       "state": "NOT_IMPLEMENTED",
       "title": "Service settings, immutability and deletion safeguards",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -742,7 +809,8 @@
       "service_id": "ST",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed storage platform and customer transfer tools",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -759,7 +827,8 @@
       "service_id": "ST",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Dataset-specific protection and tested recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -774,7 +843,8 @@
       "service_id": "COS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "API-specific data roles and local authentication",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -788,7 +858,8 @@
       "service_id": "COS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Public access, firewall and regional endpoints",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -802,7 +873,8 @@
       "service_id": "COS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Managed data and backup encryption",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -816,7 +888,8 @@
       "service_id": "COS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "API transport and client trust",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -828,7 +901,8 @@
       "service_id": "COS",
       "state": "NOT_IMPLEMENTED",
       "title": "Keys, resource tokens and optional CMK",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -843,7 +917,8 @@
       "service_id": "COS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "API-specific request audit and ingestion health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -855,7 +930,8 @@
       "service_id": "COS",
       "state": "NOT_IMPLEMENTED",
       "title": "Consistency, regions and data-plane change controls",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -867,7 +943,8 @@
       "service_id": "COS",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed engines and application drivers",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -879,7 +956,8 @@
       "service_id": "COS",
       "state": "NOT_IMPLEMENTED",
       "title": "Backup mode, retention and regional restore",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -893,7 +971,8 @@
       "service_id": "REDIS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Redis users and access-key authentication",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -905,7 +984,8 @@
       "service_id": "REDIS",
       "state": "NOT_IMPLEMENTED",
       "title": "Modern Redis private and public access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -919,7 +999,8 @@
       "service_id": "REDIS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Persistence, OS and tier-specific disk encryption",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -933,7 +1014,8 @@
       "service_id": "REDIS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Redis encrypted client protocol",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -945,7 +1027,8 @@
       "service_id": "REDIS",
       "state": "NOT_IMPLEMENTED",
       "title": "Access-key and optional encryption key lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -960,7 +1043,8 @@
       "service_id": "REDIS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Client connections, authentication and cache health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -972,7 +1056,8 @@
       "service_id": "REDIS",
       "state": "NOT_IMPLEMENTED",
       "title": "Database policy and module drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -984,7 +1069,8 @@
       "service_id": "REDIS",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed server and Redis client components",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -996,7 +1082,8 @@
       "service_id": "REDIS",
       "state": "NOT_IMPLEMENTED",
       "title": "Export backup versus persistence and replication",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1019,7 +1106,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "HTTP, trigger, deployment and managed identities",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1034,7 +1122,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Site and SCM ingress plus dependency paths",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1049,7 +1138,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Host, content, deployment and runtime storage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1070,7 +1160,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "HTTPS, SCM and downstream transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1082,7 +1173,8 @@
       "service_id": "FUNC",
       "state": "NOT_IMPLEMENTED",
       "title": "Function keys and Key Vault references",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1099,7 +1191,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Execution, application audit and deployment logs",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1114,7 +1207,8 @@
       "service_id": "FUNC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Runtime hardening and deployment change",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1126,7 +1220,8 @@
       "service_id": "FUNC",
       "state": "NOT_IMPLEMENTED",
       "title": "Function runtime, language and dependency support",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1138,7 +1233,8 @@
       "service_id": "FUNC",
       "state": "NOT_IMPLEMENTED",
       "title": "Code redeploy, host state and trigger recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1153,7 +1249,8 @@
       "service_id": "KV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault administration versus object use",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1168,7 +1265,8 @@
       "service_id": "KV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault firewall and private connections",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1182,7 +1280,8 @@
       "service_id": "KV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Secret, key and certificate protection boundary",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1194,7 +1293,8 @@
       "service_id": "KV",
       "state": "NOT_IMPLEMENTED",
       "title": "Vault API and consuming client transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1206,7 +1306,8 @@
       "service_id": "KV",
       "state": "NOT_IMPLEMENTED",
       "title": "Object lifecycle, expiry, rotation and revocation",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1221,7 +1322,8 @@
       "service_id": "KV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault data access and administrative audit",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1233,7 +1335,8 @@
       "service_id": "KV",
       "state": "NOT_IMPLEMENTED",
       "title": "Recovery safeguards and access-mode changes",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1245,7 +1348,8 @@
       "service_id": "KV",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed cryptographic service and clients",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1260,7 +1364,8 @@
       "service_id": "KV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault/object recovery and dependent service recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1276,7 +1381,8 @@
       "service_id": "PG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Server authentication and database role grants",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1290,7 +1396,8 @@
       "service_id": "PG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Server access mode and firewall",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1304,7 +1411,8 @@
       "service_id": "PG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Database, logs, temporary data and backups",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1316,7 +1424,8 @@
       "service_id": "PG",
       "state": "NOT_IMPLEMENTED",
       "title": "Database TLS and client certificate validation",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1328,7 +1437,8 @@
       "service_id": "PG",
       "state": "NOT_IMPLEMENTED",
       "title": "Database credentials and optional CMK",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1343,7 +1453,8 @@
       "service_id": "PG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Database audit, connection logs and destinations",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1355,7 +1466,8 @@
       "service_id": "PG",
       "state": "NOT_IMPLEMENTED",
       "title": "Extensions, parameters and schema change",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1367,7 +1479,8 @@
       "service_id": "PG",
       "state": "NOT_IMPLEMENTED",
       "title": "Major versions, extensions and provider maintenance",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1381,7 +1494,8 @@
       "service_id": "PG",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "PITR, retention, HA and tested recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1395,7 +1509,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "App callers, runtime identities and job execution",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1409,7 +1524,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Environment and app ingress/egress boundaries",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1423,7 +1539,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Ephemeral and mounted application storage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1437,7 +1554,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Ingress, service traffic and certificates",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1449,7 +1567,8 @@
       "service_id": "ACA",
       "state": "NOT_IMPLEMENTED",
       "title": "Secret references and consumer refresh",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1464,7 +1583,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Application/system audit and collection health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1476,7 +1596,8 @@
       "service_id": "ACA",
       "state": "NOT_IMPLEMENTED",
       "title": "Revisions, scale rules and deployment configuration",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1490,7 +1611,8 @@
       "service_id": "ACA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Container images and managed platform",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1502,7 +1624,8 @@
       "service_id": "ACA",
       "state": "NOT_IMPLEMENTED",
       "title": "Declarative rebuild and application state recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1517,7 +1640,8 @@
       "service_id": "UAMI",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Identity assignment and effective privileges",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1529,7 +1653,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Federated and attached-workload trust boundary",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1541,7 +1666,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Identity token consumption paths",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1553,7 +1679,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Provider credentials and customer federation lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1565,7 +1692,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Assignment, federation and workload sign-in monitoring",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1577,7 +1705,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Identity trust and role drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1589,7 +1718,8 @@
       "service_id": "UAMI",
       "state": "NOT_IMPLEMENTED",
       "title": "Identity dependency recovery and reauthorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1603,7 +1733,8 @@
       "service_id": "PE",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Endpoint creation, connection approval and target authorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1619,7 +1750,8 @@
       "service_id": "PE",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Exact private target and effective connectivity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1631,7 +1763,8 @@
       "service_id": "PE",
       "state": "NOT_IMPLEMENTED",
       "title": "Application encryption across private connectivity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1643,7 +1776,8 @@
       "service_id": "PE",
       "state": "NOT_IMPLEMENTED",
       "title": "Endpoint changes and target access observability",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1655,7 +1789,8 @@
       "service_id": "PE",
       "state": "NOT_IMPLEMENTED",
       "title": "Connection and DNS linkage drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1667,7 +1802,8 @@
       "service_id": "PE",
       "state": "NOT_IMPLEMENTED",
       "title": "Private connectivity recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1682,7 +1818,8 @@
       "service_id": "ACR",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Push/pull, administrator and task rights",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1696,7 +1833,8 @@
       "service_id": "ACR",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Registry ingress and data endpoints",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1710,7 +1848,8 @@
       "service_id": "ACR",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Registry stored artifacts and copies",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1722,7 +1861,8 @@
       "service_id": "ACR",
       "state": "NOT_IMPLEMENTED",
       "title": "Registry API and image transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1734,7 +1874,8 @@
       "service_id": "ACR",
       "state": "NOT_IMPLEMENTED",
       "title": "Repository tokens, credentials and optional CMK",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1749,7 +1890,8 @@
       "service_id": "ACR",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Login and repository operation audit",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1761,7 +1903,8 @@
       "service_id": "ACR",
       "state": "NOT_IMPLEMENTED",
       "title": "Artifact immutability policy and task changes",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1773,7 +1916,8 @@
       "service_id": "ACR",
       "state": "NOT_IMPLEMENTED",
       "title": "Stored image vulnerabilities and provenance",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1785,7 +1929,8 @@
       "service_id": "ACR",
       "state": "NOT_IMPLEMENTED",
       "title": "Artifact availability and registry recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1800,7 +1945,8 @@
       "service_id": "BV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Backup, restore, delete and security administration",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1814,7 +1960,8 @@
       "service_id": "BV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault and protected-workload connectivity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1828,7 +1975,8 @@
       "service_id": "BV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Vault encryption versus snapshots and restores",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1840,7 +1988,8 @@
       "service_id": "BV",
       "state": "NOT_IMPLEMENTED",
       "title": "Backup/restore transport and hybrid agents",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1852,7 +2001,8 @@
       "service_id": "BV",
       "state": "NOT_IMPLEMENTED",
       "title": "Optional CMK, agent/passphrase and credential custody",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1869,7 +2019,8 @@
       "service_id": "BV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Backup failures, deletion events and monitoring health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1881,7 +2032,8 @@
       "service_id": "BV",
       "state": "NOT_IMPLEMENTED",
       "title": "Soft delete, immutability and policy change",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1893,7 +2045,8 @@
       "service_id": "BV",
       "state": "NOT_IMPLEMENTED",
       "title": "Backup agent and managed vault maintenance",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1913,7 +2066,8 @@
       "service_id": "BV",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Protected-item completeness and recovery evidence",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1928,7 +2082,8 @@
       "service_id": "APPC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Configuration data roles and access-key fallback",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1942,7 +2097,8 @@
       "service_id": "APPC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Store and replica private/public access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1956,7 +2112,8 @@
       "service_id": "APPC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Configuration store and external values",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1968,7 +2125,8 @@
       "service_id": "APPC",
       "state": "NOT_IMPLEMENTED",
       "title": "SDK endpoint and refresh transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -1980,7 +2138,8 @@
       "service_id": "APPC",
       "state": "NOT_IMPLEMENTED",
       "title": "Key Vault references and refresh lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -1995,7 +2154,8 @@
       "service_id": "APPC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Configuration access/change and refresh failures",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2007,7 +2167,8 @@
       "service_id": "APPC",
       "state": "NOT_IMPLEMENTED",
       "title": "Feature flag/configuration deployment safety",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2019,7 +2180,8 @@
       "service_id": "APPC",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed store and application provider SDK",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2033,7 +2195,8 @@
       "service_id": "APPC",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Snapshots, deletion recovery and replica failover",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2048,7 +2211,8 @@
       "service_id": "AI",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Telemetry ingestion and query authorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2063,7 +2227,8 @@
       "service_id": "AI",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Ingestion/query exposure and private-link path",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2077,7 +2242,8 @@
       "service_id": "AI",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Workspace-backed telemetry and exports",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2089,7 +2255,8 @@
       "service_id": "AI",
       "state": "NOT_IMPLEMENTED",
       "title": "Telemetry SDK and exporter transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2101,7 +2268,8 @@
       "service_id": "AI",
       "state": "NOT_IMPLEMENTED",
       "title": "Ingestion identity, legacy keys and web-test certificates",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2116,7 +2284,8 @@
       "service_id": "AI",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Instrumentation receipt, sampling and collection health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2128,7 +2297,8 @@
       "service_id": "AI",
       "state": "NOT_IMPLEMENTED",
       "title": "Instrumentation/privacy and alert configuration drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2140,7 +2310,8 @@
       "service_id": "AI",
       "state": "NOT_IMPLEMENTED",
       "title": "SDK, collector and application dependency support",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2152,7 +2323,8 @@
       "service_id": "AI",
       "state": "NOT_IMPLEMENTED",
       "title": "Monitoring recovery and retained telemetry access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2166,7 +2338,8 @@
       "service_id": "GRAF",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Grafana roles and data-source authorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2180,7 +2353,8 @@
       "service_id": "GRAF",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Workspace ingress and data-source egress",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2192,7 +2366,8 @@
       "service_id": "GRAF",
       "state": "NOT_IMPLEMENTED",
       "title": "Grafana configuration/data and source stores",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2204,7 +2379,8 @@
       "service_id": "GRAF",
       "state": "NOT_IMPLEMENTED",
       "title": "Browser and each data-source transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2216,7 +2392,8 @@
       "service_id": "GRAF",
       "state": "NOT_IMPLEMENTED",
       "title": "Service-account tokens and data-source credentials",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2231,7 +2408,8 @@
       "service_id": "GRAF",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Authentication, administrative and datasource monitoring",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2243,7 +2421,8 @@
       "service_id": "GRAF",
       "state": "NOT_IMPLEMENTED",
       "title": "Snapshot sharing, plugins and version-specific settings",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2255,7 +2434,8 @@
       "service_id": "GRAF",
       "state": "NOT_IMPLEMENTED",
       "title": "Managed Grafana and enabled plugin lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2269,7 +2449,8 @@
       "service_id": "GRAF",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Dashboard/configuration recovery and availability",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2283,7 +2464,8 @@
       "service_id": "PROM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Metrics ingestion and query scope",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2297,7 +2479,8 @@
       "service_id": "PROM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Ingestion versus query private connectivity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2309,7 +2492,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "Azure Monitor workspace metric storage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2321,7 +2505,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "Scrape, remote write and query paths",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2333,7 +2518,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "Scrape/remote-write identities and credential references",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2348,7 +2534,8 @@
       "service_id": "PROM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Scrape coverage, ingestion loss and rule health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2360,7 +2547,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "DCR, scrape, cardinality and label privacy baseline",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2372,7 +2560,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "Collector images and managed metrics platform",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2384,7 +2573,8 @@
       "service_id": "PROM",
       "state": "NOT_IMPLEMENTED",
       "title": "Metric continuity and monitoring rebuild",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2399,7 +2589,8 @@
       "service_id": "LA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Workspace, resource and table authorization",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2414,7 +2605,8 @@
       "service_id": "LA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Query, ingestion and export boundaries",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2428,7 +2620,8 @@
       "service_id": "LA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Workspace stored logs, queries and exports",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2440,7 +2633,8 @@
       "service_id": "LA",
       "state": "NOT_IMPLEMENTED",
       "title": "Agent, collection and query transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2452,7 +2646,8 @@
       "service_id": "LA",
       "state": "NOT_IMPLEMENTED",
       "title": "Agent credentials and optional key lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2468,7 +2663,8 @@
       "service_id": "LA",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Table retention, query audit and ingestion health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2480,7 +2676,8 @@
       "service_id": "LA",
       "state": "NOT_IMPLEMENTED",
       "title": "DCR transforms, tables and export change control",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2492,7 +2689,8 @@
       "service_id": "LA",
       "state": "NOT_IMPLEMENTED",
       "title": "Agents, query clients and managed service",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2504,7 +2702,8 @@
       "service_id": "LA",
       "state": "NOT_IMPLEMENTED",
       "title": "Retained evidence availability and export recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2519,7 +2718,8 @@
       "service_id": "VM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Azure administration and guest privileged access",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2531,7 +2731,8 @@
       "service_id": "VM",
       "state": "NOT_IMPLEMENTED",
       "title": "NIC exposure and host/service boundaries",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2545,7 +2746,8 @@
       "service_id": "VM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "OS/data disks, cache/temp and remote mounts",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2557,7 +2759,8 @@
       "service_id": "VM",
       "state": "NOT_IMPLEMENTED",
       "title": "Guest application and management encryption",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2569,7 +2772,8 @@
       "service_id": "VM",
       "state": "NOT_IMPLEMENTED",
       "title": "Guest secrets, SSH keys and certificates",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2584,7 +2788,8 @@
       "service_id": "VM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Guest security events, clocks and agent health",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2599,7 +2804,8 @@
       "service_id": "VM",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Guest hardening, boot integrity and drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2611,7 +2817,8 @@
       "service_id": "VM",
       "state": "NOT_IMPLEMENTED",
       "title": "Guest patching, malware defense and software support",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2623,7 +2830,8 @@
       "service_id": "VM",
       "state": "NOT_IMPLEMENTED",
       "title": "Application-consistent backup and VM recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2638,7 +2846,8 @@
       "service_id": "VMSS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Model and instance identity/administrator rights",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2650,7 +2859,8 @@
       "service_id": "VMSS",
       "state": "NOT_IMPLEMENTED",
       "title": "Per-instance exposure and shared frontend",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2664,7 +2874,8 @@
       "service_id": "VMSS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Model versus instance storage protection",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2676,7 +2887,8 @@
       "service_id": "VMSS",
       "state": "NOT_IMPLEMENTED",
       "title": "Management, application and backend transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2688,7 +2900,8 @@
       "service_id": "VMSS",
       "state": "NOT_IMPLEMENTED",
       "title": "Image and instance credential lifecycle",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2703,7 +2916,8 @@
       "service_id": "VMSS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Instance audit coverage through scaling and upgrades",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2719,7 +2933,8 @@
       "service_id": "VMSS",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Upgrade policy and instance-model drift",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2731,7 +2946,8 @@
       "service_id": "VMSS",
       "state": "NOT_IMPLEMENTED",
       "title": "Image, OS and extension patch coverage",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2743,7 +2959,8 @@
       "service_id": "VMSS",
       "state": "NOT_IMPLEMENTED",
       "title": "Capacity rebuild and state recovery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2758,7 +2975,8 @@
       "service_id": "AUTO",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Runbook authoring, execution and runtime identity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2772,7 +2990,8 @@
       "service_id": "AUTO",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Account endpoints, webhooks and worker connectivity",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2784,7 +3003,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Secure assets, code and job/output stores",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2796,7 +3016,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Worker, webhook and runbook outbound transport",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2808,7 +3029,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Automation assets, webhook tokens and certificate expiry",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [
@@ -2823,7 +3045,8 @@
       "service_id": "AUTO",
       "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Job status, administrative changes and audit delivery",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2835,7 +3058,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Published code, source control and execution changes",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2847,7 +3071,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Runtime, modules and Hybrid Worker hosts",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     },
     {
       "configuration_predicates": [],
@@ -2859,7 +3084,8 @@
       "service_id": "AUTO",
       "state": "NOT_IMPLEMENTED",
       "title": "Account rebuild and protected asset reconstitution",
-      "whole_objective_complete": false
+      "whole_objective_complete": false,
+      "workload_import_predicates": []
     }
   ],
   "complete_objectives": 0,

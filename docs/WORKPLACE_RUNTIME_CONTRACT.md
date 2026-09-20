@@ -35,3 +35,5 @@ Validate the existing workplace patterns against: successful runtime indexing an
 Optional `CG_ASSESSMENT_CRITERIA_JSON` contains the versioned criteria document. Optional `CG_GRAPH_ENABLED` is exactly `true` or `false` and defaults to `false`; enabling it requests tenant-wide Graph metadata with the same configured UAMI, a separate Graph token audience, and an organization-ID check. These settings add no grants or provisioning. Graph metadata permissions and exact collection scope are documented in [configuration assessments](CONFIGURATION_ASSESSMENTS.md). Archive/read compatibility is schema 1.1 writes with 1.0 and 1.1 reads.
 
 Optional operating-record imports and PDF generation use `CG_OPERATIONAL_ENABLED=true`; see the [endpoint and evidence contract](OPERATIONAL_EVIDENCE.md).
+
+`CG_WORKLOAD_ENABLED=true` enables the restricted Kubernetes export import/report routes. See the [workload evidence contract](KUBERNETES_EVIDENCE.md); these endpoints require evidence-storage access and do not obtain Kubernetes credentials.

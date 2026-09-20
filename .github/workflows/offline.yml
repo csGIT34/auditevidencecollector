@@ -26,7 +26,7 @@ jobs:
         run: python scripts/build_functions_package.py --output dist/functions-runtime.zip
       - name: Smoke test Functions runtime locally
         if: runner.os == 'Linux'
-        run: python scripts/smoke_functions_runtime.py --package dist/functions-runtime.zip --output "$RUNNER_TEMP/functions-runtime-check" --operational
+        run: python scripts/smoke_functions_runtime.py --package dist/functions-runtime.zip --output "$RUNNER_TEMP/functions-runtime-check" --operational --workload
   terraform:
     name: Terraform mocked plans
     runs-on: ubuntu-latest
