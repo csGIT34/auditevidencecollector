@@ -4,6 +4,8 @@ import re
 import json
 from urllib.parse import urlsplit
 from .collector import ArmTransport, CollectionError
+INVALID_WEB = "[invalid]"
+
 from .safety import subscription_id, now
 from .controls import CHECKS, valid_value, validate_observations
 
@@ -55,6 +57,41 @@ class FixtureGraphTransport:
         return row
 
 
+def redirect_transport(uris):
+    """Bounded transport fact for declared redirect URIs; the URIs themselves are not retained.
+
+    A redirect URI names an internal host and belongs in the application registry, not in
+    an evidence archive. Only the transport position is projected.
+    """
+    if uris is None:
+        return None
+    if not isinstance(uris, list) or len(uris) > 512 or any(not isinstance(u, str) or len(u) > 2048 for u in uris):
+        return INVALID_WEB
+    if not uris:
+        return 'none_declared'
+    insecure = [u for u in uris if not u.lower().startswith('https://')]
+    # urn: and ms-app:// style non-HTTP redirects are not web transports and are reported as such.
+    if any(u.lower().startswith('http://') for u in insecure):
+        return 'plaintext_http_present'
+    return 'non_http_scheme_present' if insecure else 'all_https'
+
+
+def application_web(web):
+    """Project the web settings an authorization-server trust boundary depends on."""
+    observed = {}
+    settings = web if isinstance(web, dict) else {}
+    for cid, path in (('APPREG-implicit-access-token', 'enableAccessTokenIssuance'),
+                      ('APPREG-implicit-id-token', 'enableIdTokenIssuance')):
+        value = (settings.get('implicitGrantSettings') or {}).get(path) if isinstance(
+            settings.get('implicitGrantSettings'), dict) else None
+        observed[cid] = ({'state': 'observed', 'value': value} if type(value) is bool
+                         else {'state': 'missing' if value is None else 'invalid'})
+    transport = redirect_transport(settings.get('redirectUris')) if web is not None else None
+    observed['APPREG-redirect-transport'] = ({'state': 'observed', 'value': transport}
+                                             if transport and transport != INVALID_WEB
+                                             else {'state': 'missing' if transport is None else 'invalid'})
+    return observed
+
 class GraphCollector:
     def __init__(self,transport,tenant_id,max_pages=1000):
         if subscription_id(tenant_id)!=tenant_id or type(max_pages) is not int or max_pages<1:raise ValueError('Invalid Graph scope')
@@ -84,7 +121,7 @@ class GraphCollector:
         org,listing=self.listing('organization','id');listings['organization']=listing
         verified=listing['complete'] and len(org)==1 and isinstance(org[0],dict) and subscription_id(org[0].get('id'))==self.tenant
         if verified:
-            for collection,select in [('applications','id,appId,signInAudience,passwordCredentials,keyCredentials'),('servicePrincipals','id,appId,accountEnabled')]:
+            for collection,select in [('applications','id,appId,signInAudience,web,passwordCredentials,keyCredentials'),('servicePrincipals','id,appId,accountEnabled')]:
                 rows,listing=self.listing(collection,select);listings[collection]=listing
                 seen=set()
                 for raw in rows:
@@ -100,6 +137,9 @@ class GraphCollector:
                     cid='APPREG-audience' if is_app else 'APPREG-sp-enabled'
                     value=raw.get('signInAudience' if is_app else 'accountEnabled')
                     record['configuration'][cid]={'state':'observed','value':value} if valid_value(CHECKS[cid],value) else {'state':'missing' if value is None else 'invalid'}
+                    if is_app:
+                        for extra,observed in application_web(raw.get('web')).items():
+                            record['configuration'][extra]=observed
                     child='owners' if is_app else 'appRoleAssignments'
                     children,child_listing=self.listing(collection+'/'+oid+'/'+child,'id' if is_app else 'id,principalId,resourceId,appRoleId')
                     listings[collection+'/'+oid+'/'+child]=child_listing

@@ -226,6 +226,19 @@ CHECKS['APPREG-owner-count'] = Check('APPREG-owner-count','graph.application','v
 CHECKS['APPREG-expired-credentials'] = Check('APPREG-expired-credentials','graph.application','v1.0','credentials.expiredCount',(),'APPREG-K',
  'Expired application password/key credential metadata count; no credential values are collected',
  'https://learn.microsoft.com/en-us/graph/api/resources/application?view=graph-rest-1.0')
+TRANSPORTS = ('all_https', 'none_declared', 'plaintext_http_present', 'non_http_scheme_present')
+CHECKS['APPREG-implicit-access-token'] = Check('APPREG-implicit-access-token','graph.application','v1.0',
+ 'web.implicitGrantSettings.enableAccessTokenIssuance',B,'APPREG-T',
+ 'Implicit access token issuance setting; the deprecated implicit flow returns tokens through the browser',
+ 'https://learn.microsoft.com/en-us/graph/api/resources/implicitgrantsettings?view=graph-rest-1.0')
+CHECKS['APPREG-implicit-id-token'] = Check('APPREG-implicit-id-token','graph.application','v1.0',
+ 'web.implicitGrantSettings.enableIdTokenIssuance',B,'APPREG-T',
+ 'Implicit ID token issuance setting',
+ 'https://learn.microsoft.com/en-us/graph/api/resources/implicitgrantsettings?view=graph-rest-1.0')
+CHECKS['APPREG-redirect-transport'] = Check('APPREG-redirect-transport','graph.application','v1.0',
+ 'web.redirectUris transport',TRANSPORTS,'APPREG-N',
+ 'Transport of every declared redirect URI; the URIs themselves are not retained',
+ 'https://learn.microsoft.com/en-us/graph/api/resources/webapplication?view=graph-rest-1.0')
 CHECKS['APPREG-sp-enabled'] = Check('APPREG-sp-enabled','graph.servicePrincipal','v1.0','accountEnabled',B,'APPREG-I',
  'Related service-principal enabled configuration',
  'https://learn.microsoft.com/en-us/graph/api/resources/serviceprincipal?view=graph-rest-1.0')

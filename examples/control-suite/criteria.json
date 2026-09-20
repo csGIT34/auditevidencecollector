@@ -286,9 +286,21 @@
       "operator": "equals",
       "value": []
     },
+    "APPREG-implicit-access-token": {
+      "operator": "equals",
+      "value": false
+    },
+    "APPREG-implicit-id-token": {
+      "operator": "equals",
+      "value": false
+    },
     "APPREG-owner-count": {
       "operator": "at_least",
       "value": 1
+    },
+    "APPREG-redirect-transport": {
+      "operator": "equals",
+      "value": "all_https"
     },
     "APPREG-role-grants": {
       "operator": "equals",

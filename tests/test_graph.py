@@ -24,7 +24,7 @@ def fixture():
     return {
       BASE+'servicePrincipals/'+SP+'/oauth2PermissionGrants?$select=id,clientId,resourceId,consentType,principalId,scope':{'value':[]},
       BASE+'organization?$select=id':{'value':[{'id':TENANT}]},
-      BASE+'applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials':{'value':[{'id':APP,'appId':CLIENT,'signInAudience':'AzureADMyOrg','passwordCredentials':[{'keyId':ROLE,'startDateTime':'2020-01-01T00:00:00Z','endDateTime':'2021-01-01T00:00:00Z','secretText':'DO-NOT-SAVE-GRAPH-SECRET','hint':'DO-NOT-SAVE-GRAPH-SECRET'}],'keyCredentials':[]}]},
+      BASE+'applications?$select=id,appId,signInAudience,web,passwordCredentials,keyCredentials':{'value':[{'id':APP,'appId':CLIENT,'signInAudience':'AzureADMyOrg','web':{'redirectUris': ['https://app.example.invalid/callback'], 'implicitGrantSettings': {'enableAccessTokenIssuance': False, 'enableIdTokenIssuance': False}},'passwordCredentials':[{'keyId':ROLE,'startDateTime':'2020-01-01T00:00:00Z','endDateTime':'2021-01-01T00:00:00Z','secretText':'DO-NOT-SAVE-GRAPH-SECRET','hint':'DO-NOT-SAVE-GRAPH-SECRET'}],'keyCredentials':[]}]},
       BASE+'servicePrincipals?$select=id,appId,accountEnabled':{'value':[{'id':SP,'appId':CLIENT,'accountEnabled':True,'displayName':'DO-NOT-SAVE-GRAPH-SECRET'}]},
       BASE+'applications/'+APP+'/federatedIdentityCredentials?$select=id,issuer,subject,audiences':{'value':[]},
       BASE+'applications/'+APP+'/owners?$select=id':{'value':[{'id':OWNER,'mail':'DO-NOT-SAVE-GRAPH-SECRET'}]},
@@ -62,7 +62,7 @@ class GraphTests(unittest.TestCase):
         self.assertEqual('partial',result['resources'][0]['configuration']['APPREG-owner-count']['state'])
 
     def test_pagination_traversal_and_scope_attack(self):
-        url=BASE+'applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials'
+        url=BASE+'applications?$select=id,appId,signInAudience,web,passwordCredentials,keyCredentials'
         responses=fixture();original=responses[url]['value'];responses[url]={'value':[],'@odata.nextLink':BASE+'applications?$skiptoken=opaque'}
         responses[BASE+'applications?$skiptoken=opaque']={'value':original}
         result=evidence(responses);self.assertTrue(result['complete'])
@@ -78,7 +78,7 @@ class GraphTests(unittest.TestCase):
         credential.get_token.assert_not_called()
 
     def test_invalid_and_duplicate_identities_mark_incomplete(self):
-        responses=fixture();url=BASE+'applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials'
+        responses=fixture();url=BASE+'applications?$select=id,appId,signInAudience,web,passwordCredentials,keyCredentials'
         responses[url]['value']*=2
         result=evidence(responses);validate_identity_evidence(result)
         self.assertFalse(result['complete']);self.assertEqual(2,len(result['resources']))
@@ -87,7 +87,7 @@ class GraphTests(unittest.TestCase):
         result=evidence(responses);validate_identity_evidence(result);self.assertFalse(result['complete'])
 
     def test_bad_credential_metadata_is_partial_without_retaining_payload(self):
-        responses=fixture();url=BASE+'applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials'
+        responses=fixture();url=BASE+'applications?$select=id,appId,signInAudience,web,passwordCredentials,keyCredentials'
         responses[url]['value'][0]['passwordCredentials'][0]['endDateTime']='bad-secret'
         result=evidence(responses);validate_identity_evidence(result)
         self.assertEqual('partial',result['resources'][0]['configuration']['APPREG-expired-credentials']['state'])

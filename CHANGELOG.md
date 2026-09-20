@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.24.0
+
+- Read application web settings from Microsoft Graph and assess implicit access-token issuance, implicit ID-token issuance and the transport of declared redirect URIs. These give IA-13 an evidence path it previously had nowhere, at no cloud cost.
+- Project redirect URIs to a transport position only. A redirect URI names an internal host and belongs in the application registry, not in an evidence archive.
+
 ## 0.23.0
 
 - Assess the container registry policy set: content trust, quarantine, export and untagged retention. Content trust is the only evidence path for CM-14 Signed Components, which previously had neither a policy definition nor a predicate.

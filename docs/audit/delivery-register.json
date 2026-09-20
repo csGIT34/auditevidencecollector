@@ -2050,6 +2050,106 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:APPREG-implicit-access-token": {
+      "api_version": "v1.0",
+      "catalog_objectives": [
+        "APPREG-T"
+      ],
+      "collection_plane": "MICROSOFT_GRAPH",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][APPREG-implicit-access-token] with fallback to checks[APPREG-implicit-access-token]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py",
+        "cloud_governance/graph.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "web.implicitGrantSettings.enableAccessTokenIssuance",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "graph.application",
+      "source_definition": "https://learn.microsoft.com/en-us/graph/api/resources/implicitgrantsettings?view=graph-rest-1.0",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_graph.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:APPREG-implicit-id-token": {
+      "api_version": "v1.0",
+      "catalog_objectives": [
+        "APPREG-T"
+      ],
+      "collection_plane": "MICROSOFT_GRAPH",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][APPREG-implicit-id-token] with fallback to checks[APPREG-implicit-id-token]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py",
+        "cloud_governance/graph.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "web.implicitGrantSettings.enableIdTokenIssuance",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "graph.application",
+      "source_definition": "https://learn.microsoft.com/en-us/graph/api/resources/implicitgrantsettings?view=graph-rest-1.0",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_graph.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:APPREG-owner-count": {
       "api_version": "v1.0",
       "catalog_objectives": [
@@ -2093,6 +2193,56 @@
       "resource_type": "graph.application",
       "source_definition": "https://learn.microsoft.com/en-us/graph/api/application-list-owners?view=graph-rest-1.0",
       "suffix": "/owners",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_graph.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:APPREG-redirect-transport": {
+      "api_version": "v1.0",
+      "catalog_objectives": [
+        "APPREG-N"
+      ],
+      "collection_plane": "MICROSOFT_GRAPH",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][APPREG-redirect-transport] with fallback to checks[APPREG-redirect-transport]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py",
+        "cloud_governance/graph.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "web.redirectUris transport",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "graph.application",
+      "source_definition": "https://learn.microsoft.com/en-us/graph/api/resources/webapplication?view=graph-rest-1.0",
+      "suffix": "",
       "test_files": [
         "tests/test_archive.py",
         "tests/test_controls.py",
@@ -11461,7 +11611,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "APPREG-redirect-transport"
+      ],
       "criteria_requirements": "Approved ingress/egress and service destinations, public exposure exceptions, allowed client networks, private subresources and network-team evidence owner.",
       "disposition": {
         "exclusion": null,
@@ -11473,7 +11625,9 @@
       "existing_resource_rules": [],
       "guest_import_predicates": [],
       "id": "APPREG-N",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:APPREG-redirect-transport"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -11491,7 +11645,7 @@
       ],
       "required_evidence": "signInAudience, verified publisher/domain, redirect URIs, identifierUris, logout URLs and app instance property locks where applicable.",
       "service_id": "APPREG",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Application audience and redirect trust boundary",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -11533,7 +11687,10 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "APPREG-implicit-access-token",
+        "APPREG-implicit-id-token"
+      ],
       "criteria_requirements": "Approved protocols and minimum versions, certificate validation/trust and any protocol-specific exceptions; propose TLS 1.2 or stronger where supported, subject to approved architecture.",
       "disposition": {
         "exclusion": null,
@@ -11545,7 +11702,10 @@
       "existing_resource_rules": [],
       "guest_import_predicates": [],
       "id": "APPREG-T",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:APPREG-implicit-access-token",
+        "configuration:APPREG-implicit-id-token"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -11563,7 +11723,7 @@
       ],
       "required_evidence": "Redirect URI schemes, implicit/public-client flow flags and app type; owner evidence for TLS, PKCE and token issuer/audience/signature validation.",
       "service_id": "APPREG",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "OAuth redirect and token transport security",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -19233,7 +19393,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 196,
+  "configuration_predicate_count": 199,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215,
   "proposed_permission_profiles": {

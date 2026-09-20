@@ -12,7 +12,7 @@
         }
       ]
     },
-    "https://graph.microsoft.com/v1.0/applications?$select=id,appId,signInAudience,passwordCredentials,keyCredentials": {
+    "https://graph.microsoft.com/v1.0/applications?$select=id,appId,signInAudience,web,passwordCredentials,keyCredentials": {
       "value": [
         {
           "appId": "cccccccc-cccc-cccc-cccc-cccccccccccc",
@@ -27,7 +27,16 @@
               "startDateTime": "2020-01-01T00:00:00Z"
             }
           ],
-          "signInAudience": "AzureADMyOrg"
+          "signInAudience": "AzureADMyOrg",
+          "web": {
+            "implicitGrantSettings": {
+              "enableAccessTokenIssuance": false,
+              "enableIdTokenIssuance": false
+            },
+            "redirectUris": [
+              "https://app.example.invalid/callback"
+            ]
+          }
         }
       ]
     },
