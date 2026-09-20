@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.15.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.15.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -71,3 +71,5 @@ Version 0.13.0 passed 280 local tests with zero skips and 43 checks in the packa
 Version 0.14.0 passed 284 local tests with zero skips and 43 checks in the final packaged Functions runtime. Flexible membership tests verify resource-group boundaries, newly discovered VM hydration, denied/duplicate listings and guest-population linkage. The synthetic Flexible membership PDF page was rendered and visually reviewed. No live Flexible scale-set collection or cloud changes were made.
 
 Version 0.15.0 passed 292 local tests with zero skips and 43 checks in the packaged Functions runtime. The synthetic all-service report evaluates 176 predicates (175 PASS, one intentional expired-credential FAIL); its Automation metadata pages were rendered and visually reviewed. Runbook publication and module/runtime-package baselines retain incomplete reads as UNKNOWN and exclude content/parameter canaries. Original source objects remained unchanged during report generation. No live Automation reads or cloud changes were made.
+
+Version 0.15.1 passed 297 local tests with zero skips and 43 packaged Functions runtime checks. Missing-inventory disk tests cover VM/VMSS references, deduplication, scope boundaries, denied/missing/mismatched responses and secret exclusion. The synthetic dependency PDF page was rendered and visually reviewed; original archive objects remained unchanged. Broader workload storage remains UNKNOWN. No cloud changes were made.

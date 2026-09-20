@@ -50,3 +50,9 @@ Run the focused tests, then `python scripts/validate.py`. Packaging and Terrafor
 ## Configuration and identity extension
 
 `controls.py` owns the typed predicate register, safe observation projection, criteria validation and configuration assessment. `graph.py` owns opt-in tenant-verified Graph metadata reads. ARM configuration observations are separate from legacy encryption evidence; Graph objects have explicit graph:// identities and never masquerade as ARM resources. `control_objectives.json` packages provisional mappings; historical context freezes them. The overall result includes configuration failures/incompleteness. See [configuration assessments](CONFIGURATION_ASSESSMENTS.md) for exact fields, API sources and remaining boundaries.
+
+## Referenced managed disks
+
+From 0.15.1, verified VM and VMSS detail projections queue their declared managed-disk IDs for direct reads when inventory did not return them. Only exact `Microsoft.Compute/disks` IDs within explicitly selected/discovered subscriptions and the optional resource-group boundary are followed. Each disk is hydrated once through the normal pinned API, identity check and safe projection. A denied, missing or mismatched response remains an error record linked to its workload; an out-of-scope or invalid reference remains unresolved. No VHD/SAS URI is followed or retained.
+
+Inventory listing counts and completeness continue to describe the original listing; resolving a dependency does not repair an incomplete inventory. Disk locations come from verified detail responses. Successful disk evidence covers persisted managed-disk contents only: it does not turn the VM/VMSS result into a whole-workload PASS or establish temporary disks, caches, guest mounts or Uniform instance disk populations. Minimum additional permission is `Microsoft.Compute/disks/read`, already included in Reader where authorized.

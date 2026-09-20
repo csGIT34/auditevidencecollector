@@ -178,6 +178,18 @@ class Collector:
                                    "children": {}, "errors": []}
         return self.resources[key]
 
+    def resolve_managed_disks(self, record, subscriptions):
+        """Queue declared disk IDs for normal verified GETs within selected scope."""
+        if record['type'].lower() not in ('microsoft.compute/virtualmachines','microsoft.compute/virtualmachinescalesets'):
+            return
+        for ref in record['evidence'].get('references',[]):
+            raw={'id':ref['id'],'type':'Microsoft.Compute/disks','location':'unspecified'}
+            meta=identity(raw)
+            if (ref['relation']!='managed_disk' or not meta or len(ref['id'].split('/'))!=9 or not meta['resource_group'] or meta['subscription_id'] not in subscriptions
+                    or (self.resource_group and meta['resource_group'].lower()!=self.resource_group.lower())):
+                continue  # Preserve the unresolved reference, without broadening authorized scope.
+            self.add_resource(raw,meta['subscription_id'])
+
     def hydrate(self, record):
         rule = RULES.get(record["type"].lower())
         checks = for_type(record["type"])
@@ -198,6 +210,8 @@ class Collector:
                 record["configuration"] = project_configuration(raw, record["type"])
             if isinstance(raw.get("sku"), dict) and "name" in raw["sku"]:
                 record["sku"] = label(raw["sku"]["name"])
+            record["location"] = label(raw.get("location", "unspecified"))
+            record["kind"] = label(raw.get("kind", "unspecified"))
             record["collection_status"] = "ok"
         except CollectionError as exc:
             record["collection_status"] = "error"
@@ -362,11 +376,13 @@ class Collector:
                 if not self.add_resource(row, sid):
                     listing["complete"] = False
             inventory["subscriptions"].append({"id": sid, **listing, **({"resource_group": resource_group} if resource_group else {})})
+        selected_subscriptions={s["id"].lower() for s in inventory["subscriptions"]}
         processed = set()
         while pending := sorted(set(self.resources) - processed):
             for key in pending:
                 processed.add(key)
                 self.hydrate(self.resources[key])
+                self.resolve_managed_disks(self.resources[key],selected_subscriptions)
         inventory["complete"] = (inventory["subscription_discovery"]["complete"]
                                  and bool(inventory["subscriptions"])
                                  and all(s["complete"] for s in inventory["subscriptions"]))

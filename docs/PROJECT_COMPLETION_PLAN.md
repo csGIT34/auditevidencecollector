@@ -6,7 +6,7 @@ Created 2026-09-19. Project status: **INCOMPLETE**. This is the delivery checkli
 
 Deliver an Azure-hosted, deterministic evidence collection and assessment system covering applicable controls for all [23 services](PROGRAM_SCOPE.md). Develop and test on macOS/Linux; run unattended in Azure Functions with managed identity and retained evidence in Azure Storage. Reuse workplace infrastructure patterns. Terraform is for the temporary personal lab only.
 
-Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.15.0 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
+Existing: scoped encryption-at-rest assessments, Functions/UAMI hosting, local/Blob archives, historical PDF reports, normalized offline Wiz reconciliation, CI and documentation. These are reusable components, not completion of the audit program. Source 0.15.1 has local validation; the last recorded personal deployment is stopped on 0.3.2. See [status](STATUS.md).
 
 ## Required deliverables, in execution order
 

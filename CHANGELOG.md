@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.15.1
+
+- Resolve declared VM/VMSS managed disks through verified direct reads inside the selected subscription/resource-group scope, including disks absent from inventory.
+- Preserve denied/missing disk reads, inventory completeness and unresolved external references. Deduplicate reads; continue to report broader workload storage as incomplete.
+
+
 ## 0.15.0
 
 - Collect safe Automation runbook publication/type/runtime/logging metadata, classic module versions, and runtime environment/default/imported package versions.
