@@ -10,7 +10,7 @@ With the project's development dependencies installed:
 python scripts/demo_controls.py --output /tmp/cloud-governance-control-demo
 ```
 
-Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 187 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
+Use a new directory outside the checkout. The command collects synthetic ARM and Graph responses through the real adapters, evaluates explicit fictional criteria, archives the run and renders a self-contained PDF plus JSON/Markdown. It makes no Azure or Graph calls. The supplied case exercises every predicate: 195 expected PASS and one expected expired-credential FAIL. These are software test expectations, not a recommended security baseline or workplace approval.
 
 The [example inputs](../examples/control-suite/) are reproducible HTTP fixtures and fictional criteria. They deliberately include secret canaries to verify projection; no real tenant IDs or credentials are present.
 
@@ -89,6 +89,10 @@ Each source links the exact API/property definition. Full scope appears in the s
 | COS-tls | COS-T | Minimum configured TLS version: `minimalTlsVersion` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.documentdb/2024-05-15/databaseaccounts) |
 | ACR-admin-user | ACR-I | Registry admin account enabled setting: `adminUserEnabled` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
 | ACR-public-network | ACR-N | Public network access configuration: `publicNetworkAccess` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
+| ACR-content-trust | ACR-C | Content trust policy state; signature validity and signer identity remain separate: `policies.trustPolicy.status` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
+| ACR-quarantine | ACR-V | Quarantine policy state; scan results and release decisions remain separate: `policies.quarantinePolicy.status` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
+| ACR-export-policy | ACR-N | Artifact export policy state: `policies.exportPolicy.status` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
+| ACR-untagged-retention | ACR-B | Untagged manifest retention policy state; retained days are a separate criterion: `policies.retentionPolicy.status` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries) |
 | APPC-local-auth | APPC-I | Local authentication disabled setting: `disableLocalAuth` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.appconfiguration/2023-03-01/configurationstores) |
 | APPC-public-network | APPC-N | Public network access configuration: `publicNetworkAccess` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.appconfiguration/2023-03-01/configurationstores) |
 | APPC-purge-protection | APPC-B | Purge protection configuration: `enablePurgeProtection` | [Definition](https://learn.microsoft.com/en-us/azure/templates/microsoft.appconfiguration/2023-03-01/configurationstores) |

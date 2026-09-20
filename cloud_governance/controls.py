@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.20.5'
+VERSION = '2026.09.20.6'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -70,9 +70,14 @@ add('Microsoft.DocumentDB/databaseAccounts','2024-05-15','COS',[
  ('I','local-auth','disableLocalAuth',B,'Key-based authentication disabled setting'),
  ('N','public-network','publicNetworkAccess',ACCESS,'Public network access configuration'),
  ('T','tls','minimalTlsVersion',('Tls','Tls11','Tls12'),'Minimum configured TLS version')])
+POLICY_STATE = ('disabled','enabled')
 add('Microsoft.ContainerRegistry/registries','2023-07-01','ACR',[
  ('I','admin-user','adminUserEnabled',B,'Registry admin account enabled setting'),
- ('N','public-network','publicNetworkAccess',('Enabled','Disabled'),'Public network access configuration')])
+ ('N','public-network','publicNetworkAccess',('Enabled','Disabled'),'Public network access configuration'),
+ ('C','content-trust','policies.trustPolicy.status',POLICY_STATE,'Content trust policy state; signature validity and signer identity remain separate'),
+ ('V','quarantine','policies.quarantinePolicy.status',POLICY_STATE,'Quarantine policy state; scan results and release decisions remain separate'),
+ ('N','export-policy','policies.exportPolicy.status',POLICY_STATE,'Artifact export policy state'),
+ ('B','untagged-retention','policies.retentionPolicy.status',POLICY_STATE,'Untagged manifest retention policy state; retained days are a separate criterion')])
 add('Microsoft.AppConfiguration/configurationStores','2023-03-01','APPC',[
  ('I','local-auth','disableLocalAuth',B,'Local authentication disabled setting'),
  ('N','public-network','publicNetworkAccess',('Enabled','Disabled'),'Public network access configuration'),

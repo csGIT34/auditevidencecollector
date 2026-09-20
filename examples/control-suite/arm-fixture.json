@@ -511,6 +511,22 @@
           },
           "status": "enabled"
         },
+        "policies": {
+          "exportPolicy": {
+            "status": "disabled"
+          },
+          "quarantinePolicy": {
+            "status": "enabled"
+          },
+          "retentionPolicy": {
+            "days": 7,
+            "status": "enabled"
+          },
+          "trustPolicy": {
+            "status": "enabled",
+            "type": "Notary"
+          }
+        },
         "provisioningState": "Succeeded",
         "publicNetworkAccess": "Disabled",
         "secretCanary": "DO-NOT-ARCHIVE-SECRET"

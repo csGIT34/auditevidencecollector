@@ -72,6 +72,10 @@
         "version_pinned": true
       }
     },
+    "ACR-content-trust": {
+      "operator": "equals",
+      "value": "enabled"
+    },
     "ACR-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -95,9 +99,21 @@
         }
       ]
     },
+    "ACR-export-policy": {
+      "operator": "equals",
+      "value": "disabled"
+    },
     "ACR-public-network": {
       "operator": "equals",
       "value": "Disabled"
+    },
+    "ACR-quarantine": {
+      "operator": "equals",
+      "value": "enabled"
+    },
+    "ACR-untagged-retention": {
+      "operator": "equals",
+      "value": "enabled"
     },
     "AI-approved-arm-grants": {
       "operator": "equals",

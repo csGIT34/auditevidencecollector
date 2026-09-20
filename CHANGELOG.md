@@ -1,5 +1,10 @@
 # Release notes
 
+## 0.23.0
+
+- Assess the container registry policy set: content trust, quarantine, export and untagged retention. Content trust is the only evidence path for CM-14 Signed Components, which previously had neither a policy definition nor a predicate.
+- Draft approvable criteria from a saved run with `scripts/draft_criteria.py`, always as a draft, separating a proposed baseline from a value merely echoed back from the tenant.
+
 ## 0.22.0
 
 - Collect Azure Policy compliance with a run through `--policy-assignment`, or from an operator export with `--policy-export`, freezing Microsoft's control mapping into the evidence.

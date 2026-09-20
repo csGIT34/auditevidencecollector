@@ -440,6 +440,54 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:ACR-content-trust": {
+      "api_version": "2023-07-01",
+      "catalog_objectives": [
+        "ACR-C"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ACR-content-trust] with fallback to checks[ACR-content-trust]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "policies.trustPolicy.status",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.containerregistry/registries",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:ACR-diagnostic-logs": {
       "api_version": "2021-05-01-preview",
       "catalog_objectives": [
@@ -538,6 +586,54 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:ACR-export-policy": {
+      "api_version": "2023-07-01",
+      "catalog_objectives": [
+        "ACR-N"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ACR-export-policy] with fallback to checks[ACR-export-policy]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "policies.exportPolicy.status",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.containerregistry/registries",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:ACR-public-network": {
       "api_version": "2023-07-01",
       "catalog_objectives": [
@@ -560,6 +656,102 @@
       "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
       "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
       "property": "publicNetworkAccess",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.containerregistry/registries",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:ACR-quarantine": {
+      "api_version": "2023-07-01",
+      "catalog_objectives": [
+        "ACR-V"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ACR-quarantine] with fallback to checks[ACR-quarantine]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "policies.quarantinePolicy.status",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "cloud_governance/archive.py",
+        "cloud_governance/report.py",
+        "cloud_governance/pdf_report.py",
+        "cloud_governance/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.containerregistry/registries",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:ACR-untagged-retention": {
+      "api_version": "2023-07-01",
+      "catalog_objectives": [
+        "ACR-B"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ACR-untagged-retention] with fallback to checks[ACR-untagged-retention]",
+        "validation": "cloud_governance/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "cloud_governance/collector.py",
+        "cloud_governance/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "policies.retentionPolicy.status",
       "remaining_dependencies": [
         "Approved scoped criteria and population",
         "Live API, permission and variant acceptance",
@@ -15206,6 +15398,7 @@
     },
     {
       "configuration_predicates": [
+        "ACR-export-policy",
         "ACR-public-network"
       ],
       "criteria_requirements": "Approved ingress/egress and service destinations, public exposure exceptions, allowed client networks, private subresources and network-team evidence owner.",
@@ -15220,6 +15413,7 @@
       "guest_import_predicates": [],
       "id": "ACR-N",
       "implementation_refs": [
+        "configuration:ACR-export-policy",
         "configuration:ACR-public-network"
       ],
       "new_configuration_live_validation": "NOT_VERIFIED",
@@ -15426,7 +15620,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ACR-content-trust"
+      ],
       "criteria_requirements": "Approved baseline/version, change approval and emergency change process, drift interval/tolerance, permitted features, exception approver and expiry.",
       "disposition": {
         "exclusion": null,
@@ -15438,7 +15634,9 @@
       "existing_resource_rules": [],
       "guest_import_predicates": [],
       "id": "ACR-C",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:ACR-content-trust"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -15458,13 +15656,15 @@
       ],
       "required_evidence": "Repository write/delete attributes, tag/digest conventions, task/source/identity metadata and signature verification policy/records.",
       "service_id": "ACR",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Artifact immutability policy and task changes",
       "whole_objective_complete": false,
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ACR-quarantine"
+      ],
       "criteria_requirements": "Supported version policy, scan scope/frequency/freshness, severity-based remediation deadlines, trusted publishers/digests and compensating-control approval.",
       "disposition": {
         "exclusion": null,
@@ -15476,7 +15676,9 @@
       "existing_resource_rules": [],
       "guest_import_predicates": [],
       "id": "ACR-V",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:ACR-quarantine"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -15498,13 +15700,15 @@
       ],
       "required_evidence": "Image digest inventory, scan timestamps/scope/results, SBOM/provenance/signature validation and remediation/rebuild records.",
       "service_id": "ACR",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Stored image vulnerabilities and provenance",
       "whole_objective_complete": false,
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ACR-untagged-retention"
+      ],
       "criteria_requirements": "BIA-derived RPO/RTO, backup frequency/retention/isolation, integrity checks, restore-test interval and success measures, availability/capacity requirements.",
       "disposition": {
         "exclusion": null,
@@ -15516,7 +15720,9 @@
       "existing_resource_rules": [],
       "guest_import_predicates": [],
       "id": "ACR-B",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:ACR-untagged-retention"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -15536,7 +15742,7 @@
       ],
       "required_evidence": "Replication/tier configuration, protected artifact/source copies, deletion retention options and tested registry/task rebuild and image pull.",
       "service_id": "ACR",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Artifact availability and registry recovery",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -19027,7 +19233,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 192,
+  "configuration_predicate_count": 196,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215,
   "proposed_permission_profiles": {
