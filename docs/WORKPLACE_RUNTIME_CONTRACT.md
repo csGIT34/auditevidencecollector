@@ -39,3 +39,5 @@ Optional operating-record imports and PDF generation use `CG_OPERATIONAL_ENABLED
 `CG_WORKLOAD_ENABLED=true` enables the restricted Kubernetes export import/report routes. See the [workload evidence contract](KUBERNETES_EVIDENCE.md); these endpoints require evidence-storage access and do not obtain Kubernetes credentials.
 
 `CG_KUBERNETES_COLLECTION_ENABLED=true` enables the authenticated AKS collection endpoint with an explicit configured target and public CA; see [AKS collection](KUBERNETES_EVIDENCE.md#authenticated-collection-in-azure-functions). `CG_GUEST_ENABLED=true` enables normalized guest import/report endpoints; see [guest evidence](GUEST_EVIDENCE.md). All are disabled by default.
+
+`CG_VAULT_METADATA_ENABLED=true` enables safe Key Vault base-object metadata lists during ARM collection, using separate data-plane list permissions and the same UAMI. See [scope, lifecycle criteria and permissions](CONFIGURATION_ASSESSMENTS.md#key-vault-base-object-lifecycle-metadata-0130). It does not retrieve secret values.

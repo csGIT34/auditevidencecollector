@@ -290,6 +290,14 @@ def validate_configuration_pair(snapshot, assessment):
             raise ValueError('Saved configuration observation mismatch')
         if row['criterion'] != criterion_for(policy,row['resource_id'],row['check_id']):
             raise ValueError('Saved configuration criterion mismatch')
+        if 'lifecycle_evaluation' in row:
+            details=row['lifecycle_evaluation']
+            if not isinstance(details,dict) or set(details)!={'as_of','outcomes','coverage_incomplete'} or details['as_of']!=assessment['generated_at'] or type(details['coverage_incomplete']) is not bool or not isinstance(details['outcomes'],list):raise ValueError('Invalid saved lifecycle evaluation')
+            if not row['criterion'] or row['criterion']['operator']!='lifecycle':raise ValueError('Lifecycle evaluation without criterion')
+            if not all(isinstance(item,dict) and set(item)=={'object_id','state'} and item['state'] in ('PASS','FAIL','UNKNOWN','EXCLUDED_DISABLED') for item in details['outcomes']):raise ValueError('Invalid saved lifecycle outcome')
+            if [item['object_id'] for item in details['outcomes']]!=[item['object_id'] for item in row['observation']['value']]:raise ValueError('Saved lifecycle population mismatch')
+            states=[item['state'] for item in details['outcomes'] if item['state']!='EXCLUDED_DISABLED']
+            if details['coverage_incomplete']!=('UNKNOWN' in states or not states):raise ValueError('Saved lifecycle coverage mismatch')
         if 'job_evaluation' in row:
             details=row['job_evaluation']
             if not isinstance(details,dict) or set(details)!={'as_of','outcomes','coverage_incomplete'} or details['as_of']!=assessment['generated_at'] or type(details['coverage_incomplete']) is not bool or not isinstance(details['outcomes'],list) or not details['outcomes']:

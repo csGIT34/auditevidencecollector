@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.9.1 includes **169 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.13.0 includes **172 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -319,3 +319,30 @@ Use `{"operator":"allowed_access","value":["None"]}` to require that all returne
 API contract: [Blob containers list](https://learn.microsoft.com/en-us/rest/api/storagerp/blob-containers/list?view=rest-storagerp-2023-05-01).
 
 Job-recency results additionally freeze the selected job IDs and outcome for each source/operation. Missing or unfinished required evidence keeps overall coverage incomplete even when a different required job fails. JSON, Markdown and PDF expose these saved decisions; no current-time reassessment occurs during historical rendering.
+
+## Key Vault base-object lifecycle metadata (0.13.0)
+
+`CG_VAULT_METADATA_ENABLED=true` opts the Functions ARM collection pipeline into data-plane LIST operations for discovered Key Vaults within its existing scope. It reuses the configured identity, deadline and retry budget. Disabled collection leaves the three observations missing/UNKNOWN. It does not grant permissions or provision resources.
+
+`KV-keys-lifecycle`, `KV-secrets-lifecycle` and `KV-certificates-lifecycle` use data-plane API `2025-07-01`. The adapter verifies the vault URI returned by the hydrated ARM resource against the vault's expected public-cloud DNS name. It permits GET on `/keys`, `/secrets` and `/certificates` only, verifies same-vault/same-list pagination, rejects redirects, and never requests an object value, individual version, cryptographic operation or deleted-object recovery action. Private endpoints require working DNS/routing to the usual vault hostname. Managed HSM and sovereign-cloud endpoints are not implemented.
+
+Projected fields are base object ID, enabled flag and integer `created`, `updated`, `nbf`, `exp` timestamps. Tags, content types, values, certificate bytes/thumbprints and key material are excluded. Do not interpret `updated` as key rotation. Lists do not establish every historical version or pending/deleted certificate population. The adapter caps responses at 4 MiB and each list at 10000 received items and the lower of the configured page limit or 400 pages. Malformed/duplicate identities, denied reads, pagination failures and missing attributes cannot yield an unsupported positive lifecycle result.
+
+For each check, the approved policy may use:
+
+```json
+{
+  "operator": "lifecycle",
+  "value": {
+    "enabled_only": true,
+    "require_expiration": true,
+    "min_remaining_seconds": 604800
+  }
+}
+```
+
+This illustrative criterion is not a workplace recommendation. It assesses expiration declarations, not effective usability. With `enabled_only`, known disabled objects remain visibly excluded; unknown enabled flags are UNKNOWN. Missing required expiration, already expired objects and insufficient remaining time FAIL. Future creation/update timestamps remain UNKNOWN. Empty or entirely excluded populations are UNKNOWN. An object failure can coexist with unknown coverage, and both remain in the saved per-object decisions and PDF. Criteria and `as_of` decisions are frozen on collection; historical reports do not reevaluate expiry at today's date. All three checks provide partial support for KV-K.
+
+Access-policy vaults require the `list` permission for keys, secrets and certificates, without `get` of secrets or cryptographic permissions. For RBAC vaults, review a narrowly scoped metadata-read role; Microsoft's [Key Vault Reader definition](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles/security#key-vault-reader) describes metadata access without sensitive values. Scope grants to the intended vaults and validate actual denials at work.
+
+API contracts: [keys list](https://learn.microsoft.com/en-us/rest/api/keyvault/keys/get-keys/get-keys?view=rest-keyvault-keys-2025-07-01), [secrets list](https://learn.microsoft.com/en-us/rest/api/keyvault/secrets/get-secrets/get-secrets?view=rest-keyvault-secrets-2025-07-01), [certificates list](https://learn.microsoft.com/en-us/rest/api/keyvault/certificates/get-certificates/get-certificates?view=rest-keyvault-certificates-2025-07-01). Local fixtures exercise the path; live UAMI, firewall and API acceptance remain pending.

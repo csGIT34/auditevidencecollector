@@ -12,7 +12,7 @@ import json
 from urllib.parse import urlsplit
 from .safety import MISSING, INVALID, get, now, resource_id, subscription_id
 
-VERSION = '2026.09.19.10'
+VERSION = '2026.09.20.1'
 OBJECTIVES = json.loads(Path(__file__).with_name('control_objectives.json').read_text())
 
 @dataclass(frozen=True)
@@ -265,7 +265,18 @@ def for_type(rt):
     return [c for c in CHECKS.values() if c.resource_type.lower() == rt.lower()]
 
 
+for _kind in ('keys','secrets','certificates'):
+    _id='KV-'+_kind+'-lifecycle'
+    CHECKS[_id]=Check(_id,'microsoft.keyvault/vaults','2025-07-01',_kind,(),'KV-K',
+        'Listed '+_kind+' base-object expiration metadata',
+        'https://learn.microsoft.com/en-us/rest/api/keyvault/'+_kind+'/get-'+_kind+'/get-'+_kind,
+        '/'+_kind,'vault_objects','vault_metadata')
+
+
 def valid_value(check, value):
+    if check.kind=='vault_objects':
+        from .vault_metadata import valid_objects
+        return valid_objects(value,check.path)
     if check.kind=='container_access':
         from .blob_containers import valid_containers
         return valid_containers(value)
@@ -344,7 +355,7 @@ def validate_observations(values, rt):
             raise ValueError('Invalid configuration evidence')
         metadata = row.get('collection')
         if metadata is not None:
-            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
+            if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
                 if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
@@ -389,7 +400,10 @@ def validate_policy(policy):
         if not isinstance(criterion, dict) or set(criterion) != {'operator','value'}:
             raise ValueError('Invalid criterion')
         op, value = criterion['operator'], criterion['value']
-        if op=='allowed_access':
+        if op=='lifecycle':
+            from .vault_metadata import valid_criterion
+            good=CHECKS[cid].kind=='vault_objects' and valid_criterion(value)
+        elif op=='allowed_access':
             good=CHECKS[cid].kind=='container_access' and isinstance(value,list) and 1<=len(value)<=3 and all(isinstance(v,str) and v in ('None','Blob','Container') for v in value) and value==sorted(set(value))
         elif op=='recent_jobs':
             from .backup_jobs import valid_criterion
@@ -424,13 +438,18 @@ def evaluate(snapshot, policy=None):
                    'observed_at':record['collected_at'], 'observation':observation,
                    'criterion':criterion, 'source':check.source, 'api_version':check.api,
                    'property':check.path, 'request_path':record.get('request_path',record['id']) + check.suffix, 'result':'UNKNOWN', 'reason':'Required observation is missing or invalid.'}
+            if check.operation=='vault_metadata':row['request_path']='https://'+record['id'].rsplit('/',1)[1].lower()+'.vault.azure.net/'+check.path
             if (record['collection_status'] == 'error' and not check.suffix) or observation['state'] == 'error' or observation.get('collection',{}).get('errors'):
                 row.update(result='ERROR',reason='Resource configuration read failed.')
             elif not criterion or policy['status'] != 'approved':
                 row['reason'] = 'Approved criterion is not supplied; observation retained without a positive or negative assessment.'
             elif observation['state'] == 'observed':
                 actual, expected, op = observation['value'], criterion['value'], criterion['operator']
-                if op=='allowed_access':
+                if op=='lifecycle':
+                    from .vault_metadata import assess as assess_lifecycle
+                    result,reason,details=assess_lifecycle(actual,expected,generated_at)
+                    row.update(result=result,reason=reason,lifecycle_evaluation=details)
+                elif op=='allowed_access':
                     passed=all(item['public_access'] in expected for item in actual)
                     row.update(result='PASS' if passed else 'FAIL',reason='Returned containers use only approved anonymous-access declarations.' if passed else 'A returned container has an unapproved anonymous-access declaration.')
                 elif op=='recent_jobs':
@@ -462,6 +481,7 @@ def overall_summary(report):
     failures = encryption['counts']['FAIL'] + (config['counts']['FAIL'] if config else 0)
     incomplete = encryption['coverage_incomplete'] or bool(config and (config['conclusion']=='INCOMPLETE' or config['counts']['UNKNOWN'] or config['counts']['ERROR']))
     incomplete = incomplete or not report.get('configuration_assessment', {}).get('identity_complete', True)
+    incomplete = incomplete or any(row.get('lifecycle_evaluation',{}).get('coverage_incomplete',False) for row in report.get('configuration_assessment',{}).get('results',[]))
     incomplete = incomplete or any(row.get('job_evaluation',{}).get('coverage_incomplete',False) for row in report.get('configuration_assessment',{}).get('results',[]))
     return {'conclusion':'FAILURES_FOUND' if failures else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED',
             'coverage_incomplete':bool(incomplete), 'failed_check_count':failures}

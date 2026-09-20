@@ -82,6 +82,7 @@ class Settings:
     resource_group: str | None
     criteria: dict | None = None
     graph_enabled: bool = False
+    vault_metadata_enabled: bool = False
 
     @classmethod
     def parse(cls, env):
@@ -123,6 +124,7 @@ class Settings:
                 if not low <= value <= high:
                     raise ValueError()
                 return value
+            if env.get('CG_VAULT_METADATA_ENABLED','false') not in ('true','false'):raise ValueError()
             if env.get('CG_GRAPH_ENABLED','false') not in ('true','false'):
                 raise ValueError()
             from .controls import decode_policy
@@ -130,7 +132,7 @@ class Settings:
             return cls(tenant.lower(), client.lower() if client else None, subscriptions, url, container, prefix, development,
                        number('CG_COLLECTION_BUDGET_SECONDS', 480, 30, 540), number('CG_REPORT_BUDGET_SECONDS', 180, 10, 180),
                        number('CG_ARM_RETRIES', 2, 0, 3), number('CG_BLOB_RETRIES', 2, 0, 3),
-                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group, criteria, env.get('CG_GRAPH_ENABLED')=='true')
+                       number('CG_MAX_PAGES', 1000, 1, 10000), number('CG_LOCK_WAIT_SECONDS', 0, 0, 30), resource_group, criteria, env.get('CG_GRAPH_ENABLED')=='true',env.get('CG_VAULT_METADATA_ENABLED')=='true')
         except (KeyError, TypeError, ValueError):
             raise ConfigurationError('invalid_host_configuration') from None
 
@@ -152,6 +154,9 @@ def resources(settings, deadline, operation):
                           retries=settings.blob_retries, deadline=deadline)
         transport = BudgetArmTransport(credential, deadline, settings.arm_retries) if operation in ('collect','workload-collect') else None
         if operation=='workload-collect':transport.kubernetes_credential=credential
+        if operation=='collect' and settings.vault_metadata_enabled:
+            from .vault_metadata import VaultTransport
+            transport.vault_transport_factory=lambda base:VaultTransport(base,credential,deadline,settings.arm_retries)
         if operation=='collect' and settings.graph_enabled:
             from .graph import BudgetGraphTransport
             transport.graph_transport = BudgetGraphTransport(credential,deadline,settings.arm_retries)

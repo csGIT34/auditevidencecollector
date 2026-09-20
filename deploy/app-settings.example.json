@@ -24,5 +24,6 @@
   "CG_OPERATIONAL_ENABLED": "false",
   "CG_WORKLOAD_ENABLED": "false",
   "CG_KUBERNETES_COLLECTION_ENABLED": "false",
-  "CG_GUEST_ENABLED": "false"
+  "CG_GUEST_ENABLED": "false",
+  "CG_VAULT_METADATA_ENABLED": "false"
 }

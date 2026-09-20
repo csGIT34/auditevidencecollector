@@ -707,6 +707,19 @@
       "operator": "equals",
       "value": []
     },
+    "KV-certificates-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/certificates/example",
+          "updated": 1700000000
+        }
+      ]
+    },
     "KV-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -730,6 +743,19 @@
         }
       ]
     },
+    "KV-keys-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/keys/example",
+          "updated": 1700000000
+        }
+      ]
+    },
     "KV-network-default": {
       "operator": "equals",
       "value": "Deny"
@@ -745,6 +771,19 @@
     "KV-rbac": {
       "operator": "equals",
       "value": true
+    },
+    "KV-secrets-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/secrets/example",
+          "updated": 1700000000
+        }
+      ]
     },
     "KV-soft-delete": {
       "operator": "equals",

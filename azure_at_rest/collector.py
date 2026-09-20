@@ -75,7 +75,12 @@ class ArmTransport:
                                        "Accept": "application/json"}, method="GET")
             try:
                 with self.opener.open(req, timeout=self.timeout) as response:
-                    payload = json.load(response)
+                    limit=getattr(self,'max_response_bytes',None)
+                    if limit is None:payload=json.load(response)
+                    else:
+                        raw=response.read(limit+1)
+                        if len(raw)>limit:raise CollectionError('malformed_response')
+                        payload=json.loads(raw)
                 if not isinstance(payload, dict):
                     raise CollectionError("malformed_response")
                 return payload
@@ -100,6 +105,9 @@ class ArmTransport:
 class FixtureTransport:
     def __init__(self, responses):
         self.responses, self.calls = responses, []
+        if any(isinstance(k,str) and '.vault.azure.net/' in k for k in responses):
+            from .vault_metadata import FixtureVaultTransport
+            self.vault_transport_factory=lambda base:FixtureVaultTransport(base,responses)
 
     def get(self, url):
         valid_url(url)
@@ -283,6 +291,9 @@ class Collector:
         for check in (c for c in checks if c.operation=='blob_containers'):
             from .blob_containers import collect as collect_containers
             record.setdefault('configuration',{})[check.id]=collect_containers(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='vault_metadata'):
+            from .vault_metadata import collect as collect_vault_metadata
+            record.setdefault('configuration',{})[check.id]=collect_vault_metadata(self.transport,rid,check,self.max_pages,parent_detail)
         record["collected_at"] = now()
         # Enumerate known children even if the parent GET was denied.
         for suffix, child_type in (rule.children if rule else ()):

@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.13.0
+
+- Add three opt-in Key Vault data-plane LIST predicates for base key, secret and certificate expiration metadata, using the existing Functions identity and archive pipeline.
+- Restrict requests to the ARM-verified vault origin and list paths; discard object contents, tags, key/certificate material and opaque page tokens.
+- Add explicit lifecycle criteria, per-object frozen decisions, failure-plus-incomplete coverage, bounded lists, local fixtures and permission documentation. No live vault API validation is implied.
+
+
 ## 0.12.0
 
 - Add typed guest/agent evidence for VM and saved Uniform VMSS instance populations: patch counts/recency, pending reboot, endpoint protection health/recency, vulnerability counts/recency.

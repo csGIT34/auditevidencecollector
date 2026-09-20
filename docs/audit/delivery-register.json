@@ -1386,7 +1386,11 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "KV-certificates-lifecycle",
+        "KV-keys-lifecycle",
+        "KV-secrets-lifecycle"
+      ],
       "domain": "K",
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
@@ -1394,7 +1398,7 @@
       "new_configuration_live_validation": "NOT_VERIFIED",
       "remaining_acceptance_boundary": "Required lifetimes/algorithms/rotation meet approved policy and consumers adopt new versions; metadata reads exclude secret values and private keys.",
       "service_id": "KV",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Object lifecycle, expiry, rotation and revocation",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -3326,7 +3330,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 169,
+  "configuration_predicate_count": 172,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215
 }
