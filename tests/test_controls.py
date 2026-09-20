@@ -25,6 +25,9 @@ def setpath(obj,path,value):
 
 
 def sample(check, negative=False):
+    if check.kind=='key_reference':
+        return ({'configured':False,'version_pinned':False,'identity':'unspecified'} if negative
+                else {'configured':True,'version_pinned':True,'identity':'user_assigned'})
     if check.kind=='vmss_members':return {'orchestration':'Uniform','scope':'scale_set','members':[]}
     if check.kind in ('vmss_instances','container_revisions','backup_jobs','container_access','vault_objects','automation_assets','automation_runtimes','log_tables'):return []
     if check.kind in ('dp_population','rs_population'):return []
@@ -133,6 +136,11 @@ def fixture():
             if c.operation == 'diagnostics':
                 responses[endpoint(row['id']+c.suffix,c.api)]={'value':[{'id':row['id']+c.suffix+'/safe','properties':{'workspaceId':resource('Microsoft.OperationalInsights/workspaces','approved-logs')['id'],'logs':[{'category':'AuditEvent','enabled':True}], 'secretCanary':'DO-NOT-ARCHIVE-SECRET'}}]}
                 continue
+            if c.kind=='key_reference':
+                from tests.test_key_reference import shaped
+                shaped(row['properties'],c.id)
+                row['properties']['secretCanary']='DO-NOT-ARCHIVE-SECRET'
+                continue
             if c.suffix:
                 target=responses.setdefault(endpoint(row['id']+c.suffix,c.api),{'id':row['id']+c.suffix,'properties':{}})
             else:target=row
@@ -175,6 +183,12 @@ class ConfigurationTests(unittest.TestCase):
             for c in CHECKS.values():
                 for raw in responses.values():
                     if isinstance(raw,dict) and 'properties' in raw and (raw.get('type','').lower()==c.resource_type if not c.suffix else raw.get('id','').endswith(c.suffix)):
+                        if c.kind=='key_reference':
+                            # Absence of a key block is a valid provider-managed observation, so corrupt
+                            # the reviewed selector instead to exercise the unreadable path.
+                            from azure_at_rest.key_reference import SHAPES
+                            shape=SHAPES[c.id];setpath(raw['properties'],shape.get('source') or shape['key_uri'],value or 0)
+                            continue
                         setpath(raw['properties'],c.path,value)
             for url in list(responses):
                 if '/diagnosticSettings?' in url or '/federatedIdentityCredentials?' in url or '/roleAssignments?' in url or '/backupInstances?' in url or '/backupProtectedItems?' in url or '/virtualMachines?' in url or '/revisions?' in url or '/backupJobs?' in url or '/containers?' in url or '.vault.azure.net/' in url or '/runbooks?' in url or '/modules?' in url or '/runtimeEnvironments?' in url or '/tables?' in url:responses[url]={'value':[{'properties':{'logs':value}}]}

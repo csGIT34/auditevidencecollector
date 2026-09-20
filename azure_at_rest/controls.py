@@ -121,6 +121,20 @@ add('Microsoft.Monitor/accounts','2023-04-03','PROM',[
 add('Microsoft.EventGrid/topics','2022-06-15','EG',[
  ('I','local-auth','disableLocalAuth',B,'Custom topic local authentication disabled setting'),
  ('N','public-network','publicNetworkAccess',('Enabled','Disabled'),'Custom topic public network access configuration')])
+# Customer-managed key references, one per reviewed service shape. See key_reference.py.
+for _rt, _service, _api, _title in (
+ ('Microsoft.Storage/storageAccounts','ST','2023-05-01','Account customer-managed key reference: configured, version pinning and vault identity type'),
+ ('Microsoft.ContainerRegistry/registries','ACR','2023-07-01','Registry customer-managed key reference: configured, version pinning and vault identity type'),
+ ('Microsoft.AppConfiguration/configurationStores','APPC','2023-03-01','Store customer-managed key reference: configured, version pinning and vault identity type'),
+ ('Microsoft.Cache/redisEnterprise','REDIS','2025-04-01','Cluster customer-managed key reference: configured, version pinning and vault identity type')):
+ _cid=_service+'-cmk-key'
+ if _cid in CHECKS:
+  raise ValueError('Duplicate configuration check')
+ _namespace,_name=_rt.lower().split('/',1)
+ CHECKS[_cid]=Check(_cid,_rt.lower(),_api,'encryption key reference',(),_service+'-K',
+     _title+'; key identifiers, vault hosts and key names are not retained',
+     'https://learn.microsoft.com/en-us/azure/templates/'+_namespace+'/'+_api+'/'+_name,'','key_reference')
+
 add('Microsoft.DataProtection/backupVaults','2023-01-01','BV',[
  ('B','backup-immutability','securitySettings.immutabilitySettings.state',('Disabled','Unlocked','Locked'),'Backup vault immutability configuration'),
  ('B','backup-soft-delete','securitySettings.softDeleteSettings.state',('Off','On','AlwaysOn'),'Backup vault soft delete configuration')])
@@ -314,6 +328,9 @@ for _kind in ('keys','secrets','certificates'):
 
 
 def valid_value(check, value):
+    if check.kind=='key_reference':
+        from .key_reference import valid
+        return valid(value)
     if check.kind=='log_tables':
         from .log_tables import valid
         return valid(value)
@@ -386,6 +403,11 @@ def project(raw, rt, suffix=""):
             continue
         if check.operation == 'private_endpoint':
             output.update(project_private_endpoint(raw))
+            continue
+        if check.kind == 'key_reference':
+            from .key_reference import SHAPES, project as project_key
+            projected = project_key(raw.get('properties', {}), SHAPES[check.id])
+            output[check.id] = {'state':'invalid'} if projected is None else {'state':'observed','value':projected}
             continue
         value = get(raw.get('properties', {}), check.path, MISSING)
         output[check.id] = {'state':'missing'} if value is MISSING or value is None else {

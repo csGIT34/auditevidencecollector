@@ -29,7 +29,7 @@ Ordered by ARM density, so the largest verified gains land first.
 
 | # | Section | Objectives | Controls strengthened | Status |
 | --- | --- | --- | --- | --- |
-| S1 | Domain K — secrets, certificates and key lifecycle | 20 (19 ARM, 1 guest) | IA-5, SC-12, SC-17, IA-9 | NOT STARTED |
+| S1 | Domain K — secrets, certificates and key lifecycle | 20 (19 ARM, 1 guest) | IA-5, SC-12, SC-17, IA-9 | IN PROGRESS — 4 of 20 |
 | S2 | Domain C — secure configuration, change approval and drift | 17 (16 ARM, 1 Graph) | CM-2, CM-3, CM-6, CM-7, CM-14, SI-10, SI-12 | NOT STARTED |
 | S3 | Domain B — backup, recovery and availability | 16 (15 ARM, 1 Graph) | CP-2, CP-4, CP-9, CP-9(1), CP-10 | NOT STARTED |
 | S4 | Domain V — vulnerabilities, versions and supply chain | 15 (6 ARM, 3 guest, 6 disposition) | RA-5, SA-9, SA-11, SA-22, SC-13, SI-2, SI-7, SR-4, SR-6 | NOT STARTED |
@@ -63,4 +63,4 @@ Recorded as sections complete, with the measured before and after.
 
 | Date | Section | Objectives closed | Predicates added | Controls gaining evidence | Tests |
 | --- | --- | --- | --- | --- | --- |
-| — | — | — | — | — | — |
+| 2026-09-20 | S1 tranche 1 | ST-K, ACR-K, APPC-K, REDIS-K (95 → 91 open) | 4 key-reference predicates | IA-5, SC-12, SC-17 gain depth | 338 → 346 |

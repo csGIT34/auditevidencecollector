@@ -64,6 +64,14 @@
       "operator": "equals",
       "value": []
     },
+    "ACR-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
     "ACR-diagnostic-logs": {
       "operator": "equals",
       "value": [
@@ -176,6 +184,14 @@
     "APPC-approved-arm-grants": {
       "operator": "equals",
       "value": []
+    },
+    "APPC-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
     },
     "APPC-diagnostic-logs": {
       "operator": "equals",
@@ -1015,6 +1031,14 @@
       "operator": "equals",
       "value": "OSSCluster"
     },
+    "REDIS-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
     "REDIS-defer-upgrade": {
       "operator": "equals",
       "value": "NotDeferred"
@@ -1124,6 +1148,14 @@
     "ST-blob-versioning": {
       "operator": "equals",
       "value": true
+    },
+    "ST-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
     },
     "ST-container-access": {
       "operator": "allowed_access",

@@ -392,6 +392,54 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:ACR-cmk-key": {
+      "api_version": "2023-07-01",
+      "catalog_objectives": [
+        "ACR-K"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ACR-cmk-key] with fallback to checks[ACR-cmk-key]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "encryption key reference",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.containerregistry/registries",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerregistry/2023-07-01/registries",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:ACR-diagnostic-logs": {
       "api_version": "2021-05-01-preview",
       "catalog_objectives": [
@@ -1216,6 +1264,54 @@
       "test_files": [
         "tests/test_archive.py",
         "tests/test_authorization.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:APPC-cmk-key": {
+      "api_version": "2023-03-01",
+      "catalog_objectives": [
+        "APPC-K"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][APPC-cmk-key] with fallback to checks[APPC-cmk-key]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "encryption key reference",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.appconfiguration/configurationstores",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.appconfiguration/2023-03-01/configurationstores",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
         "tests/test_controls.py",
         "tests/test_pdf_pipeline.py"
       ]
@@ -7272,6 +7368,54 @@
         "tests/test_pdf_pipeline.py"
       ]
     },
+    "configuration:REDIS-cmk-key": {
+      "api_version": "2025-04-01",
+      "catalog_objectives": [
+        "REDIS-K"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][REDIS-cmk-key] with fallback to checks[REDIS-cmk-key]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "encryption key reference",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.cache/redisenterprise",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.cache/2025-04-01/redisenterprise",
+      "suffix": "",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
     "configuration:REDIS-defer-upgrade": {
       "api_version": "2025-04-01",
       "catalog_objectives": [
@@ -7944,6 +8088,54 @@
       "resource_type": "microsoft.storage/storageaccounts",
       "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.storage/2023-05-01/storageaccounts/blobservices",
       "suffix": "/blobServices/default",
+      "test_files": [
+        "tests/test_archive.py",
+        "tests/test_controls.py",
+        "tests/test_pdf_pipeline.py"
+      ]
+    },
+    "configuration:ST-cmk-key": {
+      "api_version": "2023-05-01",
+      "catalog_objectives": [
+        "ST-K"
+      ],
+      "collection_plane": "ARM",
+      "criteria": {
+        "missing_or_draft": "UNKNOWN",
+        "source": "approved policy overrides[resource_id][ST-cmk-key] with fallback to checks[ST-cmk-key]",
+        "validation": "azure_at_rest/controls.py:validate_policy"
+      },
+      "implementation_files": [
+        "azure_at_rest/collector.py",
+        "azure_at_rest/controls.py"
+      ],
+      "implementation_state": "IMPLEMENTED_OFFLINE_TESTED",
+      "kind": "configuration_predicate",
+      "live_validation": "NOT_VERIFIED",
+      "operation": "get",
+      "permission_boundary": "Existing authorized reads only; confirm endpoint-specific permissions and scope. No grants are created.",
+      "permissions_guide": "docs/CONFIGURATION_ASSESSMENTS.md",
+      "property": "encryption key reference",
+      "remaining_dependencies": [
+        "Approved scoped criteria and population",
+        "Live API, permission and variant acceptance",
+        "Whole-objective acceptance boundary"
+      ],
+      "report_files": [
+        "azure_at_rest/archive.py",
+        "azure_at_rest/report.py",
+        "azure_at_rest/pdf_report.py",
+        "azure_at_rest/run_comparison.py"
+      ],
+      "reporting": [
+        "saved JSON assessment",
+        "Markdown",
+        "exact-run PDF",
+        "saved-run comparison"
+      ],
+      "resource_type": "microsoft.storage/storageaccounts",
+      "source_definition": "https://learn.microsoft.com/en-us/azure/templates/microsoft.storage/2023-05-01/storageaccounts",
+      "suffix": "",
       "test_files": [
         "tests/test_archive.py",
         "tests/test_controls.py",
@@ -11910,7 +12102,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ST-cmk-key"
+      ],
       "criteria_requirements": "Credential/certificate/key lifetime, rotation and revocation periods, approved issuers/algorithms, expiry warning threshold, custody and recovery requirements.",
       "disposition": {
         "exclusion": null,
@@ -11922,7 +12116,9 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "ST-K",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:ST-cmk-key"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -11940,7 +12136,7 @@
       ],
       "required_evidence": "Key creation/rotation metadata if exposed; SAS policy, issuance/revocation records, user-delegation design and optional vault references.",
       "service_id": "ST",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Account/SAS and optional encryption-key lifecycle",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -12672,7 +12868,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "REDIS-cmk-key"
+      ],
       "criteria_requirements": "Credential/certificate/key lifetime, rotation and revocation periods, approved issuers/algorithms, expiry warning threshold, custody and recovery requirements.",
       "disposition": {
         "exclusion": null,
@@ -12684,7 +12882,9 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "REDIS-K",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:REDIS-cmk-key"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -12702,7 +12902,7 @@
       ],
       "required_evidence": "Authentication mode, rotation/revocation records, optional CMK/identity reference and expiry/availability evidence.",
       "service_id": "REDIS",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Access-key and optional encryption key lifecycle",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -15140,7 +15340,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "ACR-cmk-key"
+      ],
       "criteria_requirements": "Credential/certificate/key lifetime, rotation and revocation periods, approved issuers/algorithms, expiry warning threshold, custody and recovery requirements.",
       "disposition": {
         "exclusion": null,
@@ -15152,7 +15354,9 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "ACR-K",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:ACR-cmk-key"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -15172,7 +15376,7 @@
       ],
       "required_evidence": "Token credential expiry metadata, scope maps, rotation/revocation records and optional encryption key/identity references.",
       "service_id": "ACR",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Repository tokens, credentials and optional CMK",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -15904,7 +16108,9 @@
       "workload_import_predicates": []
     },
     {
-      "configuration_predicates": [],
+      "configuration_predicates": [
+        "APPC-cmk-key"
+      ],
       "criteria_requirements": "Credential/certificate/key lifetime, rotation and revocation periods, approved issuers/algorithms, expiry warning threshold, custody and recovery requirements.",
       "disposition": {
         "exclusion": null,
@@ -15916,7 +16122,9 @@
       "existing_encryption_rules": [],
       "guest_import_predicates": [],
       "id": "APPC-K",
-      "implementation_refs": [],
+      "implementation_refs": [
+        "configuration:APPC-cmk-key"
+      ],
       "new_configuration_live_validation": "NOT_VERIFIED",
       "operational_evidence_path": {
         "guide": "docs/OPERATIONAL_EVIDENCE.md",
@@ -15936,7 +16144,7 @@
       ],
       "required_evidence": "Reference type/target metadata from owner-safe export, identities, optional key references and secret/certificate refresh/rotation tests.",
       "service_id": "APPC",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Key Vault references and refresh lifecycle",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -18819,7 +19027,7 @@
     }
   ],
   "complete_objectives": 0,
-  "configuration_predicate_count": 188,
+  "configuration_predicate_count": 192,
   "limits": "Predicate counts are not completed research objectives. Shared/process, workload and native integration gaps remain open.",
   "objective_count": 215,
   "proposed_permission_profiles": {
