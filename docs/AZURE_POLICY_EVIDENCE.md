@@ -114,7 +114,7 @@ Policy compliance also carries its own completeness problem: a resource type wit
 
 | | |
 | --- | --- |
-| Scope | `/subscriptions/REDACTED-SUBSCRIPTION-ID` |
+| Scope | the lab subscription (identifier deliberately not recorded here) |
 | Assignment | `nist-800-53-r5-audit` |
 | Enforcement | `DoNotEnforce` |
 | Overrides | 4 Guest Configuration definitions disabled |

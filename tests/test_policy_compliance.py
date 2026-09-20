@@ -89,7 +89,7 @@ class PolicyComplianceTests(unittest.TestCase):
 
     def test_management_hierarchy_and_parameter_values_are_never_retained(self):
         payload = json.dumps(collect([record()], POLICY_SET))
-        for leaked in ('PROD', 'example-root', 'SECRET-CANARY', 'managementGroupIds', 'effectiveParameters'):
+        for leaked in ('EXAMPLE-MG', 'example-root', 'SECRET-CANARY', 'managementGroupIds', 'effectiveParameters'):
             self.assertNotIn(leaked, payload)
 
     def test_only_the_two_documented_states_conclude_and_anything_else_is_unknown(self):
