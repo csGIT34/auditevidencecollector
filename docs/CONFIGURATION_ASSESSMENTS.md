@@ -1,6 +1,6 @@
 # Configuration and identity assessments
 
-Source 0.16.1 includes **177 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
+Source 0.17.0 includes **177 scoped predicates spanning all 23 program service entries**, alongside the existing encryption assessment. The predicates provide partial support for broader research objectives. They do not complete the 215-objective audit program. The [delivery register](audit/delivery-register.json) accounts for every objective and preserves its remaining acceptance boundary.
 
 ## Run the complete synthetic example
 
@@ -399,3 +399,15 @@ Use an exact `equals` baseline or a `table_retention` criterion:
 These example thresholds are not approved organization policy. At least one required table is mandatory for this operator. Missing required tables, unapproved plans, short retention and extra tables when `allow_unlisted` is false produce FAIL after a complete valid listing. Allowing unlisted tables does not waive requirements for the named tables. Numeric returned retention values are assessed; a `-1` sentinel is retained as incomplete instead of assuming a workspace default. Missing fields, inconsistent totals/long-term values, unresolved defaults, unstable provisioning, duplicates or truncated lists remain incomplete; read errors stay visible. Missing/draft criteria remain UNKNOWN. Basic and Auxiliary plans are only accepted when explicitly included in the criterion; no feature equivalence with Analytics is inferred.
 
 Reference: [Microsoft table list API and field definitions](https://learn.microsoft.com/en-us/rest/api/loganalytics/tables/list-by-workspace?view=rest-loganalytics-2025-07-01). This adapter is locally fixture-tested and has not been live-verified.
+
+## Additional scoped encryption rules (0.17.0)
+
+These use the existing encryption result path, separate from the 177 configurable predicates. A successful matching resource detail read and the linked provider guarantee support PASS only for the stated stored-data boundary. Denied/mismatched reads and transitional provisioning cannot pass. No asset content, variable values, credentials or job streams are fetched.
+
+| Exact ARM type | Pinned detail API | Covered boundary and source | Explicit remaining boundary |
+| --- | --- | --- | --- |
+| Microsoft.Dashboard/grafana | 2023-09-01 | [Provider-managed Grafana metadata and instance user stores](https://learn.microsoft.com/en-us/azure/managed-grafana/encryption) | Data sources and external dashboard/snapshot exports |
+| Microsoft.Monitor/accounts | 2023-04-03 | [Stored Prometheus workspace data](https://learn.microsoft.com/en-us/azure/azure-monitor/metrics/azure-monitor-workspace-overview) | Agent/source disks and external copies; no substitution with Log Analytics |
+| Microsoft.Automation/automationAccounts | 2023-11-01 | [Secure assets, runbooks and DSC scripts](https://learn.microsoft.com/en-us/azure/automation/automation-secure-asset-encryption) | Unencrypted variables, output streams, worker disks and exports |
+
+Existing resource metadata read permissions suffice for these rules. Provider-managed keys are accepted; optional CMK fields are not a base-encryption switch. These are documented service guarantees paired with resource observations, not cryptographic measurements or whole-objective acceptance. Native encrypted-variable populations and consumers require separate evidence. The new rules remain offline-tested rather than live-verified.

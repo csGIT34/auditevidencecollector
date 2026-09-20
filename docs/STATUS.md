@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.16.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.17.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -79,3 +79,5 @@ The schema-2.0 development delivery register now links all 215 objectives to col
 Version 0.16.0 passed 306 local tests with zero skips and 43 checks in the packaged Functions runtime. The synthetic all-service report evaluates 177 predicates (176 PASS, one intentional expired-credential FAIL); its table-retention pages were rendered and visually reviewed. Original 0.3.1, 0.5.0 and 0.9.0 archives remained readable with every original object hash unchanged. Table metadata and threshold tests are offline-only; no cloud changes were made.
 
 Version 0.16.1 passed 310 local tests with zero skips and 43 checks in the final packaged Functions runtime. Transport tests verify bounded reads, response closure, no retry on oversized bodies, ambiguous/nonfinite/deep JSON rejection and archive/PDF preservation of the safe size-limit error. No live provider calls or cloud changes were made.
+
+Version 0.17.0 passed 314 local tests with zero skips and 43 checks in the packaged Functions runtime. Grafana, Prometheus and Automation encryption pages were rendered and visually reviewed with their explicit stored-data boundaries. The retained 0.16.0 archive still returns its original UNSUPPORTED decisions for those resources, with every original object hash unchanged; new rules are not applied during historical loading. The new guarantees have not been live-verified.

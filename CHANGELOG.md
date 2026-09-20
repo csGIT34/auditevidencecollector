@@ -1,5 +1,12 @@
 # Release notes
 
+## 0.17.0
+
+- Add scoped, source-backed encryption rules for Grafana-owned storage, Azure Monitor/Prometheus workspace data and Automation secure assets/runbooks.
+- Require successful matching resource reads and stable provisioning; retain explicit external-store, plaintext-variable, job-output and worker exclusions. Unknown child types do not inherit a parent guarantee.
+- Freeze rule sources and scope in the existing archive/verification/PDF path; no secret asset reads are added.
+
+
 ## 0.16.1
 
 - Bound live ARM/Graph responses to 8 MiB; retain the 4 MiB vault limit and surface over-limit reads as incomplete/error evidence.

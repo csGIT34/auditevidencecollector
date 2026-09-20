@@ -90,7 +90,7 @@ def register():
                      'required_evidence':proposed['evidence'],'owner_requirement':proposed['owner'],
                      'disposition':{'exclusion':None,'manual_or_inherited_acceptance':'NOT_ASSESSED','live_acceptance':'NOT_VERIFIED'},
                      'encryption_support':{'implementation_files':['azure_at_rest/catalog.py','azure_at_rest/assessment.py','azure_at_rest/collector.py'],
-                                           'test_files':['tests/test_rules.py','tests/test_collection.py','tests/test_archive.py','tests/test_pdf_pipeline.py'],
+                                           'test_files':['tests/test_rules.py','tests/test_collection.py','tests/test_archive.py','tests/test_pdf_pipeline.py']+(['tests/test_additional_encryption.py'] if set(encryption)&{'grafana-storage','prometheus-storage','automation-secure-assets'} else []),
                                            'reporting':['saved JSON assessment','Markdown','exact-run PDF'],
                                            'criteria':'Pinned scoped encryption rules; no blanket CMK requirement',
                                            'live_validation':'See exact-version records in docs/STATUS.md; no whole-objective live acceptance'} if encryption else None,

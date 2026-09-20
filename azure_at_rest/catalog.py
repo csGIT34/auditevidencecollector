@@ -1,7 +1,7 @@
 """Versioned, exact ARM type rules. No wildcard service guarantees."""
 from dataclasses import dataclass, replace
 
-RULE_VERSION = "2026.09.19.1"
+RULE_VERSION = "2026.09.20.1"
 SOURCE_REVIEWED = "2026-09-19"
 LEARN = "https://learn.microsoft.com/en-us/"
 
@@ -121,6 +121,15 @@ add("Microsoft.Cache/Redis", "redis", "2024-03-01", "redis",
 add("Microsoft.Cache/redisEnterprise", "redis-enterprise", "2024-02-01", "redis_enterprise",
     "Enterprise and Enterprise Flash service disks and persistence only; newer Managed Redis SKUs need a separate rule.",
     "azure/azure-cache-for-redis/cache-how-to-premium-persistence")
+add("Microsoft.Dashboard/grafana", "grafana-storage", "2023-09-01", "guarantee",
+    "Grafana-owned system metadata and instance user data in its provider-managed Cosmos DB/PostgreSQL stores only; data sources, exported dashboards and snapshots outside those stores are separate.",
+    "azure/managed-grafana/encryption")
+add("Microsoft.Monitor/accounts", "prometheus-storage", "2023-04-03", "guarantee",
+    "Prometheus metrics stored in this Azure Monitor workspace only; source/agent disks, external remote-write destinations and exported copies are separate. This is not a Log Analytics workspace rule.",
+    "azure/azure-monitor/metrics/azure-monitor-workspace-overview")
+add("Microsoft.Automation/automationAccounts", "automation-secure-assets", "2023-11-01", "guarantee",
+    "Automation secure credentials, certificates, connections, encrypted variables, runbooks and DSC scripts only; unencrypted variables, job output, worker disks and exported code/logs are not covered.",
+    "azure/automation/automation-secure-asset-encryption")
 add("Microsoft.Insights/components", "app-insights", "2020-02-02", "linked",
     "Workspace-backed telemetry only; classic Application Insights and exported copies unverified.",
     "azure/azure-monitor/app/create-workspace-resource", ("WorkspaceResourceId",))

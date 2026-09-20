@@ -1,6 +1,6 @@
 # Cloud governance evidence and audit program
 
-**Current work: multi-control coverage is incomplete.** Version 0.16.1 includes [177 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
+**Current work: multi-control coverage is incomplete.** Version 0.17.0 includes [177 scoped configuration/identity predicates across all 23 service entries](docs/CONFIGURATION_ASSESSMENTS.md), including opt-in Graph collection. See the [delivery register and objective lookup](docs/DELIVERY_REGISTER.md) for implementation links and remaining objectives.
 
 Start with [current implementation status](docs/STATUS.md), [architecture](docs/ARCHITECTURE.md), and the [local Wiz workflow](docs/WIZ_INTEGRATION.md).
 
@@ -121,7 +121,7 @@ The [authoritative 23-service program scope](docs/PROGRAM_SCOPE.md) maps the use
 
 The [exact rule matrix](docs/COVERAGE.md) is the source for supported ARM types, assessed scopes and Microsoft documentation. Broadly:
 
-- Reviewed service guarantees cover Storage; managed disks/snapshots/images; PostgreSQL/MySQL Flexible Server; Cosmos DB accounts including MongoDB API; Azure DocumentDB Mongo clusters (formerly MongoDB vCore); ACR; backup vault storage; Log Analytics; Event Hubs; Premium Service Bus; AI Search; App Configuration values; Key Vault secrets; and reviewed Redis Enterprise SKUs.
+- Reviewed service guarantees cover Storage; managed disks/snapshots/images; PostgreSQL/MySQL Flexible Server; Cosmos DB accounts including MongoDB API; Azure DocumentDB Mongo clusters (formerly MongoDB vCore); ACR; backup vault storage; Log Analytics; Event Hubs; Premium Service Bus; AI Search; App Configuration values; Key Vault secrets; reviewed Redis Enterprise SKUs; Grafana-owned storage; Prometheus workspace data; and Automation secure assets/runbooks. Each rule states its exclusions.
 - SQL Database, SQL Managed Instance databases and Synapse dedicated SQL pools require explicit TDE endpoint evidence. SQL parents enumerate databases. Kusto requires its separate VM disk-encryption flag as well as the documented backing-storage guarantee.
 - AKS, VMs/VMSS, Functions/App Service, Container Apps and Synapse workspaces produce partial workload evidence and explicit gaps. The collector resolves known ARM references and enumerates supported child collections, but does not inspect cluster credentials, application settings or secret connection strings to infer storage.
 - Classic Redis persistence, newer Managed Redis SKUs, non-Premium Service Bus and classic Application Insights remain unverified where the current rule lacks sufficient evidence.

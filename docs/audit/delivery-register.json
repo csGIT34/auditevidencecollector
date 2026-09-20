@@ -16003,8 +16003,30 @@
         "manual_or_inherited_acceptance": "NOT_ASSESSED"
       },
       "domain": "R",
-      "encryption_support": null,
-      "existing_encryption_rules": [],
+      "encryption_support": {
+        "criteria": "Pinned scoped encryption rules; no blanket CMK requirement",
+        "implementation_files": [
+          "azure_at_rest/catalog.py",
+          "azure_at_rest/assessment.py",
+          "azure_at_rest/collector.py"
+        ],
+        "live_validation": "See exact-version records in docs/STATUS.md; no whole-objective live acceptance",
+        "reporting": [
+          "saved JSON assessment",
+          "Markdown",
+          "exact-run PDF"
+        ],
+        "test_files": [
+          "tests/test_rules.py",
+          "tests/test_collection.py",
+          "tests/test_archive.py",
+          "tests/test_pdf_pipeline.py",
+          "tests/test_additional_encryption.py"
+        ]
+      },
+      "existing_encryption_rules": [
+        "grafana-storage"
+      ],
       "guest_import_predicates": [],
       "id": "GRAF-R",
       "implementation_refs": [],
@@ -16025,7 +16047,7 @@
       ],
       "required_evidence": "Exact workspace identity and current Grafana documented storage/encryption guarantee; data-source store boundaries.",
       "service_id": "GRAF",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Grafana configuration/data and source stores",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -16361,8 +16383,30 @@
         "manual_or_inherited_acceptance": "NOT_ASSESSED"
       },
       "domain": "R",
-      "encryption_support": null,
-      "existing_encryption_rules": [],
+      "encryption_support": {
+        "criteria": "Pinned scoped encryption rules; no blanket CMK requirement",
+        "implementation_files": [
+          "azure_at_rest/catalog.py",
+          "azure_at_rest/assessment.py",
+          "azure_at_rest/collector.py"
+        ],
+        "live_validation": "See exact-version records in docs/STATUS.md; no whole-objective live acceptance",
+        "reporting": [
+          "saved JSON assessment",
+          "Markdown",
+          "exact-run PDF"
+        ],
+        "test_files": [
+          "tests/test_rules.py",
+          "tests/test_collection.py",
+          "tests/test_archive.py",
+          "tests/test_pdf_pipeline.py",
+          "tests/test_additional_encryption.py"
+        ]
+      },
+      "existing_encryption_rules": [
+        "prometheus-storage"
+      ],
       "guest_import_predicates": [],
       "id": "PROM-R",
       "implementation_refs": [],
@@ -16383,7 +16427,7 @@
       ],
       "required_evidence": "Exact Microsoft.Monitor/accounts identity and current workspace documentation stating Microsoft-managed at-rest encryption; export/source boundaries.",
       "service_id": "PROM",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Azure Monitor workspace metric storage",
       "whole_objective_complete": false,
       "workload_import_predicates": []
@@ -17918,8 +17962,30 @@
         "manual_or_inherited_acceptance": "NOT_ASSESSED"
       },
       "domain": "R",
-      "encryption_support": null,
-      "existing_encryption_rules": [],
+      "encryption_support": {
+        "criteria": "Pinned scoped encryption rules; no blanket CMK requirement",
+        "implementation_files": [
+          "azure_at_rest/catalog.py",
+          "azure_at_rest/assessment.py",
+          "azure_at_rest/collector.py"
+        ],
+        "live_validation": "See exact-version records in docs/STATUS.md; no whole-objective live acceptance",
+        "reporting": [
+          "saved JSON assessment",
+          "Markdown",
+          "exact-run PDF"
+        ],
+        "test_files": [
+          "tests/test_rules.py",
+          "tests/test_collection.py",
+          "tests/test_archive.py",
+          "tests/test_pdf_pipeline.py",
+          "tests/test_additional_encryption.py"
+        ]
+      },
+      "existing_encryption_rules": [
+        "automation-secure-assets"
+      ],
       "guest_import_predicates": [],
       "id": "AUTO-R",
       "implementation_refs": [],
@@ -17942,7 +18008,7 @@
       ],
       "required_evidence": "Account encryption identity/optional key metadata, documented secure-asset/runbook coverage and job/export/log-store classification.",
       "service_id": "AUTO",
-      "state": "NOT_IMPLEMENTED",
+      "state": "PARTIAL_EXECUTABLE_SUPPORT",
       "title": "Secure assets, code and job/output stores",
       "whole_objective_complete": false,
       "workload_import_predicates": []
