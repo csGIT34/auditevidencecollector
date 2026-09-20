@@ -227,7 +227,7 @@ def validate_identity_evidence(value):
     for error in value['errors']:
         if not isinstance(error,dict) or set(error)!={'path','code','http_status','observed_at'}:raise ValueError('Invalid Graph error')
         valid_url(ORIGIN+error['path'])
-        if error['code'] not in ('tenant_mismatch','http_error','network_error','authentication_failed','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599) or datetime.fromisoformat(error['observed_at']).tzinfo is None:raise ValueError('Invalid Graph safe error')
+        if error['code'] not in ('tenant_mismatch','http_error','network_error','authentication_failed','retry_exhausted','fixture_response_missing','malformed_response','response_size_limit','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599) or datetime.fromisoformat(error['observed_at']).tzinfo is None:raise ValueError('Invalid Graph safe error')
     if value['verified_tenant'] and ('organization' not in value['listings'] or not value['listings']['organization']['complete'] or value['listings']['organization']['items_received']!=1):raise ValueError('Missing verified tenant listing')
     if value['verified_tenant']:
         if not {'organization','applications','servicePrincipals'} <= set(value['listings']):

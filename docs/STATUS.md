@@ -1,6 +1,6 @@
 # Current implementation and validation status
 
-Updated 2026-09-19. **Source release 0.16.0 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-19. **Source release 0.16.1 (local tests passed; expanded reads not live-verified).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
@@ -77,3 +77,5 @@ Version 0.15.1 passed 297 local tests with zero skips and 43 packaged Functions 
 The schema-2.0 development delivery register now links all 215 objectives to collection planes, criteria/permission requirements, code/tests/reporting and remaining acceptance boundaries. Its objective lookup prints focused handoff details without modifying archives. No whole objective, manual assertion or unverified API is marked accepted by this traceability update.
 
 Version 0.16.0 passed 306 local tests with zero skips and 43 checks in the packaged Functions runtime. The synthetic all-service report evaluates 177 predicates (176 PASS, one intentional expired-credential FAIL); its table-retention pages were rendered and visually reviewed. Original 0.3.1, 0.5.0 and 0.9.0 archives remained readable with every original object hash unchanged. Table metadata and threshold tests are offline-only; no cloud changes were made.
+
+Version 0.16.1 passed 310 local tests with zero skips and 43 checks in the final packaged Functions runtime. Transport tests verify bounded reads, response closure, no retry on oversized bodies, ambiguous/nonfinite/deep JSON rejection and archive/PDF preservation of the safe size-limit error. No live provider calls or cloud changes were made.

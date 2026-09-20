@@ -1,5 +1,11 @@
 # Release notes
 
+## 0.16.1
+
+- Bound live ARM/Graph responses to 8 MiB; retain the 4 MiB vault limit and surface over-limit reads as incomplete/error evidence.
+- Reject duplicate JSON members, nonfinite numbers, invalid UTF-8 and excessive nesting before evidence projection. Close failed responses without storing their bodies.
+
+
 ## 0.16.0
 
 - Collect safe Log Analytics table plan/retention metadata and assess required table populations, allowed plans and minimum retention against approved criteria.

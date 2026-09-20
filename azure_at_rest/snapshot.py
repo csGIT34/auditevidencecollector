@@ -120,7 +120,7 @@ def validate_snapshot(snapshot):
         require(isinstance(error, dict))
         require(set(error) == {"scope", "operation", "code", "http_status", "observed_at"})
         require(all(isinstance(error[k], str) for k in ("scope", "operation", "code")))
-        require(error["code"] in {"invalid_url", "unsafe_url", "redirect_rejected", "authentication_failed", "malformed_response", "http_error", "network_error", "retry_exhausted", "fixture_response_missing", "pagination_scope_changed", "pagination_cycle", "pagination_limit", "malformed_page", "invalid_next_link", "invalid_resource_identity", "invalid_detail_identity_or_properties", "invalid_tde_response", "invalid_subscription_identity"})
+        require(error["code"] in {"invalid_url", "unsafe_url", "redirect_rejected", "authentication_failed", "malformed_response", "response_size_limit", "http_error", "network_error", "retry_exhausted", "fixture_response_missing", "pagination_scope_changed", "pagination_cycle", "pagination_limit", "malformed_page", "invalid_next_link", "invalid_resource_identity", "invalid_detail_identity_or_properties", "invalid_tde_response", "invalid_subscription_identity"})
         operations = {"inventory_identity", "resource_get", "tde_get", "list_resources", "list_subscriptions"} | {"list_" + suffix for rule in RULES.values() for suffix, _ in rule.children}
         require(error["operation"] in operations)
         scope = error["scope"]

@@ -1,5 +1,6 @@
 """GET-only public Azure ARM adapter and deterministic fixture adapter."""
 import json
+import math
 import subprocess
 import time
 from urllib.error import HTTPError, URLError
@@ -13,6 +14,7 @@ from .safety import identity, label, now, project, subscription_id, resource_gro
 ARM = "https://management.azure.com"
 INVENTORY_API = "2021-04-01"
 SUBSCRIPTIONS_API = "2022-12-01"
+MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 
 class CollectionError(Exception):
     def __init__(self, code, status=None):
@@ -63,7 +65,10 @@ class AzureCliCredential:
 
 class ArmTransport:
     validate_url = staticmethod(valid_url)
-    def __init__(self, credential=None, retries=3, timeout=30, sleep=time.sleep, opener=None):
+    def __init__(self, credential=None, retries=3, timeout=30, sleep=time.sleep, opener=None, *, max_response_bytes=MAX_RESPONSE_BYTES):
+        if type(max_response_bytes) is not int or not 1 <= max_response_bytes <= MAX_RESPONSE_BYTES:
+            raise ValueError("Invalid response byte limit")
+        self.max_response_bytes = max_response_bytes
         self.credential = credential or AzureCliCredential()
         self.retries, self.timeout, self.sleep = retries, timeout, sleep
         self.opener = opener or build_opener(NoRedirect())
@@ -75,12 +80,32 @@ class ArmTransport:
                                        "Accept": "application/json"}, method="GET")
             try:
                 with self.opener.open(req, timeout=self.timeout) as response:
-                    limit=getattr(self,'max_response_bytes',None)
-                    if limit is None:payload=json.load(response)
-                    else:
-                        raw=response.read(limit+1)
-                        if len(raw)>limit:raise CollectionError('malformed_response')
-                        payload=json.loads(raw)
+                    raw=response.read(self.max_response_bytes+1)
+                    if len(raw)>self.max_response_bytes:raise CollectionError('response_size_limit')
+                    def unique(pairs):
+                        result={}
+                        for key,value in pairs:
+                            if key in result:raise ValueError('Duplicate provider member')
+                            result[key]=value
+                        return result
+                    def invalid_constant(value):raise ValueError('Nonfinite provider value')
+                    def finite_float(value):
+                        number=float(value)
+                        if not math.isfinite(number):raise ValueError('Nonfinite provider value')
+                        return number
+                    text=raw.decode('utf-8')
+                    depth=0;quoted=False;escaped=False
+                    for char in text:
+                        if quoted:
+                            if escaped:escaped=False
+                            elif char=='\\':escaped=True
+                            elif char=='"':quoted=False
+                        elif char=='"':quoted=True
+                        elif char in '{[':
+                            depth+=1
+                            if depth>64:raise CollectionError('malformed_response')
+                        elif char in '}]':depth-=1
+                    payload=json.loads(text,object_pairs_hook=unique,parse_constant=invalid_constant,parse_float=finite_float)
                 if not isinstance(payload, dict):
                     raise CollectionError("malformed_response")
                 return payload
@@ -98,7 +123,7 @@ class ArmTransport:
                     self.sleep(min(2 ** attempt, 30))
                     continue
                 raise CollectionError("network_error") from None
-            except (ValueError, UnicodeError):
+            except (ValueError, UnicodeError, RecursionError):
                 raise CollectionError("malformed_response") from None
         raise CollectionError("retry_exhausted")
 

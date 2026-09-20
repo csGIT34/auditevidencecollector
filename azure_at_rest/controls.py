@@ -391,7 +391,7 @@ def validate_observations(values, rt):
             if allowed[cid].operation not in ('diagnostics','diagnostic_routes','federation','authorization','backup_population','vmss_instances','container_revisions','backup_jobs','blob_containers','vault_metadata','vmss_members','automation_assets','automation_runtimes','log_tables') or not isinstance(metadata,dict) or set(metadata)!={'complete','pages','items_received','malformed','errors'} or type(metadata['complete']) is not bool or type(metadata['malformed']) is not bool or any(type(metadata[k]) is not int or metadata[k]<0 for k in ('pages','items_received')) or not isinstance(metadata['errors'],list):
                 raise ValueError('Invalid collection metadata')
             for error in metadata['errors']:
-                if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
+                if not isinstance(error,dict) or set(error)-{'role_id'}!={'code','http_status'} or error['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','response_size_limit','malformed_page','pagination_scope_changed','pagination_cycle','pagination_limit','invalid_next_link','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (error['http_status'] is None or type(error['http_status']) is int and 100<=error['http_status']<=599):
                     raise ValueError('Invalid collection error')
                 if 'role_id' in error:
                     from .authorization import role_id
@@ -403,7 +403,7 @@ def validate_observations(values, rt):
             if set(row) - {'collection'} != {'state','value'} or not valid_value(allowed[cid], row['value']):
                 raise ValueError('Invalid configuration value')
         elif row['state'] == 'error':
-            if set(row) != {'state','code','http_status'} or row['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','invalid_detail_identity_or_properties','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (row['http_status'] is None or type(row['http_status']) is int and 100 <= row['http_status'] <= 599):
+            if set(row) != {'state','code','http_status'} or row['code'] not in ('http_error','network_error','retry_exhausted','fixture_response_missing','malformed_response','response_size_limit','invalid_detail_identity_or_properties','invalid_url','unsafe_url','redirect_rejected','authentication_failed') or not (row['http_status'] is None or type(row['http_status']) is int and 100 <= row['http_status'] <= 599):
                 raise ValueError('Invalid configuration read error')
         elif set(row) - {'collection'} != {'state'}:
             raise ValueError('Invalid configuration state')
