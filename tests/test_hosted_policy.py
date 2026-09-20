@@ -180,3 +180,25 @@ class HostedPolicyCollectionTests(unittest.TestCase):
         with self.assertRaises(ExecutionError) as caught:
             hosted(MemoryStore(), metadata=partial)
         self.assertEqual('initiative', caught.exception.outcome['policy_read'])
+
+    def test_manual_definitions_are_counted_but_not_rendered_as_evidence(self):
+        """Azure emits one Manual record per definition whatever the estate contains."""
+        from cloud_governance.archive import publish_pdf
+        from pypdf import PdfReader
+        from io import BytesIO
+        manual = dict(policy_records()[0], policyDefinitionAction='manual',
+                      policyDefinitionReferenceId='9f3c7ad2-55b1-4e0e-9a77-0d2b6c8e41aa',
+                      resourceId='/subscriptions/' + SUB)
+        store = MemoryStore()
+        outcome = hosted(store, records=policy_records() + [manual])
+        published = publish_pdf(store, outcome['run_id'])
+        text = '\n'.join(page.extract_text() or '' for page in
+                         PdfReader(BytesIO(store.read(published['pdf']['key']))).pages)
+        self.assertIn('1 of 2 records in this assignment carry the Manual effect', text)
+        self.assertIn('1 records evaluated a resource or a scope', text)
+        # The evaluated definition is evidence and stays; the Manual one is not rendered.
+        self.assertIn(REFERENCE, text)
+        self.assertNotIn('9f3c7ad2-55b1-4e0e-9a77-0d2b6c8e41aa', text)
+        # It is still archived in full: the PDF omits it, the evidence does not.
+        saved = load_run(store, outcome['run_id'])['assessment']
+        self.assertEqual(2, len(report_model.policy_results(saved)))

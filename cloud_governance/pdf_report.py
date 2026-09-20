@@ -39,6 +39,13 @@ def readable(value):
     return str(value)
 
 
+def inline(value):
+    """Render a saved structure into one table cell without dropping a leaf."""
+    if isinstance(value, (dict, list)) and value:
+        return '; '.join(name + ': ' + text for name, text in flatten(value))
+    return readable(value)
+
+
 def flatten(value, prefix=''):
     """Preserve every observed leaf as a human-readable field/value pair."""
     if isinstance(value, dict) and value:
@@ -123,6 +130,18 @@ def render_pdf(saved, generation):
             commands += [('BACKGROUND',(0,0),(-1,0),navy), ('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#F4F7F9')])]
         t.setStyle(TableStyle(commands))
         return t
+
+    def identifier_column(values, minimum=72, maximum=175):
+        """Width that keeps an identifier on one line; an assessor cites it verbatim."""
+        longest = max((pdfmetrics.stringWidth(clean(value), 'AuditSans', styles['SmallAudit'].fontSize)
+                       for value in values), default=0)
+        return max(minimum, min(maximum, longest + 20))
+
+    def share(remaining, ratios):
+        """Split the leftover width across the remaining columns, losing nothing to rounding."""
+        total = sum(ratios)
+        widths = [remaining * ratio / total for ratio in ratios[:-1]]
+        return widths + [remaining - sum(widths)]
 
     output = BytesIO()
     synthetic = report['mode'] == 'offline_fixture'
@@ -295,25 +314,63 @@ def render_pdf(saved, generation):
         if policy and 'max_observation_age_seconds' in policy:
             field('Maximum observation age (seconds)',policy['max_observation_age_seconds'])
         story.append(p('Each finding below includes its saved observation and exact criterion. Missing or draft criteria do not produce PASS/FAIL. A matching property does not close the referenced research objective or establish effective authorization, private reachability, recovery or activity over time.'))
+        # One predicate is one row. Rendering each as a block of labelled fields produced a
+        # page per predicate and buried the findings; the same facts are tabulated instead.
+        by_resource = {}
         for row in configuration['results']:
-            story.append(KeepTogether([p(row['check_id']+' | '+row['result']+' | '+row['title'],'Heading2'),
-                                       p('Resource: '+row['resource_id'])]))
-            field('Catalog objective / domain', row['catalog_ref']+' / '+row['domain'])
-            field('Supporting NIST references', ', '.join(row.get('control_refs',[])))
-            objective = context.get('configuration_objectives',{}).get('checks',{}).get(row['catalog_ref'])
-            if objective:
-                field('Wider candidate objective (not closed by this predicate)',objective['candidate_criterion'])
-            field('Observed / assessment time', row['observed_at']+' / '+configuration['generated_at'])
-            field('Read path / API', row.get('request_path',row['resource_id'])+' / '+row['api_version'])
-            field('Property', row['property'])
-            field('Saved observation', row['observation'])
-            if 'lifecycle_evaluation' in row:field('Saved object lifecycle evaluation',row['lifecycle_evaluation'])
-            if 'job_evaluation' in row:field('Saved job scope and recency evaluation',row['job_evaluation'])
-            field('Saved criterion', row['criterion'])
-            if 'freshness' in row:
-                field('Saved freshness assessment',row['freshness'])
-            field('Finding', row['reason'])
-            field('API definition source', row['source'])
+            by_resource.setdefault(row['resource_id'], []).append(row)
+        check_width = identifier_column([row['check_id'] for row in configuration['results']])
+        # Scope-inherited facts repeat across resources: 51 predicates in the first lab run
+        # held 14 distinct observations. Printing each one once keeps every leaf and stops
+        # the same role listing being reprinted per resource.
+        observations, saved_texts = {}, []
+        for row in configuration['results']:
+            text = inline(row['observation'])
+            if text not in observations:
+                observations[text] = 'O%02d' % (len(observations) + 1)
+                saved_texts.append(text)
+        story.append(p('8.1 Saved assessments by resource','Heading2'))
+        story.append(p('Each observation key resolves in 8.2. Identical observations share one key: a grant '
+                       'inherited from a subscription or management group is one saved fact, not one per resource.'))
+        for resource_id, group in by_resource.items():
+            story.append(KeepTogether([p(resource_id,'Heading3'),
+                                       p('Observed / assessment time: '
+                                         + ', '.join(sorted({r['observed_at'] for r in group}))
+                                         + ' / ' + configuration['generated_at'],'SmallAudit')]))
+            story.append(table([['Check','Result','Property','Observation','Saved criterion','Finding']]
+                               + [[r['check_id'], r['result'], r['property'], observations[inline(r['observation'])],
+                                   inline(r['criterion']), r['reason']] for r in group],
+                               [check_width, 56, 68] + share(width - check_width - 124, [128, 88, 142])))
+        story.append(p('8.2 Saved observations','Heading2'))
+        story.append(table([['Key','Saved observation as collected']]
+                           + [[observations[text], text] for text in saved_texts], [44, width-44]))
+        predicates = {}
+        for row in configuration['results']:
+            predicates.setdefault(row['check_id'], row)
+        story.append(p('8.3 Predicate provenance and audit objectives','Heading2'))
+        story.append(p('One entry per predicate. Read paths are the resource identifiers in 8.1 above; source '
+                       'identifiers resolve in section 7. Each entry runs the full page width so a title is never '
+                       'broken across a column.'))
+        for check, row in predicates.items():
+            story.append(p(check + ' - ' + row['title'] + '  |  objective ' + row['catalog_ref'] + ' / '
+                           + row['domain'] + '  |  NIST ' + (', '.join(row.get('control_refs',[]))
+                                                             or 'none declared')
+                           + '  |  API ' + row['api_version'] + '  |  source '
+                           + source_ids.get(row['source'], row['source']), 'SmallAudit'))
+        objectives = context.get('configuration_objectives',{}).get('checks',{})
+        wider = {row['catalog_ref']: objectives[row['catalog_ref']]['candidate_criterion']
+                 for row in predicates.values() if row['catalog_ref'] in objectives}
+        if wider:
+            story.append(p('8.4 Wider candidate objectives not closed by these predicates','Heading2'))
+            story.append(table([['Objective','Wider candidate criterion (not closed by the predicate)']]
+                               + sorted(wider.items()), [72, width-72]))
+        extra = [[row['check_id'], row['resource_id'], name, inline(row[name])]
+                 for row in configuration['results']
+                 for name in ('lifecycle_evaluation','job_evaluation','freshness') if name in row]
+        if extra:
+            story.append(p('8.5 Additional saved evaluations','Heading2'))
+            story.append(table([['Check','Resource','Evaluation','Saved value']] + extra,
+                               [check_width] + share(width - check_width, [170, 86, 210])))
     policy_section = report_model.policy_compliance(report)
     if policy_section:
         story.append(PageBreak())
@@ -330,13 +387,38 @@ def render_pdf(saved, generation):
         if policy_section['summary'].get('truncated'):
             story.append(p('This evaluation returned more records than the run retains. The results below are a '
                            'truncated sample; the absence of a finding in them does not mean none exists.','Heading2'))
-        for row in policy_section['results']:
-            story.append(KeepTogether([p(row['reference']+' | '+row['result']+' | '+row['compliance_state'],'Heading2'),
-                                       p('Resource: '+row['resource_id'])]))
-            field('Evaluation scope', row['scope'])
-            field('Supporting NIST references', ', '.join(row['controls']) or 'No control mapping declared')
-            field('Policy effect', row['action'])
-            field('Assignment', row['assignment'])
-            field('Evaluated at', row['evaluated_at'] or 'not reported')
+        results = policy_section['results']
+        manual = [row for row in results if str(row.get('action','')).lower() == 'manual']
+        evaluated = [row for row in results if row not in manual]
+        if manual:
+            story.append(p('Manual definitions: recorded, not rendered as evidence','Heading2'))
+            story.append(p(str(len(manual)) + ' of ' + str(len(results)) + ' records in this assignment carry the '
+                           'Manual effect. A Manual definition evaluates nothing: Azure emits one record per '
+                           'definition to mark a control as awaiting an organizational attestation, whatever the '
+                           'subscription contains. They are retained in full in the saved JSON and are omitted from '
+                           'the results below because they are not evidence about a resource. Their omission is not '
+                           'a pass, and this report attests nothing on their behalf.'))
+        assignments = sorted({row['assignment'] for row in evaluated})
+        if assignments:
+            field('Assignment recorded on every result below', ', '.join(assignments))
+        story.append(p(str(len(evaluated)) + ' records evaluated a resource or a scope','Heading2'))
+        # A definition reference and an evaluated resource identifier are both too wide to
+        # sit in one row. The identifiers are listed once; the table carries the evidence.
+        targets = {resource: 'T%02d' % index for index, resource in
+                   enumerate(sorted({row['resource_id'] for row in evaluated}), 1)}
+        if targets:
+            story.append(table([['Target','Evaluated resource or scope identifier']]
+                               + [[key, resource] for resource, key in targets.items()], [50, width-50]))
+        order = {'FAIL': 0, 'UNKNOWN': 1, 'PASS': 2}
+        reference_width = identifier_column([row['reference'] for row in evaluated], 120, 200)
+        story.append(table([['Definition reference','Result /\ncompliance state','Effect /\nscope',
+                             'Supporting NIST references','Evaluated at','Target']]
+                           + [[row['reference'], row['result'] + '\n' + row['compliance_state'],
+                               row['action'] + '\n' + row['scope'],
+                               ', '.join(row['controls']) or 'none declared',
+                               row['evaluated_at'] or 'not reported', targets[row['resource_id']]]
+                              for row in sorted(evaluated, key=lambda r: (order.get(r['result'], 3),
+                                                                          r['reference'], r['resource_id']))],
+                           [reference_width, 69, 75] + share(width - reference_width - 186, [76, 86]) + [42]))
     doc.multiBuild(story)
     return output.getvalue()

@@ -158,4 +158,13 @@ creating an assignment, changing one, or triggering remediation.
 
 The 481 Unknown are the `Manual` definitions awaiting attestations, which is what an unattested organizational control should look like.
 
+Those 481 records are not rendered in the auditor PDF. A `Manual` definition evaluates
+nothing: Azure emits one record per definition to mark a control as awaiting an
+organizational attestation, so the count is a property of Microsoft's initiative and not of
+the estate — a subscription holding seven resources produces the same 481 rows as one
+holding seven thousand. Rendering them as evidence rows put roughly 108 pages of "unknown"
+into a 195-page report about seven resources. They remain in the saved JSON in full; the
+PDF states the count, says their omission is not a pass, and lists the records that
+actually evaluated something.
+
 This is the lab subscription, not a workplace tenant. Repeat the procedure at the approved workplace scope during handoff.
