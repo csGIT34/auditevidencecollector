@@ -28,7 +28,7 @@ python -m azure_at_rest control-register --template purview.json
 
 Without a purview file every control reads `UNDECLARED`, nothing is excluded or inherited, and coverage cannot be judged complete. The register says so on its first page.
 
-`--template` writes a draft covering all candidate controls from the [family review](audit/NIST_FAMILY_REVIEW.md) so the declaration starts from a file rather than a blank page. Review every row, then set `status` to `approved`.
+`--template` writes a draft covering the controls your deployed resource types implicate, so the declaration starts from a file rather than a blank page. Review every row, then set `status` to `approved`.
 
 ```json
 {
@@ -52,16 +52,27 @@ Rules the validator enforces: an inherited or excluded control requires a writte
 
 [examples/control-purview.json](../examples/control-purview.json) is a worked synthetic example, not organizational policy.
 
-## Current coverage
+## Scope: controls your resources implicate
 
-Against the 189 candidate controls in the family review, the synthetic all-service run produces:
+Two different questions produce two different numbers, and the register reports both.
 
-| | Controls |
+| Question | Controls |
 | --- | --- |
-| With automated evidence | 38 |
-| `NOT_ASSESSED` | 151 |
+| Implicated by the 23 deployed Azure resource types | 48 |
+| Organization-wide candidates in the family review | 189 |
 
-That gap is the honest state of the program, and it is the point of this register: it makes the remaining work visible per control instead of implied by a predicate count. Families with no automated evidence at all — AT, CA, IR, MA, MP, PE, PL, PM, PS, PT — are organizational or provider-owned by design. They close through declared inheritance and attributed records, not through collectors. See the [project completion plan](PROJECT_COMPLETION_PLAN.md) for the remaining technical families.
+Creating a storage account does not implicate PE-3 or PS-3. Those remain organization-wide candidates with other owners. `--template` therefore defaults to the 48 resource-implicated controls; `--template-scope candidate` emits all 189 when the wider program register is wanted. Each control row carries `service_applicable` so an auditor can separate the two without recounting.
+
+Of the 48, evidence exists for the controls whose predicates ran in that specific collection. A control referenced only by Microsoft Graph predicates shows `NOT_ASSESSED` in an ARM-only run — the register reports what the run proves, not what the tool could collect.
+
+## Governing references
+
+| Reference | Role |
+| --- | --- |
+| [NIST SP 800-53 Rev. 5](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final) | Control catalog and assessment procedures behind every status in this register. |
+| [NIST SP 800-144](https://csrc.nist.gov/pubs/sp/800/144/final) | *Guidelines on Security and Privacy in Public Cloud Computing* (December 2011, active). Public-cloud outsourcing guidance. |
+
+SP 800-144 publishes recommendations, not assessable control identifiers, so **it produces no control status here**. Its nine key issue areas — Governance, Compliance, Trust, Architecture, Identity and Access Management, Software Isolation, Data Protection, Availability and Incident Response (§4.1–4.9) — index the same evidence and frame the provider/customer split that the `INHERITED` disposition records. Its §5 outsourcing lifecycle governs the preliminary, coincident and concluding activities around this evidence, not the evidence itself.
 
 ## Relationship to the other reports
 

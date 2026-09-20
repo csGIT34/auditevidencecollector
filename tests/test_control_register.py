@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from azure_at_rest.control_register import CONTROLS, STATUSES, build, markdown, validate_purview
+from azure_at_rest.control_register import (CONTROLS, SERVICE_APPLICABLE, STATUSES, build, markdown,
+                                            template, validate_purview)
 from azure_at_rest.cli import main
 from tests.test_controls import collect, fixture
 from azure_at_rest.workflow import assess_snapshot
@@ -135,3 +136,33 @@ class ControlRegisterTests(unittest.TestCase):
         subprocess.run([sys.executable, str(ROOT / 'docs/audit/export_control_index.py'), '--check'],
                        check=True, cwd=ROOT)
         self.assertEqual(208, len(CONTROLS))
+
+    def test_purview_template_defaults_to_the_deployed_resource_types(self):
+        service = template()
+        self.assertEqual(SERVICE_APPLICABLE, set(service['controls']))
+        self.assertEqual(48, len(service['controls']))
+        self.assertEqual('draft', service['status'])
+        wider = template('candidate')
+        self.assertEqual(189, len(wider['controls']))
+        self.assertLess(set(service['controls']), set(wider['controls']))
+        with self.assertRaises(ValueError):
+            template('everything')
+
+    def test_register_separates_resource_implicated_controls_from_wider_candidates(self):
+        register = build(report())
+        summary = register['summary']
+        self.assertEqual(48, summary['service_applicable'])
+        self.assertLessEqual(summary['service_applicable_with_evidence'], summary['service_applicable'])
+        self.assertTrue(row(register, 'AC-6')['service_applicable'])
+        self.assertFalse(row(register, 'PE-3')['service_applicable'])
+        text = markdown(register)
+        self.assertIn('Implicated by the deployed Azure resource types', text)
+
+    def test_guidance_references_are_recorded_without_producing_control_status(self):
+        register = build(report())
+        labels = {reference['label'] for reference in register['references']}
+        self.assertEqual({'NIST SP 800-53 Rev. 5', 'NIST SP 800-144'}, labels)
+        guidance = next(r for r in register['references'] if r['label'] == 'NIST SP 800-144')
+        self.assertIn('not assessable control identifiers', guidance['role'])
+        self.assertEqual(9, len(guidance['areas']))
+        self.assertNotIn('800-144', ' '.join(entry['status'] for entry in register['controls']))

@@ -2,6 +2,8 @@
 
 ## 0.19.0
 
+- Separate the controls the deployed Azure resource types implicate (48) from organization-wide candidates (189); the purview template defaults to the former and every control row records which it is.
+- Record NIST SP 800-53 Rev. 5 and NIST SP 800-144 as governing references. SP 800-144 publishes recommendations rather than assessable control identifiers, so it produces no control status.
 - Add a control-indexed evidence register: `control-register` inverts saved runs so each NIST SP 800-53 control lists its observations, findings and gaps without re-evaluating anything.
 - Add an approved control purview with IN_SCOPE, INHERITED and EXCLUDED dispositions, required rationale and approver, and a `--template` starter covering every candidate control. A draft purview never excludes or inherits.
 - Package control labels, titles and families from the reviewed NIST index, gated like the other packaged research exports.

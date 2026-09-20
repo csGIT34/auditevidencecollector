@@ -4,1248 +4,1456 @@
       "candidate": false,
       "family": "ac",
       "oscal_id": "ac-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "AC-17": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-17",
+      "service_applicable": true,
       "title": "Remote Access"
     },
     "AC-2": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-2",
+      "service_applicable": true,
       "title": "Account Management"
     },
     "AC-3": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-3",
+      "service_applicable": true,
       "title": "Access Enforcement"
     },
     "AC-4": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-4",
+      "service_applicable": true,
       "title": "Information Flow Enforcement"
     },
     "AC-5": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-5",
+      "service_applicable": true,
       "title": "Separation of Duties"
     },
     "AC-6": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-6",
+      "service_applicable": true,
       "title": "Least Privilege"
     },
     "AC-6(7)": {
       "candidate": true,
       "family": "ac",
       "oscal_id": "ac-6.7",
+      "service_applicable": false,
       "title": "Review of User Privileges"
     },
     "AT-1": {
       "candidate": false,
       "family": "at",
       "oscal_id": "at-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "AT-2": {
       "candidate": true,
       "family": "at",
       "oscal_id": "at-2",
+      "service_applicable": false,
       "title": "Literacy Training and Awareness"
     },
     "AT-3": {
       "candidate": true,
       "family": "at",
       "oscal_id": "at-3",
+      "service_applicable": false,
       "title": "Role-based Training"
     },
     "AT-4": {
       "candidate": true,
       "family": "at",
       "oscal_id": "at-4",
+      "service_applicable": false,
       "title": "Training Records"
     },
     "AU-1": {
       "candidate": false,
       "family": "au",
       "oscal_id": "au-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "AU-11": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-11",
+      "service_applicable": true,
       "title": "Audit Record Retention"
     },
     "AU-12": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-12",
+      "service_applicable": true,
       "title": "Audit Record Generation"
     },
     "AU-2": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-2",
+      "service_applicable": true,
       "title": "Event Logging"
     },
     "AU-3": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-3",
+      "service_applicable": false,
       "title": "Content of Audit Records"
     },
     "AU-4": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-4",
+      "service_applicable": true,
       "title": "Audit Log Storage Capacity"
     },
     "AU-5": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-5",
+      "service_applicable": true,
       "title": "Response to Audit Logging Process Failures"
     },
     "AU-6": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-6",
+      "service_applicable": false,
       "title": "Audit Record Review, Analysis, and Reporting"
     },
     "AU-8": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-8",
+      "service_applicable": false,
       "title": "Time Stamps"
     },
     "AU-9": {
       "candidate": true,
       "family": "au",
       "oscal_id": "au-9",
+      "service_applicable": true,
       "title": "Protection of Audit Information"
     },
     "CA-1": {
       "candidate": false,
       "family": "ca",
       "oscal_id": "ca-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "CA-2": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-2",
+      "service_applicable": false,
       "title": "Control Assessments"
     },
     "CA-3": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-3",
+      "service_applicable": false,
       "title": "Information Exchange"
     },
     "CA-5": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-5",
+      "service_applicable": false,
       "title": "Plan of Action and Milestones"
     },
     "CA-6": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-6",
+      "service_applicable": false,
       "title": "Authorization"
     },
     "CA-7": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-7",
+      "service_applicable": false,
       "title": "Continuous Monitoring"
     },
     "CA-8": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-8",
+      "service_applicable": false,
       "title": "Penetration Testing"
     },
     "CA-9": {
       "candidate": true,
       "family": "ca",
       "oscal_id": "ca-9",
+      "service_applicable": false,
       "title": "Internal System Connections"
     },
     "CM-1": {
       "candidate": false,
       "family": "cm",
       "oscal_id": "cm-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "CM-10": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-10",
+      "service_applicable": false,
       "title": "Software Usage Restrictions"
     },
     "CM-11": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-11",
+      "service_applicable": false,
       "title": "User-installed Software"
     },
     "CM-12": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-12",
+      "service_applicable": false,
       "title": "Information Location"
     },
     "CM-13": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-13",
+      "service_applicable": false,
       "title": "Data Action Mapping"
     },
     "CM-14": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-14",
+      "service_applicable": true,
       "title": "Signed Components"
     },
     "CM-2": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-2",
+      "service_applicable": true,
       "title": "Baseline Configuration"
     },
     "CM-3": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-3",
+      "service_applicable": true,
       "title": "Configuration Change Control"
     },
     "CM-4": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-4",
+      "service_applicable": false,
       "title": "Impact Analyses"
     },
     "CM-5": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-5",
+      "service_applicable": true,
       "title": "Access Restrictions for Change"
     },
     "CM-6": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-6",
+      "service_applicable": true,
       "title": "Configuration Settings"
     },
     "CM-7": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-7",
+      "service_applicable": true,
       "title": "Least Functionality"
     },
     "CM-8": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-8",
+      "service_applicable": false,
       "title": "System Component Inventory"
     },
     "CM-9": {
       "candidate": true,
       "family": "cm",
       "oscal_id": "cm-9",
+      "service_applicable": false,
       "title": "Configuration Management Plan"
     },
     "CP-1": {
       "candidate": false,
       "family": "cp",
       "oscal_id": "cp-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "CP-10": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-10",
+      "service_applicable": true,
       "title": "System Recovery and Reconstitution"
     },
     "CP-2": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-2",
+      "service_applicable": true,
       "title": "Contingency Plan"
     },
     "CP-3": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-3",
+      "service_applicable": false,
       "title": "Contingency Training"
     },
     "CP-4": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-4",
+      "service_applicable": true,
       "title": "Contingency Plan Testing"
     },
     "CP-6": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-6",
+      "service_applicable": false,
       "title": "Alternate Storage Site"
     },
     "CP-7": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-7",
+      "service_applicable": false,
       "title": "Alternate Processing Site"
     },
     "CP-8": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-8",
+      "service_applicable": false,
       "title": "Telecommunications Services"
     },
     "CP-9": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-9",
+      "service_applicable": true,
       "title": "System Backup"
     },
     "CP-9(1)": {
       "candidate": true,
       "family": "cp",
       "oscal_id": "cp-9.1",
+      "service_applicable": true,
       "title": "Testing for Reliability and Integrity"
     },
     "IA-1": {
       "candidate": false,
       "family": "ia",
       "oscal_id": "ia-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "IA-11": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-11",
+      "service_applicable": false,
       "title": "Re-authentication"
     },
     "IA-12": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-12",
+      "service_applicable": false,
       "title": "Identity Proofing"
     },
     "IA-13": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-13",
+      "service_applicable": true,
       "title": "Identity Providers and Authorization Servers"
     },
     "IA-2": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-2",
+      "service_applicable": true,
       "title": "Identification and Authentication (Organizational Users)"
     },
     "IA-2(1)": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-2.1",
+      "service_applicable": false,
       "title": "Multi-factor Authentication to Privileged Accounts"
     },
     "IA-4": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-4",
+      "service_applicable": false,
       "title": "Identifier Management"
     },
     "IA-5": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-5",
+      "service_applicable": true,
       "title": "Authenticator Management"
     },
     "IA-8": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-8",
+      "service_applicable": false,
       "title": "Identification and Authentication (Non-organizational Users)"
     },
     "IA-9": {
       "candidate": true,
       "family": "ia",
       "oscal_id": "ia-9",
+      "service_applicable": true,
       "title": "Service Identification and Authentication"
     },
     "IR-1": {
       "candidate": false,
       "family": "ir",
       "oscal_id": "ir-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "IR-2": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-2",
+      "service_applicable": false,
       "title": "Incident Response Training"
     },
     "IR-3": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-3",
+      "service_applicable": false,
       "title": "Incident Response Testing"
     },
     "IR-4": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-4",
+      "service_applicable": false,
       "title": "Incident Handling"
     },
     "IR-5": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-5",
+      "service_applicable": false,
       "title": "Incident Monitoring"
     },
     "IR-6": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-6",
+      "service_applicable": false,
       "title": "Incident Reporting"
     },
     "IR-7": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-7",
+      "service_applicable": false,
       "title": "Incident Response Assistance"
     },
     "IR-8": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-8",
+      "service_applicable": false,
       "title": "Incident Response Plan"
     },
     "IR-9": {
       "candidate": true,
       "family": "ir",
       "oscal_id": "ir-9",
+      "service_applicable": false,
       "title": "Information Spillage Response"
     },
     "MA-1": {
       "candidate": false,
       "family": "ma",
       "oscal_id": "ma-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "MA-2": {
       "candidate": true,
       "family": "ma",
       "oscal_id": "ma-2",
+      "service_applicable": false,
       "title": "Controlled Maintenance"
     },
     "MA-3": {
       "candidate": true,
       "family": "ma",
       "oscal_id": "ma-3",
+      "service_applicable": false,
       "title": "Maintenance Tools"
     },
     "MA-4": {
       "candidate": true,
       "family": "ma",
       "oscal_id": "ma-4",
+      "service_applicable": false,
       "title": "Nonlocal Maintenance"
     },
     "MA-5": {
       "candidate": true,
       "family": "ma",
       "oscal_id": "ma-5",
+      "service_applicable": false,
       "title": "Maintenance Personnel"
     },
     "MA-6": {
       "candidate": true,
       "family": "ma",
       "oscal_id": "ma-6",
+      "service_applicable": false,
       "title": "Timely Maintenance"
     },
     "MP-1": {
       "candidate": false,
       "family": "mp",
       "oscal_id": "mp-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "MP-2": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-2",
+      "service_applicable": false,
       "title": "Media Access"
     },
     "MP-3": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-3",
+      "service_applicable": false,
       "title": "Media Marking"
     },
     "MP-4": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-4",
+      "service_applicable": false,
       "title": "Media Storage"
     },
     "MP-5": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-5",
+      "service_applicable": false,
       "title": "Media Transport"
     },
     "MP-6": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-6",
+      "service_applicable": false,
       "title": "Media Sanitization"
     },
     "MP-7": {
       "candidate": true,
       "family": "mp",
       "oscal_id": "mp-7",
+      "service_applicable": false,
       "title": "Media Use"
     },
     "PE-1": {
       "candidate": false,
       "family": "pe",
       "oscal_id": "pe-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "PE-10": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-10",
+      "service_applicable": false,
       "title": "Emergency Shutoff"
     },
     "PE-11": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-11",
+      "service_applicable": false,
       "title": "Emergency Power"
     },
     "PE-12": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-12",
+      "service_applicable": false,
       "title": "Emergency Lighting"
     },
     "PE-13": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-13",
+      "service_applicable": false,
       "title": "Fire Protection"
     },
     "PE-14": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-14",
+      "service_applicable": false,
       "title": "Environmental Controls"
     },
     "PE-15": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-15",
+      "service_applicable": false,
       "title": "Water Damage Protection"
     },
     "PE-16": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-16",
+      "service_applicable": false,
       "title": "Delivery and Removal"
     },
     "PE-17": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-17",
+      "service_applicable": false,
       "title": "Alternate Work Site"
     },
     "PE-18": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-18",
+      "service_applicable": false,
       "title": "Location of System Components"
     },
     "PE-2": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-2",
+      "service_applicable": false,
       "title": "Physical Access Authorizations"
     },
     "PE-20": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-20",
+      "service_applicable": false,
       "title": "Asset Monitoring and Tracking"
     },
     "PE-23": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-23",
+      "service_applicable": false,
       "title": "Facility Location"
     },
     "PE-3": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-3",
+      "service_applicable": false,
       "title": "Physical Access Control"
     },
     "PE-4": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-4",
+      "service_applicable": false,
       "title": "Access Control for Transmission"
     },
     "PE-5": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-5",
+      "service_applicable": false,
       "title": "Access Control for Output Devices"
     },
     "PE-6": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-6",
+      "service_applicable": false,
       "title": "Monitoring Physical Access"
     },
     "PE-8": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-8",
+      "service_applicable": false,
       "title": "Visitor Access Records"
     },
     "PE-9": {
       "candidate": true,
       "family": "pe",
       "oscal_id": "pe-9",
+      "service_applicable": false,
       "title": "Power Equipment and Cabling"
     },
     "PL-1": {
       "candidate": false,
       "family": "pl",
       "oscal_id": "pl-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "PL-10": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-10",
+      "service_applicable": false,
       "title": "Baseline Selection"
     },
     "PL-11": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-11",
+      "service_applicable": false,
       "title": "Baseline Tailoring"
     },
     "PL-2": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-2",
+      "service_applicable": false,
       "title": "System Security and Privacy Plans"
     },
     "PL-4": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-4",
+      "service_applicable": false,
       "title": "Rules of Behavior"
     },
     "PL-7": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-7",
+      "service_applicable": false,
       "title": "Concept of Operations"
     },
     "PL-8": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-8",
+      "service_applicable": false,
       "title": "Security and Privacy Architectures"
     },
     "PL-9": {
       "candidate": true,
       "family": "pl",
       "oscal_id": "pl-9",
+      "service_applicable": false,
       "title": "Central Management"
     },
     "PM-1": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-1",
+      "service_applicable": false,
       "title": "Information Security Program Plan"
     },
     "PM-10": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-10",
+      "service_applicable": false,
       "title": "Authorization Process"
     },
     "PM-13": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-13",
+      "service_applicable": false,
       "title": "Security and Privacy Workforce"
     },
     "PM-14": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-14",
+      "service_applicable": false,
       "title": "Testing, Training, and Monitoring"
     },
     "PM-18": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-18",
+      "service_applicable": false,
       "title": "Privacy Program Plan"
     },
     "PM-19": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-19",
+      "service_applicable": false,
       "title": "Privacy Program Leadership Role"
     },
     "PM-2": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-2",
+      "service_applicable": false,
       "title": "Information Security Program Leadership Role"
     },
     "PM-23": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-23",
+      "service_applicable": false,
       "title": "Data Governance Body"
     },
     "PM-28": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-28",
+      "service_applicable": false,
       "title": "Risk Framing"
     },
     "PM-29": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-29",
+      "service_applicable": false,
       "title": "Risk Management Program Leadership Roles"
     },
     "PM-3": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-3",
+      "service_applicable": false,
       "title": "Information Security and Privacy Resources"
     },
     "PM-30": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-30",
+      "service_applicable": false,
       "title": "Supply Chain Risk Management Strategy"
     },
     "PM-31": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-31",
+      "service_applicable": false,
       "title": "Continuous Monitoring Strategy"
     },
     "PM-4": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-4",
+      "service_applicable": false,
       "title": "Plan of Action and Milestones Process"
     },
     "PM-5": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-5",
+      "service_applicable": false,
       "title": "System Inventory"
     },
     "PM-6": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-6",
+      "service_applicable": false,
       "title": "Measures of Performance"
     },
     "PM-9": {
       "candidate": true,
       "family": "pm",
       "oscal_id": "pm-9",
+      "service_applicable": false,
       "title": "Risk Management Strategy"
     },
     "PS-1": {
       "candidate": false,
       "family": "ps",
       "oscal_id": "ps-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "PS-2": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-2",
+      "service_applicable": false,
       "title": "Position Risk Designation"
     },
     "PS-3": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-3",
+      "service_applicable": false,
       "title": "Personnel Screening"
     },
     "PS-4": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-4",
+      "service_applicable": false,
       "title": "Personnel Termination"
     },
     "PS-5": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-5",
+      "service_applicable": false,
       "title": "Personnel Transfer"
     },
     "PS-6": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-6",
+      "service_applicable": false,
       "title": "Access Agreements"
     },
     "PS-7": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-7",
+      "service_applicable": false,
       "title": "External Personnel Security"
     },
     "PS-8": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-8",
+      "service_applicable": false,
       "title": "Personnel Sanctions"
     },
     "PS-9": {
       "candidate": true,
       "family": "ps",
       "oscal_id": "ps-9",
+      "service_applicable": false,
       "title": "Position Descriptions"
     },
     "PT-1": {
       "candidate": false,
       "family": "pt",
       "oscal_id": "pt-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "PT-2": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-2",
+      "service_applicable": false,
       "title": "Authority to Process Personally Identifiable Information"
     },
     "PT-3": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-3",
+      "service_applicable": false,
       "title": "Personally Identifiable Information Processing Purposes"
     },
     "PT-4": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-4",
+      "service_applicable": false,
       "title": "Consent"
     },
     "PT-5": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-5",
+      "service_applicable": false,
       "title": "Privacy Notice"
     },
     "PT-6": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-6",
+      "service_applicable": false,
       "title": "System of Records Notice"
     },
     "PT-7": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-7",
+      "service_applicable": false,
       "title": "Specific Categories of Personally Identifiable Information"
     },
     "PT-8": {
       "candidate": true,
       "family": "pt",
       "oscal_id": "pt-8",
+      "service_applicable": false,
       "title": "Computer Matching Requirements"
     },
     "RA-1": {
       "candidate": false,
       "family": "ra",
       "oscal_id": "ra-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "RA-10": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-10",
+      "service_applicable": false,
       "title": "Threat Hunting"
     },
     "RA-2": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-2",
+      "service_applicable": false,
       "title": "Security Categorization"
     },
     "RA-3": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-3",
+      "service_applicable": false,
       "title": "Risk Assessment"
     },
     "RA-5": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-5",
+      "service_applicable": true,
       "title": "Vulnerability Monitoring and Scanning"
     },
     "RA-7": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-7",
+      "service_applicable": false,
       "title": "Risk Response"
     },
     "RA-8": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-8",
+      "service_applicable": false,
       "title": "Privacy Impact Assessments"
     },
     "RA-9": {
       "candidate": true,
       "family": "ra",
       "oscal_id": "ra-9",
+      "service_applicable": false,
       "title": "Criticality Analysis"
     },
     "SA-1": {
       "candidate": false,
       "family": "sa",
       "oscal_id": "sa-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "SA-10": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-10",
+      "service_applicable": false,
       "title": "Developer Configuration Management"
     },
     "SA-11": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-11",
+      "service_applicable": true,
       "title": "Developer Testing and Evaluation"
     },
     "SA-15": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-15",
+      "service_applicable": false,
       "title": "Development Process, Standards, and Tools"
     },
     "SA-15(13)": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-15.13",
+      "service_applicable": false,
       "title": "Logging Syntax"
     },
     "SA-2": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-2",
+      "service_applicable": false,
       "title": "Allocation of Resources"
     },
     "SA-22": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-22",
+      "service_applicable": true,
       "title": "Unsupported System Components"
     },
     "SA-24": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-24",
+      "service_applicable": false,
       "title": "Design For Cyber Resiliency"
     },
     "SA-3": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-3",
+      "service_applicable": false,
       "title": "System Development Life Cycle"
     },
     "SA-4": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-4",
+      "service_applicable": false,
       "title": "Acquisition Process"
     },
     "SA-5": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-5",
+      "service_applicable": false,
       "title": "System Documentation"
     },
     "SA-8": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-8",
+      "service_applicable": false,
       "title": "Security and Privacy Engineering Principles"
     },
     "SA-9": {
       "candidate": true,
       "family": "sa",
       "oscal_id": "sa-9",
+      "service_applicable": true,
       "title": "External System Services"
     },
     "SC-1": {
       "candidate": false,
       "family": "sc",
       "oscal_id": "sc-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "SC-12": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-12",
+      "service_applicable": true,
       "title": "Cryptographic Key Establishment and Management"
     },
     "SC-13": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-13",
+      "service_applicable": true,
       "title": "Cryptographic Protection"
     },
     "SC-17": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-17",
+      "service_applicable": true,
       "title": "Public Key Infrastructure Certificates"
     },
     "SC-20": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-20",
+      "service_applicable": false,
       "title": "Secure Name/Address Resolution Service (Authoritative Source)"
     },
     "SC-21": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-21",
+      "service_applicable": false,
       "title": "Secure Name/Address Resolution Service (Recursive or Caching Resolver)"
     },
     "SC-22": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-22",
+      "service_applicable": false,
       "title": "Architecture and Provisioning for Name/Address Resolution Service"
     },
     "SC-23": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-23",
+      "service_applicable": false,
       "title": "Session Authenticity"
     },
     "SC-28": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-28",
+      "service_applicable": true,
       "title": "Protection of Information at Rest"
     },
     "SC-28(1)": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-28.1",
+      "service_applicable": true,
       "title": "Cryptographic Protection"
     },
     "SC-39": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-39",
+      "service_applicable": false,
       "title": "Process Isolation"
     },
     "SC-45": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-45",
+      "service_applicable": true,
       "title": "System Time Synchronization"
     },
     "SC-5": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-5",
+      "service_applicable": false,
       "title": "Denial-of-service Protection"
     },
     "SC-7": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-7",
+      "service_applicable": true,
       "title": "Boundary Protection"
     },
     "SC-8": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-8",
+      "service_applicable": true,
       "title": "Transmission Confidentiality and Integrity"
     },
     "SC-8(1)": {
       "candidate": true,
       "family": "sc",
       "oscal_id": "sc-8.1",
+      "service_applicable": true,
       "title": "Cryptographic Protection"
     },
     "SI-1": {
       "candidate": false,
       "family": "si",
       "oscal_id": "si-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "SI-10": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-10",
+      "service_applicable": true,
       "title": "Information Input Validation"
     },
     "SI-11": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-11",
+      "service_applicable": false,
       "title": "Error Handling"
     },
     "SI-12": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-12",
+      "service_applicable": true,
       "title": "Information Management and Retention"
     },
     "SI-16": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-16",
+      "service_applicable": false,
       "title": "Memory Protection"
     },
     "SI-18": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-18",
+      "service_applicable": false,
       "title": "Personally Identifiable Information Quality Operations"
     },
     "SI-19": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-19",
+      "service_applicable": false,
       "title": "De-identification"
     },
     "SI-2": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-2",
+      "service_applicable": true,
       "title": "Flaw Remediation"
     },
     "SI-2(7)": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-2.7",
+      "service_applicable": false,
       "title": "Root Cause Analysis"
     },
     "SI-3": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-3",
+      "service_applicable": true,
       "title": "Malicious Code Protection"
     },
     "SI-4": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-4",
+      "service_applicable": true,
       "title": "System Monitoring"
     },
     "SI-5": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-5",
+      "service_applicable": false,
       "title": "Security Alerts, Advisories, and Directives"
     },
     "SI-7": {
       "candidate": true,
       "family": "si",
       "oscal_id": "si-7",
+      "service_applicable": true,
       "title": "Software, Firmware, and Information Integrity"
     },
     "SR-1": {
       "candidate": false,
       "family": "sr",
       "oscal_id": "sr-1",
+      "service_applicable": false,
       "title": "Policy and Procedures"
     },
     "SR-10": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-10",
+      "service_applicable": false,
       "title": "Inspection of Systems or Components"
     },
     "SR-11": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-11",
+      "service_applicable": false,
       "title": "Component Authenticity"
     },
     "SR-12": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-12",
+      "service_applicable": false,
       "title": "Component Disposal"
     },
     "SR-2": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-2",
+      "service_applicable": false,
       "title": "Supply Chain Risk Management Plan"
     },
     "SR-3": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-3",
+      "service_applicable": false,
       "title": "Supply Chain Controls and Processes"
     },
     "SR-4": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-4",
+      "service_applicable": true,
       "title": "Provenance"
     },
     "SR-5": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-5",
+      "service_applicable": false,
       "title": "Acquisition Strategies, Tools, and Methods"
     },
     "SR-6": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-6",
+      "service_applicable": true,
       "title": "Supplier Assessments and Reviews"
     },
     "SR-8": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-8",
+      "service_applicable": false,
       "title": "Notification Agreements"
     },
     "SR-9": {
       "candidate": true,
       "family": "sr",
       "oscal_id": "sr-9",
+      "service_applicable": false,
       "title": "Tamper Resistance and Detection"
     }
   },
@@ -1332,6 +1540,34 @@
     }
   },
   "index_sha256": "ad87f088aaa1a918baad191a9b8241114a2fca52f961ef68a80a0a22f7f4419a",
+  "references": [
+    {
+      "id": "sp800-53r5",
+      "label": "NIST SP 800-53 Rev. 5",
+      "role": "Control catalog and assessment procedures for every control status in this register.",
+      "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final"
+    },
+    {
+      "areas": {
+        "4.1": "Governance",
+        "4.2": "Compliance",
+        "4.3": "Trust",
+        "4.4": "Architecture",
+        "4.5": "Identity and Access Management",
+        "4.6": "Software Isolation",
+        "4.7": "Data Protection",
+        "4.8": "Availability",
+        "4.9": "Incident Response"
+      },
+      "id": "sp800-144",
+      "label": "NIST SP 800-144",
+      "published": "2011-12",
+      "reviewed_on": "2026-09-20",
+      "role": "Public-cloud outsourcing guidance. It publishes recommendations, not assessable control identifiers, so it produces no status here; its nine key issue areas index the same evidence.",
+      "title": "Guidelines on Security and Privacy in Public Cloud Computing",
+      "url": "https://csrc.nist.gov/pubs/sp/800/144/final"
+    }
+  ],
   "schema_version": "1.0",
   "source": {
     "git_commit": "78650f02ad9321bb7b817846f8fbd4f2bcd620de",

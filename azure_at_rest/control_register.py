@@ -16,7 +16,9 @@ import re
 from .safety import now
 
 INDEX = json.loads(Path(__file__).with_name('control_index.json').read_text())
-CONTROLS, FAMILIES = INDEX['controls'], INDEX['families']
+CONTROLS, FAMILIES, REFERENCES = INDEX['controls'], INDEX['families'], INDEX['references']
+# Controls implicated by the deployed Azure resource types, as opposed to organization-wide candidates.
+SERVICE_APPLICABLE = {label for label, control in CONTROLS.items() if control['service_applicable']}
 
 # Ordered by precedence: the first matching condition decides a control's status.
 STATUSES = ('EXCLUDED', 'INHERITED_CLAIMED', 'FINDINGS_PRESENT', 'INCOMPLETE_EVIDENCE',
@@ -131,7 +133,8 @@ def build(report, purview=None, operational=None):
         if status in ('AUTOMATED_EVIDENCE_COLLECTED', 'FINDINGS_PRESENT', 'INCOMPLETE_EVIDENCE'):
             missing.append('Assessor determination, organization-defined parameters and operating effectiveness over the assessment period are outside this evidence.')
         rows.append({'control': label, 'title': CONTROLS[label]['title'], 'family': CONTROLS[label]['family'],
-                     'candidate': CONTROLS[label]['candidate'], 'purview': disposition,
+                     'candidate': CONTROLS[label]['candidate'],
+                     'service_applicable': label in SERVICE_APPLICABLE, 'purview': disposition,
                      'owner': (entry or {}).get('owner', ''), 'rationale': (entry or {}).get('rationale', ''),
                      'assurance_reference': (entry or {}).get('assurance_reference', ''),
                      'approver': (entry or {}).get('approver', ''), 'status': status, 'counts': counts,
@@ -146,6 +149,7 @@ def build(report, purview=None, operational=None):
                          'findings': sum(1 for row in members if row['status'] == 'FINDINGS_PRESENT')})
     status_counts = Counter(row['status'] for row in rows)
     return {'schema_version': '1.0', 'generated_at': now(), 'catalog_source': INDEX['source'],
+            'references': REFERENCES,
             'control_index_sha256': INDEX['index_sha256'],
             'purview': {'declared': bool(purview), 'status': (purview or {}).get('status'),
                         'id': (purview or {}).get('id'), 'version': (purview or {}).get('version'),
@@ -153,16 +157,20 @@ def build(report, purview=None, operational=None):
             'assessment': {'generated_at': report.get('generated_at'), 'tool_version': report.get('tool_version'),
                            'rule_version': report.get('rule_version'), 'mode': report.get('mode')},
             'summary': {'controls': len(rows), 'with_evidence': sum(1 for row in rows if row['evidence_count']),
+                        'service_applicable': sum(1 for row in rows if row['service_applicable']),
+                        'service_applicable_with_evidence': sum(1 for row in rows if row['service_applicable'] and row['evidence_count']),
                         'statuses': {state: status_counts.get(state, 0) for state in STATUSES},
                         'evidence_items': len(items)},
             'families': families, 'limits': LIMITS, 'controls': rows}
 
 
-def template(family=None):
-    """Starter purview covering every candidate control. Dispositions and owners need real review."""
+def template(scope='service'):
+    """Starter purview. Default scope is the controls the deployed resource types implicate."""
+    if scope not in ('service', 'candidate'):
+        raise ValueError('Unknown purview template scope')
     controls = {label: {'disposition': 'IN_SCOPE', 'owner': ''}
                 for label, control in sorted(CONTROLS.items())
-                if control['candidate'] and (family is None or control['family'] == family)}
+                if (label in SERVICE_APPLICABLE if scope == 'service' else control['candidate'])}
     return {'schema_version': '1.0', 'id': 'REPLACE-WITH-APPROVED-PURVIEW-ID', 'version': '1',
             'status': 'draft', 'controls': controls}
 
@@ -182,6 +190,11 @@ def markdown(register):
     summary = register['summary']
     out += ['Controls indexed: **' + str(summary['controls']) + '**; with evidence: **' +
             str(summary['with_evidence']) + '**; evidence items: ' + str(summary['evidence_items']) + '.', '',
+            'Implicated by the deployed Azure resource types: **' + str(summary['service_applicable']) +
+            '**, of which **' + str(summary['service_applicable_with_evidence']) + '** have evidence. Remaining '
+            'controls are organization-wide candidates that creating these resources does not by itself implicate.', '',
+            'Governing references: ' + '; '.join(reference['label'] + ' — ' + reference['role']
+                                                 for reference in register['references']), '',
             '| Status | Controls |', '| --- | --- |']
     out += ['| ' + state + ' | ' + str(count) + ' |' for state, count in summary['statuses'].items()]
     out += ['', '## Families', '', '| Family | Responsibility | Controls | With evidence | Not assessed | Findings |',
@@ -195,12 +208,13 @@ def markdown(register):
         if not members:
             continue
         out += ['', '## ' + family['family'].upper() + ' — ' + family['title'], '',
-                '| Control | Title | Purview | Status | PASS | FAIL | Other | Evidence |',
-                '| --- | --- | --- | --- | --- | --- | --- | --- |']
+                '| Control | Title | Applies to our resources | Purview | Status | PASS | FAIL | Other | Evidence |',
+                '| --- | --- | --- | --- | --- | --- | --- | --- | --- |']
         for row in members:
             counts = row['counts']
             other = sum(counts[state] for state in ('UNKNOWN', 'ERROR', 'UNSUPPORTED', 'NOT_APPLICABLE'))
-            out.append('| ' + row['control'] + ' | ' + row['title'] + ' | ' + row['purview'] + ' | ' + row['status'] +
+            out.append('| ' + row['control'] + ' | ' + row['title'] + ' | ' +
+                       ('yes' if row['service_applicable'] else 'no') + ' | ' + row['purview'] + ' | ' + row['status'] +
                        ' | ' + str(counts['PASS']) + ' | ' + str(counts['FAIL']) + ' | ' + str(other) + ' | ' +
                        str(row['evidence_count']) + ' |')
     out += ['', '## Limitations', ''] + ['- ' + limit for limit in register['limits']] + ['']

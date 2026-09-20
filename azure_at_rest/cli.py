@@ -50,7 +50,8 @@ def parser():
         subparser.add_argument("--report", type=Path, help="Optional loose Markdown export (default without --store: evidence/audit.md).")
     controls = commands.add_parser("control-register", help="Index one saved assessment by NIST control; no recollection or reassessment.")
     controls.add_argument("--input", type=Path, help="Saved assessment JSON from collect or assess.")
-    controls.add_argument("--template", type=Path, help="Write a starter purview covering every candidate control instead of indexing a run.")
+    controls.add_argument("--template", type=Path, help="Write a starter purview instead of indexing a run; defaults to the controls the deployed resource types implicate.")
+    controls.add_argument("--template-scope", choices=("service", "candidate"), default="service", help="service: controls implicated by the collected Azure resource types. candidate: every organization-wide candidate control.")
     controls.add_argument("--purview", type=Path, help="Approved control purview JSON; absent or draft dispositions never exclude a control.")
     controls.add_argument("--operational", type=Path, help="Optional saved operational supplement contributing attributed records.")
     controls.add_argument("--json", type=Path, help="Optional register JSON export.")
@@ -207,7 +208,7 @@ def main(argv=None):
         if args.command == "control-register":
             from .control_register import build, markdown as control_markdown, template
             if args.template:
-                write_private(args.template, json.dumps(template(), indent=2, sort_keys=True) + "\n")
+                write_private(args.template, json.dumps(template(args.template_scope), indent=2, sort_keys=True) + "\n")
                 print("Starter purview written as a draft: review every disposition and owner, then set status to approved.")
                 return 0
             if not args.input:
