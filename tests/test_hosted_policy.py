@@ -79,7 +79,7 @@ class HostedPolicyCollectionTests(unittest.TestCase):
         self.assertEqual(1, outcome['policy_summary']['record_count'])
         saved = load_run(store, outcome['run_id'])['assessment']
         section = report_model.policy_compliance(saved)
-        self.assertEqual(ASSIGNMENT, section['assignment_filter'])
+        self.assertEqual(policy_records()[0]['policyAssignmentId'].lower(), section['assignment_filter'].lower())
         self.assertEqual(['CM-6', 'SC-28'], section['results'][0]['controls'])
         # All three evidence kinds are peers in the same archived run.
         self.assertEqual(['resource_rules', 'configuration', 'policy_compliance'],

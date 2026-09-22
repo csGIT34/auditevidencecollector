@@ -39,7 +39,7 @@ class OperationalHostingTests(unittest.TestCase):
             with patch.dict('os.environ',{'CG_OPERATIONAL_ENABLED':'true'},clear=True):
                 module=importlib.reload(function_app)
                 functions=module.app.get_functions()
-                self.assertEqual({'GenerateReport','ImportOperationalEvidence','GenerateOperationalReport'},{f.get_function_name() for f in functions})
+                self.assertEqual({'GenerateEvidenceReport','GenerateReport','ImportOperationalEvidence','GenerateOperationalReport'},{f.get_function_name() for f in functions})
                 for function in functions:
                     trigger=json.loads(function.get_function_json())['bindings'][0]
                     self.assertEqual('FUNCTION',trigger['authLevel']);self.assertEqual(['POST'],trigger['methods'])

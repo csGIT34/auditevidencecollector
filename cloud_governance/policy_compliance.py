@@ -14,6 +14,7 @@ Two boundaries are preserved throughout:
   recorded as absent and never reads as compliant.
 """
 import re
+from datetime import datetime
 
 from .safety import now, resource_group_name, resource_id, subscription_id
 
@@ -21,9 +22,32 @@ from .safety import now, resource_group_name, resource_id, subscription_id
 GROUP_PREFIX = 'NIST_SP_800-53_R5_'
 LABEL = re.compile(r'[A-Z]{2}-\d{1,2}(?:\(\d{1,2}\))?')
 # Compliance states Azure reports. Anything else is retained as unrecognised, never as a pass.
-STATES = ('Compliant', 'NonCompliant', 'Conflict', 'Exempt', 'Unknown')
+STATES = ('Compliant', 'NonCompliant', 'Conflict', 'Conflicting', 'Exempt', 'Unknown',
+          'Error', 'Protected', 'NotStarted', 'NotRegistered')
 RESULTS = {'Compliant': 'PASS', 'NonCompliant': 'FAIL'}
 MAX_RECORDS = 5000
+
+
+def timestamp(value):
+    if not isinstance(value, str) or len(value) > 40:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace('Z', '+00:00'))
+        return parsed if parsed.tzinfo is not None else None
+    except ValueError:
+        return None
+
+
+def incomplete(section):
+    """Completeness is independent of whether the available evidence contains failures."""
+    summary = section['summary']
+    return source_incomplete(section) or bool(summary['counts']['UNKNOWN'])
+
+
+def source_incomplete(section):
+    summary = section['summary']
+    return bool(not section['results'] or summary.get('truncated') or summary.get('unreadable_records')
+                or summary.get('records_without_control_mapping'))
 
 
 def control_labels(group_names):
@@ -89,41 +113,74 @@ def project(record, controls):
     if scope is None or definition is None:
         return None
     resource, scope_kind = scope
+    from .policy_query import assignment_id as validated_assignment_id
+    try:
+        verified_assignment = validated_assignment_id(resource.split('/')[2], assignment).lower()
+    except ValueError:
+        verified_assignment = '[unrecognised]'
     action = record.get('policyDefinitionAction')
     if not isinstance(action, str) or not re.fullmatch(r'[A-Za-z]{1,40}', action):
         action = '[unrecognised]'
     evaluated = record.get('timestamp')
-    if not isinstance(evaluated, str) or len(evaluated) > 40:
+    if timestamp(evaluated) is None:
         evaluated = None
     return {'reference': definition, 'resource_id': resource, 'scope': scope_kind,
-            'assignment': (resource_id(assignment) or '[unrecognised]').lower()
-                          if isinstance(assignment, str) else '[unrecognised]',
+            'assignment': verified_assignment,
             'action': action, 'compliance_state': state,
-            'result': RESULTS.get(state, 'UNKNOWN'),
+            'result': (RESULTS.get(state, 'UNKNOWN') if evaluated and verified_assignment != '[unrecognised]' and action.lower() in
+                       ('audit', 'auditifnotexists', 'deny', 'deployifnotexists', 'modify', 'append') else 'UNKNOWN'),
             'controls': list(controls.get(definition.lower(), ())),
             'evaluated_at': evaluated}
 
 
-def collect(records, policy_set, *, assignment_name=None, limit=MAX_RECORDS):
+def collect(records, policy_set, *, assignment_name=None, assignment_id=None, subscription=None,
+            resource_group=None, limit=MAX_RECORDS, as_of=None, max_age_seconds=None):
     """Project a query or export into frozen evidence. Nothing is re-evaluated.
 
-    The query asks for one record beyond the limit, so receiving more than the limit is
-    how truncation is detected: Policy Insights returns no continuation link and a full
-    page looks identical to a truncated one.
+    Live queries paginate and carry completeness metadata. Bounded exports can carry
+    one extra row to signal truncation. Original provider states are always preserved.
     """
-    if not isinstance(records, list) or len(records) > limit + 1:
+    if type(limit) is not int or not 1 <= limit <= MAX_RECORDS or not isinstance(records, list) or len(records) > limit + 1:
         raise ValueError('Invalid policy compliance records')
-    truncated = len(records) > limit
+    if resource_group and not subscription:
+        raise ValueError('Resource group evidence requires its subscription')
+    collected_at = as_of or now()
+    reference_time = timestamp(collected_at)
+    if reference_time is None or (max_age_seconds is not None and
+            (type(max_age_seconds) is not int or max_age_seconds <= 0)):
+        raise ValueError('Invalid Policy freshness criteria')
+    truncated = len(records) > limit or not getattr(records, 'complete', True)
     records = records[:limit]
     controls = definition_controls(policy_set)
     rows, dropped = [], 0
     for record in records:
+        if not isinstance(record, dict):
+            dropped += 1
+            continue
+        if assignment_id and str(record.get('policyAssignmentId', '')).lower() != assignment_id.lower():
+            dropped += 1
+            continue
         if assignment_name and str(record.get('policyAssignmentName', '')).lower() != assignment_name.lower():
             continue
         projected = project(record, controls)
         if projected is None:
             dropped += 1
             continue
+        target = projected['resource_id']
+        if subscription and not (target == '/subscriptions/' + subscription.lower()
+                                  or target.startswith('/subscriptions/' + subscription.lower() + '/')):
+            dropped += 1
+            continue
+        if resource_group:
+            scope = '/subscriptions/' + subscription.lower() + '/resourcegroups/' + resource_group.lower()
+            if target != scope and not target.startswith(scope + '/'):
+                dropped += 1
+                continue
+        evaluated = timestamp(projected['evaluated_at'])
+        if evaluated is not None:
+            age = (reference_time - evaluated).total_seconds()
+            if age < 0 or (max_age_seconds is not None and age > max_age_seconds):
+                projected['result'] = 'UNKNOWN'
         rows.append(projected)
     rows.sort(key=lambda row: (row['resource_id'], row['reference']))
     counts = {state: 0 for state in ('PASS', 'FAIL', 'UNKNOWN')}
@@ -132,10 +189,10 @@ def collect(records, policy_set, *, assignment_name=None, limit=MAX_RECORDS):
     unmapped = sum(1 for row in rows if not row['controls'])
     scopes = {kind: sum(1 for row in rows if row['scope'] == kind) for kind in SCOPES}
     conclusion = ('FINDINGS_PRESENT' if counts['FAIL']
-                  else 'INCOMPLETE' if truncated or not rows or counts['UNKNOWN'] or dropped
+                  else 'INCOMPLETE' if truncated or not rows or counts['UNKNOWN'] or dropped or unmapped
                   else 'PROVIDER_ASSERTED_COMPLIANT')
-    return {'schema_version': '1.0', 'collected_at': now(), 'source': 'azure_policy',
-            'assignment_filter': assignment_name,
+    return {'schema_version': '1.0', 'collected_at': collected_at, 'source': 'azure_policy',
+            'assignment_filter': assignment_id or assignment_name,
             'summary': {'record_count': len(rows), 'counts': counts, 'conclusion': conclusion,
                         'unreadable_records': dropped, 'records_without_control_mapping': unmapped,
                         'records_by_scope': scopes, 'truncated': truncated},
@@ -143,7 +200,10 @@ def collect(records, policy_set, *, assignment_name=None, limit=MAX_RECORDS):
                 'Microsoft asserts these results; this program did not observe the configuration behind them.',
                 'The control mapping is Microsoft\'s interpretation, frozen at collection time.',
                 'A resource type with no applicable definition produces no record. Absent evaluation is not compliance.',
-                'Definitions with the Manual effect record an attestation, not an automated observation.',
+            'Manual compliance states may come from defaults or attestations; these rows do not contain authenticated attestation provenance.',
+            'Invalid, future or older-than-approved evaluation times cannot support a current positive result.'
+            + (' No maximum evaluation age was supplied.' if max_age_seconds is None
+               else ' Maximum evaluation age: ' + str(max_age_seconds) + ' seconds.'),
                 'A subscription or resource group scoped result describes that scope, not each resource inside it.']
             + (['The evaluation returned more records than this run retains. These results are a truncated '
                 'sample and the absence of a finding here does not mean one does not exist.'] if truncated else []),

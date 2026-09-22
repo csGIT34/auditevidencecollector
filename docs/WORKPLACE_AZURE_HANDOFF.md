@@ -1,40 +1,65 @@
-# Workplace Azure handoff
+# Workplace handover: audit evidence collection
 
-Version **0.5.0** implements the Azure adapter and a thin Azure Functions host. Use [AZURE_FUNCTIONS.md](AZURE_FUNCTIONS.md), [MACOS_DEVELOPMENT.md](MACOS_DEVELOPMENT.md) and the [live validation record](../infra/personal-lab/LIVE_VALIDATION.md). The [Linux/macOS workflow](https://github.com/csGIT34/auditevidencecollector/actions/workflows/offline.yml) validates offline behavior and packaging. The [follow-up personal validation](../infra/personal-lab/REPEAT_VALIDATION.md) resolved the observed HTTP 503s, passed repeated-request and key-rejection checks, and completed a second scoped live collection plus current/historical PDFs without changing the original evidence. The app is stopped and temporary diagnostics were removed. The personal app remains on v0.3.2; the later source changes are locally validated separately; see current status for the exact release evidence. Workplace acceptance remains outstanding. See [current status](STATUS.md).
+Updated 2026-09-21. Start with [home-lab build status](HOME_LAB_BUILD_STATUS.md) for the tested source checkpoint on the 0.27.0 baseline. Earlier release/live records describe their named versions, not this build. The copyable [workplace startup prompt](prompts/AZURE_ADAPTER_IMPLEMENTATION.md) needs no conversation history.
 
-Production is an Azure Function App, independent of any person's computer. macOS is only for development/testing. Azure Automation is not this implementation's target. Source is published at [csGIT34/auditevidencecollector](https://github.com/csGIT34/auditevidencecollector), on `main`. The user supplies existing workplace infrastructure patterns: follow the [runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). Terraform in `infra/personal-lab` is home-only.
+## Intended system
 
-## Implemented boundaries
+Collect audit evidence across all 20 NIST SP 800-53 Rev. 5 families and the 23-service program. Preserve good, bad, unknown, exempt and unassessed states, observations, periods, criteria, source coverage and provenance. A successful collection/report publication is independent of adverse findings. Evidence presence is not control satisfaction.
 
-- `function_app.py`: timer-capable `CollectEvidence` and a distinct key-protected POST `GenerateReport`. Both default disabled; no guessed schedule, implicit latest run, automatic report generation or anonymous route.
-- `hosting.py`: strict settings, explicit subscription/optional single-RG scope, tenant preflight, structured safe invocation outcomes and bounded per-process overlap handling. An archived FAIL/INCOMPLETE finding is a completed job, not a process failure.
-- `azure_adapters.py`: explicit user-assigned managed identity in Azure; explicitly opted-in tenant-bound CLI credentials locally; an ARM credential wrapper and a Blob ObjectStore. No default credential chain or cloud provisioning.
-- `workflow.py`: deterministic collect-assess-archive orchestration and shared saved-report digest preparation, preserving existing encryption rules.
-- `storage.py`: unchanged `put_new(key, bytes)`, `read(key)` and `keys(prefix)` interface plus the local POSIX FileStore.
-- `archive.py`: facts, conclusions and frozen context stored separately; hashes/versions, completion manifests last, exact saved-run reads and unique archived PDFs.
-- `provenance.py`: an additive versioned execution-context extension; old schema-1.0 runs without it remain readable.
-- `pdf_report.py`: in-memory rendering with embedded package fonts, original evidence context and separate PDF-generation provenance. No database, JSON, private Blob URL or separate spreadsheet is needed by the auditor.
+Use Azure Policy as the primary source of configuration evaluations, with direct ARM/Graph, workload/guest, Wiz and operating records supplying evidence that Policy cannot establish. Keep deterministic archives and reporting; no runtime LLM is required. The current collector still runs direct collection before adding Policy: making execution genuinely Policy-led remains an explicit implementation task.
 
-Blob creation uses an explicit create-if-absent condition on BlockBlob writes. A random per-attempt marker and exact downloaded bytes reconcile a lost acknowledgement; unrelated collisions remain errors even with equal bytes. Read/list failures cannot become success. Partial committed artifacts are retained, failure markers override final manifests, and incomplete attempts must not be repaired through overwrites. A failure to record a failure marker cannot revoke a manifest already committed during an ambiguous response. Neither Blob nor application no-overwrite behavior is a WORM certification; retention/legal holds remain workplace decisions.
+Collection and reporting are separate. A report can cover the entire collected scope, controls/families, or a reviewed topic such as encryption at rest. Topics use explicit mappings; NIST labels or rule titles alone cannot prove equivalence. See [report commands and HTTP contract](EVIDENCE_REPORTS.md).
 
-## Inputs and validation still required at work
+## Transfer and first work session
 
-Supply the approved Function App plan/region and Python runtime; work tenant; existing attached user-assigned identity/client ID; explicit collection subscriptions; separate runtime and evidence storage accounts; existing evidence container/prefix; ARM and Blob permission scopes; private network/DNS path; authenticated report callers; package/source policy; schedule/UTC semantics; invocation budgets/overlap policy; classification, PDF recipients, alert ownership and retention duration. The checked-in settings templates intentionally contain no tenant/account values or keys.
+Transfer source, tests, public/synthetic examples and guides through the approved repository process. Exclude `.venv`, personal Azure configuration, evidence, Terraform state, credentials and caches. Preserve the exact source revision and constrained dependencies. Use the revision containing the home-lab checkpoint; cloning the previous baseline alone omits these changes.
 
-Use identity-based `AzureWebJobsStorage` for production coordination, with permissions reviewed separately from retained evidence. Never place the runtime storage account under evidence retention locks. Before enabling reports, require approved inbound restrictions and work-tenant caller authentication in addition to Functions key authorization. Native Functions local key authorization is disabled, so development must remain local-only.
+1. Confirm source revision, Python 3.12 and approved package access. Install `requirements-dev.txt` and run `python scripts/validate.py`. Required skipped tests fail the gate.
+2. Run `python scripts/demo_audit_evidence.py --output ../audit-rehearsal-work` into a new private directory. Inspect `result.json`, the synthetic PDF and unchanged-source assertions. No Azure/Wiz access is needed.
+3. Obtain the actual Wiz contract and samples listed below. Implement the native mapper at that boundary, feeding the tested importer. Reuse reporting, custody and reconciliation.
+4. Review remaining Policy engineering gaps against workplace scope. The one-subscription lab path is not an estate-wide collector.
+5. Prepare the Functions settings/package using actual workplace identity, network and storage inputs. Deploy and validate within the user's actual authorization; this guide does not provide guessed values or approvals.
 
-Run `python -m pip install -r requirements-dev.txt` in a new approved Python 3.12 venv, then `python scripts/validate.py`. It rejects skipped tests and checks the research outline. Build/install the wheel and exercise an offline fixture, exact-run PDF and historical preservation. `scripts/package_functions.py` creates an allowlisted source package; dependencies must be built for Linux, not copied from a Mac venv. Linux/macOS CI includes the full offline gate, and Linux also smoke-tests the packaged application in a pinned Microsoft Functions container. Check the exact commit being cloned and run the gate in the actual work environment.
+Production remains Azure Functions with an explicitly selected attached UAMI and separate runtime/evidence Blob storage. Follow existing workplace infrastructure patterns and [runtime contract](WORKPLACE_RUNTIME_CONTRACT.md). `infra/personal-lab` is home-only. The new report uses the existing ObjectStore/host and adds no infrastructure.
 
-Once separately authorized, validate against existing nonproduction workplace resources: identity/tenant, API availability/RBAC, Blob conditions, all failure stages, denied report callers, timer indexing/coordination, report latency/memory and historical integrity. Collection and PDF work are in-memory with cooperative budgets; the host may terminate a process before archive creation. There is no checkpoint/resume or exactly-once scheduling claim. Review real workload measurements before choosing production limits; no production benchmark is asserted.
+Build on Linux x86_64 Python 3.12 with `scripts/build_functions_package.py`; `scripts/package_functions.py` alone includes no runtime dependencies. Test with `scripts/smoke_functions_runtime.py --package PATH --output NEW_PRIVATE_DIRECTORY --operational --workload --guest`. Exclude the lab probe and any Mac virtual environment.
 
-The software now evaluates scoped encryption and [configuration/identity criteria](CONFIGURATION_ASSESSMENTS.md). `docs/audit/` preserves 215 proposed checks covering the 23-service program and all 20 NIST families; it does not certify operating controls. No runtime AI, database, dashboard or remediation is introduced. Broad objective coverage remains incomplete even though scoped predicates span the 23 services.
+## Workplace inputs
 
-Ready-to-use prompts: [workplace configuration/implementation](prompts/AZURE_ADAPTER_IMPLEMENTATION.md) and [independent validation/rollout](prompts/AZURE_ADAPTER_VALIDATION.md). They can guide a reviewer with this repository and do not depend on conversation history or personal machine paths.
+| Input | Needed for |
+| --- | --- |
+| Tenant, subscriptions/RG boundaries and full Policy assignment IDs, including inherited assignments | Exact population/authorization; one selected subscription/assignment per current Policy run |
+| Tailoring, approved criteria/topic mappings, evidence owners and assessment periods | Applicable/missing/inherited evidence without inventing organizational policy |
+| Attached UAMI/client ID, Function App plan/runtime, separate runtime/evidence accounts/container/prefix | Binding the host to workplace infrastructure |
+| Network/private DNS, ARM/Graph/Blob read scopes, authenticated report callers | Source availability and protected evidence access; enabled Graph collection is tenant-wide |
+| Cadence, freshness/skew limits, budgets, alert/recovery owners | Operating the collector and interpreting periods/staleness |
+| Retention, classification, recipients and immutable-storage decisions | Custody; application hashes/create-only writes are not WORM certification |
 
-## Local work completed before transfer
+Runtime coordination storage must stay separate from retained evidence storage. Configure work-tenant caller authentication and inbound restrictions in addition to Functions keys. Keep keys/tokens in approved secret mechanisms, not URLs/prompts/source. Local Functions key enforcement differs from the deployed host; use packaged runtime and workplace caller tests.
 
-Review [current status](STATUS.md), [architecture](ARCHITECTURE.md), [scale validation](LOCAL_SCALE_VALIDATION.md), and [Wiz integration](WIZ_INTEGRATION.md). Run `python scripts/demo_wiz.py --output ../wiz-demo` for the synthetic source/import/comparison/replay path. Native Wiz schema, endpoint, identity/read scopes and safe field mapping still need workplace verification. No personal evidence or credentials are part of the source package.
+## Wiz connection: native boundary still required
 
-## Expanded assessment configuration
+The local v2 contract accepts safe observations, explicit rule evaluations including PASS/FAIL, issue lifecycle records and scan target/coverage records. It retains v1 imports. See [Wiz guide](WIZ_INTEGRATION.md), [synthetic v2 example](../examples/wiz/observations-export.json) and the authoritative `wiz_observations.py` validator.
 
-Supply approved criteria through `CG_ASSESSMENT_CRITERIA_JSON`. Missing/draft criteria retain observations as UNKNOWN. Enable `CG_GRAPH_ENABLED=true` only for intended tenant-wide metadata collection with separately authorized Graph read permissions. Graph is not limited by `CG_RESOURCE_GROUP`. New archives require the 0.5.0 reader; older runs remain readable without modification. Run the [all-service synthetic example](CONFIGURATION_ASSESSMENTS.md) locally before workplace acceptance.
+At work obtain the documented endpoint/authentication method, granted read scopes, actual query/schema/export revision, project/cloud-account filters, installed CLI version and available scan formats. Obtain approved sanitized samples for inventory, positive/negative evaluations, issues, incomplete/failed scans and pagination/partial errors. Verify Audit History entitlement, retention and supported API/export access. Public product pages do not establish an authenticated GraphQL contract.
+
+Preserve source IDs, actual timestamps, status meanings, target digests/commits and evaluated rule coverage. A resolved/rejected issue is not PASS; no issues is not a population of passing resources. A build scan is evidence about its target/time, not necessarily current deployment. Unavailable positive evidence remains unavailable. Exclude discovered secret values/snippets.
+
+Acceptance: complete pagination; partial GraphQL responses never marked complete; throttling/authentication/denials tested; no name-only joins; exact ARM IDs and typed artifact identities; conflicts retained; source archives unchanged. Test sanitized native fixtures before a narrowly scoped authorized read-only live test.
+
+## Remaining engineering and acceptance boundaries
+
+These are unfinished features, not capabilities silently claimed complete or all blocked by credentials:
+
+- **Policy-led execution and criteria context:** separate inventory/evaluation from optional direct supplements without breaking archives. Freeze evaluated definition/version, assignment/initiative parameters and overrides, exclusions/selectors, exemptions and attestation provenance. Current rows remain provider assertions with explicit missing-context limits.
+- **Estate coverage/resilience:** one assignment/subscription and at most 5,000 retained Policy records per current run. Overflow is incomplete. Complete multi-subscription/assignment partitioning and a partial-source archive outcome after Policy denial; current denial fails before publication. Do not remove bounds or suppress failure to make a large run appear complete.
+- **Combined supplements:** guest/Kubernetes have dedicated archived reports; merging those rows into the new selected view is unfinished. Generic organizational-objective evidence is not complete; operating records use the established objective contract.
+- **Live acceptance:** verify real identity/RBAC, Policy continuation/inherited-assignment access, Blob/network/custody and report time/memory. No checkpoint/resume or exactly-once guarantee exists. Local tests do not establish these properties.
+
+All 215 research objectives remain tracked as open/partial. Use [delivery register](DELIVERY_REGISTER.md) and [completion plan](PROJECT_COMPLETION_PLAN.md) for objective-level work. Do not re-research the entire project merely to connect Wiz; finish a concrete boundary task and its tests first.
+
+## Report operations
+
+`POST /api/evidence/reports` supports full/topic/family/control/resource selections and exact Wiz/operating import IDs. It uses `CG_REPORT_ENABLED`; successful publication returns 201 even with findings. `POST /api/reports` preserves the older exact-run PDF contract. Reads verify source hashes and never recollect Azure. See [request examples](EVIDENCE_REPORTS.md#azure-functions).
+
+After successful handoff, handle personal evidence and lab teardown under the existing [lab guide](../infra/personal-lab/README.md). Nothing in this change started, stopped, deployed or deleted Azure resources.

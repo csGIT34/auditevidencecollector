@@ -19,6 +19,7 @@ import json
 import re
 from urllib.error import HTTPError, URLError
 from urllib.request import Request
+from urllib.parse import parse_qsl, urlencode, urlsplit
 
 from .collector import MAX_RESPONSE_BYTES, CollectionError, NoRedirect, bounded_payload
 from .safety import subscription_id
@@ -28,9 +29,8 @@ HOST = 'https://management.azure.com'
 # The only query this transport may issue.
 PATH = '/providers/Microsoft.PolicyInsights/policyStates/latest/queryResults'
 MAX_RECORDS = 5000
-# Policy Insights truncates to $top and returns no continuation link, so a full page is
-# indistinguishable from a truncated one. Asking for one more than the limit makes the
-# difference observable, the same way a bounded response read does.
+# One extra row signals a reached local retention bound. Live queries use continuation,
+# without a server-side $top that would cap the full result set.
 QUERY_TOP = MAX_RECORDS + 1
 # The assignment and its initiative are ordinary resource reads, so they stay GET.
 ASSIGNMENT_API = '2023-04-01'
@@ -50,15 +50,66 @@ def denial(error, read):
     return error
 
 
-def query_url(subscription, top):
+def assignment_id(subscription, name):
+    """Accept a legacy subscription assignment name or a complete scoped assignment ID."""
+    if not isinstance(subscription, str) or subscription_id(subscription) != subscription:
+        raise ValueError('Policy reads require an exact subscription UUID')
+    if not isinstance(name, str):
+        raise ValueError('Invalid policy assignment')
+    if re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', name):
+        return '/subscriptions/' + subscription + '/providers/Microsoft.Authorization/policyAssignments/' + name
+    scope = (r'(?:/subscriptions/[0-9a-f-]{36}(?:/resourceGroups/[A-Za-z0-9_.()\-]{1,90})?'
+             r'|/providers/Microsoft.Management/managementGroups/[A-Za-z0-9_.\-]{1,90})')
+    if not re.fullmatch(scope + r'/providers/Microsoft.Authorization/policyAssignments/[A-Za-z0-9_.\-]{1,128}',
+                        name, re.IGNORECASE):
+        raise ValueError('Invalid policy assignment ID')
+    if name.lower().startswith('/subscriptions/') and name.split('/')[2].lower() != subscription:
+        raise ValueError('Assignment is outside the selected subscription')
+    return name
+
+
+def query_url(subscription, top, *, assignment=None, resource_group=None):
     """Build the one permitted query URL, or refuse."""
     # A non-string subscription must fail here, not later during URL construction.
     if not isinstance(subscription, str) or subscription_id(subscription) != subscription:
         raise ValueError('Policy queries require an exact subscription UUID')
-    if type(top) is not int or not 1 <= top <= QUERY_TOP:
+    if top is not None and (type(top) is not int or not 1 <= top <= QUERY_TOP):
         raise ValueError('Invalid policy record limit')
-    return (HOST + '/subscriptions/' + subscription + PATH + '?api-version=' + API_VERSION
-            + '&$top=' + str(top))
+    scope = '/subscriptions/' + subscription
+    if resource_group is not None:
+        from .safety import resource_group_name
+        if resource_group_name(resource_group) != resource_group:
+            raise ValueError('Invalid resource group')
+        scope += '/resourceGroups/' + resource_group
+    query = {'api-version': API_VERSION}
+    if top is not None:
+        query['$top'] = str(top)
+    if assignment is not None:
+        query['$filter'] = "PolicyAssignmentId eq '" + assignment_id(subscription, assignment) + "'"
+    query['$select'] = 'PolicyAssignmentId,PolicyAssignmentName,PolicyDefinitionReferenceId,PolicyDefinitionAction,ResourceId,ComplianceState,Timestamp'
+    return HOST + scope + PATH + '?' + urlencode(query, safe='$')
+
+
+class PolicyRecords(list):
+    """A bounded result sequence with explicit pagination completeness."""
+    def __init__(self, rows=(), *, complete=True):
+        super().__init__(rows)
+        self.complete = complete
+
+
+def continuation(url, original):
+    """Never send a token to a changed origin, scope, API version or query filter."""
+    if not isinstance(url, str) or len(url) > 16384:
+        raise CollectionError('invalid_next_link')
+    previous, candidate = urlsplit(original), urlsplit(url)
+    query = parse_qsl(candidate.query, keep_blank_values=True)
+    parameters = dict(query)
+    if (candidate.scheme != previous.scheme or candidate.netloc != previous.netloc
+            or candidate.path != previous.path or candidate.fragment or len(parameters) != len(query)
+            or not parameters.get('$skiptoken')
+            or {key: value for key, value in query if key != '$skiptoken'} != dict(parse_qsl(previous.query))):
+        raise CollectionError('invalid_next_link')
+    return url
 
 
 class PolicyQueryTransport:
@@ -105,19 +156,36 @@ class PolicyQueryTransport:
         return self._send(Request(url, method='GET', headers={
             'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json'}), read)
 
-    def query(self, subscription, top=QUERY_TOP):
-        url = query_url(subscription, top)
-        # An empty body: the URL carries the whole query, so no caller input is transmitted.
-        request = Request(url, data=b'', method='POST',
-                          headers={'Authorization': 'Bearer ' + self.credential.get_token(),
-                                   'Accept': 'application/json', 'Content-Type': 'application/json',
-                                   'Content-Length': '0'})
-        payload = self._send(request, STATES_READ)
-        if not isinstance(payload, dict) or not isinstance(payload.get('value'), list):
-            raise CollectionError('malformed_response')
-        if len(payload['value']) > QUERY_TOP:
-            raise CollectionError('response_size_limit')
-        return payload['value']
+    def query(self, subscription, top=QUERY_TOP, *, assignment=None, resource_group=None, max_pages=1000):
+        if type(top) is not int:
+            raise ValueError('Invalid Policy record limit')
+        query_url(subscription, top, assignment=assignment, resource_group=resource_group)
+        if type(max_pages) is not int or not 1 <= max_pages <= 10000:
+            raise ValueError('Invalid Policy page limit')
+        original = url = query_url(subscription, None, assignment=assignment, resource_group=resource_group)
+        records, visited = PolicyRecords(), set()
+        for _ in range(max_pages):
+            if url in visited:
+                raise denial(CollectionError('pagination_loop'), STATES_READ)
+            visited.add(url)
+            request = Request(url, data=b'', method='POST', headers={
+                'Authorization': 'Bearer ' + self.credential.get_token(), 'Accept': 'application/json',
+                'Content-Type': 'application/json', 'Content-Length': '0'})
+            payload = self._send(request, STATES_READ)
+            if not isinstance(payload, dict) or not isinstance(payload.get('value'), list):
+                raise denial(CollectionError('malformed_response'), STATES_READ)
+            values = payload['value']
+            remaining = top - len(records)
+            records.extend(values[:remaining])
+            link = payload.get('@odata.nextLink')
+            if len(values) > remaining or (len(records) == top and link):
+                records.complete = False
+                return records
+            if not link:
+                return records
+            url = continuation(link, original)
+        records.complete = False
+        return records
 
 
 class FixturePolicyTransport:
@@ -137,15 +205,23 @@ class FixturePolicyTransport:
             raise denial(CollectionError('fixture_response_missing'), read)
         return document
 
-    def query(self, subscription, top=QUERY_TOP):
-        query_url(subscription, top)  # Enforce the same argument contract offline.
+    def query(self, subscription, top=QUERY_TOP, *, assignment=None, resource_group=None, max_pages=1000):
+        query_url(subscription, top, assignment=assignment, resource_group=resource_group)
         self.requested.append(subscription)
         value = self.records.get(subscription)
         if value is None:
             raise CollectionError('fixture_response_missing')
         if isinstance(value, dict) and 'fixture_error' in value:
             raise CollectionError('http_error')
-        return list(value)[:top]
+        rows = list(value)
+        if assignment:
+            selected = assignment_id(subscription, assignment).lower()
+            rows = [r for r in rows if isinstance(r, dict) and str(r.get('policyAssignmentId', '')).lower() == selected]
+        if resource_group:
+            scope = ('/subscriptions/' + subscription + '/resourcegroups/' + resource_group).lower()
+            rows = [r for r in rows if isinstance(r, dict) and
+                    (str(r.get('resourceId', '')).lower() == scope or str(r.get('resourceId', '')).lower().startswith(scope + '/'))]
+        return PolicyRecords(rows[:top], complete=len(rows) <= top)
 
 
 def decode_records(text):
@@ -163,18 +239,13 @@ def decode_records(text):
 
 def assignment_url(subscription, name):
     """GET URL for one policy assignment at subscription scope."""
-    if not isinstance(subscription, str) or subscription_id(subscription) != subscription:
-        raise ValueError('Policy reads require an exact subscription UUID')
-    if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', name):
-        raise ValueError('Invalid policy assignment name')
-    return (HOST + '/subscriptions/' + subscription + '/providers/Microsoft.Authorization/policyAssignments/'
-            + name + '?api-version=' + ASSIGNMENT_API)
+    return HOST + assignment_id(subscription, name) + '?api-version=' + ASSIGNMENT_API
 
 
 def set_definition_url(definition_id):
     """GET URL for the built-in or custom initiative an assignment names."""
     if not isinstance(definition_id, str) or not re.fullmatch(
-            r'(/subscriptions/[0-9a-f-]{36})?/providers/Microsoft\.Authorization/policySetDefinitions/[A-Za-z0-9_.\-]{1,128}',
+            r'(/subscriptions/[0-9a-f-]{36}|/providers/Microsoft.Management/managementGroups/[A-Za-z0-9_.\-]{1,90})?/providers/Microsoft\.Authorization/policySetDefinitions/[A-Za-z0-9_.\-]{1,128}',
             definition_id, re.IGNORECASE):
         raise ValueError('Invalid policy set definition reference')
     return HOST + definition_id + '?api-version=' + SET_DEFINITION_API

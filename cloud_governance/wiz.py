@@ -49,6 +49,9 @@ def decode(data):
 
 def validate_export(document):
     """Strict allowlist: native Wiz exports must be mapped to this contract first."""
+    if isinstance(document, dict) and document.get('schema_version') == '2.0':
+        from .wiz_observations import validate
+        return validate(document)
     fields(document, 'schema_version kind source resources findings')
     require(document['schema_version'] == SCHEMA_VERSION and document['kind'] == 'wiz_evidence')
     source = document['source']

@@ -12,6 +12,29 @@ for _logger in ('azure', 'msal'):
     logging.getLogger(_logger).setLevel(logging.CRITICAL)
 
 
+@app.function_name(name='GenerateEvidenceReport')
+@app.route(route='evidence/reports', methods=['POST'], auth_level=func.AuthLevel.FUNCTION)
+def generate_evidence_report(req: func.HttpRequest) -> func.HttpResponse:
+    from cloud_governance.evidence_report import request_options
+    from cloud_governance.wiz import decode
+    try:
+        raw = req.get_body()
+        if len(raw) > 65536:
+            raise ValueError()
+        body = decode(raw)
+        request_options(body)
+        run_id = body.pop('run_id')
+    except (ValueError, TypeError, KeyError, RecursionError):
+        return func.HttpResponse('{"code":"invalid_evidence_report_request"}', status_code=400, mimetype='application/json')
+    try:
+        result = execute('evidence-report', run_id=run_id, selection=body)
+        status = 201 if result['state'] == 'complete' else 503
+    except ExecutionError as error:
+        result = error.outcome
+        status = 409 if result['code'] == 'operation_busy' else 500
+    return func.HttpResponse(json.dumps(result), status_code=status, mimetype='application/json', headers={'Cache-Control': 'no-store'})
+
+
 @app.function_name(name='GenerateReport')
 @app.route(route='reports', methods=['POST'], auth_level=func.AuthLevel.FUNCTION)
 def generate_report(req: func.HttpRequest) -> func.HttpResponse:

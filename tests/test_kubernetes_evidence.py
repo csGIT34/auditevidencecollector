@@ -166,7 +166,7 @@ class KubernetesEvidenceTests(unittest.TestCase):
         try:
             with patch.dict('os.environ',{'CG_WORKLOAD_ENABLED':'true'},clear=True):
                 module=importlib.reload(function_app);functions=module.app.get_functions()
-                self.assertEqual({'GenerateReport','ImportKubernetesEvidence','GenerateKubernetesReport'},{f.get_function_name() for f in functions})
+                self.assertEqual({'GenerateEvidenceReport','GenerateReport','ImportKubernetesEvidence','GenerateKubernetesReport'},{f.get_function_name() for f in functions})
                 for function in functions:
                     binding=json.loads(function.get_function_json())['bindings'][0]
                     self.assertEqual('FUNCTION',binding['authLevel']);self.assertEqual(['POST'],binding['methods'])

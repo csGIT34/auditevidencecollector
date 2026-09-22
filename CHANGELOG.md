@@ -1,5 +1,13 @@
 # Release notes
 
+## Unreleased — audit evidence reports and Policy integrity
+
+- Add full, topic, family/control and resource-selected reports with JSON/Markdown/PDF, CLI and a key-protected Functions endpoint. Preserve positive, negative, unknown and attributed operating evidence; retain exact source hashes and periods.
+- Add project-defined Wiz v2 safe observations, explicit evaluations and scan coverage, preserving v1 imports. Native Wiz authentication/schema mapping awaits workplace integration.
+- Include Policy findings/incompleteness in new aggregate summaries while retaining old archives' saved semantics. Manual states cannot become automated passes; timestamps, full assignment identity and RG boundaries are validated.
+- Filter Policy queries before limiting and follow supported continuation. The old 0.26.0 statement that Policy Insights has no continuation was incorrect; bounded overflow still remains explicit.
+- Add a repeatable offline multi-source rehearsal and replace stale workplace handover/implementation instructions with the current contracts and open engineering boundaries.
+
 ## 0.27.0
 
 - Render Azure Policy compliance in the auditor PDF as section 9. The evidence kind covering most controls was archived in the run and the control register but omitted from the document handed to an auditor.

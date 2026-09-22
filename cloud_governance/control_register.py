@@ -102,10 +102,17 @@ def _evidence(report, operational):
                                 'observed_at': row.get('observed_at'), 'reason': row.get('reason'),
                                 'sources': [row['source']] if row.get('source') else []}})
     for row in report_model.policy_results(report):
-        items.append({'kind': 'policy_compliance', 'reference': row['reference'],
-                      'resource_id': row['resource_id'], 'result': row['result'],
+        from .policy_compliance import source_incomplete as policy_incomplete
+        manual = row['action'].lower() == 'manual'
+        gaps = []
+        if policy_incomplete(report_model.policy_compliance(report)):
+            gaps.append('The Policy evidence source is incomplete; these rows do not establish complete control coverage.')
+        if manual:
+            gaps.append('Manual Policy state is not an automated observation or authenticated attestation record.')
+        items.append({'kind': 'policy_attestation_state' if manual else 'policy_compliance', 'reference': row['reference'],
+                      'resource_id': row['resource_id'], 'result': 'UNKNOWN' if manual else row['result'],
                       'summary': 'Azure Policy asserted ' + row['compliance_state'],
-                      'controls': _labels(row['controls']), 'gaps': [],
+                      'controls': _labels(row['controls']), 'gaps': gaps,
                       'proof': {'compliance_state': row['compliance_state'], 'evaluation_scope': row['scope'],
                                 'policy_action': row['action'], 'assignment': row['assignment'],
                                 'observed_at': row['evaluated_at'], 'asserted_by': 'Microsoft Azure Policy'}})
@@ -282,17 +289,17 @@ def evidence_markdown(register, *, scope='service'):
            str(register['assessment']['generated_at']) + ' (' + str(register['assessment']['mode']) + ').', '',
            'Controls in scope: **' + str(len(rows)) + '**' +
            (' — the controls the collected Azure resource types implicate.' if scope == 'service' else '.'), '']
-    verdicts = {'PASS': [], 'FAIL': [], 'NO EVIDENCE': []}
+    verdicts = {status: [] for status in STATUSES}
     for row in rows:
         counts = row['counts']
-        verdicts['FAIL' if counts['FAIL'] else 'PASS' if counts['PASS'] else 'NO EVIDENCE'].append(row)
+        verdicts[row['status']].append(row)
     out += ['| Verdict | Controls |', '| --- | --- |']
     out += ['| ' + name + ' | ' + str(len(found)) + ' |' for name, found in verdicts.items()]
     out += ['', 'A verdict summarises the observations below it. No verdict is a control determination: '
             'an assessor decides whether this evidence satisfies the control.', '']
     for row in rows:
         counts = row['counts']
-        verdict = 'FAIL' if counts['FAIL'] else 'PASS' if counts['PASS'] else 'NO EVIDENCE'
+        verdict = row['status']
         out += ['## ' + row['control'] + ' — ' + row['title'], '',
                 '**' + verdict + '** · passing ' + str(counts['PASS']) + ' · failing ' + str(counts['FAIL'])
                 + ' · other ' + str(counts['UNKNOWN'] + counts['ERROR'] + counts['UNSUPPORTED']) + '', '']

@@ -9,32 +9,35 @@ Encryption at rest was where this started. It is now one rule family among sever
 ```mermaid
 flowchart LR
   subgraph Sources
-    P[Azure Policy<br/>compliance]
+    P[Azure Policy<br/>all returned evaluation states]
     A[Scoped predicates<br/>pinned ARM/Graph reads]
     E[Encryption rules]
     M[Attributed records<br/>operational and manual]
+    W[Wiz imports<br/>observations, evaluations, scans]
   end
-  Sources --> R[(Immutable run archive<br/>hash-verified)]
+  Sources --> R[(Create-only evidence archives<br/>hash-verified)]
   C[Approved criteria] --> R
   R --> G[Control-indexed register]
   V[Declared tailoring] --> G
   G --> D[Auditor PDF and<br/>per-control evidence]
+  R --> T[Full, topic, family and control reports<br/>positive, negative and unknown evidence]
 ```
 
-Four kinds of evidence land in the same archive and are indexed by control:
+Source runs and linked supplements preserve distinct evidence kinds:
 
 | Evidence kind | Where it comes from | What it is good for |
 | --- | --- | --- |
-| `policy_compliance` | Azure Policy's built-in NIST SP 800-53 Rev. 5 initiative | Breadth. Microsoft maintains 693 definitions and their control mapping, at no cost. |
-| `configuration_predicate` | 192 scoped reads at pinned API versions | Depth and provenance where Policy has no alias, or where a conservative boundary matters. |
-| `resource_rule` | 35 reviewed per-type at-rest rules | Documented service guarantees with explicit exclusions. |
+| `policy_compliance` | Azure Policy initiative evaluations | Provider-asserted states and Microsoft-declared control mappings; capture all returned outcomes. |
+| `configuration_predicate` | 199 registered predicates at pinned API versions | Observations and criteria where Policy leaves evidence gaps. |
+| `resource_rule` | Reviewed rules for 49 exact ARM types | At-rest facts and documented service guarantees with explicit exclusions. |
 | `attributed_record` | Operational imports, attestations, provider assurance | The organizational controls no API can observe. |
+| `wiz_observation`, `wiz_evaluation`, scan records | Project-defined v2 normalized imports | Safe facts, positive/negative source evaluations and scan coverage. Native Wiz mapping awaits workplace access. |
 
 Supplements extend the same archive for facts ARM cannot reach: [restricted Kubernetes metadata](docs/KUBERNETES_EVIDENCE.md), [typed guest and agent reports](docs/GUEST_EVIDENCE.md), and [normalized Wiz evidence](docs/WIZ_INTEGRATION.md).
 
 ### Use the platform where the platform is better
 
-Azure Policy already evaluates most resource configuration and Microsoft maintains the control mappings. Duplicating that in Python would mean maintaining a second copy of Microsoft's work, so this program reads Policy compliance as **provider-asserted evidence** instead. See [Azure Policy as an evidence source](docs/AZURE_POLICY_EVIDENCE.md) for the audit-only assignment procedure and its safety posture.
+Azure Policy supplies provider evaluations and Microsoft-maintained mappings. The intended architecture uses it as the primary configuration evaluator, with direct reads filling explicit evidence gaps. The current execution path still runs direct collection before adding Policy; that transition remains unfinished. See [review and fixes](docs/AZURE_POLICY_REVIEW.md) and [Policy collection boundaries](docs/AZURE_POLICY_EVIDENCE.md).
 
 What the platform does **not** provide, and this program does:
 
@@ -50,14 +53,14 @@ The discipline is the product. It never writes to Azure, never reads secrets, ke
 
 ## Where it stands
 
-Version **0.19.0**. Full detail in [current status](docs/STATUS.md) and the [control register](docs/CONTROL_REGISTER.md).
+Source baseline **0.27.0 with unreleased evidence-report/Policy/Wiz changes**. Start with the [home-lab checkpoint](docs/HOME_LAB_BUILD_STATUS.md), [current status](docs/STATUS.md) and [control register](docs/CONTROL_REGISTER.md).
 
 | | |
 | --- | --- |
-| Controls implicated by the 23 deployed resource types | 48 |
-| Of those, with automated evidence | 38 |
-| Scoped configuration predicates | 192 |
-| Service objectives still without a predicate | 91 |
+| Service entries in the program | 23 |
+| NIST families represented in the full evidence index | 20 |
+| Registered configuration predicates | 199 |
+| Whole-objective/control completion | Not established; open/partial work remains |
 | Research objectives catalogued | 215 across 12 domains and all 20 NIST families |
 
 The [predicate execution plan](docs/audit/PREDICATE_EXECUTION_PLAN.md) tracks the remaining work section by section with measured before-and-after numbers. Organization-wide controls with other owners — every `XX-1` policy control, and the PE, PS, AT, PM and PL families — are outside that plan by design; they close through declared inheritance and attributed records, not collectors.
@@ -66,13 +69,23 @@ The [predicate execution plan](docs/audit/PREDICATE_EXECUTION_PLAN.md) tracks th
 
 The lab and the workplace deployment are deliberately separate. Nothing here hard-codes a tenant, subscription, identity or threshold:
 
-1. Clone the repository and run `python scripts/validate.py` — the full offline gate, no cloud access required.
-2. Assign the audit-only Policy initiative at the approved workplace scope using the [documented procedure](docs/AZURE_POLICY_EVIDENCE.md).
+1. Clone the revision containing the home-lab checkpoint and run `python scripts/validate.py` — the full offline gate, no cloud access required.
+2. Run `python scripts/demo_audit_evidence.py --output ../audit-rehearsal`, then follow the [handover guide](docs/WORKPLACE_AZURE_HANDOFF.md) and [copyable workplace LLM prompt](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md). Review existing Policy assignments before proposing any new assignment.
 3. Declare tailoring: `python -m cloud_governance control-register --template tailoring.json` emits the controls your resource types implicate, ready to review and approve.
 4. Supply your approved criteria file; see [configuration assessments](docs/CONFIGURATION_ASSESSMENTS.md).
 5. Deploy the collector using existing workplace infrastructure patterns and the [runtime contract](docs/WORKPLACE_RUNTIME_CONTRACT.md).
 
 Home Terraform is the temporary personal lab only; it is not the workplace deployment.
+
+## Full or single-topic reports
+
+```sh
+python -m cloud_governance evidence-report --store /private/archive --run-id r-EXACT --pdf
+python -m cloud_governance evidence-report --store /private/archive --run-id r-EXACT --topic encryption-at-rest --pdf
+python -m cloud_governance evidence-report --store /private/archive --run-id r-EXACT --family AC --pdf
+```
+
+Use exact archived IDs. Add `--wiz-import-id`, repeated `--operational-id` or a reviewed `--topic-profile` as needed. Reports include good and bad evidence plus coverage gaps; successful publication is independent of failed criteria. The same selection is available through the existing Functions host. See [complete report contract](docs/EVIDENCE_REPORTS.md).
 
 ## Start here
 

@@ -17,6 +17,8 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements-dev.txt
       - run: python scripts/validate.py
+      - name: Synthetic multi-source audit rehearsal
+        run: python scripts/demo_audit_evidence.py --output "$RUNNER_TEMP/audit-rehearsal"
       - name: Small offline scale regression
         run: python scripts/benchmark_pipeline.py --sizes 100 --output "$RUNNER_TEMP/scale-check" --max-report-seconds 120 --max-rss-mib 1536
       - run: python -m build --no-isolation

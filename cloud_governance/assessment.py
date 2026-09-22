@@ -256,7 +256,7 @@ def assess(snapshot, criteria=None, policy=None):
     conclusion = "FAILURES_FOUND" if counts["FAIL"] else "INCOMPLETE" if incomplete else "SUPPORTED_SCOPE_SATISFIED"
     from .controls import evaluate, overall_summary
     configuration = evaluate(snapshot, criteria)
-    report = {"schema_version": "1.2", "tool_version": __version__, "rule_version": RULE_VERSION,
+    report = {"schema_version": "1.2", "summary_version": "2.0", "tool_version": __version__, "rule_version": RULE_VERSION,
             "generated_at": now(), "mode": snapshot["mode"], "collection_started_at": snapshot["started_at"],
             "collection_completed_at": snapshot["completed_at"],
             "control_mapping": control_mapping(results, configuration, policy),

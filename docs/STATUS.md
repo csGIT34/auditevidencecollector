@@ -1,18 +1,29 @@
 # Current implementation and validation status
 
-Updated 2026-09-20. **Source release 0.22.0 (local tests passed; policy collection live-verified in the lab).** This page is the current status; dated validation records describe their named versions and are not rolling acceptance claims.
+Updated 2026-09-21. **Source baseline 0.27.0 with unreleased home-lab changes.** Start with the [build checkpoint](HOME_LAB_BUILD_STATUS.md), [selected report guide](EVIDENCE_REPORTS.md), [workplace handover](WORKPLACE_AZURE_HANDOFF.md) and [startup prompt](prompts/AZURE_ADAPTER_IMPLEMENTATION.md). Dated live records apply only to their named versions; this change makes no new Azure deployment or Wiz connection claim.
+
+## Home checkpoint validation — 2026-09-21
+
+The final Linux x86_64 **Python 3.12** gate passed **427 tests, zero skips**, plus catalog, delivery-register and documentation checks (46 documents, no missing local link targets). The baseline had 398 tests; 29 new regression/integration tests cover Policy integrity, selected reports, Wiz v2 and hosted/operating evidence integration.
+
+The deployment package built without the lab probe and passed **47 local Functions runtime checks**, including the new report route's key authentication, invalid requests and disabled behavior. The temporary runtime container was removed. Packaged report/Wiz/Policy/host modules were compared byte-for-byte with current source. Package SHA-256: `827903f21d93ebdc4ed5820cdfc623d78b29b2896f4176a8970968676e6fcf4c`.
+
+The offline multi-source rehearsal produced all four views, indexed all 20 families and verified all **13 original source objects** unchanged. Its final **four-page synthetic encryption PDF** was rendered and every page visually inspected; exact saved Markdown replay matched the original export. The example exercises 22 service entries, not all 23. No Azure/Wiz requests or cloud changes occurred. Native Wiz integration, Policy criteria snapshots, estate-scale collection and workplace acceptance remain open as documented in the checkpoint.
+
+## Capability register
 
 | Capability | Current state | Evidence / limits |
 | --- | --- | --- |
 | Azure encryption-at-rest collector, assessment, immutable local/Blob archives and exact-run PDFs | Implemented | Offline tests and [personal live pipeline checks](../infra/personal-lab/REPEAT_VALIDATION.md). A technical result does not establish full NIST control effectiveness. |
 | Azure Functions, explicit UAMI, separate runtime/evidence storage | Implemented | Personal Azure still contains v0.3.2, stopped with operations disabled and no timer. The local 0.4.0 cleanup/error refactor is not a new live-deployment claim. |
 | Local reliability changes | Implemented in 0.4.0 | Credential cleanup runs even if Blob cleanup fails. HTTP uses a dedicated structured execution error; response codes and safe envelopes are preserved. |
-| Wiz normalized evidence import, inventory/finding correlation and historical replay | Implemented and tested locally | [Wiz guide](WIZ_INTEGRATION.md), strict project-defined contract, synthetic CLI demonstration, preservation and failure tests. No native Wiz API/authentication/export mapping has been validated. |
+| Wiz normalized evidence import, inventory/finding correlation and historical replay | V1/v2 implemented locally | V2 adds safe observations, positive/negative evaluations and scan coverage to the [project-defined contract](WIZ_INTEGRATION.md). Native Wiz API/authentication/mapping remain unvalidated. |
+| Full/topic/family/control audit evidence reports | Implemented locally, CLI and Functions | [Report guide](EVIDENCE_REPORTS.md). Saved observations and exact Wiz/operating attachments; all 20 families indexed, missing coverage visible. No claim of all-control satisfaction. |
 | Representative scale measurements | Local synthetic validation | [Benchmark method/results](LOCAL_SCALE_VALIDATION.md); mixed inventories through the actual collector/archive/PDF pipeline. No cloud throughput or production-capacity claim. |
 | CI | Automated local validation | Python tests and builds on Linux/macOS, documentation links, small scale regression, Linux packaged Functions runtime, isolated Terraform mocked plans. No Azure/Wiz credentials required. |
 | Azure Policy compliance as an evidence source | Implemented; live-verified in the lab | Audit-only NIST SP 800-53 Rev. 5 assignment at the lab subscription with enforcement disabled, four Guest Configuration definitions overridden and an identity holding no roles; [procedure](AZURE_POLICY_EVIDENCE.md). Policy supplies Microsoft-asserted evidence, never an assessor determination. |
 | Control-indexed evidence register | Implemented; local validation | Indexes saved runs by NIST control with declared tailoring, inheritance and exclusions; [guide](CONTROL_REGISTER.md). 48 controls are implicated by the deployed resource types, separate from 189 organization-wide candidates; 38 have automated evidence in the synthetic run and the remainder are NOT_ASSESSED per control. |
-| Multi-control configuration/identity predicates | Implemented; local validation | 188 predicates across all 23 service entries; [scope and use](CONFIGURATION_ASSESSMENTS.md). This is partial support for wider objectives, not whole-service/control completion. |
+| Multi-control configuration/identity predicates | Implemented; local validation | 199 registered predicates in the 23-service program; [scope and use](CONFIGURATION_ASSESSMENTS.md). The committed rehearsal fixture produces rows for 22 entries. This is partial objective support, not whole-service/control completion. |
 | Saved-run comparison and configurable freshness | Implemented locally in 0.5.1 | [Exact-run comparisons](SAVED_RUN_COMPARISON.md) separate facts, criteria, outcomes and lost evidence; configured age windows keep stale/future configuration observations UNKNOWN. |
 | Operational records and evidence supplements | Implemented locally | [Import and hosting guide](OPERATIONAL_EVIDENCE.md). Attributed statements remain separate from automated findings. |
 | Kubernetes pod security/image supplement | Implemented locally | [Restricted export import](KUBERNETES_EVIDENCE.md), eight typed predicates per app/init/ephemeral container; raw secrets excluded. Includes an opt-in UAMI-authenticated AKS collection endpoint; API, identity and network behavior are locally tested, not live-verified. |

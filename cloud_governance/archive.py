@@ -96,9 +96,16 @@ def validate_pair(snapshot, report):
             raise ValueError('Saved result mismatch')
     if report_model.configuration(report) is not None:
         validate_configuration_pair(snapshot, report_model.configuration(report))
+    if report_model.policy_compliance(report) is not None:
+        from .policy_compliance import validate as validate_policy
+        validate_policy(report_model.policy_compliance(report))
     if report_model.is_current(report) or 'overall_summary' in report:
         from .controls import overall_summary
-        expected_overall = overall_summary(report)
+        if report.get('summary_version') not in (None, '2.0'):
+            raise ValueError('Unsupported saved summary version')
+        # Older archives predate Policy aggregation. Validate their original semantics;
+        # never rewrite historical conclusions using the corrected aggregation.
+        expected_overall = overall_summary(report, include_policy=report.get('summary_version') == '2.0')
         if 'identity_complete' not in (report_model.configuration(report) or {}):
             cfg = report_model.configuration_summary(report) or None
             incomplete = report_model.resource_summary(report)['coverage_incomplete'] or bool(cfg and cfg['conclusion']=='INCOMPLETE')

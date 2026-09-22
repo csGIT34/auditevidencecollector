@@ -1,8 +1,8 @@
 # Azure Policy as an evidence source
 
-Azure Policy already evaluates most resource configuration this program needs, and Microsoft maintains both the definitions and their NIST SP 800-53 Rev. 5 control mapping. Reimplementing that in Python would mean maintaining a second copy of Microsoft's work. This program therefore reads Policy compliance as **provider-asserted evidence** and keeps bespoke predicates only where Policy cannot reach.
+Azure Policy supplies provider-defined configuration evaluations and NIST SP 800-53 Rev. 5 mappings. This program reads all returned states as **provider-asserted evidence**. The intended architecture uses direct predicates for identified gaps; the current collector still runs direct collection before adding Policy. See the [current checkpoint](HOME_LAB_BUILD_STATUS.md).
 
-Policy and its built-in regulatory compliance initiatives are free. The paid component is Microsoft Defender for Cloud *rendering* a compliance dashboard; nothing here depends on that, because compliance results are read directly from Policy and Azure Resource Graph.
+Collection uses Policy Insights directly and does not depend on the Defender for Cloud dashboard. The assignment procedure below records the reviewed lab configuration; assess the actual initiative version, effects and existing assignments before adapting it to work.
 
 ## What the initiative contains
 
@@ -108,13 +108,13 @@ Two boundaries apply and are preserved in the register:
 - **The control mapping is Microsoft's, not yours.** A definition's association with a control is Microsoft's interpretation. It is supporting evidence, not your tailoring decision, and it never becomes an assessor determination.
 - **`Compliant` is not control satisfaction.** It means a definition's condition matched at evaluation time, in the same way a scoped predicate meeting its criterion is not control satisfaction. The [control register](CONTROL_REGISTER.md) keeps that distinction in its status vocabulary.
 
-Policy Insights truncates a query to `$top` and returns no continuation link, so a full page is indistinguishable from a truncated one. The query therefore asks for one record beyond the limit it retains: receiving more is how truncation is detected. A truncated section is recorded as such, cannot conclude compliant, and carries a limitation saying the absence of a finding in it proves nothing. It still reports the findings it did read.
+Policy Insights supports continuation through `@odata.nextLink`; see Microsoft's [next-link contract](https://learn.microsoft.com/en-us/rest/api/policyinsights/policy-states/next-link?view=rest-policyinsights-2022-03-01). The live query filters by the complete assignment ID before collection, follows permitted continuation and uses no initial total `$top` cap. Continuation may not change origin, scope, API or filter. Local retention remains bounded at 5,000 rows, with one overflow row and explicit pagination completeness detecting truncation. Incomplete evidence cannot conclude compliant; findings already read remain visible. This is bounded evidence collection, not unlimited estate coverage.
 
 Policy compliance also carries its own completeness problem: a resource type with no applicable definition simply produces no result, which must not read as a pass. Absent evaluation is recorded as absent, never as compliant.
 
 ## Collecting it unattended
 
-A hosted run collects policy compliance when `CG_POLICY_ASSIGNMENT` names an assignment; it is empty by default, so nothing changes for an existing deployment. The evidence is archived beside the resource rules and configuration predicates in the same immutable run, and the control mapping is frozen with it, so replaying an old run cannot silently pick up a later revision of Microsoft's initiative.
+A hosted run collects Policy when `CG_POLICY_ASSIGNMENT` specifies a legacy subscription assignment name or complete management-group/subscription/RG assignment ID. It is empty by default. One explicit selected subscription is currently required; an optional RG scope also bounds the Policy query. Derived control labels are frozen, but evaluated definition/version and effective-parameter snapshots are not yet captured. New [selected reports](EVIDENCE_REPORTS.md) retain Manual states as attributed context with UNKNOWN classification; the legacy PDF's placeholder suppression is not proof of authenticated attestations.
 
 ```sh
 python -m cloud_governance collect --subscription <SUBSCRIPTION_ID> --policy-assignment nist-800-53-r5-audit

@@ -585,7 +585,7 @@ def evaluate(snapshot, policy=None):
             'results':results}
 
 
-def overall_summary(report):
+def overall_summary(report, *, include_policy=True):
     from . import report_model
     rules = report_model.resource_summary(report)
     section = report_model.configuration(report) or {}
@@ -595,6 +595,12 @@ def overall_summary(report):
     incomplete = incomplete or not section.get('identity_complete', True)
     incomplete = incomplete or any(row.get('lifecycle_evaluation',{}).get('coverage_incomplete',False) for row in section.get('results',[]))
     incomplete = incomplete or any(row.get('job_evaluation',{}).get('coverage_incomplete',False) for row in section.get('results',[]))
+    if include_policy:
+        policy = report_model.policy_compliance(report)
+        if policy is not None:
+            from .policy_compliance import incomplete as policy_incomplete
+            failures += policy['summary']['counts']['FAIL']
+            incomplete = incomplete or policy_incomplete(policy)
     return {'conclusion':'FAILURES_FOUND' if failures else 'INCOMPLETE' if incomplete else 'SUPPORTED_SCOPE_SATISFIED',
             'coverage_incomplete':bool(incomplete), 'failed_check_count':failures}
 

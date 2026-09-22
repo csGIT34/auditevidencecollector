@@ -143,9 +143,10 @@ class HostingTests(unittest.TestCase):
         with patch.dict('os.environ',{},clear=True):
             module=importlib.reload(function_app)
             funcs=module.app.get_functions()
-            self.assertEqual(['GenerateReport'],[f.get_function_name() for f in funcs])
-            trigger=json.loads(funcs[0].get_function_json())['bindings'][0]
-            self.assertEqual('FUNCTION',trigger['authLevel']);self.assertEqual(['POST'],trigger['methods'])
+            self.assertEqual(['GenerateEvidenceReport', 'GenerateReport'],[f.get_function_name() for f in funcs])
+            for function in funcs:
+                trigger=json.loads(function.get_function_json())['bindings'][0]
+                self.assertEqual('FUNCTION',trigger['authLevel']);self.assertEqual(['POST'],trigger['methods'])
         with patch.dict('os.environ',environment(),clear=True):
             module=importlib.reload(function_app)
             triggers=[b for f in module.app.get_functions() for b in json.loads(f.get_function_json())['bindings']]

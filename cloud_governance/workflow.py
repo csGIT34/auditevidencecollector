@@ -50,15 +50,19 @@ def collect_run(store, transport, subscriptions=None, *, mode='offline_fixture',
     policy = None
     if policy_transport is not None and policy_assignment:
         from .policy_compliance import collect as collect_policy
-        from .policy_query import fetch_mapping
+        from .policy_query import fetch_mapping, assignment_id
         selected = sorted({s['id'] for s in snapshot['inventory']['subscriptions']})
         if len(selected) != 1:
             raise ValueError('Policy compliance requires exactly one selected subscription')
         policy_set = fetch_mapping(policy_transport, selected[0], policy_assignment)
         if deadline:
             deadline.check()
-        policy = collect_policy(policy_transport.query(selected[0]), policy_set,
-                                assignment_name=policy_assignment)
+        policy = collect_policy(policy_transport.query(selected[0], assignment=policy_assignment,
+                                resource_group=resource_group, max_pages=max_pages), policy_set,
+                                assignment_id=assignment_id(selected[0], policy_assignment),
+                                subscription=selected[0], resource_group=resource_group,
+                                max_age_seconds=(criteria or {}).get('max_observation_age_seconds')
+                                    if (criteria or {}).get('status') == 'approved' else None)
     report = assess_snapshot(snapshot, criteria=criteria, policy=policy)
     if deadline:
         deadline.check()

@@ -162,9 +162,9 @@ class PolicyComplianceTests(unittest.TestCase):
         for bad in ('not-a-resource', '/subscriptions/not-a-uuid', '/subscriptions', '', None, 7):
             self.assertIsNone(scope_of(bad))
 
-    def test_a_full_page_is_treated_as_truncated_because_the_api_gives_no_continuation(self):
-        # Policy Insights returns no nextLink and truncates to $top, so a full page and a
-        # truncated one are identical. The query asks for one extra record to tell them apart.
+    def test_local_retention_overflow_is_explicitly_truncated(self):
+        # Live transport follows continuation. The projector additionally retains a
+        # bounded sample and detects overflow through one extra row.
         def distinct(count):
             return [record(resourceId=RESOURCE + str(index)) for index in range(count)]
         exact = collect(distinct(10), POLICY_SET, limit=10)

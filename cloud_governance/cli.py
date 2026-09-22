@@ -68,6 +68,21 @@ def parser():
     pdf.add_argument("--store", type=Path, required=True)
     pdf.add_argument("--run-id", required=True, help="Exact r-... identifier printed by collect or runs; no implicit latest run.")
     pdf.add_argument("--export", type=Path, help="Optional additional PDF copy; must not already exist.")
+    evidence = commands.add_parser('evidence-report', help='Archive a complete or selected evidence report from an exact run; all outcomes retained.')
+    evidence.add_argument('--store', type=Path, required=True)
+    evidence.add_argument('--run-id', required=True)
+    topic = evidence.add_mutually_exclusive_group()
+    topic.add_argument('--topic', choices=('encryption-at-rest',))
+    topic.add_argument('--topic-profile', type=Path, help='Versioned explicit topic mapping; saved with the report.')
+    evidence.add_argument('--control', action='append', default=[])
+    evidence.add_argument('--family', action='append', default=[])
+    evidence.add_argument('--resource-id', action='append', default=[])
+    evidence.add_argument('--pdf', action='store_true', help='Include a self-contained PDF beside the JSON and Markdown.')
+    evidence.add_argument('--wiz-import-id', help='Attach one exact validated Wiz import; scopes must match the saved Azure run.')
+    evidence.add_argument('--operational-id', action='append', default=[], help='Attach an exact archived operating-evidence review; repeat for multiple periods.')
+    evidence_show = commands.add_parser('evidence-report-show', help='Verify and read an exact saved evidence report; no recomputation.')
+    evidence_show.add_argument('--store', type=Path, required=True)
+    evidence_show.add_argument('--report-id', required=True)
     wiz = commands.add_parser("wiz-import", help="Validate and archive a normalized Wiz evidence file; no network calls.")
     wiz.add_argument("--input", type=Path, required=True)
     wiz.add_argument("--store", type=Path, required=True)
@@ -126,6 +141,25 @@ def parser():
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command in ('evidence-report', 'evidence-report-show'):
+            from .storage import FileStore
+            from .evidence_report import ENCRYPTION, publish, load
+            store = FileStore(args.store)
+            if args.command == 'evidence-report-show':
+                print(load(store, args.report_id)['markdown'], end='')
+            else:
+                topic = ENCRYPTION if args.topic else None
+                if args.topic_profile:
+                    with args.topic_profile.open('rb') as stream:
+                        raw = stream.read(1024 * 1024 + 1)
+                    if len(raw) > 1024 * 1024:
+                        raise ValueError('Topic profile is too large')
+                    from .wiz import decode
+                    topic = decode(raw)
+                print(json.dumps(publish(store, args.run_id, topic=topic, controls=args.control,
+                    families=args.family, resource_ids=args.resource_id, pdf=args.pdf, wiz_import_id=args.wiz_import_id,
+                    operational_ids=args.operational_id), indent=2))
+            return 0
         if args.command in ('kubernetes-import','kubernetes-show','kubernetes-pdf','guest-import','guest-show','guest-pdf'):
             from .storage import FileStore
             if args.command.startswith('guest-'):
@@ -305,7 +339,7 @@ def main(argv=None):
             if not args.policy_assignment:
                 raise ValueError("A policy export still requires its assignment name for the control mapping")
             from .policy_compliance import collect as collect_policy
-            from .policy_query import PolicyQueryTransport, decode_records, fetch_mapping
+            from .policy_query import PolicyQueryTransport, decode_records, fetch_mapping, assignment_id
             subscriptions = sorted({s["id"] for s in snapshot["inventory"]["subscriptions"]})
             if len(subscriptions) != 1:
                 raise ValueError("Policy compliance requires exactly one selected subscription")
@@ -315,8 +349,13 @@ def main(argv=None):
             policy_transport = PolicyQueryTransport(credential)
             policy_set = fetch_mapping(policy_transport, subscriptions[0], args.policy_assignment)
             records = (decode_records(args.policy_export.read_text(encoding="utf-8")) if args.policy_export
-                       else policy_transport.query(subscriptions[0]))
-            policy_section = collect_policy(records, policy_set, assignment_name=args.policy_assignment)
+                       else policy_transport.query(subscriptions[0], assignment=args.policy_assignment,
+                                                   resource_group=args.resource_group, max_pages=args.max_pages))
+            policy_section = collect_policy(records, policy_set,
+                assignment_id=assignment_id(subscriptions[0], args.policy_assignment),
+                subscription=subscriptions[0], resource_group=args.resource_group,
+                max_age_seconds=(criteria or {}).get('max_observation_age_seconds')
+                    if (criteria or {}).get('status') == 'approved' else None)
         report = assess_snapshot(snapshot, reassessed=args.command == "assess", criteria=criteria,
                                  policy=policy_section)
         if getattr(args, "store", None):

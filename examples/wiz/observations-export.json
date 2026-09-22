@@ -1,0 +1,44 @@
+{
+  "schema_version": "2.0",
+  "kind": "wiz_evidence",
+  "source": {
+    "system": "wiz", "mode": "synthetic", "export_id": "synthetic-observations",
+    "exported_at": "2026-09-21T12:00:00Z", "tenant_id": "22222222-2222-2222-2222-222222222222",
+    "mapping_version": "2.0",
+    "scope": {"subscription_ids": ["11111111-1111-1111-1111-111111111111"], "resource_group": null},
+    "inventory_complete": true, "findings_complete": true
+  },
+  "resources": [{
+    "wiz_id": "synthetic-storage", "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo22",
+    "observed_at": "2026-09-21T11:00:00Z"
+  }],
+  "findings": [],
+  "observations": [{
+    "observation_id": "storage-facts", "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo22",
+    "observed_at": "2026-09-21T11:00:00Z",
+    "values": {"encryption_at_rest_enabled": true, "key_source": "customer_managed", "logging_enabled": false}
+  }],
+  "evaluations_complete": true,
+  "evaluations": [
+    {
+      "evaluation_id": "encryption-positive", "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo22",
+      "rule_id": "synthetic-encryption", "result": "PASS", "observed_at": "2026-09-21T11:00:00Z",
+      "observed": {"encryption_at_rest_enabled": true}, "expected": {"encryption_at_rest_enabled": true},
+      "criterion": "Synthetic source rule: encryption is enabled for the stated storage boundary.", "controls": ["SC-28"]
+    },
+    {
+      "evaluation_id": "logging-negative", "resource_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo22",
+      "rule_id": "synthetic-logging", "result": "FAIL", "observed_at": "2026-09-21T11:00:00Z",
+      "observed": {"logging_enabled": false}, "expected": {"logging_enabled": true},
+      "criterion": "Synthetic source rule: required logging is enabled.", "controls": ["AU-2"]
+    }
+  ],
+  "scans": [{
+    "scan_id": "synthetic-image-scan", "target_kind": "container_image",
+    "target_id": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "complete", "started_at": "2026-09-21T10:00:00Z", "completed_at": "2026-09-21T10:10:00Z",
+    "tool_version": "synthetic-version-not-a-wiz-release", "policy_id": "synthetic-build-policy",
+    "evaluated_rules": ["synthetic-image-rule"], "results_complete": true,
+    "result_counts": {"PASS": 1, "FAIL": 0}
+  }]
+}

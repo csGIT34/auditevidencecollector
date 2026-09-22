@@ -15,7 +15,7 @@ from .storage import parts
 from .workflow import Deadline, collect_run
 
 LOG = logging.getLogger('cloud_governance')
-LOCKS = {name:Lock() for name in ('collect','report','operational-import','operational-report','workload-import','workload-report','workload-collect','guest-import','guest-report')}
+LOCKS = {name:Lock() for name in ('collect','report','evidence-report','operational-import','operational-report','workload-import','workload-report','workload-collect','guest-import','guest-report')}
 
 
 class ConfigurationError(ValueError):
@@ -129,9 +129,11 @@ class Settings:
             if env.get('CG_GRAPH_ENABLED','false') not in ('true','false'):
                 raise ValueError()
             policy_assignment = env.get('CG_POLICY_ASSIGNMENT') or None
-            if policy_assignment is not None and (not re.fullmatch(r'[A-Za-z0-9_.\-]{1,128}', policy_assignment)
-                                                  or len(subscriptions) != 1):
-                raise ValueError()
+            if policy_assignment is not None:
+                from .policy_query import assignment_id
+                if len(subscriptions) != 1:
+                    raise ValueError()
+                assignment_id(subscriptions[0], policy_assignment)
             from .controls import decode_policy
             criteria = decode_policy(env['CG_ASSESSMENT_CRITERIA_JSON']) if env.get('CG_ASSESSMENT_CRITERIA_JSON') else None
             return cls(tenant.lower(), client.lower() if client else None, subscriptions, url, container, prefix, development,
@@ -179,7 +181,7 @@ def resources(settings, deadline, operation):
             credential.close()
 
 
-def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=None, max_age_hours=None, criteria=None, max_age_seconds=None, env=None, factory=resources):
+def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=None, max_age_hours=None, criteria=None, max_age_seconds=None, selection=None, env=None, factory=resources):
     """Returns safe metadata; reports pre-archive failures without exception payloads."""
     env = os.environ if env is None else env
     invocation_id = uuid4().hex
@@ -202,6 +204,11 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
             identity(evidence_id,'o')
         else:
             identity(run_id, 'r')
+        if operation == 'evidence-report':
+            from .evidence_report import request_options
+            if selection is not None and (not isinstance(selection, dict) or 'run_id' in selection):
+                raise ValueError('Invalid report selection')
+            options = request_options({'run_id': run_id, **(selection or {})})
         if env.get('CG_EXECUTION_EXPIRES_AT'):
             expires = datetime.fromisoformat(env['CG_EXECUTION_EXPIRES_AT'])
             if expires.tzinfo is None or datetime.now(timezone.utc) >= expires:
@@ -273,6 +280,12 @@ def execute(operation, *, run_id=None, evidence_id=None, document=None, as_of=No
                 manifest=publish_operational_pdf(store,evidence_id,deadline=deadline)
                 result={key:manifest[key] for key in ('evidence_id','report_id','generated_at')}
                 result.update(pdf_key=manifest['pdf']['key'],archive_state='complete')
+            elif operation == 'evidence-report':
+                from .evidence_report import publish
+                stage = 'selected_evidence_report_archive'
+                manifest = publish(store, **options, provenance=settings.provenance(operation, invocation_id), deadline=deadline)
+                result = {key: manifest[key] for key in ('source_run_id', 'report_id', 'generated_at')}
+                result.update(pdf_key=manifest['objects']['report.pdf']['key'], archive_state='complete')
             else:
                 stage = 'saved_run_pdf_archive'
                 manifest = publish_pdf(store, run_id, provenance=settings.provenance(operation, invocation_id), deadline=deadline)

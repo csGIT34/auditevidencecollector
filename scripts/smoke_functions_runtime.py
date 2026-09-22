@@ -97,8 +97,17 @@ def check_runtime(package, output, operational=False, workload=False, guest=Fals
                 if status != 200:
                     raise RuntimeError(f'Local function listing failed: HTTP {status}')
                 summary['functions'] = sorted(item['name'] for item in json.loads(data))
-                if 'GenerateReport' not in summary['functions'] or 'CollectEvidence' in summary['functions']:
+                if not {'GenerateReport', 'GenerateEvidenceReport'} <= set(summary['functions']) or 'CollectEvidence' in summary['functions']:
                     raise RuntimeError('Expected report function and no collection timer')
+                for label, key, expected in [('missing-key', None, 401), ('wrong-key', 'invalid-local-test-key', 401), ('invalid-body', function_key, 400)]:
+                    status, body, elapsed = request('POST', '/api/evidence/reports', {}, key)
+                    summary['checks'].append({'name': 'selected-report-' + label, 'status': status, 'expected': expected, 'seconds': elapsed})
+                    if status != expected or (status == 400 and json.loads(body) != {'code': 'invalid_evidence_report_request'}):
+                        raise RuntimeError('Selected evidence route validation failed')
+                status, body, elapsed = request('POST', '/api/evidence/reports', {'run_id': 'r-' + 'a' * 32, 'topic': 'encryption-at-rest'}, function_key)
+                summary['checks'].append({'name': 'selected-report-disabled', 'status': status, 'expected': 503, 'seconds': elapsed})
+                if status != 503 or json.loads(body).get('state') != 'disabled':
+                    raise RuntimeError('Selected evidence reporting was not disabled')
                 cases = [('missing-key', None, 401), ('wrong-key', 'invalid-local-test-key', 401)]
                 cases += [(f'authenticated-{i}', function_key, 400) for i in range(1, 21)]
                 for label, key, expected in cases:

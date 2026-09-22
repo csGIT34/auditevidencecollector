@@ -98,6 +98,8 @@ def markdown(report):
 def exit_code(report):
     configuration = report_model.configuration_summary(report)
     rules = report_model.resource_summary(report)
-    if rules["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0):
+    policy = report_model.policy_compliance(report)
+    if rules["counts"]["FAIL"] or configuration.get("counts", {}).get("FAIL", 0) or (policy and policy['summary']['counts']['FAIL']):
         return 1
-    return 2 if rules["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" else 0
+    from .policy_compliance import incomplete
+    return 2 if rules["coverage_incomplete"] or configuration.get("conclusion") == "INCOMPLETE" or (policy is not None and incomplete(policy)) else 0

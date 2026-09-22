@@ -1,6 +1,28 @@
 # Wiz evidence integration
 
-**0.4.0 implements an offline normalized-export importer, Azure inventory/finding comparison, immutable archives and verified historical reads. It does not implement or validate native Wiz authentication, API queries or export-field mapping.** See [current status](STATUS.md).
+**Current source implements project-defined v1/v2 imports, inventory/finding comparison, positive/negative observations and selectable reports. Native Wiz authentication, API queries and export-field mapping remain unimplemented/unverified.** See [home checkpoint](HOME_LAB_BUILD_STATUS.md).
+
+## Full audit evidence and native capability verification
+
+Requirement clarified 2026-09-21: preserve positive/negative evidence, observations, operating records, exceptions and missing coverage. Wiz is more than an open-issue feed. The v1 reader is preserved; v2 adds observed facts, evaluations and scan coverage. History and native mapping still require implementation.
+
+Public capabilities reviewed for the planned integration:
+
+| Path | Contribution to audit evidence | Contract boundary |
+| --- | --- | --- |
+| Wiz API / native exports | Asset inventory, configuration evidence, vulnerability/configuration findings and Issues | Verify the tenant's schema, permissions, scan coverage and availability of positive evaluations; retrieve the relevant full population and states |
+| Wiz Audit History | Configuration changes and historical configuration/finding records where available | Verify entitlement, retention, current feature status and supported API/export access; do not infer API access from UI availability |
+| Wiz CLI artifacts from existing pipelines | IaC/container/code scan records, evaluated scope and policy outcomes where emitted | Verify installed version and native output; retain artifact digest/commit, scan identity, timestamps, completion and criteria; do not infer deployment state from build-time scans |
+
+Sources: [Wiz's documented integration exports](https://www.wiz.io/integrations/caveonix), [Audit History announcement](https://www.wiz.io/blog/introducing-audit-history), [CLI JSON/SARIF integration](https://www.wiz.io/integrations/harness). These establish candidate product capabilities, not this project's live connector contract. Detailed tenant documentation and authenticated schema access were not available in this review.
+
+V2 separates inventory, safe observed properties, evaluations and scan coverage. Preserve original outcomes and observation/scan times. Native historical changes and Wiz exceptions need a subsequent reviewed contract; existing attributed operating exceptions can already accompany reports. Missing positive outcomes remain unavailable rather than inferred from absence of findings.
+
+An issue marked resolved, rejected or suppressed is lifecycle/exception evidence, not automatically a currently passing check. A completed scan with no matching detections supports a limited statement about that scan's target, rule set and time; an empty Issues response provides no such coverage proof by itself. Store secret-detection metadata and safe references, not discovered credential values or sensitive snippets.
+
+V2 scan targets accept exact ARM IDs, container digests and repository commits. Native workload identities and relationships to deployed resources still need a reviewed mapping. Preserve conflicts/time skew. Native pagination/completeness and GraphQL partial errors must be tested before claiming a complete source.
+
+Selected reports link exact v1/v2 imports without rewriting them or old Azure runs. Offline tests cover positive/negative outcomes, missing coverage, partial scans, scope mismatch, safe-field exclusion and corruption. Native denial/pagination/history tests remain integration work. See [report usage](EVIDENCE_REPORTS.md) and the [baseline review](AZURE_POLICY_REVIEW.md).
 
 Wiz's [integration overview](https://www.wiz.io/integrations) links to its [documentation](https://docs.wiz.io). The documentation endpoint returned HTTP 403 from this development session on 2026-09-19. No account/schema was available. Accordingly, the contract below is **defined by this project**, not claimed to be a native Wiz export or GraphQL schema. No API endpoint, token scope, pagination field or native status meaning is guessed.
 
@@ -10,6 +32,7 @@ With the normal Python development environment, run:
 
 ```sh
 python scripts/demo_wiz.py --output ../wiz-demo
+python scripts/demo_audit_evidence.py --output ../audit-rehearsal
 ```
 
 Use a new directory outside the checkout. This makes no Azure, Wiz or credential calls. It creates a synthetic Azure run and Wiz import, then a comparison with one matched resource, one Azure-only resource, one Wiz-only resource, and one HIGH/OPEN Wiz finding alongside an unchanged Azure encryption PASS. It verifies source hashes and writes `comparison.md`, `comparison.json`, `result.json` and a reusable private archive. The expected state is `REVIEW_REQUIRED`; differing populations and missing authenticated tenant provenance are visible.
@@ -31,7 +54,24 @@ The dates/thresholds shown are examples, not organizational policy. Supply an ex
 
 Import and comparison commands return 0 for a successfully completed publication even when the comparison needs review. Read `comparison_state`; command success is not audit success. Invalid input, unreadable/corrupt archives and failed publication return 3 with a sanitized error. `wiz-show` verifies both comparison objects and both source archives before printing the saved Markdown; it never recomputes with new rules or current time.
 
-## Normalized v1 contract
+## Normalized v2 contract
+
+The [complete synthetic example](../examples/wiz/observations-export.json) is copyable; `cloud_governance/wiz_observations.py` is authoritative. This is a project format, not native Wiz JSON/SARIF/GraphQL. Source and inventory/finding fields retain v1 semantics, with `schema_version` and `source.mapping_version` set to `2.0`. Required additions:
+
+| Field | Retained evidence |
+| --- | --- |
+| `observations[]` | `observation_id`, exact known `resource_id`, `observed_at`, nonempty allowlisted `values` |
+| `evaluations[]` | Unique `evaluation_id`, known resource, `rule_id`, source `result`, observation time, safe `observed`/`expected` values, bounded `criterion` and declared `controls` |
+| `evaluations_complete` | Exporter assertion about evaluation coverage, separate from inventory/issues |
+| `scans[]` | Unique scan ID; typed target (`arm_resource`, `container_image`, `repository_commit`); status; start/end; tool version; policy ID; evaluated rules; result completeness/counts |
+
+Safe values currently cover encryption enabled, logging enabled, key source, public-network access, minimum TLS, identity type, backup status and vulnerability/missing-patch counts. Types/enumerations are strict; unknown properties are rejected. Extend the allowlist only after reviewing actual native fields. Unknown/raw payloads and discovered secrets do not belong here.
+
+Evaluation outcomes are PASS, FAIL, UNKNOWN, NOT_APPLICABLE or EXEMPT. They retain a source assertion, not an independently validated determination. Scan status is complete/partial/failed; `results_complete: true` requires a completed scan and a nonempty evaluated rule set. Image targets require a SHA-256 digest, repository targets a full commit hash. Scans do not establish deployed-resource linkage by themselves.
+
+Use the same `wiz-import` command, then `evidence-report --wiz-import-id w-EXACT`. The new report preserves independent Azure/Wiz results and does not infer a pass from an empty issue list. It explicitly notes missing native-authentication proof and missing approved cross-source freshness criteria. The existing `wiz-reconcile` remains an inventory/issues comparison, not a v2 rule-equivalence engine. History/change records and native exception provenance are not implemented in v2.
+
+## Normalized v1 contract (preserved)
 
 See the [JSON Schema reference](schemas/wiz-evidence-v1.schema.json). The Python validator is authoritative for identity, cross-record and chronology checks.
 
