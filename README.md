@@ -67,9 +67,11 @@ The [predicate execution plan](docs/audit/PREDICATE_EXECUTION_PLAN.md) tracks th
 
 ## Clone this to your work tenant
 
+For code and docs together, run `python3 scripts/export_workplace_source.py --output /tmp/workplace-source.zip`; see the [source transfer instructions](docs/WORKPLACE_AZURE_HANDOFF.md#code-and-documentation-together-recommended-transfer). For documentation alone, start with the [six-document transfer list](docs/WORKPLACE_AZURE_HANDOFF.md#exactly-which-documents-to-copy); `python3 scripts/export_workplace_docs.py --output /tmp/workplace-docs.zip` exports that reading set without lab research/history.
+
 The lab and the workplace deployment are deliberately separate. Nothing here hard-codes a tenant, subscription, identity or threshold:
 
-1. Clone the revision containing the home-lab checkpoint and run `python scripts/validate.py` — the full offline gate, no cloud access required.
+1. Clone a revision containing feature commit `519f8ca` and the handover cleanup. Follow the [fresh-machine setup](docs/WORKPLACE_AZURE_HANDOFF.md#fresh-machine-setup) to install constrained dependencies in a Python 3.12 virtual environment and run `python scripts/validate.py` — the full offline gate, no cloud access required after dependencies are installed.
 2. Run `python scripts/demo_audit_evidence.py --output ../audit-rehearsal`, then follow the [handover guide](docs/WORKPLACE_AZURE_HANDOFF.md) and [copyable workplace LLM prompt](docs/prompts/AZURE_ADAPTER_IMPLEMENTATION.md). Review existing Policy assignments before proposing any new assignment.
 3. Declare tailoring: `python -m cloud_governance control-register --template tailoring.json` emits the controls your resource types implicate, ready to review and approve.
 4. Supply your approved criteria file; see [configuration assessments](docs/CONFIGURATION_ASSESSMENTS.md).

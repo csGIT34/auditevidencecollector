@@ -1,10 +1,11 @@
 """Offline reference/coverage validation for the research catalog (not tenant tests)."""
 from pathlib import Path
+import argparse
 import json
 import re
 
 
-def main():
+def main(*, data_only=False):
     root = Path(__file__).resolve().parent
     data = json.loads((root / 'catalog.json').read_text())
     index = json.loads((root / 'nist-control-index.json').read_text())
@@ -64,13 +65,14 @@ def main():
         assert all(c in checks for c in f['shared_check_refs'])
     for source in data['sources'].values():
         assert source['url'].startswith('https://') and source['reviewed_on']
-    for path in root.glob('*.md'):
-        for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
-            if not target.startswith(('https://', '#')):
-                assert (path.parent / target.split('#')[0]).exists(), (path, target)
-    matrix = (root / 'SERVICE_MATRIX.md').read_text()
-    assert all(f'**{c}**' in matrix for s in data['services'] for c in s['checks'])
-    assert all(f'. {s["name"]} (' in matrix for s in data['services'])
+    if not data_only:
+        for path in root.glob('*.md'):
+            for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+                if not target.startswith(('https://', '#')):
+                    assert (path.parent / target.split('#')[0]).exists(), (path, target)
+        matrix = (root / 'SERVICE_MATRIX.md').read_text()
+        assert all(f'**{c}**' in matrix for s in data['services'] for c in s['checks'])
+        assert all(f'. {s["name"]} (' in matrix for s in data['services'])
     print(f'Validated {len(data["services"])} services, {cells} domain cells, '
           f'{len(data["families"])} families, {len(checks)} proposed checks, '
           f'{len(index["controls"])} NIST references and {len(data["sources"])} sources.')
@@ -78,4 +80,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--data-only', action='store_true', help='Validate catalog data without lab research prose checks')
+    main(data_only=parser.parse_args().data_only)

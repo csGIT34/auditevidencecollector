@@ -1,6 +1,6 @@
 # Home-lab build checkpoint
 
-Date: 2026-09-21. Baseline: `c316078`, package version 0.27.0. This is an **unreleased source checkpoint**, not an Azure deployment. Use the revision containing this checkpoint; the earlier baseline commit alone does not include these changes.
+Date: 2026-09-21. Baseline: `c316078`, package version 0.27.0. This is an **unreleased source checkpoint**, not an Azure deployment. The completed feature checkpoint is `519f8cadd666cc3ed4a0f09155bc7e222208e3b3` (2026-09-21). The following commit, `d855930`, only adds Kubernetes interview questions. Transfer a revision containing `519f8ca` and the subsequent handover cleanup; `c316078` alone does not include these changes.
 
 ## Requirement and approach
 
