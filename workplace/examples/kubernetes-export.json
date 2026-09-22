@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "kind": "kubernetes_export",
+  "mode": "synthetic",
+  "cluster_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7",
+  "collected_at": "2026-09-20T01:30:00Z",
+  "scope": {
+    "namespace": "example",
+    "pods_complete": true
+  },
+  "nodes": {
+    "apiVersion": "v1",
+    "kind": "NodeList",
+    "items": [
+      {
+        "metadata": {
+          "name": "node-1"
+        },
+        "status": {
+          "nodeInfo": {
+            "operatingSystem": "linux"
+          },
+          "addresses": [
+            {
+              "address": "SECRET-CANARY"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "pods": {
+    "apiVersion": "v1",
+    "kind": "PodList",
+    "metadata": {},
+    "items": [
+      {
+        "apiVersion": "v1",
+        "kind": "Pod",
+        "metadata": {
+          "uid": "pod-unique-1",
+          "name": "web-1",
+          "namespace": "example",
+          "annotations": {
+            "password": "SECRET-CANARY"
+          }
+        },
+        "spec": {
+          "nodeName": "node-1",
+          "securityContext": {
+            "runAsNonRoot": true
+          },
+          "containers": [
+            {
+              "name": "web",
+              "image": "example.azurecr.io/web@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "env": [
+                {
+                  "name": "PASSWORD",
+                  "value": "SECRET-CANARY"
+                }
+              ],
+              "command": [
+                "SECRET-CANARY"
+              ],
+              "args": [
+                "SECRET-CANARY"
+              ],
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "readOnlyRootFilesystem": true
+              }
+            }
+          ]
+        },
+        "status": {
+          "containerStatuses": [
+            {
+              "name": "web",
+              "imageID": "docker-pullable://example.azurecr.io/web@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "state": {
+                "running": {
+                  "secret": "SECRET-CANARY"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

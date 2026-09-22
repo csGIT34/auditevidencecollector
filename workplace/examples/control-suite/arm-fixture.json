@@ -1,0 +1,1800 @@
+{
+  "fixture_version": "1.0",
+  "responses": {
+    "https://demo15.vault.azure.net/certificates?api-version=2025-07-01&maxresults=25": {
+      "value": [
+        {
+          "attributes": {
+            "created": 1700000000,
+            "enabled": true,
+            "exp": 2000000000,
+            "updated": 1700000000
+          },
+          "id": "https://demo15.vault.azure.net/certificates/example",
+          "tags": {
+            "secret": "DO-NOT-ARCHIVE-SECRET"
+          }
+        }
+      ]
+    },
+    "https://demo15.vault.azure.net/keys?api-version=2025-07-01&maxresults=25": {
+      "value": [
+        {
+          "attributes": {
+            "created": 1700000000,
+            "enabled": true,
+            "exp": 2000000000,
+            "updated": 1700000000
+          },
+          "kid": "https://demo15.vault.azure.net/keys/example",
+          "tags": {
+            "secret": "DO-NOT-ARCHIVE-SECRET"
+          }
+        }
+      ]
+    },
+    "https://demo15.vault.azure.net/secrets?api-version=2025-07-01&maxresults=25": {
+      "value": [
+        {
+          "attributes": {
+            "created": 1700000000,
+            "enabled": true,
+            "exp": 2000000000,
+            "updated": 1700000000
+          },
+          "id": "https://demo15.vault.azure.net/secrets/example",
+          "tags": {
+            "secret": "DO-NOT-ARCHIVE-SECRET"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0/revisions?api-version=2026-01-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0/revisions/revision-1",
+          "properties": {
+            "active": true,
+            "template": {
+              "containers": [
+                {
+                  "env": [
+                    {
+                      "name": "PASSWORD",
+                      "value": "SECRET-CANARY"
+                    }
+                  ],
+                  "image": "example.azurecr.io/web@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                  "name": "web"
+                }
+              ],
+              "initContainers": [
+                {
+                  "command": [
+                    "SECRET-CANARY"
+                  ],
+                  "image": "example.azurecr.io/init:v1",
+                  "name": "initialize"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0?api-version=2024-03-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo0",
+      "properties": {
+        "configuration": {
+          "ingress": {
+            "allowInsecure": false,
+            "external": false
+          }
+        },
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.app/containerapps"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1?api-version=2023-03-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo1",
+      "properties": {
+        "disableLocalAuth": true,
+        "enablePurgeProtection": true,
+        "encryption": {
+          "keyVaultProperties": {
+            "identityClientId": "22222222-2222-2222-2222-222222222222",
+            "keyIdentifier": "https://example-vault.vault.azure.net/keys/audit-key/8f1d2c3b4a5e6f70819a2b3c4d5e6f70"
+          }
+        },
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.appconfiguration/configurationstores"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/modules?api-version=2024-10-23": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/modules/example",
+          "properties": {
+            "contentLink": {
+              "uri": "https://example.test/?sig=SECRET-CANARY"
+            },
+            "description": "SECRET-CANARY",
+            "draft": {
+              "draftContentLink": {
+                "uri": "SECRET-CANARY"
+              }
+            },
+            "error": {
+              "message": "SECRET-CANARY"
+            },
+            "lastModifiedTime": "2026-09-01T00:00:00Z",
+            "parameters": {
+              "password": {
+                "defaultValue": "SECRET-CANARY"
+              }
+            },
+            "provisioningState": "Succeeded",
+            "version": "1.2.3"
+          },
+          "tags": {
+            "owner": "SECRET-CANARY"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runbooks?api-version=2024-10-23": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runbooks/example",
+          "properties": {
+            "contentLink": {
+              "uri": "https://example.test/?sig=SECRET-CANARY"
+            },
+            "description": "SECRET-CANARY",
+            "draft": {
+              "draftContentLink": {
+                "uri": "SECRET-CANARY"
+              }
+            },
+            "lastModifiedTime": "2026-09-01T00:00:00Z",
+            "logProgress": true,
+            "logVerbose": false,
+            "parameters": {
+              "password": {
+                "defaultValue": "SECRET-CANARY"
+              }
+            },
+            "runbookType": "PowerShell",
+            "runtimeEnvironment": "reviewed-runtime",
+            "state": "Published"
+          },
+          "tags": {
+            "owner": "SECRET-CANARY"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeEnvironments?api-version=2024-10-23": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeEnvironments/reviewed",
+          "properties": {
+            "defaultPackages": {
+              "Az": "12.3.0"
+            },
+            "description": "SECRET-CANARY",
+            "runtime": {
+              "language": "PowerShell",
+              "version": "7.4"
+            }
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2?api-version=2023-11-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo2",
+      "properties": {
+        "disableLocalAuth": true,
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": false,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.automation/automationaccounts"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "ConnectionEvents",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default?api-version=2025-04-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default",
+      "location": "eastus",
+      "name": "default",
+      "properties": {
+        "accessKeysAuthentication": "Disabled",
+        "clientProtocol": "Encrypted",
+        "clusteringPolicy": "OSSCluster",
+        "deferUpgrade": "NotDeferred",
+        "evictionPolicy": "VolatileLRU",
+        "persistence": {
+          "aofEnabled": false,
+          "rdbEnabled": true
+        },
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.cache/redisenterprise/databases"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases?api-version=2025-04-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default",
+          "location": "eastus",
+          "name": "default",
+          "properties": {
+            "accessKeysAuthentication": "Disabled",
+            "clientProtocol": "Encrypted",
+            "clusteringPolicy": "OSSCluster",
+            "deferUpgrade": "NotDeferred",
+            "evictionPolicy": "VolatileLRU",
+            "persistence": {
+              "aofEnabled": false,
+              "rdbEnabled": true
+            },
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.cache/redisenterprise/databases"
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3?api-version=2025-04-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo3",
+      "properties": {
+        "encryption": {
+          "customerManagedKeyEncryption": {
+            "keyEncryptionKeyIdentity": {
+              "identityType": "userAssignedIdentity",
+              "userAssignedIdentityResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/collector"
+            },
+            "keyEncryptionKeyUrl": "https://example-vault.vault.azure.net/keys/audit-key/8f1d2c3b4a5e6f70819a2b3c4d5e6f70"
+          }
+        },
+        "highAvailability": "Enabled",
+        "minimumTlsVersion": "1.2",
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "sku": {
+        "name": "Balanced_B10"
+      },
+      "type": "microsoft.cache/redisenterprise"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4?api-version=2024-03-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo4",
+      "properties": {
+        "osProfile": {
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true
+          }
+        },
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "securityProfile": {
+          "uefiSettings": {
+            "secureBootEnabled": true,
+            "vTpmEnabled": true
+          }
+        }
+      },
+      "type": "microsoft.compute/virtualmachines"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualMachines?api-version=2026-03-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualMachines/0",
+          "properties": {
+            "latestModelApplied": true
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5?api-version=2024-03-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo5",
+      "properties": {
+        "orchestrationMode": "Uniform",
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "virtualMachineProfile": {
+          "osProfile": {
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true
+            }
+          },
+          "securityProfile": {
+            "uefiSettings": {
+              "secureBootEnabled": true,
+              "vTpmEnabled": true
+            }
+          }
+        }
+      },
+      "type": "microsoft.compute/virtualmachinescalesets"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6?api-version=2023-07-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo6",
+      "properties": {
+        "adminUserEnabled": false,
+        "encryption": {
+          "keyVaultProperties": {
+            "identity": "22222222-2222-2222-2222-222222222222",
+            "keyIdentifier": "https://example-vault.vault.azure.net/keys/audit-key/8f1d2c3b4a5e6f70819a2b3c4d5e6f70"
+          },
+          "status": "enabled"
+        },
+        "policies": {
+          "exportPolicy": {
+            "status": "disabled"
+          },
+          "quarantinePolicy": {
+            "status": "enabled"
+          },
+          "retentionPolicy": {
+            "days": 7,
+            "status": "enabled"
+          },
+          "trustPolicy": {
+            "status": "enabled",
+            "type": "Notary"
+          }
+        },
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.containerregistry/registries"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7/agentPools?api-version=2024-05-01": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7?api-version=2024-05-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo7",
+      "properties": {
+        "aadProfile": {
+          "enableAzureRBAC": true
+        },
+        "apiServerAccessProfile": {
+          "enablePrivateCluster": true
+        },
+        "disableLocalAccounts": true,
+        "enableRBAC": true,
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.containerservice/managedclusters"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8?api-version=2023-09-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo8",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "zoneRedundancy": "Enabled"
+      },
+      "type": "microsoft.dashboard/grafana"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupInstances?api-version=2026-03-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupInstances/protected",
+          "properties": {
+            "currentProtectionState": "ProtectionConfigured",
+            "dataSourceInfo": {
+              "resourceID": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/disks/protected"
+            },
+            "datasourceAuthCredentials": {
+              "secret": "DO-NOT-SAVE-BACKUP-SECRET"
+            },
+            "policyInfo": {
+              "policyId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupPolicies/approved"
+            },
+            "protectionStatus": {
+              "status": "ProtectionConfigured"
+            }
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupJobs?api-version=2026-03-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupJobs/job-1",
+          "properties": {
+            "dataSourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+            "endTime": "2026-09-20T00:30:00Z",
+            "errorDetails": [
+              {
+                "message": "SECRET-CANARY"
+              }
+            ],
+            "extendedInfo": {
+              "propertyBag": {
+                "password": "SECRET-CANARY"
+              }
+            },
+            "operation": "Backup",
+            "operationCategory": "Backup",
+            "startTime": "2026-09-20T00:00:00Z",
+            "status": "Completed"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9?api-version=2023-01-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo9",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "securitySettings": {
+          "immutabilitySettings": {
+            "state": "Locked"
+          },
+          "softDeleteSettings": {
+            "state": "AlwaysOn"
+          }
+        }
+      },
+      "type": "microsoft.dataprotection/backupvaults"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10?api-version=2024-08-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo10",
+      "properties": {
+        "authConfig": {
+          "activeDirectoryAuth": "Enabled",
+          "passwordAuth": "Disabled"
+        },
+        "backup": {
+          "backupRetentionDays": 30
+        },
+        "network": {
+          "publicNetworkAccess": "Disabled"
+        },
+        "provisioningState": "Succeeded",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.dbforpostgresql/flexibleservers"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11?api-version=2024-05-15": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo11",
+      "properties": {
+        "disableLocalAuth": true,
+        "minimalTlsVersion": "Tls12",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.documentdb/databaseaccounts"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12?api-version=2022-06-15": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo12",
+      "properties": {
+        "disableLocalAuth": true,
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.eventgrid/topics"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13/eventhubs?api-version=2024-01-01": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13?api-version=2024-01-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo13",
+      "properties": {
+        "disableLocalAuth": true,
+        "minimumTlsVersion": "1.2",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.eventhub/namespaces"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14?api-version=2020-02-02": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo14",
+      "properties": {
+        "DisableLocalAuth": true,
+        "provisioningState": "Succeeded",
+        "publicNetworkAccessForIngestion": "Disabled",
+        "publicNetworkAccessForQuery": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.insights/components"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15?api-version=2023-07-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo15",
+      "properties": {
+        "enablePurgeProtection": true,
+        "enableRbacAuthorization": true,
+        "enableSoftDelete": true,
+        "networkAcls": {
+          "defaultAction": "Deny"
+        },
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "vaultUri": "https://demo15.vault.azure.net/"
+      },
+      "type": "microsoft.keyvault/vaults"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16/federatedIdentityCredentials?api-version=2023-01-31": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16/federatedIdentityCredentials/safe",
+          "properties": {
+            "audiences": [
+              "api://AzureADTokenExchange"
+            ],
+            "issuer": "https://issuer.example.invalid",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "subject": "system:serviceaccount:audit:collector"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16?api-version=2023-01-31": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo16",
+      "properties": {
+        "provisioningState": "Succeeded"
+      },
+      "type": "microsoft.managedidentity/userassignedidentities"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17?api-version=2023-04-03": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo17",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.monitor/accounts"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.network/privateendpoints/demo18/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.network/privateendpoints/demo18?api-version=2023-11-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.network/privateendpoints/demo18",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo18",
+      "properties": {
+        "manualPrivateLinkServiceConnections": [],
+        "privateLinkServiceConnections": [
+          {
+            "properties": {
+              "groupIds": [
+                "blob"
+              ],
+              "privateLinkServiceConnectionState": {
+                "status": "Approved"
+              },
+              "privateLinkServiceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/approved"
+            }
+          }
+        ],
+        "provisioningState": "Succeeded"
+      },
+      "type": "microsoft.network/privateendpoints"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/tables?api-version=2025-07-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/tables/AuditTable",
+          "properties": {
+            "archiveRetentionInDays": 335,
+            "plan": "Analytics",
+            "provisioningState": "Succeeded",
+            "retentionInDays": 30,
+            "retentionInDaysAsDefault": false,
+            "schema": {
+              "description": "SECRET-CANARY"
+            },
+            "searchResults": {
+              "query": "SECRET-CANARY"
+            },
+            "tags": {
+              "secret": "SECRET-CANARY"
+            },
+            "totalRetentionInDays": 365,
+            "totalRetentionInDaysAsDefault": false
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19?api-version=2023-09-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo19",
+      "properties": {
+        "features": {
+          "disableLocalAuth": true
+        },
+        "provisioningState": "Succeeded",
+        "publicNetworkAccessForIngestion": "Disabled",
+        "publicNetworkAccessForQuery": "Disabled",
+        "retentionInDays": 30,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.operationalinsights/workspaces"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupJobs?api-version=2026-02-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupJobs/job-1",
+          "properties": {
+            "dataSourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+            "endTime": "2026-09-20T00:30:00Z",
+            "errorDetails": [
+              {
+                "message": "SECRET-CANARY"
+              }
+            ],
+            "extendedInfo": {
+              "propertyBag": {
+                "password": "SECRET-CANARY"
+              }
+            },
+            "operation": "Backup",
+            "operationCategory": "Backup",
+            "startTime": "2026-09-20T00:00:00Z",
+            "status": "Completed"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupProtectedItems?api-version=2026-02-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupFabrics/Azure/protectionContainers/IaasVMContainer;rg;vm/protectedItems/VM;rg;vm",
+          "properties": {
+            "friendlyName": "DO-NOT-SAVE-BACKUP-SECRET",
+            "policyId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupPolicies/approved",
+            "protectionState": "Protected",
+            "protectionStatus": "Healthy",
+            "sourceResourceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.Compute/virtualMachines/protected"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20?api-version=2023-01-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo20",
+      "properties": {
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "securitySettings": {
+          "immutabilitySettings": {
+            "state": "Locked"
+          }
+        }
+      },
+      "type": "microsoft.recoveryservices/vaults"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/containers?api-version=2023-05-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/containers/private",
+          "properties": {
+            "legalHold": {
+              "tags": [
+                {
+                  "upn": "SECRET-CANARY"
+                }
+              ]
+            },
+            "metadata": {
+              "secret": "SECRET-CANARY"
+            },
+            "publicAccess": "None"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default?api-version=2023-05-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobServices/default",
+      "properties": {
+        "containerDeleteRetentionPolicy": {
+          "enabled": true
+        },
+        "deleteRetentionPolicy": {
+          "enabled": true
+        },
+        "isVersioningEnabled": true,
+        "restorePolicy": {
+          "enabled": true
+        },
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roleassignments/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "properties": {
+            "principalId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+            "principalType": "ServicePrincipal",
+            "roleDefinitionId": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roledefinitions/cccccccc-cccc-cccc-cccc-cccccccccccc",
+            "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/providers/Microsoft.Authorization/roleDefinitions/cccccccc-cccc-cccc-cccc-cccccccccccc?api-version=2022-04-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roledefinitions/cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "properties": {
+        "permissions": [
+          {
+            "actions": [
+              "*"
+            ],
+            "dataActions": [],
+            "notActions": [
+              "microsoft.authorization/*/write"
+            ],
+            "notDataActions": []
+          }
+        ],
+        "type": "CustomRole"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21?api-version=2023-05-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21",
+      "kind": "unspecified",
+      "location": "eastus",
+      "name": "demo21",
+      "properties": {
+        "allowBlobPublicAccess": false,
+        "allowSharedKeyAccess": false,
+        "encryption": {
+          "identity": {
+            "userAssignedIdentity": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.ManagedIdentity/userAssignedIdentities/collector"
+          },
+          "keySource": "Microsoft.Keyvault",
+          "keyvaultproperties": {
+            "keyversion": "8f1d2c3b4a5e6f70819a2b3c4d5e6f70"
+          }
+        },
+        "minimumTlsVersion": "TLS1_2",
+        "networkAcls": {
+          "defaultAction": "Deny"
+        },
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+        "supportsHttpsTrafficOnly": true
+      },
+      "type": "microsoft.storage/storageaccounts"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/basicPublishingCredentialsPolicies/ftp?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/basicPublishingCredentialsPolicies/ftp",
+      "properties": {
+        "allow": false,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/basicPublishingCredentialsPolicies/scm?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/basicPublishingCredentialsPolicies/scm",
+      "properties": {
+        "allow": false,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/config/authsettingsV2?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/config/authsettingsV2",
+      "properties": {
+        "globalValidation": {
+          "requireAuthentication": true
+        },
+        "platform": {
+          "enabled": true
+        },
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/config/web?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/config/web",
+      "properties": {
+        "ftpsState": "Disabled",
+        "minTlsVersion": "1.2",
+        "remoteDebuggingEnabled": false,
+        "scmMinTlsVersion": "1.2",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22/slots?api-version=2023-12-01": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22",
+      "kind": "functionapp",
+      "location": "eastus",
+      "name": "demo22",
+      "properties": {
+        "httpsOnly": true,
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.web/sites"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/basicPublishingCredentialsPolicies/ftp?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/basicPublishingCredentialsPolicies/ftp",
+      "properties": {
+        "allow": false,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/basicPublishingCredentialsPolicies/scm?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/basicPublishingCredentialsPolicies/scm",
+      "properties": {
+        "allow": false,
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/config/authsettingsV2?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/config/authsettingsV2",
+      "properties": {
+        "globalValidation": {
+          "requireAuthentication": true
+        },
+        "platform": {
+          "enabled": true
+        },
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/config/web?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/config/web",
+      "properties": {
+        "ftpsState": "Disabled",
+        "minTlsVersion": "1.2",
+        "remoteDebuggingEnabled": false,
+        "scmMinTlsVersion": "1.2",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      }
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/providers/Microsoft.Authorization/roleAssignments?api-version=2022-04-01&$filter=atScope%28%29": {
+      "value": []
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/providers/Microsoft.Insights/diagnosticSettings?api-version=2021-05-01-preview": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/providers/Microsoft.Insights/diagnosticSettings/safe",
+          "properties": {
+            "logs": [
+              {
+                "category": "AuditEvent",
+                "enabled": true
+              }
+            ],
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "workspaceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/Microsoft.OperationalInsights/workspaces/approved-logs"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23?api-version=2023-12-01": {
+      "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23",
+      "kind": "functionapp",
+      "location": "eastus",
+      "name": "demo23",
+      "properties": {
+        "httpsOnly": true,
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Disabled",
+        "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+      },
+      "type": "microsoft.web/sites/slots"
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeenvironments/reviewed/packages?api-version=2024-10-23": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeEnvironments/reviewed/packages/Example.Package",
+          "properties": {
+            "contentLink": {
+              "uri": "SECRET-CANARY"
+            },
+            "error": {
+              "message": "SECRET-CANARY"
+            },
+            "provisioningState": "Succeeded",
+            "version": "1.0.0"
+          }
+        }
+      ]
+    },
+    "https://management.azure.com/subscriptions/11111111-1111-1111-1111-111111111111/resources?api-version=2021-04-01": {
+      "value": [
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.app/containerapps/demo0",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo0",
+          "properties": {
+            "configuration": {
+              "ingress": {
+                "allowInsecure": false,
+                "external": false
+              }
+            },
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.app/containerapps"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo1",
+          "properties": {
+            "disableLocalAuth": false,
+            "enablePurgeProtection": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.appconfiguration/configurationstores"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo2",
+          "properties": {
+            "disableLocalAuth": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": false,
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.automation/automationaccounts"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo3",
+          "properties": {
+            "minimumTlsVersion": "1.0",
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.cache/redisenterprise"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo4",
+          "properties": {
+            "osProfile": {
+              "linuxConfiguration": {
+                "disablePasswordAuthentication": false
+              }
+            },
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "securityProfile": {
+              "uefiSettings": {
+                "secureBootEnabled": false,
+                "vTpmEnabled": false
+              }
+            }
+          },
+          "type": "microsoft.compute/virtualmachines"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo5",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "virtualMachineProfile": {
+              "osProfile": {
+                "linuxConfiguration": {
+                  "disablePasswordAuthentication": false
+                }
+              },
+              "securityProfile": {
+                "uefiSettings": {
+                  "secureBootEnabled": false,
+                  "vTpmEnabled": false
+                }
+              }
+            }
+          },
+          "type": "microsoft.compute/virtualmachinescalesets"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerregistry/registries/demo6",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo6",
+          "properties": {
+            "adminUserEnabled": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.containerregistry/registries"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo7",
+          "properties": {
+            "aadProfile": {
+              "enableAzureRBAC": false
+            },
+            "apiServerAccessProfile": {
+              "enablePrivateCluster": false
+            },
+            "disableLocalAccounts": false,
+            "enableRBAC": false,
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.containerservice/managedclusters"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dashboard/grafana/demo8",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo8",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "zoneRedundancy": "Enabled"
+          },
+          "type": "microsoft.dashboard/grafana"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo9",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "securitySettings": {
+              "immutabilitySettings": {
+                "state": "Disabled"
+              },
+              "softDeleteSettings": {
+                "state": "Off"
+              }
+            }
+          },
+          "type": "microsoft.dataprotection/backupvaults"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo10",
+          "properties": {
+            "authConfig": {
+              "activeDirectoryAuth": "Enabled",
+              "passwordAuth": "Enabled"
+            },
+            "backup": {
+              "backupRetentionDays": 30
+            },
+            "network": {
+              "publicNetworkAccess": "Enabled"
+            },
+            "provisioningState": "Succeeded",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.dbforpostgresql/flexibleservers"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo11",
+          "properties": {
+            "disableLocalAuth": false,
+            "minimalTlsVersion": "Tls",
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.documentdb/databaseaccounts"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventgrid/topics/demo12",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo12",
+          "properties": {
+            "disableLocalAuth": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.eventgrid/topics"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo13",
+          "properties": {
+            "disableLocalAuth": false,
+            "minimumTlsVersion": "1.0",
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.eventhub/namespaces"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.insights/components/demo14",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo14",
+          "properties": {
+            "DisableLocalAuth": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccessForIngestion": "Enabled",
+            "publicNetworkAccessForQuery": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.insights/components"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.keyvault/vaults/demo15",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo15",
+          "properties": {
+            "enablePurgeProtection": false,
+            "enableRbacAuthorization": false,
+            "enableSoftDelete": false,
+            "networkAcls": {
+              "defaultAction": "Allow"
+            },
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.keyvault/vaults"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.managedidentity/userassignedidentities/demo16",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo16",
+          "properties": {
+            "provisioningState": "Succeeded"
+          },
+          "type": "microsoft.managedidentity/userassignedidentities"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.monitor/accounts/demo17",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo17",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.monitor/accounts"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.network/privateendpoints/demo18",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo18",
+          "properties": {
+            "manualPrivateLinkServiceConnections": [],
+            "privateLinkServiceConnections": [
+              {
+                "properties": {
+                  "groupIds": [
+                    "blob"
+                  ],
+                  "privateLinkServiceConnectionState": {
+                    "status": "Approved"
+                  },
+                  "privateLinkServiceId": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/approved"
+                }
+              }
+            ],
+            "provisioningState": "Succeeded"
+          },
+          "type": "microsoft.network/privateendpoints"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo19",
+          "properties": {
+            "features": {
+              "disableLocalAuth": false
+            },
+            "provisioningState": "Succeeded",
+            "publicNetworkAccessForIngestion": "Enabled",
+            "publicNetworkAccessForQuery": "Enabled",
+            "retentionInDays": 30,
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.operationalinsights/workspaces"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo20",
+          "properties": {
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "securitySettings": {
+              "immutabilitySettings": {
+                "state": "Disabled"
+              }
+            }
+          },
+          "type": "microsoft.recoveryservices/vaults"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21",
+          "kind": "unspecified",
+          "location": "eastus",
+          "name": "demo21",
+          "properties": {
+            "allowBlobPublicAccess": false,
+            "allowSharedKeyAccess": false,
+            "minimumTlsVersion": "TLS1_0",
+            "networkAcls": {
+              "defaultAction": "Allow"
+            },
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET",
+            "supportsHttpsTrafficOnly": false
+          },
+          "type": "microsoft.storage/storageaccounts"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo22",
+          "kind": "functionapp",
+          "location": "eastus",
+          "name": "demo22",
+          "properties": {
+            "httpsOnly": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.web/sites"
+        },
+        {
+          "id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23",
+          "kind": "functionapp",
+          "location": "eastus",
+          "name": "demo23",
+          "properties": {
+            "httpsOnly": false,
+            "provisioningState": "Succeeded",
+            "publicNetworkAccess": "Enabled",
+            "secretCanary": "DO-NOT-ARCHIVE-SECRET"
+          },
+          "type": "microsoft.web/sites/slots"
+        }
+      ]
+    }
+  }
+}

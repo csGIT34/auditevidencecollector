@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "kind": "operational_evidence",
+  "mode": "synthetic",
+  "records": [
+    {
+      "record_id": "restore-1",
+      "evidence_type": "restore_test",
+      "objective_ids": [
+        "BV-B"
+      ],
+      "scope_kind": "run",
+      "resource_ids": [],
+      "period_start": "2026-09-01T00:00:00Z",
+      "period_end": "2026-09-19T19:00:00Z",
+      "observed_at": "2026-09-19T20:00:00Z",
+      "owner": "recovery-team",
+      "reviewer": "reviewer-1",
+      "assertion": "SATISFIED",
+      "summary": "Synthetic operator statement: a restore exercise completed. This fixture is not tenant evidence.",
+      "reference_sha256": null
+    }
+  ],
+  "requirements": [
+    {
+      "requirement_id": "restore-review",
+      "evidence_type": "restore_test",
+      "objective_id": "BV-B",
+      "scope_kind": "run",
+      "resource_ids": [],
+      "period_start": "2026-09-01T00:00:00Z",
+      "period_end": "2026-09-19T19:00:00Z"
+    }
+  ]
+}

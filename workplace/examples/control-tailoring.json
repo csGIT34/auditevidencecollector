@@ -1,0 +1,248 @@
+{
+  "controls": {
+    "AC-17": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AC-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "AU-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-14": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CM-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "CP-9(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "IA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "RA-5": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-11": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-22": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SA-9": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-13": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-17": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-28": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-28(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-45": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-8": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SC-8(1)": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-10": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-12": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-2": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-3": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SI-7": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-4": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    },
+    "SR-6": {
+      "disposition": "IN_SCOPE",
+      "owner": "Cloud platform security (example)",
+      "reviewed_on": "2026-09-20"
+    }
+  },
+  "id": "SYNTHETIC-EXAMPLE-TAILORING-NOT-WORKPLACE-POLICY",
+  "schema_version": "1.0",
+  "status": "approved",
+  "version": "1"
+}

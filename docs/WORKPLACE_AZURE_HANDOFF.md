@@ -2,7 +2,16 @@
 
 Updated 2026-09-22. This guide is the workplace starting point for the feature checkpoint on the 0.27.0 baseline. The home-lab build history is optional reference and does not need to be copied. Earlier release/live records describe their named versions, not this build. The copyable [workplace startup prompt](prompts/AZURE_ADAPTER_IMPLEMENTATION.md) needs no conversation history.
 
-## Code and documentation together: recommended transfer
+## Standalone directory: preferred transfer
+
+For a work LLM, provide the [self-contained GitHub import prompt](prompts/WORKPLACE_SOURCE_IMPORT.md). It downloads only the published `workplace/` files using an exact allowlist and hashes, without cloning. Transfer tools remain outside the destination project.
+
+
+Run `python3 scripts/export_clean_source.py --output output/workplace-source` from this checkout, using a new output directory. Copy only that directory into the work project. It has fresh operational entry docs, no Git metadata or origin manifest, and no development-history or personal infrastructure references. Application logic is preserved. The optional probe and its dedicated test are omitted; runtime expiry, architecture and packaging safety tests remain. Run the ordinary `python scripts/validate.py` in the generated project. Use the [copyable import prompt](prompts/WORKPLACE_SOURCE_IMPORT.md).
+
+The earlier ZIP workflows below remain available for transfers that explicitly need provenance; they are not the selected workflow for this handover.
+
+## Earlier code and documentation ZIP option
 
 For a new work repo, use the **source bundle**, not the documentation-only ZIP:
 

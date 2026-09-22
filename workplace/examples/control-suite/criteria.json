@@ -1,0 +1,1359 @@
+{
+  "checks": {
+    "ACA-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "ACA-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ACA-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.app/containerapps/demo0/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "ACA-external-ingress": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACA-insecure-ingress": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACA-revision-images": {
+      "operator": "equals",
+      "value": [
+        {
+          "active": true,
+          "containers": [
+            {
+              "image": "example.azurecr.io/web@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "kind": "app",
+              "name": "web"
+            },
+            {
+              "image": "example.azurecr.io/init:v1",
+              "kind": "init",
+              "name": "initialize"
+            }
+          ],
+          "revision_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.app/containerapps/demo0/revisions/revision-1"
+        }
+      ]
+    },
+    "ACR-admin-user": {
+      "operator": "equals",
+      "value": false
+    },
+    "ACR-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "ACR-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
+    "ACR-content-trust": {
+      "operator": "equals",
+      "value": "enabled"
+    },
+    "ACR-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ACR-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.containerregistry/registries/demo6/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "ACR-export-policy": {
+      "operator": "equals",
+      "value": "disabled"
+    },
+    "ACR-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "ACR-quarantine": {
+      "operator": "equals",
+      "value": "enabled"
+    },
+    "ACR-untagged-retention": {
+      "operator": "equals",
+      "value": "enabled"
+    },
+    "AI-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "AI-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AI-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.insights/components/demo14/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "AI-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "AI-public-ingestion": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "AI-public-query": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "AKS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "AKS-azure-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AKS-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.containerservice/managedclusters/demo7/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "AKS-local-accounts": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-private-api": {
+      "operator": "equals",
+      "value": true
+    },
+    "AKS-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPC-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "APPC-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
+    "APPC-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "APPC-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.appconfiguration/configurationstores/demo1/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "APPC-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPC-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "APPC-purge-protection": {
+      "operator": "equals",
+      "value": true
+    },
+    "APPREG-approved-owners": {
+      "operator": "equals",
+      "value": [
+        "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+      ]
+    },
+    "APPREG-approved-role-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "appRoleId": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+          "principalId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "resourceId": "eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"
+        }
+      ]
+    },
+    "APPREG-audience": {
+      "operator": "equals",
+      "value": "AzureADMyOrg"
+    },
+    "APPREG-delegated-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "clientId": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+          "consentType": "AllPrincipals",
+          "principalId": null,
+          "resourceId": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "scopes": [
+            "User.Read"
+          ]
+        }
+      ]
+    },
+    "APPREG-expired-credentials": {
+      "operator": "equals",
+      "value": 0
+    },
+    "APPREG-federation-trust": {
+      "operator": "equals",
+      "value": []
+    },
+    "APPREG-implicit-access-token": {
+      "operator": "equals",
+      "value": false
+    },
+    "APPREG-implicit-id-token": {
+      "operator": "equals",
+      "value": false
+    },
+    "APPREG-owner-count": {
+      "operator": "at_least",
+      "value": 1
+    },
+    "APPREG-redirect-transport": {
+      "operator": "equals",
+      "value": "all_https"
+    },
+    "APPREG-role-grants": {
+      "operator": "equals",
+      "value": 1
+    },
+    "APPREG-sp-enabled": {
+      "operator": "equals",
+      "value": true
+    },
+    "AUTO-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "AUTO-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "AUTO-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "AUTO-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "AUTO-modules-metadata": {
+      "operator": "equals",
+      "value": [
+        {
+          "asset_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/modules/example",
+          "last_modified": "2026-09-01T00:00:00Z",
+          "provisioning_state": "Succeeded",
+          "version": "1.2.3"
+        }
+      ]
+    },
+    "AUTO-public-network": {
+      "operator": "equals",
+      "value": false
+    },
+    "AUTO-runbooks-metadata": {
+      "operator": "equals",
+      "value": [
+        {
+          "asset_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runbooks/example",
+          "last_modified": "2026-09-01T00:00:00Z",
+          "log_progress": true,
+          "log_verbose": false,
+          "runbook_type": "PowerShell",
+          "runtime_environment": "reviewed-runtime",
+          "state": "Published"
+        }
+      ]
+    },
+    "AUTO-runtime-packages": {
+      "operator": "equals",
+      "value": [
+        {
+          "default_packages": [
+            {
+              "name": "Az",
+              "version": "12.3.0"
+            }
+          ],
+          "environment_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeenvironments/reviewed",
+          "language": "PowerShell",
+          "packages": [
+            {
+              "package_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.automation/automationaccounts/demo2/runtimeenvironments/reviewed/packages/example.package",
+              "provisioning_state": "Succeeded",
+              "version": "1.0.0"
+            }
+          ],
+          "version": "7.4"
+        }
+      ]
+    },
+    "BV-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "BV-approved-arm-grants-recovery": {
+      "operator": "equals",
+      "value": []
+    },
+    "BV-backup-immutability": {
+      "operator": "equals",
+      "value": "Locked"
+    },
+    "BV-backup-jobs": {
+      "operator": "equals",
+      "value": [
+        {
+          "end_time": "2026-09-20T00:30:00Z",
+          "job_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupjobs/job-1",
+          "operation": "Backup",
+          "source_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+          "start_time": "2026-09-20T00:00:00Z",
+          "status": "Completed"
+        }
+      ]
+    },
+    "BV-backup-population": {
+      "operator": "equals",
+      "value": [
+        {
+          "item_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backupinstances/protected",
+          "policy_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/backuppolicies/approved",
+          "source_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/disks/protected",
+          "state": "ProtectionConfigured",
+          "status": "ProtectionConfigured"
+        }
+      ]
+    },
+    "BV-backup-soft-delete": {
+      "operator": "equals",
+      "value": "AlwaysOn"
+    },
+    "BV-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "BV-diagnostic-logs-recovery": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "BV-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dataprotection/backupvaults/demo9/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "BV-diagnostic-routes-recovery": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "BV-recovery-immutability": {
+      "operator": "equals",
+      "value": "Locked"
+    },
+    "BV-recovery-jobs": {
+      "operator": "equals",
+      "value": [
+        {
+          "end_time": "2026-09-20T00:30:00Z",
+          "job_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupjobs/job-1",
+          "operation": "Backup",
+          "source_id": null,
+          "start_time": "2026-09-20T00:00:00Z",
+          "status": "Completed"
+        }
+      ]
+    },
+    "BV-recovery-population": {
+      "operator": "equals",
+      "value": [
+        {
+          "item_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backupfabrics/azure/protectioncontainers/iaasvmcontainer;rg;vm/protecteditems/vm;rg;vm",
+          "policy_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.recoveryservices/vaults/demo20/backuppolicies/approved",
+          "source_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachines/protected",
+          "state": "Protected",
+          "status": "Healthy"
+        }
+      ]
+    },
+    "BV-recovery-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "COS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "COS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "COS-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.documentdb/databaseaccounts/demo11/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "COS-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "COS-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "COS-tls": {
+      "operator": "equals",
+      "value": "Tls12"
+    },
+    "EG-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "EG-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "EG-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.eventgrid/topics/demo12/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "EG-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "EG-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "EH-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "EH-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "EH-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.eventhub/namespaces/demo13/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "EH-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "EH-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "EH-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "FUNC-approved-arm-grants-slot": {
+      "operator": "equals",
+      "value": []
+    },
+    "FUNC-auth-platform": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-platform-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-required": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-auth-required-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "FUNC-diagnostic-logs-slot": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "FUNC-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.web/sites/demo22/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "FUNC-diagnostic-routes-slot": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.web/sites/demo23/slots/demo23/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "FUNC-ftp": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-ftp-basic-auth": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-ftp-basic-auth-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-ftp-slot": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-https": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-https-slot": {
+      "operator": "equals",
+      "value": true
+    },
+    "FUNC-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-public-network-slot": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "FUNC-remote-debugging": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-remote-debugging-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-basic-auth": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-basic-auth-slot": {
+      "operator": "equals",
+      "value": false
+    },
+    "FUNC-scm-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-scm-tls-slot": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "FUNC-tls-slot": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "GRAF-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "GRAF-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "GRAF-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dashboard/grafana/demo8/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "GRAF-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "GRAF-zone-redundancy": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "KV-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "KV-certificates-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/certificates/example",
+          "updated": 1700000000
+        }
+      ]
+    },
+    "KV-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "KV-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.keyvault/vaults/demo15/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "KV-keys-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/keys/example",
+          "updated": 1700000000
+        }
+      ]
+    },
+    "KV-network-default": {
+      "operator": "equals",
+      "value": "Deny"
+    },
+    "KV-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "KV-purge-protection": {
+      "operator": "equals",
+      "value": true
+    },
+    "KV-rbac": {
+      "operator": "equals",
+      "value": true
+    },
+    "KV-secrets-lifecycle": {
+      "operator": "equals",
+      "value": [
+        {
+          "created": 1700000000,
+          "enabled": true,
+          "exp": 2000000000,
+          "nbf": null,
+          "object_id": "https://demo15.vault.azure.net/secrets/example",
+          "updated": 1700000000
+        }
+      ]
+    },
+    "KV-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "LA-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "LA-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "LA-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "LA-local-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "LA-public-ingestion": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "LA-public-query": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "LA-retention": {
+      "operator": "equals",
+      "value": 30
+    },
+    "LA-table-retention": {
+      "operator": "equals",
+      "value": [
+        {
+          "archive_retention_days": 335,
+          "plan": "Analytics",
+          "provisioning_state": "Succeeded",
+          "retention_days": 30,
+          "retention_inherited": false,
+          "table_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/demo19/tables/audittable",
+          "total_retention_days": 365,
+          "total_retention_inherited": false
+        }
+      ]
+    },
+    "PE-approval": {
+      "operator": "equals",
+      "value": [
+        "Approved"
+      ]
+    },
+    "PE-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "PE-subresources": {
+      "operator": "equals",
+      "value": [
+        "blob"
+      ]
+    },
+    "PE-targets": {
+      "operator": "equals",
+      "value": [
+        "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/approved"
+      ]
+    },
+    "PG-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "PG-backup-retention": {
+      "operator": "equals",
+      "value": 30
+    },
+    "PG-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "PG-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.dbforpostgresql/flexibleservers/demo10/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "PG-entra-auth": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "PG-password-auth": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "PG-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "PROM-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "PROM-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "PROM-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.monitor/accounts/demo17/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "PROM-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "REDIS-access-keys": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "REDIS-aof-persistence": {
+      "operator": "equals",
+      "value": false
+    },
+    "REDIS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "REDIS-approved-arm-grants-database": {
+      "operator": "equals",
+      "value": []
+    },
+    "REDIS-client-protocol": {
+      "operator": "equals",
+      "value": "Encrypted"
+    },
+    "REDIS-clustering-policy": {
+      "operator": "equals",
+      "value": "OSSCluster"
+    },
+    "REDIS-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
+    "REDIS-defer-upgrade": {
+      "operator": "equals",
+      "value": "NotDeferred"
+    },
+    "REDIS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "REDIS-diagnostic-logs-database": {
+      "operator": "equals",
+      "value": [
+        "category:ConnectionEvents"
+      ]
+    },
+    "REDIS-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "REDIS-diagnostic-routes-database": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:ConnectionEvents"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.cache/redisenterprise/demo3/databases/default/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "REDIS-eviction-policy": {
+      "operator": "equals",
+      "value": "VolatileLRU"
+    },
+    "REDIS-high-availability": {
+      "operator": "equals",
+      "value": "Enabled"
+    },
+    "REDIS-rdb-persistence": {
+      "operator": "equals",
+      "value": true
+    },
+    "REDIS-tls": {
+      "operator": "equals",
+      "value": "1.2"
+    },
+    "ST-anonymous-blob": {
+      "operator": "equals",
+      "value": false
+    },
+    "ST-approved-arm-grants": {
+      "operator": "equals",
+      "value": [
+        {
+          "assignment_id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roleassignments/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "condition_sha256": null,
+          "condition_version": null,
+          "delegated_identity": null,
+          "permissions": [
+            {
+              "actions": [
+                "*"
+              ],
+              "dataActions": [],
+              "notActions": [
+                "microsoft.authorization/*/write"
+              ],
+              "notDataActions": []
+            }
+          ],
+          "principal_id": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "principal_type": "ServicePrincipal",
+          "role_id": "/subscriptions/11111111-1111-1111-1111-111111111111/providers/microsoft.authorization/roledefinitions/cccccccc-cccc-cccc-cccc-cccccccccccc",
+          "role_type": "CustomRole",
+          "scope": "/subscriptions/11111111-1111-1111-1111-111111111111"
+        }
+      ]
+    },
+    "ST-blob-restore": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-blob-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-blob-versioning": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-cmk-key": {
+      "operator": "equals",
+      "value": {
+        "configured": true,
+        "identity": "user_assigned",
+        "version_pinned": true
+      }
+    },
+    "ST-container-access": {
+      "operator": "allowed_access",
+      "value": [
+        "None"
+      ]
+    },
+    "ST-container-soft-delete": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "ST-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.storage/storageaccounts/demo21/blobservices/default/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "ST-https": {
+      "operator": "equals",
+      "value": true
+    },
+    "ST-network-default": {
+      "operator": "equals",
+      "value": "Deny"
+    },
+    "ST-public-network": {
+      "operator": "equals",
+      "value": "Disabled"
+    },
+    "ST-shared-key": {
+      "operator": "equals",
+      "value": false
+    },
+    "ST-tls": {
+      "operator": "equals",
+      "value": "TLS1_2"
+    },
+    "UAMI-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "UAMI-federation-trust": {
+      "operator": "equals",
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "https://issuer.example.invalid",
+          "subject": "system:serviceaccount:audit:collector"
+        }
+      ]
+    },
+    "VM-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "VM-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "VM-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachines/demo4/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "VM-linux-password-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "VM-secure-boot": {
+      "operator": "equals",
+      "value": true
+    },
+    "VM-vtpm": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-approved-arm-grants": {
+      "operator": "equals",
+      "value": []
+    },
+    "VMSS-diagnostic-logs": {
+      "operator": "equals",
+      "value": [
+        "category:AuditEvent"
+      ]
+    },
+    "VMSS-diagnostic-routes": {
+      "operator": "equals",
+      "value": [
+        {
+          "eventhub_name": null,
+          "eventhub_rule_id": null,
+          "logs": [
+            "category:AuditEvent"
+          ],
+          "partner_id": null,
+          "setting_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/providers/microsoft.insights/diagnosticsettings/safe",
+          "storage_id": null,
+          "workspace_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.operationalinsights/workspaces/approved-logs",
+          "workspace_table_mode": null
+        }
+      ]
+    },
+    "VMSS-instance-members": {
+      "operator": "equals",
+      "value": {
+        "members": [
+          "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualmachines/0"
+        ],
+        "orchestration": "Uniform",
+        "scope": "scale_set"
+      }
+    },
+    "VMSS-instance-models": {
+      "operator": "equals",
+      "value": [
+        {
+          "instance_id": "/subscriptions/11111111-1111-1111-1111-111111111111/resourcegroups/audit-demo/providers/microsoft.compute/virtualmachinescalesets/demo5/virtualmachines/0",
+          "latest_model_applied": true
+        }
+      ]
+    },
+    "VMSS-linux-password-auth": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-secure-boot": {
+      "operator": "equals",
+      "value": true
+    },
+    "VMSS-vtpm": {
+      "operator": "equals",
+      "value": true
+    }
+  },
+  "id": "SYNTHETIC-TEST-CRITERIA-NOT-WORKPLACE-POLICY",
+  "schema_version": "1.0",
+  "status": "approved",
+  "version": "1"
+}

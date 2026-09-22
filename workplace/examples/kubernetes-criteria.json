@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "synthetic-example",
+  "version": "1",
+  "status": "approved",
+  "checks": {
+    "host_namespaces": false,
+    "privileged": false,
+    "allow_escalation": false,
+    "run_as_non_root": true,
+    "readonly_root": true,
+    "declared_digest": true,
+    "runtime_digest_known": true,
+    "declared_runtime_digest_match": true
+  }
+}

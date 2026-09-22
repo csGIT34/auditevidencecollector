@@ -1,0 +1,431 @@
+"""GET-only public Azure ARM resource adapter and deterministic fixture adapter.
+
+Resource collection issues nothing but GET. Azure Policy compliance is only queryable
+by POST and therefore lives in policy_query.py, not here.
+"""
+import json
+import math
+import subprocess
+import time
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlsplit, quote
+from urllib.request import HTTPRedirectHandler, Request, build_opener
+
+from .catalog import RULES
+from .controls import for_type, project as project_configuration, valid_value
+from .safety import identity, label, now, project, subscription_id, resource_group_name
+
+ARM = "https://management.azure.com"
+INVENTORY_API = "2021-04-01"
+SUBSCRIPTIONS_API = "2022-12-01"
+MAX_RESPONSE_BYTES = 8 * 1024 * 1024
+
+class CollectionError(Exception):
+    def __init__(self, code, status=None):
+        self.code, self.status = code, status
+        super().__init__(code)
+
+def endpoint(path, api):
+    return f'{ARM}{quote(path, safe="/()")}?api-version={api}'
+
+def valid_url(url):
+    if not isinstance(url, str):
+        raise CollectionError("invalid_url")
+    try:
+        p = urlsplit(url)
+        if (p.scheme != "https" or p.netloc.lower() != "management.azure.com" or p.fragment
+                or not (p.path == "/subscriptions" or p.path.startswith("/subscriptions/")) or "\\" in url or any(c in url for c in "\r\n")):
+            raise CollectionError("unsafe_url")
+    except ValueError:
+        raise CollectionError("invalid_url") from None
+    return p
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise CollectionError("redirect_rejected", code)
+
+class AzureCliCredential:
+    """Azure CLI credential for its current tenant/cloud. Token remains in memory."""
+    def __init__(self):
+        self.token, self.until = None, 0
+
+    def get_token(self):
+        if self.token and time.monotonic() < self.until:
+            return self.token
+        try:
+            proc = subprocess.run(["az", "account", "get-access-token", "--resource", ARM + "/", "--output", "json"],
+                                  capture_output=True, text=True, timeout=60, check=False)
+            if proc.returncode:
+                raise CollectionError("authentication_failed")
+            data = json.loads(proc.stdout)
+            token = data.get("accessToken")
+            if not isinstance(token, str) or not token or any(c in token for c in "\r\n"):
+                raise CollectionError("authentication_failed")
+            remaining = float(data.get("expires_on", time.time() + 300)) - time.time() - 120
+            self.token, self.until = token, time.monotonic() + max(0, min(remaining, 1800))
+            return token
+        except (OSError, subprocess.TimeoutExpired, ValueError, TypeError, AttributeError):
+            raise CollectionError("authentication_failed") from None
+
+def bounded_payload(raw):
+    """Parse a provider response under the same limits for every transport.
+
+    Duplicate members, nonfinite numbers, invalid UTF-8 and excessive nesting are rejected
+    before any value reaches a projection.
+    """
+    def unique(pairs):
+        result={}
+        for key,value in pairs:
+            if key in result:raise ValueError('Duplicate provider member')
+            result[key]=value
+        return result
+    def invalid_constant(value):raise ValueError('Nonfinite provider value')
+    def finite_float(value):
+        number=float(value)
+        if not math.isfinite(number):raise ValueError('Nonfinite provider value')
+        return number
+    text=raw.decode('utf-8')
+    depth=0;quoted=False;escaped=False
+    for char in text:
+        if quoted:
+            if escaped:escaped=False
+            elif char=='\\':escaped=True
+            elif char=='"':quoted=False
+        elif char=='"':quoted=True
+        elif char in '{[':
+            depth+=1
+            if depth>64:raise CollectionError('malformed_response')
+        elif char in '}]':depth-=1
+    return json.loads(text,object_pairs_hook=unique,parse_constant=invalid_constant,parse_float=finite_float)
+
+class ArmTransport:
+    validate_url = staticmethod(valid_url)
+    def __init__(self, credential=None, retries=3, timeout=30, sleep=time.sleep, opener=None, *, max_response_bytes=MAX_RESPONSE_BYTES):
+        if type(max_response_bytes) is not int or not 1 <= max_response_bytes <= MAX_RESPONSE_BYTES:
+            raise ValueError("Invalid response byte limit")
+        self.max_response_bytes = max_response_bytes
+        self.credential = credential or AzureCliCredential()
+        self.retries, self.timeout, self.sleep = retries, timeout, sleep
+        self.opener = opener or build_opener(NoRedirect())
+
+    def get(self, url):
+        self.validate_url(url)  # Before obtaining or sending the bearer token.
+        for attempt in range(self.retries + 1):
+            req = Request(url, headers={"Authorization": "Bearer " + self.credential.get_token(),
+                                       "Accept": "application/json"}, method="GET")
+            try:
+                with self.opener.open(req, timeout=self.timeout) as response:
+                    raw=response.read(self.max_response_bytes+1)
+                    if len(raw)>self.max_response_bytes:raise CollectionError('response_size_limit')
+                    payload=bounded_payload(raw)
+                if not isinstance(payload, dict):
+                    raise CollectionError("malformed_response")
+                return payload
+            except HTTPError as exc:
+                status = exc.code
+                retry_after = exc.headers.get("Retry-After", "") if exc.headers else ""
+                exc.close()  # Never retain/log a provider's potentially sensitive error body.
+                if status in (429, 500, 502, 503, 504) and attempt < self.retries:
+                    wait = min(float(retry_after), 30) if retry_after.isdigit() else min(2 ** attempt, 30)
+                    self.sleep(wait)
+                    continue
+                raise CollectionError("http_error", status) from None
+            except (URLError, TimeoutError, OSError):
+                if attempt < self.retries:
+                    self.sleep(min(2 ** attempt, 30))
+                    continue
+                raise CollectionError("network_error") from None
+            except (ValueError, UnicodeError, RecursionError):
+                raise CollectionError("malformed_response") from None
+        raise CollectionError("retry_exhausted")
+
+class FixtureTransport:
+    def __init__(self, responses):
+        self.responses, self.calls = responses, []
+        if any(isinstance(k,str) and '.vault.azure.net/' in k for k in responses):
+            from .vault_metadata import FixtureVaultTransport
+            self.vault_transport_factory=lambda base:FixtureVaultTransport(base,responses)
+
+    def get(self, url):
+        valid_url(url)
+        self.calls.append(url)
+        if url not in self.responses:
+            raise CollectionError("fixture_response_missing")
+        value = self.responses[url]
+        if isinstance(value, dict) and "fixture_error" in value:
+            raise CollectionError("http_error", value["fixture_error"])
+        return value
+
+class Collector:
+    def __init__(self, transport, max_pages=1000, mode="azure"):
+        if max_pages < 1:
+            raise ValueError("max_pages must be positive")
+        self.transport, self.max_pages, self.mode = transport, max_pages, mode
+        self.errors, self.resources = [], {}
+        self.resource_group = None
+        self.authorization_roles = {}
+
+    def error(self, scope, operation, exc):
+        error = {"scope": scope, "operation": operation, "code": exc.code,
+                 "http_status": exc.status, "observed_at": now()}
+        self.errors.append(error)
+        return error
+
+    def paged(self, url, scope, operation):
+        items, seen, pages, complete = [], set(), 0, False
+        initial_path = valid_url(url).path.lower()
+        while url:
+            try:
+                if valid_url(url).path.lower() != initial_path:
+                    raise CollectionError("pagination_scope_changed")
+                if url in seen:
+                    raise CollectionError("pagination_cycle")
+                if pages >= self.max_pages:
+                    raise CollectionError("pagination_limit")
+                seen.add(url)
+                page = self.transport.get(url)
+                if not isinstance(page, dict) or not isinstance(page.get("value"), list):
+                    raise CollectionError("malformed_page")
+                items.extend(page["value"])
+                pages += 1
+                url = page.get("nextLink")
+                if url is not None and (not isinstance(url, str) or not url):
+                    raise CollectionError("invalid_next_link")
+                if url is None:
+                    complete = True
+            except CollectionError as exc:
+                self.error(scope, operation, exc)
+                break
+        return items, {"complete": complete, "pages": pages, "items_received": len(items)}
+
+    def add_resource(self, raw, sid, parent=None, expected_type=None):
+        meta = identity(raw)
+        if (not meta or meta["subscription_id"] != sid.lower()
+                or (self.resource_group and meta["resource_group"].lower() != self.resource_group.lower())
+                or (expected_type and meta["type"].lower() != expected_type.lower())
+                or (parent and meta["id"].lower().rsplit("/", 2)[0] != parent.lower())):
+            self.error(parent or f"/subscriptions/{sid}", "inventory_identity", CollectionError("invalid_resource_identity"))
+            return None
+        key = meta["id"].lower()
+        if key not in self.resources:
+            self.resources[key] = {**meta, "location": label(raw.get("location", "global")),
+                                   "kind": label(raw.get("kind", "unspecified")),
+                                   "sku": label(raw.get("sku", {}).get("name", "unspecified")) if isinstance(raw.get("sku", {}), dict) else "[invalid]",
+                                   "collected_at": now(), "collection_status": "inventory_only", "evidence": {},
+                                   "children": {}, "errors": []}
+        return self.resources[key]
+
+    def resolve_managed_disks(self, record, subscriptions):
+        """Queue declared disk IDs for normal verified GETs within selected scope."""
+        if record['type'].lower() not in ('microsoft.compute/virtualmachines','microsoft.compute/virtualmachinescalesets'):
+            return
+        for ref in record['evidence'].get('references',[]):
+            raw={'id':ref['id'],'type':'Microsoft.Compute/disks','location':'unspecified'}
+            meta=identity(raw)
+            if (ref['relation']!='managed_disk' or not meta or len(ref['id'].split('/'))!=9 or not meta['resource_group'] or meta['subscription_id'] not in subscriptions
+                    or (self.resource_group and meta['resource_group'].lower()!=self.resource_group.lower())):
+                continue  # Preserve the unresolved reference, without broadening authorized scope.
+            self.add_resource(raw,meta['subscription_id'])
+
+    def hydrate(self, record):
+        rule = RULES.get(record["type"].lower())
+        checks = for_type(record["type"])
+        if (not rule or rule.mode == "na") and not checks:
+            return
+        api = rule.api if rule and rule.api else checks[0].api
+        rid = record["id"]
+        record["api_version"] = api
+        record["request_path"] = rid  # No URLs with opaque continuation tokens.
+        try:
+            raw = self.transport.get(endpoint(rid, api))
+            verified = identity(raw)
+            if (not verified or verified["id"].lower() != rid.lower()
+                    or not isinstance(raw.get("properties"), dict)):
+                raise CollectionError("invalid_detail_identity_or_properties")
+            record["evidence"] = project(raw, rule) if rule else {}
+            if checks:
+                record["configuration"] = project_configuration(raw, record["type"])
+            if isinstance(raw.get("sku"), dict) and "name" in raw["sku"]:
+                record["sku"] = label(raw["sku"]["name"])
+            record["location"] = label(raw.get("location", "unspecified"))
+            record["kind"] = label(raw.get("kind", "unspecified"))
+            record["collection_status"] = "ok"
+        except CollectionError as exc:
+            record["collection_status"] = "error"
+            record["errors"].append(self.error(rid, "resource_get", exc))
+        parent_detail=raw if record['collection_status']=='ok' else None
+        for suffix, supplemental_api in sorted({(c.suffix,c.api) for c in checks if c.suffix and c.operation == 'get'}):
+            path = rid + suffix
+            try:
+                raw = self.transport.get(endpoint(path, supplemental_api))
+                if (not isinstance(raw, dict) or not isinstance(raw.get('id'), str)
+                        or raw['id'].lower() != path.lower() or not isinstance(raw.get('properties'), dict)):
+                    raise CollectionError('invalid_detail_identity_or_properties')
+                observations = project_configuration(raw, record['type'], suffix)
+            except CollectionError as exc:
+                observations = {c.id:{'state':'error','code':exc.code,'http_status':exc.status} for c in checks if c.suffix == suffix}
+            record.setdefault('configuration', {}).update(observations)
+        for check in (c for c in checks if c.operation == 'federation'):
+            reader = Collector(self.transport,self.max_pages,self.mode)
+            path = rid + check.suffix
+            rows, listing = reader.paged(endpoint(path,check.api),rid,'configuration_federation')
+            trusts = []; seen_trusts=set();malformed=False
+            for row in rows:
+                if not isinstance(row,dict) or not isinstance(row.get('id'),str) or row['id'].lower().rsplit('/',1)[0]!=path.lower() or row['id'].lower() in seen_trusts or not isinstance(row.get('properties'),dict):
+                    malformed=True;continue
+                seen_trusts.add(row['id'].lower())
+                props=row['properties']
+                trust={k:props.get(k) for k in ('issuer','subject','audiences')}
+                if isinstance(trust['audiences'],list) and all(isinstance(a,str) for a in trust['audiences']):trust['audiences']=sorted(set(trust['audiences']))
+                if not valid_value(check,[trust]):malformed=True;continue
+                trusts.append(trust)
+            trusts.sort(key=lambda r:json.dumps(r,sort_keys=True))
+            record.setdefault('configuration',{})[check.id] = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':trusts} if valid_value(check,trusts) else {'state':'invalid'}
+            record['configuration'][check.id]['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
+        for check in (c for c in checks if c.operation == 'diagnostics'):
+            reader = Collector(self.transport, self.max_pages, self.mode)
+            path = rid + check.suffix
+            settings, listing = reader.paged(endpoint(path,check.api),rid,'configuration_diagnostics')
+            categories = set()
+            malformed = False
+            seen_settings = set()
+            for setting in settings:
+                if (not isinstance(setting,dict) or not isinstance(setting.get('id'),str)
+                        or setting['id'].lower().rsplit('/',1)[0] != path.lower()
+                        or setting['id'].lower() in seen_settings or not isinstance(setting.get('properties'),dict)):
+                    malformed = True
+                    continue
+                seen_settings.add(setting['id'].lower())
+                logs = setting['properties'].get('logs')
+                if not isinstance(logs,list):
+                    malformed = True
+                    continue
+                for log in logs:
+                    if not isinstance(log,dict) or type(log.get('enabled')) is not bool:
+                        malformed = True
+                        continue
+                    if not log['enabled']:
+                        continue
+                    if bool(log.get('category')) == bool(log.get('categoryGroup')):
+                        malformed = True
+                        continue
+                    name = ('category:'+str(log['category'])) if log.get('category') else ('group:'+str(log['categoryGroup']))
+                    if not valid_value(check,[name]):
+                        malformed = True
+                    else:
+                        categories.add(name)
+            values = sorted(categories)
+            if not valid_value(check,values):
+                observation = {'state':'invalid'}
+            else:
+                observation = {'state':'observed' if listing['complete'] and not malformed else 'partial','value':values}
+            observation['collection']={**listing,'malformed':malformed,'errors':[{k:e[k] for k in ('code','http_status')} for e in reader.errors]}
+            record.setdefault('configuration',{})[check.id] = observation
+            from .diagnostic_routes import project as project_routes
+            for route_check in (c for c in checks if c.operation=='diagnostic_routes' and c.suffix==check.suffix):
+                record['configuration'][route_check.id]=project_routes(settings,path,listing,reader.errors)
+        for check in (c for c in checks if c.operation == 'authorization'):
+            from .authorization import collect as collect_authorization
+            record.setdefault('configuration',{})[check.id] = collect_authorization(self.transport,rid,self.max_pages,self.authorization_roles)
+        for check in (c for c in checks if c.operation=='backup_population'):
+            from .backup_population import collect as collect_backup_population
+            record.setdefault('configuration',{})[check.id]=collect_backup_population(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='vmss_instances'):
+            from .compute_instances import collect as collect_instances
+            record.setdefault('configuration',{})[check.id]=collect_instances(self.transport,rid,check,self.max_pages,parent_detail)
+        for check in (c for c in checks if c.operation=='vmss_members'):
+            from .compute_instances import collect_members
+            observation,members=collect_members(self.transport,rid,check,self.max_pages,parent_detail,record.get('configuration',{}).get('VMSS-instance-models',{}),self.resource_group)
+            for member in members:
+                if self.add_resource(member,record['subscription_id'],expected_type='Microsoft.Compute/virtualMachines') is None:
+                    observation['state']='partial';observation['collection']['malformed']=True
+            record.setdefault('configuration',{})[check.id]=observation
+        for check in (c for c in checks if c.operation=='container_revisions'):
+            from .container_revisions import collect as collect_revisions
+            record.setdefault('configuration',{})[check.id]=collect_revisions(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='backup_jobs'):
+            from .backup_jobs import collect as collect_jobs
+            record.setdefault('configuration',{})[check.id]=collect_jobs(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='blob_containers'):
+            from .blob_containers import collect as collect_containers
+            record.setdefault('configuration',{})[check.id]=collect_containers(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='vault_metadata'):
+            from .vault_metadata import collect as collect_vault_metadata
+            record.setdefault('configuration',{})[check.id]=collect_vault_metadata(self.transport,rid,check,self.max_pages,parent_detail)
+        for check in (c for c in checks if c.operation=='automation_assets'):
+            from .automation_assets import collect as collect_automation_assets
+            record.setdefault('configuration',{})[check.id]=collect_automation_assets(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='automation_runtimes'):
+            from .automation_assets import collect_runtimes
+            record.setdefault('configuration',{})[check.id]=collect_runtimes(self.transport,rid,check,self.max_pages)
+        for check in (c for c in checks if c.operation=='log_tables'):
+            from .log_tables import collect as collect_log_tables
+            record.setdefault('configuration',{})[check.id]=collect_log_tables(self.transport,rid,check,self.max_pages)
+        record["collected_at"] = now()
+        # Enumerate known children even if the parent GET was denied.
+        for suffix, child_type in (rule.children if rule else ()):
+            rows, listing = self.paged(endpoint(rid + "/" + suffix, rule.api), rid, "list_" + suffix)
+            children = []
+            for row in rows:
+                child = self.add_resource(row, record["subscription_id"], rid, child_type)
+                if child:
+                    children.append(child["id"])
+                else:
+                    listing["complete"] = False
+            record["children"][suffix] = {**listing, "ids": sorted(set(children), key=str.lower)}
+        if rule and rule.mode == "tde" and not (rule.key == "sql-tde" and record["name"].lower() == "master"):
+            suffix = "/transparentDataEncryption/current"
+            try:
+                tde = self.transport.get(endpoint(rid + suffix, rule.api))
+                if (not isinstance(tde, dict) or not isinstance(tde.get("id"), str)
+                        or tde["id"].lower() != (rid + suffix).lower()
+                        or not isinstance(tde.get("properties"), dict)):
+                    raise CollectionError("invalid_tde_response")
+                state = tde["properties"].get("state", tde["properties"].get("status"))
+                record["evidence"]["tde.state"] = state if state in ("Enabled", "Disabled") else "[missing-or-unrecognized]"
+                record["evidence"]["tde.observed_at"] = now()
+            except CollectionError as exc:
+                record["errors"].append(self.error(rid, "tde_get", exc))
+
+    def collect(self, subscriptions=None, *, resource_group=None):
+        if resource_group is not None and (not resource_group_name(resource_group) or not subscriptions or len(set(subscriptions)) != 1):
+            raise ValueError("Resource-group scope requires one explicit subscription and a valid group")
+        self.errors, self.resources = [], {}
+        self.resource_group = resource_group
+        started = now()
+        inventory = {"subscription_discovery": {"complete": True, "mode": "explicit"}, "subscriptions": []}
+        if subscriptions is None:
+            rows, discovery = self.paged(endpoint("/subscriptions", SUBSCRIPTIONS_API), "/subscriptions", "list_subscriptions")
+            inventory["subscription_discovery"] = {**discovery, "mode": "accessible_in_current_tenant"}
+            subscriptions = []
+            for row in rows:
+                sid = subscription_id(row.get("subscriptionId")) if isinstance(row, dict) else None
+                if sid:
+                    subscriptions.append(sid)
+                else:
+                    inventory["subscription_discovery"]["complete"] = False
+                    self.error("/subscriptions", "list_subscriptions", CollectionError("invalid_subscription_identity"))
+        for sid in sorted(set(subscriptions)):
+            if not subscription_id(sid):
+                raise ValueError("subscription must be a UUID")
+            scope = f"/subscriptions/{sid}"
+            if resource_group:
+                scope += "/resourceGroups/" + resource_group
+            rows, listing = self.paged(endpoint(scope + "/resources", INVENTORY_API), scope, "list_resources")
+            for row in rows:
+                if not self.add_resource(row, sid):
+                    listing["complete"] = False
+            inventory["subscriptions"].append({"id": sid, **listing, **({"resource_group": resource_group} if resource_group else {})})
+        selected_subscriptions={s["id"].lower() for s in inventory["subscriptions"]}
+        processed = set()
+        while pending := sorted(set(self.resources) - processed):
+            for key in pending:
+                processed.add(key)
+                self.hydrate(self.resources[key])
+                self.resolve_managed_disks(self.resources[key],selected_subscriptions)
+        inventory["complete"] = (inventory["subscription_discovery"]["complete"]
+                                 and bool(inventory["subscriptions"])
+                                 and all(s["complete"] for s in inventory["subscriptions"]))
+        return {"schema_version": "1.1", "mode": self.mode, "started_at": started, "completed_at": now(),
+                "inventory": inventory, "resources": sorted(self.resources.values(), key=lambda r: r["id"].lower()),
+                "errors": self.errors}

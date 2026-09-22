@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloud-governance"
+version = "0.27.0"
+description = "Read-only Azure technical evidence and configurable control assessments"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+pdf = ["reportlab>=4.4,<5"]
+test = ["pypdf>=6,<7", "jmespath>=1.0,<2"]
+azure = ["azure-identity>=1.25,<2", "azure-storage-blob>=12.30,<13", "azure-functions>=1.25,<2"]
+
+[tool.setuptools.package-data]
+cloud_governance = ["program_scope.json", "control_objectives.json", "control_index.json"]
+
+[project.scripts]
+cloud-governance = "cloud_governance.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cloud_governance*"]

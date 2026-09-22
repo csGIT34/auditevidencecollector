@@ -1,0 +1,2617 @@
+{
+  "catalog_sha256": "bd4073594573cf6c91157571382a0ec30a1f466a4aa789e9842b87cf77b8f4d2",
+  "catalog_version": "2026-09-19.2",
+  "checks": {
+    "ACA-B": {
+      "candidate_criterion": "Recover configuration and business state within RTO/RPO; replicas and retained revisions are not complete data backups.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Declarative rebuild and application state recovery"
+    },
+    "ACA-C": {
+      "candidate_criterion": "Approved runnable revisions and minimal features; deployment and traffic changes reviewed with rollback evidence.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Revisions, scale rules and deployment configuration"
+    },
+    "ACA-I": {
+      "candidate_criterion": "Approved callers and minimal identities; review job-start and role wildcard abilities as powerful access even without explicit listSecrets.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "App callers, runtime identities and job execution"
+    },
+    "ACA-K": {
+      "candidate_criterion": "Secrets use approved custody and rotate/revoke successfully across revisions; no listSecrets, literal environment values or secret volumes read.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Secret references and consumer refresh"
+    },
+    "ACA-L": {
+      "candidate_criterion": "Required application/security events reach protected destinations; console logs are not automatically adequate security audit.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Application/system audit and collection health"
+    },
+    "ACA-N": {
+      "candidate_criterion": "App/environment restrictions meet approved paths; internal ingress and VNet routing are evaluated separately from private endpoints.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Environment and app ingress/egress boundaries"
+    },
+    "ACA-R": {
+      "candidate_criterion": "All selected ephemeral/persistent/external stores are accounted for; no secret-bearing environment storage payloads retrieved.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Ephemeral and mounted application storage"
+    },
+    "ACA-T": {
+      "candidate_criterion": "Required encrypted paths and certificate validation operate end to end; HTTP ingress TLS does not automatically cover TCP/Dapr/downstream traffic.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Ingress, service traffic and certificates"
+    },
+    "ACA-V": {
+      "candidate_criterion": "Actual deployed images have fresh vulnerability coverage and timely remediation; managed hosts do not patch customer image packages.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SI-7",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACA",
+      "title": "Container images and managed platform"
+    },
+    "ACR-B": {
+      "candidate_criterion": "Critical immutable digests recover within approved requirements; geo-replication or soft delete alone is not an isolated backup.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Artifact availability and registry recovery"
+    },
+    "ACR-C": {
+      "candidate_criterion": "Approved artifacts and controlled promotion; mutable tags cannot stand in for immutable digest identity; selected signature policy is actually verified.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-14"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Artifact immutability policy and task changes"
+    },
+    "ACR-I": {
+      "candidate_criterion": "Approved repository-scoped pull/push/admin rights; admin/shared credentials justified; repository ABAC mode matched to actual role behavior.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Push/pull, administrator and task rights"
+    },
+    "ACR-K": {
+      "candidate_criterion": "Credentials are scoped and rotated; no registry passwords, task credentials or token values collected.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Repository tokens, credentials and optional CMK"
+    },
+    "ACR-L": {
+      "candidate_criterion": "Required artifact and authentication actions are logged and retained; SKU/category support recorded rather than inferred.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Login and repository operation audit"
+    },
+    "ACR-N": {
+      "candidate_criterion": "All required registry/data endpoints meet approved exposure design; broad trusted-service access exceptions documented.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Registry ingress and data endpoints"
+    },
+    "ACR-R": {
+      "candidate_criterion": "Provider encryption accepted for stored registry artifacts; pulled layers and runtime writes are assessed on their destinations.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Registry stored artifacts and copies"
+    },
+    "ACR-T": {
+      "candidate_criterion": "Approved encrypted transfer and server verification; private endpoints alone do not establish image authenticity.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Registry API and image transport"
+    },
+    "ACR-V": {
+      "candidate_criterion": "Required artifacts have current scans and traceable trusted provenance; paid scanning plan presence is not scan coverage or remediation.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SI-7",
+        "SR-4"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ACR",
+      "title": "Stored image vulnerabilities and provenance"
+    },
+    "AI-B": {
+      "candidate_criterion": "Required historic telemetry and monitoring functions can recover; workspace retention does not guarantee an independent recoverable copy.",
+      "controls": [
+        "CP-2",
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Monitoring recovery and retained telemetry access"
+    },
+    "AI-C": {
+      "candidate_criterion": "Changes preserve required audit detail and approved privacy minimization; query URLs/bodies and user identifiers are reviewed before collection.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "SI-12"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Instrumentation/privacy and alert configuration drift"
+    },
+    "AI-I": {
+      "candidate_criterion": "Approved ingestion/query identities only; instrumentation/connection identifiers are not treated as authentication credentials or access-control proof.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Telemetry ingestion and query authorization"
+    },
+    "AI-K": {
+      "candidate_criterion": "Permitted credentials/certificates follow lifecycle policy; avoid raw connection strings, test headers, tokens and test URLs containing credentials.",
+      "controls": [
+        "IA-5",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Ingestion identity, legacy keys and web-test certificates"
+    },
+    "AI-L": {
+      "candidate_criterion": "Required security audit is complete enough for purpose; sampled application telemetry cannot be claimed as exhaustive access audit.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Instrumentation receipt, sampling and collection health"
+    },
+    "AI-N": {
+      "candidate_criterion": "Both ingestion and query paths satisfy approved exposure design; network owner validates shared AMPLS/DNS interactions.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Ingestion/query exposure and private-link path"
+    },
+    "AI-R": {
+      "candidate_criterion": "Telemetry store is resolved and scoped protection verified; classic/unresolved storage is not covered by a generic Monitor assertion.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Workspace-backed telemetry and exports"
+    },
+    "AI-T": {
+      "candidate_criterion": "Telemetry uses approved encrypted paths through every collector/proxy hop, not just the final Azure endpoint.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "Telemetry SDK and exporter transport"
+    },
+    "AI-V": {
+      "candidate_criterion": "Customer instrumentation is supported/remediated; managed telemetry service maintenance does not upgrade application libraries.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AI",
+      "title": "SDK, collector and application dependency support"
+    },
+    "AKS-B": {
+      "candidate_criterion": "Recover workload configuration and state within approved limits; multi-zone nodes or pod replicas alone do not back up application data.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Cluster rebuild and stateful recovery"
+    },
+    "AKS-C": {
+      "candidate_criterion": "Approved workload restrictions are enforced and drift reviewed; optional security features are selected by risk rather than assumed universally required.",
+      "controls": [
+        "CM-2",
+        "CM-6",
+        "CM-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Admission and workload hardening"
+    },
+    "AKS-I": {
+      "candidate_criterion": "Approved cluster and workload principals have minimal scopes; no unapproved admin/local-account paths or wildcard bindings; admission privileges reviewed.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Cluster access and workload identity"
+    },
+    "AKS-K": {
+      "candidate_criterion": "Secret use follows approved custody/rotation with tested renewal/revocation; do not read Kubernetes Secret values or unfiltered pod environment data.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Workload secrets and federation lifecycle"
+    },
+    "AKS-L": {
+      "candidate_criterion": "Selected privileged and workload operations are auditable end to end; agent/diagnostic configuration is corroborated by recent receipt.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Control-plane audit and workload log health"
+    },
+    "AKS-N": {
+      "candidate_criterion": "API and workload paths meet approved isolation; both policy selection and enforcement are demonstrated; network team supplies shared routing/firewall evidence.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "API server and workload network isolation"
+    },
+    "AKS-R": {
+      "candidate_criterion": "Every in-scope stored-data boundary is protected or explicitly excepted; managed disk encryption alone cannot establish all pod storage protection.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Secrets, nodes and workload storage"
+    },
+    "AKS-T": {
+      "candidate_criterion": "Required ingress and internal paths use approved encryption and certificate validation; ingress TLS does not imply east-west TLS.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "API, ingress and service-to-service encryption"
+    },
+    "AKS-V": {
+      "candidate_criterion": "All pools and deployed digests have fresh coverage and timely remediation; configured automatic updates alone do not establish actual node/image patch state.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22",
+        "SI-7"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AKS",
+      "title": "Cluster, node and image vulnerability lifecycle"
+    },
+    "APPC-B": {
+      "candidate_criterion": "Selected rollback/disaster recovery meets RPO/RTO; immutable configuration snapshots and geo-replication are not automatically independent backups.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Snapshots, deletion recovery and replica failover"
+    },
+    "APPC-C": {
+      "candidate_criterion": "Approved last-known-good versions and change review operate; schema/value safety assessed through owner-controlled reviews without exposing secrets.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Feature flag/configuration deployment safety"
+    },
+    "APPC-I": {
+      "candidate_criterion": "Only approved read/write principals; local keys justified; ARM administration and data access assessed separately.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Configuration data roles and access-key fallback"
+    },
+    "APPC-K": {
+      "candidate_criterion": "Secrets are kept in approved secret custody and consumers refresh/revoke them per policy; do not enumerate configuration values.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Key Vault references and refresh lifecycle"
+    },
+    "APPC-L": {
+      "candidate_criterion": "Required changes/access failures reach monitoring and retention; availability metrics do not replace data-plane event requirements.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Configuration access/change and refresh failures"
+    },
+    "APPC-N": {
+      "candidate_criterion": "Store/replica paths satisfy approved exposure/data-location requirements with network team connectivity evidence.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Store and replica private/public access"
+    },
+    "APPC-R": {
+      "candidate_criterion": "Provider-managed protection accepted for service data; external exports, caches and referenced secrets independently covered.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Configuration store and external values"
+    },
+    "APPC-T": {
+      "candidate_criterion": "All retrieval/refresh/failover paths use approved encrypted transport and valid endpoint trust.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "SDK endpoint and refresh transport"
+    },
+    "APPC-V": {
+      "candidate_criterion": "Customer SDKs and configuration-consuming applications are supported/remediated while service platform duties are inherited.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPC",
+      "title": "Managed store and application provider SDK"
+    },
+    "APPREG-B": {
+      "candidate_criterion": "Recovery restores approved identity relationships within RTO; never assume object/app IDs or secrets survive deletion/recreation or that credential export is required.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Identity configuration recovery and credential replacement"
+    },
+    "APPREG-C": {
+      "candidate_criterion": "Sensitive manifest changes have impact review and authorization; configuration templates contain no secret values.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Registration and consent change control"
+    },
+    "APPREG-I": {
+      "candidate_criterion": "Approved least-privilege grants and tenant audience; requested permissions are not confused with granted consent or runtime authorization.",
+      "controls": [
+        "AC-2",
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Requested permissions versus effective consent"
+    },
+    "APPREG-K": {
+      "candidate_criterion": "No unnecessary public-client credentials or stale secrets; approved federation/certificate preference and lifecycle enforced without retrieving private material.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Application credential and federation hygiene"
+    },
+    "APPREG-L": {
+      "candidate_criterion": "Required changes and workload authentication outcomes reach protected monitoring; licensed retention and unsupported event types remain explicit gaps.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Application changes and sign-in monitoring"
+    },
+    "APPREG-N": {
+      "candidate_criterion": "URIs/audience are owned, intended and constrained; app registration has no VNet/publicNetworkAccess switch. Actual hosting exposure belongs to the workload.",
+      "controls": [
+        "AC-4",
+        "IA-13"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Application audience and redirect trust boundary"
+    },
+    "APPREG-R": {
+      "candidate_criterion": "Provider directory protection is justified within scope; application business data and private-key/secret copies are assessed at their actual stores.",
+      "controls": [
+        "SC-28",
+        "SA-9"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Directory metadata and external credential custody"
+    },
+    "APPREG-T": {
+      "candidate_criterion": "Approved protocol flows and exact redirects are enforced; native loopback exceptions are evaluated by client type. Registration metadata cannot prove runtime token validation.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "IA-13"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "OAuth redirect and token transport security"
+    },
+    "APPREG-V": {
+      "candidate_criterion": "Supported identity libraries and negative security tests meet approved criteria; there is no customer patchable OS on the application object.",
+      "controls": [
+        "SA-11",
+        "SI-2",
+        "RA-5"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "APPREG",
+      "title": "Identity integration and application code security"
+    },
+    "AUTO-B": {
+      "candidate_criterion": "Rebuild meets RTO and safely reestablishes identities/assets; Automation has no general native backup, so a documented tested alternative is required.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Account rebuild and protected asset reconstitution"
+    },
+    "AUTO-C": {
+      "candidate_criterion": "Only approved tested runbooks and dependencies execute; no raw script or source-control token retrieval required for inventory.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-5",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Published code, source control and execution changes"
+    },
+    "AUTO-I": {
+      "candidate_criterion": "Powerful runtime identity cannot be exercised by unapproved authors/operators; execution rights evaluated as potential credential/identity use.",
+      "controls": [
+        "AC-3",
+        "AC-5",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Runbook authoring, execution and runtime identity"
+    },
+    "AUTO-K": {
+      "candidate_criterion": "Sensitive variables are protected and credentials rotate; never retrieve asset values, webhook URLs, private certificates or secret-bearing job output.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Automation assets, webhook tokens and certificate expiry"
+    },
+    "AUTO-L": {
+      "candidate_criterion": "Job failures and privileged operations monitored; output redacted before archival because streams may contain secrets and personal data.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Job status, administrative changes and audit delivery"
+    },
+    "AUTO-N": {
+      "candidate_criterion": "Each account/webhook/worker path meets approved boundary; private account configuration does not imply every webhook or hybrid dependency is private.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Account endpoints, webhooks and worker connectivity"
+    },
+    "AUTO-R": {
+      "candidate_criterion": "Provider-managed encryption accepted for documented scopes; plaintext variables, output streams and exported scripts require explicit handling and redaction evidence.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Secure assets, code and job/output stores"
+    },
+    "AUTO-T": {
+      "candidate_criterion": "All required paths use approved encryption/validation; account TLS does not prove arbitrary runbook outbound protocol safety.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Worker, webhook and runbook outbound transport"
+    },
+    "AUTO-V": {
+      "candidate_criterion": "Supported worker/runtime/modules and remediated host vulnerabilities; provider service maintenance does not patch hybrid hosts or customer modules.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22",
+        "SR-4"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "AUTO",
+      "title": "Runtime, modules and Hybrid Worker hosts"
+    },
+    "BV-B": {
+      "candidate_criterion": "Every required source has current recoverable protection meeting RPO/RTO; exclusions and unprotected resources explicit; both vault families handled independently.",
+      "controls": [
+        "CP-9",
+        "CP-9(1)",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Protected-item completeness and recovery evidence"
+    },
+    "BV-C": {
+      "candidate_criterion": "Safeguards match approved threat/retention policy; no duration invented or immutable lock enabled by assessment tooling.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Soft delete, immutability and policy change"
+    },
+    "BV-I": {
+      "candidate_criterion": "Incompatible backup/security/delete duties separated; privileged destructive paths require selected approvals and only authorized restore destinations.",
+      "controls": [
+        "AC-3",
+        "AC-5",
+        "AC-6"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Backup, restore, delete and security administration"
+    },
+    "BV-K": {
+      "candidate_criterion": "Selected credentials/keys remain available, protected and recoverable through rotations; never collect passphrases or vault credential files.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Optional CMK, agent/passphrase and credential custody"
+    },
+    "BV-L": {
+      "candidate_criterion": "Missed/failed jobs, deletion/security changes and monitoring gaps are detected and assigned; successful jobs do not establish data integrity alone.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Backup failures, deletion events and monitoring health"
+    },
+    "BV-N": {
+      "candidate_criterion": "Vault network settings match protection scenario; private endpoints do not imply all backup/restore traffic follows one path.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Vault and protected-workload connectivity"
+    },
+    "BV-R": {
+      "candidate_criterion": "Provider keys accepted for vault-held data; every out-of-vault copy is separately covered or flagged.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Vault encryption versus snapshots and restores"
+    },
+    "BV-T": {
+      "candidate_criterion": "Selected data paths and agents use approved encrypted protocols; vault storage encryption does not prove transport security.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Backup/restore transport and hybrid agents"
+    },
+    "BV-V": {
+      "candidate_criterion": "Customer agents are supported/remediated; provider vault maintenance has evidenced inheritance and is not confused with workload patching.",
+      "controls": [
+        "SI-2",
+        "SA-22",
+        "SA-9"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "BV",
+      "title": "Backup agent and managed vault maintenance"
+    },
+    "COS-B": {
+      "candidate_criterion": "Selected API backup and restore capabilities meet RPO/RTO; multi-region writes or replication alone do not establish backup integrity/recovery.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Backup mode, retention and regional restore"
+    },
+    "COS-C": {
+      "candidate_criterion": "Account and API configuration match approved application/data requirements with reviewed security/availability impact.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Consistency, regions and data-plane change controls"
+    },
+    "COS-I": {
+      "candidate_criterion": "Approved least privilege enforced for actual API; a NoSQL Entra option is not presumed available on every Mongo/Cassandra/Table/Gremlin variant.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "API-specific data roles and local authentication"
+    },
+    "COS-K": {
+      "candidate_criterion": "Non-Entra credentials have justified scopes/lifetimes and rotation; no account keys or connection strings collected.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Keys, resource tokens and optional CMK"
+    },
+    "COS-L": {
+      "candidate_criterion": "Required accesses/changes are auditable without capturing document/query contents; category availability and sampling limitations recorded.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "API-specific request audit and ingestion health"
+    },
+    "COS-N": {
+      "candidate_criterion": "All selected API and regional endpoints meet approved restrictions; trusted-service and broad Azure-address exceptions are justified.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Public access, firewall and regional endpoints"
+    },
+    "COS-R": {
+      "candidate_criterion": "Provider encryption accepted for the documented type; external exports and application caches require their own evidence.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Managed data and backup encryption"
+    },
+    "COS-T": {
+      "candidate_criterion": "Every selected client/API path enforces approved encrypted transport and certificate validation.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "API transport and client trust"
+    },
+    "COS-V": {
+      "candidate_criterion": "Managed engine responsibilities evidenced; customer drivers and queries/application code remain assessed.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "COS",
+      "title": "Managed engines and application drivers"
+    },
+    "EG-B": {
+      "candidate_criterion": "Documented loss/duplicate/replay behavior meets RPO/RTO; Event Grid retry retention is not a general-purpose backup.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Delivery recovery and replay strategy"
+    },
+    "EG-C": {
+      "candidate_criterion": "Approved routing/filter rules prevent unintended disclosure; consumers validate untrusted event content and changes are controlled.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "SI-10"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Subscription filters and MQTT routing baseline"
+    },
+    "EG-I": {
+      "candidate_criterion": "Only intended senders/receivers/topics/destinations are authorized; current namespace/MQTT capabilities override outdated baseline feature notes.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Publish, subscribe and delivery authorization"
+    },
+    "EG-K": {
+      "candidate_criterion": "Static credentials are justified, scoped and rotated; certificate renewal/revocation tested; never request publisher keys or credential-bearing destination URLs.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Publisher keys, webhook credentials and MQTT certificates"
+    },
+    "EG-L": {
+      "candidate_criterion": "Required publishing, access and delivery events are observable for the deployed subtype; metrics are not automatically per-event audit.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Publish/delivery/MQTT failure observability"
+    },
+    "EG-N": {
+      "candidate_criterion": "Supported exposure controls match approved paths; system/partner subscriptions and HTTP/MQTT families have separately evaluated boundaries.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Ingress restrictions and delivery destination trust"
+    },
+    "EG-R": {
+      "candidate_criterion": "No blanket at-rest pass from Event Hubs or generic Azure guidance; unresolved family-specific retained data or destination evidence remains unknown.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Retained events and dead-letter storage"
+    },
+    "EG-T": {
+      "candidate_criterion": "Encrypted approved protocols and valid destination/client trust on each supported path; redact webhook URLs that contain secrets.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Event delivery and MQTT transport"
+    },
+    "EG-V": {
+      "candidate_criterion": "Provider patch scope is evidenced; customer handlers and MQTT clients remain subject to vulnerability and application-security evidence.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-11"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EG",
+      "title": "Provider broker and customer event handlers"
+    },
+    "EH-B": {
+      "candidate_criterion": "Workload can recover within RPO/RTO; retention or namespace metadata recovery alone is not an event backup or tested replay.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Replay, Capture recovery and regional resilience"
+    },
+    "EH-C": {
+      "candidate_criterion": "Topology and retention match approved baseline; significant changes have authorization and recovery analysis.",
+      "controls": [
+        "CM-2",
+        "CM-6",
+        "CM-3"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Hub retention and consumer configuration drift"
+    },
+    "EH-I": {
+      "candidate_criterion": "Only approved send/receive/manage scopes; local SAS use requires an approved need; applications do not use namespace root-manage rights.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Publisher, receiver and namespace privileges"
+    },
+    "EH-K": {
+      "candidate_criterion": "Permitted SAS credentials rotate/revoke per policy; optional CMK remains available and managed. Do not call listKeys to assess lifecycle.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "SAS and optional CMK lifecycle"
+    },
+    "EH-L": {
+      "candidate_criterion": "Required security events are collected and collection/Capture failures acted upon; do not assume every tier logs each event payload or data action.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Access, operational and Capture audit"
+    },
+    "EH-N": {
+      "candidate_criterion": "Observed paths match the approved boundary and Capture destinations; network team supplies DNS/routing and connectivity validation.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Namespace ingress and Capture egress boundary"
+    },
+    "EH-R": {
+      "candidate_criterion": "Provider encryption is acceptable within the documented retained-data boundary; all enabled Capture stores independently meet the storage requirement.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Retained events and Capture data"
+    },
+    "EH-T": {
+      "candidate_criterion": "Approved encrypted protocols are used on all identified client/destination paths; a namespace TLS setting alone does not prove client validation.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Publisher, consumer and delivery transport"
+    },
+    "EH-V": {
+      "candidate_criterion": "Managed broker patching has scoped inheritance evidence; customer clients/connectors remain on supported, remediated versions.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "EH",
+      "title": "Managed broker versus customer clients"
+    },
+    "FUNC-B": {
+      "candidate_criterion": "Whole function workload can recover within limits; site backup does not automatically include trigger sources and external stores.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Code redeploy, host state and trigger recovery"
+    },
+    "FUNC-C": {
+      "candidate_criterion": "Approved features only; slots/deployments have authorization and validated rollback without exposing application settings.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Runtime hardening and deployment change"
+    },
+    "FUNC-I": {
+      "candidate_criterion": "Approved caller/trigger/deployment identities enforced; function keys alone are not user identity or least-privilege authorization.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "HTTP, trigger, deployment and managed identities"
+    },
+    "FUNC-K": {
+      "candidate_criterion": "Credentials stay in approved custody and rotate successfully; no host/function keys, publishing credentials or settings values collected.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Function keys and Key Vault references"
+    },
+    "FUNC-L": {
+      "candidate_criterion": "Security events are retained and not silently lost to sampling, quotas or broken instrumentation; function execution counts alone are insufficient audit.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Execution, application audit and deployment logs"
+    },
+    "FUNC-N": {
+      "candidate_criterion": "App and deployment endpoints match exposure policy; VNet integration for outbound traffic is not evidence of private inbound access.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Site and SCM ingress plus dependency paths"
+    },
+    "FUNC-R": {
+      "candidate_criterion": "All declared stored-data locations meet protection requirement or remain explicit gaps; do not retrieve secret-bearing app settings to discover them.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Host, content, deployment and runtime storage"
+    },
+    "FUNC-T": {
+      "candidate_criterion": "Approved encrypted paths cover HTTP, SCM, triggers and outbound dependencies; app HTTPS redirect alone does not cover downstream calls.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "HTTPS, SCM and downstream transport"
+    },
+    "FUNC-V": {
+      "candidate_criterion": "Supported runtimes and freshly assessed dependencies with timely remediation; provider OS maintenance does not patch customer packages.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22",
+        "SA-11"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "FUNC",
+      "title": "Function runtime, language and dependency support"
+    },
+    "GRAF-B": {
+      "candidate_criterion": "Recover approved dashboards, alerting and data-source access within limits; zone redundancy is not cross-region disaster recovery or dashboard backup.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Dashboard/configuration recovery and availability"
+    },
+    "GRAF-C": {
+      "candidate_criterion": "No unapproved public snapshots/plugins/features; settings evaluated against actual Grafana major version and managed-service restrictions.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Snapshot sharing, plugins and version-specific settings"
+    },
+    "GRAF-I": {
+      "candidate_criterion": "Approved least privilege at workspace and data source; a dashboard viewer must not gain unintended data through a broad shared managed identity.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Grafana roles and data-source authorization"
+    },
+    "GRAF-K": {
+      "candidate_criterion": "Automated tokens are justified, scoped, expired/rotated and revocable; do not collect token values or secureJsonData.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Service-account tokens and data-source credentials"
+    },
+    "GRAF-L": {
+      "candidate_criterion": "Required event types are emitted/retained and missing categories recorded; dashboard request metrics alone do not prove all administrative audit.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Authentication, administrative and datasource monitoring"
+    },
+    "GRAF-N": {
+      "candidate_criterion": "Both inbound and outbound paths match policy; private workspace configuration does not make its SSO endpoint private or isolate every data source.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Workspace ingress and data-source egress"
+    },
+    "GRAF-R": {
+      "candidate_criterion": "Provider encryption substantiated for Grafana-owned data; source databases and exported dashboards/snapshots separately assessed.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Grafana configuration/data and source stores"
+    },
+    "GRAF-T": {
+      "candidate_criterion": "Approved encryption and verification for each data source; do not assume external plugins/endpoints inherit Azure-managed transport guarantees.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Browser and each data-source transport"
+    },
+    "GRAF-V": {
+      "candidate_criterion": "Supported service/version and reviewed plugin supplier risks; do not assume arbitrary plugin installation or every plugin's patches are customer-controlled.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22",
+        "SR-6"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "GRAF",
+      "title": "Managed Grafana and enabled plugin lifecycle"
+    },
+    "KV-B": {
+      "candidate_criterion": "Keys/secrets/certificates and dependent workloads recover within requirements; soft delete alone is not a complete backup or restore test.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Vault/object recovery and dependent service recovery"
+    },
+    "KV-C": {
+      "candidate_criterion": "Approved deletion and access safeguards enforced; purge-protection/retention changes require authorized design decisions, not collector mutation.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Recovery safeguards and access-mode changes"
+    },
+    "KV-I": {
+      "candidate_criterion": "Approved control/data rights and separation of duties; control-plane Reader does not prove or provide secret access. Review legacy policy escalation paths.",
+      "controls": [
+        "AC-3",
+        "AC-5",
+        "AC-6"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Vault administration versus object use"
+    },
+    "KV-K": {
+      "candidate_criterion": "Required lifetimes/algorithms/rotation meet approved policy and consumers adopt new versions; metadata reads exclude secret values and private keys.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Object lifecycle, expiry, rotation and revocation"
+    },
+    "KV-L": {
+      "candidate_criterion": "Object-use and administrative events are received/protected and actionable without collecting request secrets.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5",
+        "AU-9"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Vault data access and administrative audit"
+    },
+    "KV-N": {
+      "candidate_criterion": "Vault access matches approved paths; trusted-service bypass and public exceptions documented with network owner evidence.",
+      "controls": [
+        "SC-7"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Vault firewall and private connections"
+    },
+    "KV-R": {
+      "candidate_criterion": "Each selected object class meets approved protection; current secret-value guarantee does not establish key-object or exported-backup coverage.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)",
+        "SC-13"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Secret, key and certificate protection boundary"
+    },
+    "KV-T": {
+      "candidate_criterion": "Approved transport enforced for each consumer; no raw secret retrieval needed for transport verification.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Vault API and consuming client transport"
+    },
+    "KV-V": {
+      "candidate_criterion": "Provider cryptographic guarantees match required algorithms/module assurance; no assumption that optional CMK or HSM is universally required.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SC-13"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "KV",
+      "title": "Managed cryptographic service and clients"
+    },
+    "LA-B": {
+      "candidate_criterion": "Required audit history and monitoring can be restored/retrieved within limits; export covers supported new data only, not an automatic historical full backup.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Retained evidence availability and export recovery"
+    },
+    "LA-C": {
+      "candidate_criterion": "Changes preserve required audit content and privacy minimization; delete/retention changes and permission drift are reviewed.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "DCR transforms, tables and export change control"
+    },
+    "LA-I": {
+      "candidate_criterion": "Query/write/delete rights fit approved duties; resource-scoped access and table permissions considered together; sensitive security tables have restricted access.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "AU-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Workspace, resource and table authorization"
+    },
+    "LA-K": {
+      "candidate_criterion": "Permitted agent/static credentials and optional keys follow lifecycle requirements; do not call workspace sharedKeys APIs.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Agent credentials and optional key lifecycle"
+    },
+    "LA-L": {
+      "candidate_criterion": "Every required dataset is retained/retrievable and protected from purge/unauthorized query; cap/transform/ingestion failures cause actionable alerts.",
+      "controls": [
+        "AU-4",
+        "AU-5",
+        "AU-9",
+        "AU-11",
+        "AU-12"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Table retention, query audit and ingestion health"
+    },
+    "LA-N": {
+      "candidate_criterion": "Both ingestion/query and external exports match approved flow/location restrictions with shared network validation.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Query, ingestion and export boundaries"
+    },
+    "LA-R": {
+      "candidate_criterion": "Provider keys accepted for the workspace scope; optional CMK configuration is not confused with base encryption and exports are independently assessed.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Workspace stored logs, queries and exports"
+    },
+    "LA-T": {
+      "candidate_criterion": "Approved encrypted transport covers custom collectors and all ingestion/query paths, including proxies.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Agent, collection and query transport"
+    },
+    "LA-V": {
+      "candidate_criterion": "Customer collectors are current and healthy; extension installed or managed service status does not establish actual collection or patching.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22",
+        "SA-9"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "LA",
+      "title": "Agents, query clients and managed service"
+    },
+    "ORG-A": {
+      "candidate_criterion": "Customer-created code and pipelines meet selected secure-development requirements and have operating test evidence; SA-15(13)/SA-24 require explicit selection, not automatic new mandates.",
+      "controls": [
+        "SA-10",
+        "SA-11",
+        "SA-15",
+        "SA-15(13)",
+        "SA-24",
+        "SI-7",
+        "SI-10",
+        "SI-11"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Customer application security and resiliency"
+    },
+    "ORG-B": {
+      "candidate_criterion": "Selected backup/rebuild strategy meets approved data-loss and outage limits; recovery tests succeed and defects close. Replication, retention and successful backup jobs do not prove recoverability.",
+      "controls": [
+        "CP-2",
+        "CP-4",
+        "CP-6",
+        "CP-7",
+        "CP-9",
+        "CP-9(1)",
+        "CP-10"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Recovery requirements and demonstrated restore"
+    },
+    "ORG-C": {
+      "candidate_criterion": "Observed settings match approved baseline or current owner-approved exceptions; changes have impact analysis and tested rollback. Policy compliance alone does not prove all resources or process performance.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-4",
+        "CM-5",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Approved change and configuration baseline"
+    },
+    "ORG-D": {
+      "candidate_criterion": "Approved detections reach accountable responders within agreed times; triage, containment, evidence preservation and recovery are demonstrated. An enabled Defender/Wiz plan is not operational effectiveness.",
+      "controls": [
+        "AU-6",
+        "SI-4",
+        "IR-3",
+        "IR-4",
+        "IR-5",
+        "IR-6",
+        "IR-8"
+      ],
+      "domain": "D",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Security detection and incident response"
+    },
+    "ORG-G": {
+      "candidate_criterion": "Responsible stakeholders approve applicability, parameters, inheritance and assessment scope; unresolved risks and stale evidence remain visible; exceptions have authority, scope, compensating measures and expiry.",
+      "controls": [
+        "PL-2",
+        "PL-8",
+        "PL-10",
+        "PL-11",
+        "PM-1",
+        "PM-5",
+        "PM-9",
+        "PM-31",
+        "CA-2",
+        "CA-3",
+        "CA-5",
+        "CA-6",
+        "CA-7",
+        "RA-3",
+        "RA-7"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Tailoring, risk, authorization and continuous assessment"
+    },
+    "ORG-H": {
+      "candidate_criterion": "Personnel and privileged roles meet selected training, screening and access-lifecycle requirements; minimize personal data in audit copies. Resource metadata cannot establish these controls.",
+      "controls": [
+        "AT-2",
+        "AT-3",
+        "AT-4",
+        "PS-2",
+        "PS-3",
+        "PS-4",
+        "PS-5",
+        "PS-6",
+        "PS-7"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "People, training and access lifecycle"
+    },
+    "ORG-I": {
+      "candidate_criterion": "Approved effective rights, MFA/elevation and break-glass controls operate for the selected populations; review decisions and removals are timely. Tenant policy presence alone is not enforcement evidence.",
+      "controls": [
+        "AC-2",
+        "AC-3",
+        "AC-5",
+        "AC-6",
+        "AC-6(7)",
+        "IA-2",
+        "IA-2(1)",
+        "IA-8"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Effective access and privileged human access"
+    },
+    "ORG-L": {
+      "candidate_criterion": "Required events arrive with identity/action/target/time/outcome, remain protected/retrievable for approved retention, and monitored failures trigger correction. Activity Log is not all data-plane audit.",
+      "controls": [
+        "AU-2",
+        "AU-3",
+        "AU-4",
+        "AU-5",
+        "AU-8",
+        "AU-9",
+        "AU-11",
+        "AU-12",
+        "SC-45"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Audit retention, integrity and collection health"
+    },
+    "ORG-M": {
+      "candidate_criterion": "Provider physical/host duties are evidenced and inherited only within their boundary; customer hybrid infrastructure, admin workstations, exported data and support access remain assigned.",
+      "controls": [
+        "MA-2",
+        "MA-4",
+        "MA-5",
+        "MP-2",
+        "MP-4",
+        "MP-5",
+        "MP-6",
+        "PE-2",
+        "PE-3",
+        "PE-6",
+        "PE-11",
+        "PE-13",
+        "PE-14",
+        "PE-16",
+        "PE-17"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Maintenance, media and physical dependencies"
+    },
+    "ORG-O": {
+      "candidate_criterion": "Every owned resource/object and required child/dependency has an accountable owner and classification; inventory gaps are reconciled. Missing tags are one signal, not proof of unknown ownership.",
+      "controls": [
+        "CM-8",
+        "CM-12",
+        "RA-2",
+        "RA-9"
+      ],
+      "domain": "O",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Inventory, ownership and information location"
+    },
+    "ORG-P": {
+      "candidate_criterion": "Data collection/use/retention matches approved purpose and privacy obligations; no blanket PII exclusion for telemetry, logs, identifiers, cache data or app metadata. Apply legal-specific controls only after privacy review.",
+      "controls": [
+        "PM-18",
+        "PM-23",
+        "PT-2",
+        "PT-3",
+        "PT-4",
+        "PT-5",
+        "PT-7",
+        "RA-8",
+        "SI-12"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Privacy, retention and information lifecycle"
+    },
+    "ORG-S": {
+      "candidate_criterion": "Inherited claims match the service/tier/region and report period, customer responsibilities are assigned and supplier risks tracked. Public marketing/certification labels alone do not establish operating effectiveness.",
+      "controls": [
+        "SA-4",
+        "SA-9",
+        "SR-2",
+        "SR-3",
+        "SR-4",
+        "SR-6",
+        "SR-8"
+      ],
+      "domain": "G",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Provider assurance, procurement and software suppliers"
+    },
+    "ORG-V": {
+      "candidate_criterion": "Required assets scanned within approved windows; vulnerabilities and unsupported components remediated or risk accepted before deadlines; exclusions and unavailable scans remain explicit. Root-cause analysis only for selected flaws.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SI-2(7)",
+        "SI-5",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "shared",
+      "title": "Vulnerability evidence and remediation accountability"
+    },
+    "PE-B": {
+      "candidate_criterion": "Connectivity can be recreated and verified within recovery requirements; no customer data backup is claimed for an endpoint object.",
+      "controls": [
+        "CP-2",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Private connectivity recovery"
+    },
+    "PE-C": {
+      "candidate_criterion": "Linkage changes are reviewed, stale endpoints resolved and shared network configuration evidence remains with its owner.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Connection and DNS linkage drift"
+    },
+    "PE-I": {
+      "candidate_criterion": "Only authorized parties create/approve links; endpoint reachability does not replace target service authentication.",
+      "controls": [
+        "AC-3",
+        "AC-5",
+        "AC-6"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Endpoint creation, connection approval and target authorization"
+    },
+    "PE-L": {
+      "candidate_criterion": "Changes and relevant access are observable; no unsupported assumption that the endpoint emits per-request service audit logs.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Endpoint changes and target access observability"
+    },
+    "PE-N": {
+      "candidate_criterion": "Endpoint is approved for intended target/subresource, resolves/routes as designed and target exposure satisfies policy. Connection Approved alone does not prove public access disabled.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Exact private target and effective connectivity"
+    },
+    "PE-T": {
+      "candidate_criterion": "Private routing is not treated as transport encryption; each application protocol meets the same approved encryption criteria.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PE",
+      "title": "Application encryption across private connectivity"
+    },
+    "PG-B": {
+      "candidate_criterion": "Actual backup and restore capability meets approved RPO/RTO; HA/replicas alone do not protect against logical corruption.",
+      "controls": [
+        "CP-9",
+        "CP-9(1)",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "PITR, retention, HA and tested recovery"
+    },
+    "PG-C": {
+      "candidate_criterion": "Approved baseline and migration privileges enforced; parameter/schema drift reviewed with security impact.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Extensions, parameters and schema change"
+    },
+    "PG-I": {
+      "candidate_criterion": "Only approved Entra/password methods and minimal SQL permissions; Entra enabled does not imply password disabled or least-privilege database grants.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Server authentication and database role grants"
+    },
+    "PG-K": {
+      "candidate_criterion": "Approved credential lifecycle operates; read role metadata without password hashes or connection strings.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Database credentials and optional CMK"
+    },
+    "PG-L": {
+      "candidate_criterion": "Selected privileged/data operations are audited and retained; enabling log export without database event generation is incomplete.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Database audit, connection logs and destinations"
+    },
+    "PG-N": {
+      "candidate_criterion": "Deployed public/private mode and exceptions meet approved design; network team owns delegated subnet/DNS/routing administration.",
+      "controls": [
+        "SC-7"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Server access mode and firewall"
+    },
+    "PG-R": {
+      "candidate_criterion": "Documented service encryption accepted with provider keys; external copies have independent protection evidence.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Database, logs, temporary data and backups"
+    },
+    "PG-T": {
+      "candidate_criterion": "Required transport is enforced and clients validate server identity; server TLS support alone does not prove verify-full client behavior.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Database TLS and client certificate validation"
+    },
+    "PG-V": {
+      "candidate_criterion": "Supported engine/extension/client lifecycle with tested timely upgrades; Microsoft maintenance responsibilities do not remove customer major-version planning.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PG",
+      "title": "Major versions, extensions and provider maintenance"
+    },
+    "PROM-B": {
+      "candidate_criterion": "Design meets acceptable metric-loss and restoration objectives; service retention is not a selectable independent backup/restore feature.",
+      "controls": [
+        "CP-2",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Metric continuity and monitoring rebuild"
+    },
+    "PROM-C": {
+      "candidate_criterion": "Collection rules match approved metrics with no sensitive/PII label data; review fixed service retention against requirements rather than inventing a retention toggle.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "SI-12"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "DCR, scrape, cardinality and label privacy baseline"
+    },
+    "PROM-I": {
+      "candidate_criterion": "Approved principals can ingest/query only intended resource populations; workspace mode and source-resource rights considered together.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Metrics ingestion and query scope"
+    },
+    "PROM-K": {
+      "candidate_criterion": "Credentials and client trust follow policy; no Kubernetes secrets or unfiltered scrape configuration collected.",
+      "controls": [
+        "IA-5",
+        "IA-9"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Scrape/remote-write identities and credential references"
+    },
+    "PROM-L": {
+      "candidate_criterion": "Monitoring coverage and freshness meet approved criteria; time-series metrics are not a substitute for security audit logs of access/administrative actions.",
+      "controls": [
+        "AU-5",
+        "SI-4"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Scrape coverage, ingestion loss and rule health"
+    },
+    "PROM-N": {
+      "candidate_criterion": "Both paths satisfy policy; the workspace query private endpoint alone is not evidence of private remote-write/configuration ingestion.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Ingestion versus query private connectivity"
+    },
+    "PROM-R": {
+      "candidate_criterion": "Use the Prometheus workspace guarantee, never a Log Analytics resource as a substitute; external copies assessed separately.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Azure Monitor workspace metric storage"
+    },
+    "PROM-T": {
+      "candidate_criterion": "Required encryption covers workload-to-collector and collector-to-service hops; Azure query TLS does not imply every scrape target is encrypted.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Scrape, remote write and query paths"
+    },
+    "PROM-V": {
+      "candidate_criterion": "Customer-deployed collectors/exporters supported/remediated; hosted metrics platform duties evidenced separately.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SA-22",
+        "SA-9"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "PROM",
+      "title": "Collector images and managed metrics platform"
+    },
+    "REDIS-B": {
+      "candidate_criterion": "Selected recovery design meets RPO/RTO; persistence can persist corruption and is not backup. Verify mode compatibility before proposing combined protections.",
+      "controls": [
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Export backup versus persistence and replication"
+    },
+    "REDIS-C": {
+      "candidate_criterion": "Chosen cache behavior and optional modules match approved security/data-loss design; changes are tested and reviewed.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Database policy and module drift"
+    },
+    "REDIS-I": {
+      "candidate_criterion": "Only approved Entra principals/Redis command scopes; permitted access-key fallback is justified. Cluster managed identity is not proof of client authentication.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Redis users and access-key authentication"
+    },
+    "REDIS-K": {
+      "candidate_criterion": "Permitted credentials can be rotated without unplanned client failure; no keys collected; CMK is optional under this program.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Access-key and optional encryption key lifecycle"
+    },
+    "REDIS-L": {
+      "candidate_criterion": "Required connection and administrative events arrive within criteria; connection logs are not assumed to audit each Redis command/value.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Client connections, authentication and cache health"
+    },
+    "REDIS-N": {
+      "candidate_criterion": "Approved private/public paths match deployed modern service; no legacy Cache for Redis firewall assumptions.",
+      "controls": [
+        "SC-7"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Modern Redis private and public access"
+    },
+    "REDIS-R": {
+      "candidate_criterion": "Documented provider encryption applies to actual disk/tier boundary; volatile memory is not misreported as disk encryption and exports are checked separately.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Persistence, OS and tier-specific disk encryption"
+    },
+    "REDIS-T": {
+      "candidate_criterion": "Non-TLS access disabled unless approved; clients use approved TLS and validate the endpoint.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Redis encrypted client protocol"
+    },
+    "REDIS-V": {
+      "candidate_criterion": "Provider updates are evidenced; clients/modules are supported and remediated against approved deadlines.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "REDIS",
+      "title": "Managed server and Redis client components"
+    },
+    "ST-B": {
+      "candidate_criterion": "Required datasets recover within RPO/RTO; replication and soft delete alone are not independent backup or proof that all storage services are recoverable.",
+      "controls": [
+        "CP-9",
+        "CP-9(1)",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Dataset-specific protection and tested recovery"
+    },
+    "ST-C": {
+      "candidate_criterion": "Required safeguards match data classification and retention obligations; immutable retention is never invented or enabled by the collector.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Service settings, immutability and deletion safeguards"
+    },
+    "ST-I": {
+      "candidate_criterion": "Approved principals and service-specific authorization only; default OAuth preference is not enforcement. Account flags, container policy and issued SAS limitations are assessed separately.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-5"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Data authorization, shared keys and anonymous access"
+    },
+    "ST-K": {
+      "candidate_criterion": "Static keys and signed URLs are minimized, scoped and expired/revoked per policy; issued account-key SAS inventory is not fully observable from account GET.",
+      "controls": [
+        "IA-5",
+        "SC-12"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Account/SAS and optional encryption-key lifecycle"
+    },
+    "ST-L": {
+      "candidate_criterion": "Required service data events are received and protected; account-level Activity Log alone does not audit object access.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5",
+        "AU-9"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Per-service read/write/delete audit and retention"
+    },
+    "ST-N": {
+      "candidate_criterion": "All used data endpoints meet approved restrictions; a blob private endpoint alone does not isolate file/queue/table or disable public access.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Firewall, bypass and private subresource coverage"
+    },
+    "ST-R": {
+      "candidate_criterion": "Provider-managed encryption accepted across documented stored data; infrastructure encryption/CMK only required when separately selected.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Storage service encryption and copies"
+    },
+    "ST-T": {
+      "candidate_criterion": "Each used HTTP/file protocol satisfies approved confidentiality/integrity; HTTPS-only does not establish every SMB/NFS client path.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Secure transfer and service-specific protocols"
+    },
+    "ST-V": {
+      "candidate_criterion": "Provider service patching is inherited within scope; customer tools and hosts have supported/remediated components.",
+      "controls": [
+        "SA-9",
+        "SI-2",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "ST",
+      "title": "Managed storage platform and customer transfer tools"
+    },
+    "UAMI-B": {
+      "candidate_criterion": "Workloads recover with intended principal/permissions; deletion/recreation is not assumed to preserve principalId/clientId or downstream grants.",
+      "controls": [
+        "CP-2",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Identity dependency recovery and reauthorization"
+    },
+    "UAMI-C": {
+      "candidate_criterion": "Identity reuse and role/federation changes have approval and impact analysis across all attached workloads.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Identity trust and role drift"
+    },
+    "UAMI-I": {
+      "candidate_criterion": "Only approved workloads may attach/use the identity; effective permissions are minimal. Anyone able to run code on an attached workload may exercise its permissions.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "IA-9"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Identity assignment and effective privileges"
+    },
+    "UAMI-K": {
+      "candidate_criterion": "No manual rotation requirement invented for platform-managed identity credentials; stale federated trust and workload assignment are removed on time.",
+      "controls": [
+        "IA-5",
+        "IA-9"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Provider credentials and customer federation lifecycle"
+    },
+    "UAMI-L": {
+      "candidate_criterion": "Assignment/permission/federation changes and required identity use are observable; sign-in/API availability gaps are recorded.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Assignment, federation and workload sign-in monitoring"
+    },
+    "UAMI-N": {
+      "candidate_criterion": "Reuse/federation matches approved trust domains; identity has no service-local firewall, and preview assignment restrictions are not assumed mandatory.",
+      "controls": [
+        "AC-4",
+        "IA-9"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Federated and attached-workload trust boundary"
+    },
+    "UAMI-T": {
+      "candidate_criterion": "Bearer tokens remain within intended workload trust boundary and are sent only to validated encrypted resource endpoints; no token is collected.",
+      "controls": [
+        "SC-8",
+        "IA-9"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "UAMI",
+      "title": "Identity token consumption paths"
+    },
+    "VM-B": {
+      "candidate_criterion": "Required guest and external state recovers within RPO/RTO; crash-consistent snapshot or host availability alone does not establish application recovery.",
+      "controls": [
+        "CP-9",
+        "CP-9(1)",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Application-consistent backup and VM recovery"
+    },
+    "VM-C": {
+      "candidate_criterion": "Approved OS/boot/application baseline enforced for the VM generation/workload; unsupported features explicitly reviewed.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6",
+        "CM-7",
+        "SI-7"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Guest hardening, boot integrity and drift"
+    },
+    "VM-I": {
+      "candidate_criterion": "Approved guest/control-plane administrators only, strong selected authentication and limited remote administration; ARM role list does not enumerate local accounts.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "AC-17",
+        "IA-2"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Azure administration and guest privileged access"
+    },
+    "VM-K": {
+      "candidate_criterion": "Credentials are not embedded in images/scripts or broadly accessible; lifetimes/rotation meet approved requirements without reading key material.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Guest secrets, SSH keys and certificates"
+    },
+    "VM-L": {
+      "candidate_criterion": "Selected guest events arrive with reliable timestamps; extension presence and Azure Activity Log alone are insufficient.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5",
+        "SC-45"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Guest security events, clocks and agent health"
+    },
+    "VM-N": {
+      "candidate_criterion": "Required management/application paths restricted; no invented VM publicNetworkAccess switch; network team owns shared network changes.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "NIC exposure and host/service boundaries"
+    },
+    "VM-R": {
+      "candidate_criterion": "All in-scope data paths have scoped protection; managed-disk SSE alone is not proof for temporary disks, cache, guest exports or remote stores.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "OS/data disks, cache/temp and remote mounts"
+    },
+    "VM-T": {
+      "candidate_criterion": "Approved secure transport on each listening/outbound service; no inference from VM type or one TLS endpoint.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Guest application and management encryption"
+    },
+    "VM-V": {
+      "candidate_criterion": "Complete fresh scan/patch/malware coverage and timely remediation; automatic-patch setting is not completed patch evidence.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SI-3",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VM",
+      "title": "Guest patching, malware defense and software support"
+    },
+    "VMSS-B": {
+      "candidate_criterion": "State and capacity recover within requirements; do not presume Uniform and Flexible have identical VM backup support or that stateless model covers all applications.",
+      "controls": [
+        "CP-2",
+        "CP-9",
+        "CP-10",
+        "CP-4"
+      ],
+      "domain": "B",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Capacity rebuild and state recovery"
+    },
+    "VMSS-C": {
+      "candidate_criterion": "Actual instances converge to approved model within allowed interval; manual/automatic/rolling policy selection alone is not convergence evidence.",
+      "controls": [
+        "CM-2",
+        "CM-3",
+        "CM-6"
+      ],
+      "domain": "C",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Upgrade policy and instance-model drift"
+    },
+    "VMSS-I": {
+      "candidate_criterion": "Approved rights on every instance, not only the model; guest and control-plane administration assessed separately.",
+      "controls": [
+        "AC-3",
+        "AC-6",
+        "AC-17",
+        "IA-2"
+      ],
+      "domain": "I",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Model and instance identity/administrator rights"
+    },
+    "VMSS-K": {
+      "candidate_criterion": "No baked-in reusable secrets; new and existing instances receive current credentials and revoke retired access.",
+      "controls": [
+        "IA-5",
+        "SC-12",
+        "SC-17"
+      ],
+      "domain": "K",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Image and instance credential lifecycle"
+    },
+    "VMSS-L": {
+      "candidate_criterion": "Every expected instance reports selected audit events; terminated/failed-to-onboard instances remain visible coverage gaps.",
+      "controls": [
+        "AU-2",
+        "AU-12",
+        "AU-5",
+        "SC-45"
+      ],
+      "domain": "L",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Instance audit coverage through scaling and upgrades"
+    },
+    "VMSS-N": {
+      "candidate_criterion": "All instances and frontend/backend paths match approved restrictions; newly scaled instances inherit verified policy.",
+      "controls": [
+        "SC-7",
+        "AC-4"
+      ],
+      "domain": "N",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Per-instance exposure and shared frontend"
+    },
+    "VMSS-R": {
+      "candidate_criterion": "Every relevant instance/store is covered; a compliant model cannot prove older instances adopted it or protect unknown temporary data.",
+      "controls": [
+        "SC-28",
+        "SC-28(1)"
+      ],
+      "domain": "R",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Model versus instance storage protection"
+    },
+    "VMSS-T": {
+      "candidate_criterion": "All required hops and instances enforce approved encryption; load-balancer TLS does not prove backend TLS.",
+      "controls": [
+        "SC-8",
+        "SC-8(1)",
+        "SC-17"
+      ],
+      "domain": "T",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Management, application and backend transport"
+    },
+    "VMSS-V": {
+      "candidate_criterion": "Complete actual-instance remediation and supported image lifecycle; rebuilt/scaled instances cannot silently reintroduce vulnerable images.",
+      "controls": [
+        "RA-5",
+        "SI-2",
+        "SI-3",
+        "SA-22"
+      ],
+      "domain": "V",
+      "limits": "Supporting technical evidence only; this predicate does not determine the complete objective or NIST control.",
+      "service_id": "VMSS",
+      "title": "Image, OS and extension patch coverage"
+    }
+  },
+  "schema_version": "1.0"
+}

@@ -65,7 +65,14 @@ Source baseline **0.27.0 with unreleased evidence-report/Policy/Wiz changes**. S
 
 The [predicate execution plan](docs/audit/PREDICATE_EXECUTION_PLAN.md) tracks the remaining work section by section with measured before-and-after numbers. Organization-wide controls with other owners — every `XX-1` policy control, and the PE, PS, AT, PM and PL families — are outside that plan by design; they close through declared inheritance and attributed records, not collectors.
 
-## Clone this to your work tenant
+## Copy a standalone work project
+
+For a work LLM, provide the [self-contained GitHub import prompt](docs/prompts/WORKPLACE_SOURCE_IMPORT.md). It downloads only the published `workplace/` files using an exact allowlist and hashes, without cloning. Transfer tools remain outside the destination project.
+
+
+Run `python3 scripts/export_clean_source.py --output output/workplace-source` and copy only that generated directory into the work project. It contains application code, tests, required catalog data and operational docs without Git metadata, origin manifests, development history or infrastructure. Use the [copyable import prompt](docs/prompts/WORKPLACE_SOURCE_IMPORT.md). No clone or ZIP is required at work.
+
+## Earlier transfer options
 
 For code and docs together, run `python3 scripts/export_workplace_source.py --output /tmp/workplace-source.zip`; see the [source transfer instructions](docs/WORKPLACE_AZURE_HANDOFF.md#code-and-documentation-together-recommended-transfer). For documentation alone, start with the [six-document transfer list](docs/WORKPLACE_AZURE_HANDOFF.md#exactly-which-documents-to-copy); `python3 scripts/export_workplace_docs.py --output /tmp/workplace-docs.zip` exports that reading set without lab research/history.
 

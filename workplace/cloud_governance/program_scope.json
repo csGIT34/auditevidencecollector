@@ -1,0 +1,2786 @@
+{
+  "catalog_version": "2026-09-19.2",
+  "reviewed_on": "2026-09-19",
+  "status": "PROVISIONAL_APPLICABILITY_RESEARCH_NOT_AN_APPROVED_BASELINE_OR_TENANT_ASSESSMENT",
+  "domains": {
+    "I": "Identity, authentication, authorization and privileged access",
+    "N": "Public exposure, resource restrictions and private connectivity",
+    "R": "Encryption and protection at rest",
+    "T": "Transmission protection",
+    "K": "Secrets, certificates and key lifecycle",
+    "L": "Audit generation, retention, protection and collection health",
+    "C": "Secure configuration, change approval and drift",
+    "V": "Vulnerabilities, patching, versions and software supply chain",
+    "B": "Backup, recovery, restore tests and availability",
+    "O": "Inventory, ownership and lifecycle",
+    "D": "Detection, incident monitoring and response",
+    "G": "Governance, access review, exceptions, privacy and shared controls"
+  },
+  "organization_parameters": {
+    "I": "Approved human/workload principals, role scopes, separation of duties, privileged elevation duration, access review frequency, emergency accounts and permitted authentication methods.",
+    "N": "Approved ingress/egress and service destinations, public exposure exceptions, allowed client networks, private subresources and network-team evidence owner.",
+    "R": "Classified information/storage boundaries, required confidentiality/integrity mechanisms and approved cryptography. Provider-managed keys are accepted; CMK is conditional on an explicit separate requirement.",
+    "T": "Approved protocols and minimum versions, certificate validation/trust and any protocol-specific exceptions; propose TLS 1.2 or stronger where supported, subject to approved architecture.",
+    "K": "Credential/certificate/key lifetime, rotation and revocation periods, approved issuers/algorithms, expiry warning threshold, custody and recovery requirements.",
+    "L": "Required event categories/content, retention by dataset, clock accuracy, maximum ingestion lag/missing-event window, capacity threshold, destination protection and review frequency.",
+    "C": "Approved baseline/version, change approval and emergency change process, drift interval/tolerance, permitted features, exception approver and expiry.",
+    "V": "Supported version policy, scan scope/frequency/freshness, severity-based remediation deadlines, trusted publishers/digests and compensating-control approval.",
+    "B": "BIA-derived RPO/RTO, backup frequency/retention/isolation, integrity checks, restore-test interval and success measures, availability/capacity requirements.",
+    "O": "Authoritative tenant/subscription/service inventory, named accountable owners, classification, region/retention rules, lifecycle states and reconciliation frequency.",
+    "D": "Threat scenarios, detection coverage and test frequency, triage/notification/containment deadlines, responders, evidence preservation and exercise cadence.",
+    "G": "Selected NIST baseline/tailoring and assessment depth/coverage, control owners, evidence age/sampling, legal/privacy basis, supplier assurance, exception and risk acceptance periods."
+  },
+  "nist_source": {
+    "version": "5.2.0",
+    "title": "Electronic (OSCAL) Version of NIST SP 800-53 Rev 5.2.0 Controls and SP 800-53A Rev 5.2.0 Assessment Procedures",
+    "last_modified": "2026-05-11T16:01:09.00000-00:00",
+    "git_commit": "78650f02ad9321bb7b817846f8fbd4f2bcd620de",
+    "sha256": "01f37cf90ea99d92242c936cbfbdebcc338eef1f71454e2acac36cc56e9bc062",
+    "source_ref": "nist-oscal"
+  },
+  "catalog_sha256": "bd4073594573cf6c91157571382a0ec30a1f466a4aa789e9842b87cf77b8f4d2",
+  "services": [
+    {
+      "id": "EH",
+      "name": "Event Hubs",
+      "resource_boundary": "Microsoft.EventHub/namespaces; eventhubs, authorizationRules, consumerGroups; Capture destinations",
+      "current_encryption_maturity": "Supported for scoped namespace/hub storage and resolved Capture dependencies",
+      "shared_context": "Publishers, consumers, retained events and Capture destinations each need owners; event replay is workload-specific.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "EH-I",
+            "ORG-I"
+          ],
+          "rationale": "Publisher, receiver and namespace privileges"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "EH-N"
+          ],
+          "rationale": "Namespace ingress and Capture egress boundary"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "EH-R"
+          ],
+          "rationale": "Retained events and Capture data"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "EH-T"
+          ],
+          "rationale": "Publisher, consumer and delivery transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "EH-K"
+          ],
+          "rationale": "SAS and optional CMK lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "EH-L",
+            "ORG-L"
+          ],
+          "rationale": "Access, operational and Capture audit"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "EH-C",
+            "ORG-C"
+          ],
+          "rationale": "Hub retention and consumer configuration drift"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "EH-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed broker versus customer clients"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "EH-B",
+            "ORG-B"
+          ],
+          "rationale": "Replay, Capture recovery and regional resilience"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Publishers, consumers, retained events and Capture destinations each need owners; event replay is workload-specific."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Publishers, consumers, retained events and Capture destinations each need owners; event replay is workload-specific."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Publishers, consumers, retained events and Capture destinations each need owners; event replay is workload-specific."
+        }
+      }
+    },
+    {
+      "id": "AKS",
+      "name": "AKS",
+      "resource_boundary": "Microsoft.ContainerService/managedClusters and agentPools; Kubernetes workloads, RBAC and volumes; node resources",
+      "current_encryption_maturity": "Partial; node/host/storage metadata only, workload storage incomplete",
+      "shared_context": "Control plane, node pools, namespaces, workload identities, container provenance and persistent volumes require distinct owners and evidence.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-I",
+            "ORG-I"
+          ],
+          "rationale": "Cluster access and workload identity"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-N"
+          ],
+          "rationale": "API server and workload network isolation"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-R"
+          ],
+          "rationale": "Secrets, nodes and workload storage"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-T"
+          ],
+          "rationale": "API, ingress and service-to-service encryption"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-K"
+          ],
+          "rationale": "Workload secrets and federation lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-L",
+            "ORG-L"
+          ],
+          "rationale": "Control-plane audit and workload log health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-C",
+            "ORG-C"
+          ],
+          "rationale": "Admission and workload hardening"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-V",
+            "ORG-V"
+          ],
+          "rationale": "Cluster, node and image vulnerability lifecycle"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "AKS-B",
+            "ORG-B"
+          ],
+          "rationale": "Cluster rebuild and stateful recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Control plane, node pools, namespaces, workload identities, container provenance and persistent volumes require distinct owners and evidence."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Control plane, node pools, namespaces, workload identities, container provenance and persistent volumes require distinct owners and evidence."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Control plane, node pools, namespaces, workload identities, container provenance and persistent volumes require distinct owners and evidence."
+        }
+      }
+    },
+    {
+      "id": "APPREG",
+      "name": "App registrations",
+      "resource_boundary": "Microsoft Graph applications; related servicePrincipals, owners, appRoleAssignments, oauth2PermissionGrants and federatedIdentityCredentials",
+      "current_encryption_maturity": "No Graph collection; unassessed",
+      "shared_context": "Application object, enterprise application/service principal and deployed workload are separate; tenant IAM owns consent and human authentication controls.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-I",
+            "ORG-I"
+          ],
+          "rationale": "Requested permissions versus effective consent"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-N"
+          ],
+          "rationale": "Application audience and redirect trust boundary"
+        },
+        "R": {
+          "status": "inherited",
+          "check_refs": [
+            "APPREG-R"
+          ],
+          "rationale": "Directory metadata and external credential custody"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-T"
+          ],
+          "rationale": "OAuth redirect and token transport security"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-K"
+          ],
+          "rationale": "Application credential and federation hygiene"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-L",
+            "ORG-L"
+          ],
+          "rationale": "Application changes and sign-in monitoring"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-C",
+            "ORG-C"
+          ],
+          "rationale": "Registration and consent change control"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-V",
+            "ORG-V"
+          ],
+          "rationale": "Identity integration and application code security"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "APPREG-B",
+            "ORG-B"
+          ],
+          "rationale": "Identity configuration recovery and credential replacement"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Application object, enterprise application/service principal and deployed workload are separate; tenant IAM owns consent and human authentication controls."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Application object, enterprise application/service principal and deployed workload are separate; tenant IAM owns consent and human authentication controls."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Application object, enterprise application/service principal and deployed workload are separate; tenant IAM owns consent and human authentication controls."
+        }
+      }
+    },
+    {
+      "id": "EG",
+      "name": "Event Grid",
+      "resource_boundary": "Microsoft.EventGrid topic/domain/system/partner/namespace families; subscriptions, namespace topics and MQTT client/topic-space permissions",
+      "current_encryption_maturity": "Unsupported; family and child discovery absent",
+      "shared_context": "Publishing, delivery and MQTT broker permissions differ; retain subtype, dead-letter store and destination ownership instead of applying one generic namespace rule.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "EG-I",
+            "ORG-I"
+          ],
+          "rationale": "Publish, subscribe and delivery authorization"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "EG-N"
+          ],
+          "rationale": "Ingress restrictions and delivery destination trust"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "EG-R"
+          ],
+          "rationale": "Retained events and dead-letter storage"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "EG-T"
+          ],
+          "rationale": "Event delivery and MQTT transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "EG-K"
+          ],
+          "rationale": "Publisher keys, webhook credentials and MQTT certificates"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "EG-L",
+            "ORG-L"
+          ],
+          "rationale": "Publish/delivery/MQTT failure observability"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "EG-C",
+            "ORG-C"
+          ],
+          "rationale": "Subscription filters and MQTT routing baseline"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "EG-V",
+            "ORG-V"
+          ],
+          "rationale": "Provider broker and customer event handlers"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "EG-B",
+            "ORG-B"
+          ],
+          "rationale": "Delivery recovery and replay strategy"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Publishing, delivery and MQTT broker permissions differ; retain subtype, dead-letter store and destination ownership instead of applying one generic namespace rule."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Publishing, delivery and MQTT broker permissions differ; retain subtype, dead-letter store and destination ownership instead of applying one generic namespace rule."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Publishing, delivery and MQTT broker permissions differ; retain subtype, dead-letter store and destination ownership instead of applying one generic namespace rule."
+        }
+      }
+    },
+    {
+      "id": "ST",
+      "name": "Storage Accounts",
+      "resource_boundary": "Microsoft.Storage/storageAccounts; blob/file/queue/table services, containers/shares and copies",
+      "current_encryption_maturity": "Supported scoped service encryption; no object data collection",
+      "shared_context": "Each storage service, anonymous-access path, SAS design, retention dataset and export/replica requires classification and ownership.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "ST-I",
+            "ORG-I"
+          ],
+          "rationale": "Data authorization, shared keys and anonymous access"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "ST-N"
+          ],
+          "rationale": "Firewall, bypass and private subresource coverage"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "ST-R"
+          ],
+          "rationale": "Storage service encryption and copies"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "ST-T"
+          ],
+          "rationale": "Secure transfer and service-specific protocols"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "ST-K"
+          ],
+          "rationale": "Account/SAS and optional encryption-key lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "ST-L",
+            "ORG-L"
+          ],
+          "rationale": "Per-service read/write/delete audit and retention"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "ST-C",
+            "ORG-C"
+          ],
+          "rationale": "Service settings, immutability and deletion safeguards"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "ST-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed storage platform and customer transfer tools"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "ST-B",
+            "ORG-B"
+          ],
+          "rationale": "Dataset-specific protection and tested recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Each storage service, anonymous-access path, SAS design, retention dataset and export/replica requires classification and ownership."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Each storage service, anonymous-access path, SAS design, retention dataset and export/replica requires classification and ownership."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Each storage service, anonymous-access path, SAS design, retention dataset and export/replica requires classification and ownership."
+        }
+      }
+    },
+    {
+      "id": "COS",
+      "name": "Cosmos DB",
+      "resource_boundary": "Microsoft.DocumentDB/databaseAccounts and API-specific children; mongoClusters separate variant",
+      "current_encryption_maturity": "Supported account/cluster encryption as separate exact types",
+      "shared_context": "API family governs identity/audit/backup capabilities; account-based Cosmos and separately branded Mongo clusters need independent feature matrices.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "COS-I",
+            "ORG-I"
+          ],
+          "rationale": "API-specific data roles and local authentication"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "COS-N"
+          ],
+          "rationale": "Public access, firewall and regional endpoints"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "COS-R"
+          ],
+          "rationale": "Managed data and backup encryption"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "COS-T"
+          ],
+          "rationale": "API transport and client trust"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "COS-K"
+          ],
+          "rationale": "Keys, resource tokens and optional CMK"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "COS-L",
+            "ORG-L"
+          ],
+          "rationale": "API-specific request audit and ingestion health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "COS-C",
+            "ORG-C"
+          ],
+          "rationale": "Consistency, regions and data-plane change controls"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "COS-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed engines and application drivers"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "COS-B",
+            "ORG-B"
+          ],
+          "rationale": "Backup mode, retention and regional restore"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "API family governs identity/audit/backup capabilities; account-based Cosmos and separately branded Mongo clusters need independent feature matrices."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "API family governs identity/audit/backup capabilities; account-based Cosmos and separately branded Mongo clusters need independent feature matrices."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "API family governs identity/audit/backup capabilities; account-based Cosmos and separately branded Mongo clusters need independent feature matrices."
+        }
+      }
+    },
+    {
+      "id": "REDIS",
+      "name": "Managed Redis",
+      "resource_boundary": "Microsoft.Cache/redisEnterprise plus databases and access-policy assignments; match modern SKU",
+      "current_encryption_maturity": "Partial root read; modern SKU and database children unassessed",
+      "shared_context": "Persistence, export backups, client authentication and cache rebuild from the authoritative store are separate evidence boundaries.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-I",
+            "ORG-I"
+          ],
+          "rationale": "Redis users and access-key authentication"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-N"
+          ],
+          "rationale": "Modern Redis private and public access"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-R"
+          ],
+          "rationale": "Persistence, OS and tier-specific disk encryption"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-T"
+          ],
+          "rationale": "Redis encrypted client protocol"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-K"
+          ],
+          "rationale": "Access-key and optional encryption key lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-L",
+            "ORG-L"
+          ],
+          "rationale": "Client connections, authentication and cache health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-C",
+            "ORG-C"
+          ],
+          "rationale": "Database policy and module drift"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "REDIS-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed server and Redis client components"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "REDIS-B",
+            "ORG-B"
+          ],
+          "rationale": "Export backup versus persistence and replication"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Persistence, export backups, client authentication and cache rebuild from the authoritative store are separate evidence boundaries."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Persistence, export backups, client authentication and cache rebuild from the authoritative store are separate evidence boundaries."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Persistence, export backups, client authentication and cache rebuild from the authoritative store are separate evidence boundaries."
+        }
+      }
+    },
+    {
+      "id": "FUNC",
+      "name": "Function Apps",
+      "resource_boundary": "Microsoft.Web/sites(kind=functionapp)/slots, hosting plan; Container Apps variant and host/content dependencies",
+      "current_encryption_maturity": "Partial site/slot identity; host/content and runtime storage unverified",
+      "shared_context": "Deployment/SCM access, HTTP function authorization, triggers and backing stores are distinct; hosting plan changes available controls.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-I",
+            "ORG-I"
+          ],
+          "rationale": "HTTP, trigger, deployment and managed identities"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-N"
+          ],
+          "rationale": "Site and SCM ingress plus dependency paths"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-R"
+          ],
+          "rationale": "Host, content, deployment and runtime storage"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-T"
+          ],
+          "rationale": "HTTPS, SCM and downstream transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-K"
+          ],
+          "rationale": "Function keys and Key Vault references"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-L",
+            "ORG-L"
+          ],
+          "rationale": "Execution, application audit and deployment logs"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-C",
+            "ORG-C"
+          ],
+          "rationale": "Runtime hardening and deployment change"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-V",
+            "ORG-V"
+          ],
+          "rationale": "Function runtime, language and dependency support"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "FUNC-B",
+            "ORG-B"
+          ],
+          "rationale": "Code redeploy, host state and trigger recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Deployment/SCM access, HTTP function authorization, triggers and backing stores are distinct; hosting plan changes available controls."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Deployment/SCM access, HTTP function authorization, triggers and backing stores are distinct; hosting plan changes available controls."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Deployment/SCM access, HTTP function authorization, triggers and backing stores are distinct; hosting plan changes available controls."
+        }
+      }
+    },
+    {
+      "id": "KV",
+      "name": "Key Vaults",
+      "resource_boundary": "Microsoft.KeyVault/vaults; key/secret/certificate metadata and versions; managedHSM separate",
+      "current_encryption_maturity": "Partial: current guarantee covers secret values only",
+      "shared_context": "Vault administration, object use, key custody, recovery and audit access require separate duties and metadata permissions.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "KV-I",
+            "ORG-I"
+          ],
+          "rationale": "Vault administration versus object use"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "KV-N"
+          ],
+          "rationale": "Vault firewall and private connections"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "KV-R"
+          ],
+          "rationale": "Secret, key and certificate protection boundary"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "KV-T"
+          ],
+          "rationale": "Vault API and consuming client transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "KV-K"
+          ],
+          "rationale": "Object lifecycle, expiry, rotation and revocation"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "KV-L",
+            "ORG-L"
+          ],
+          "rationale": "Vault data access and administrative audit"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "KV-C",
+            "ORG-C"
+          ],
+          "rationale": "Recovery safeguards and access-mode changes"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "KV-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed cryptographic service and clients"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "KV-B",
+            "ORG-B"
+          ],
+          "rationale": "Vault/object recovery and dependent service recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Vault administration, object use, key custody, recovery and audit access require separate duties and metadata permissions."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Vault administration, object use, key custody, recovery and audit access require separate duties and metadata permissions."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Vault administration, object use, key custody, recovery and audit access require separate duties and metadata permissions."
+        }
+      }
+    },
+    {
+      "id": "PG",
+      "name": "PostgreSQL Flexible Servers",
+      "resource_boundary": "Microsoft.DBforPostgreSQL/flexibleServers; configurations, administrators, firewall/private links and databases",
+      "current_encryption_maturity": "Supported scoped managed data/log/temp/backup encryption",
+      "shared_context": "Server authentication flags, SQL role grants, audit extension configuration, replication and restore evidence have different collection permissions.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "PG-I",
+            "ORG-I"
+          ],
+          "rationale": "Server authentication and database role grants"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "PG-N"
+          ],
+          "rationale": "Server access mode and firewall"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "PG-R"
+          ],
+          "rationale": "Database, logs, temporary data and backups"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "PG-T"
+          ],
+          "rationale": "Database TLS and client certificate validation"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "PG-K"
+          ],
+          "rationale": "Database credentials and optional CMK"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "PG-L",
+            "ORG-L"
+          ],
+          "rationale": "Database audit, connection logs and destinations"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "PG-C",
+            "ORG-C"
+          ],
+          "rationale": "Extensions, parameters and schema change"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "PG-V",
+            "ORG-V"
+          ],
+          "rationale": "Major versions, extensions and provider maintenance"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "PG-B",
+            "ORG-B"
+          ],
+          "rationale": "PITR, retention, HA and tested recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Server authentication flags, SQL role grants, audit extension configuration, replication and restore evidence have different collection permissions."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Server authentication flags, SQL role grants, audit extension configuration, replication and restore evidence have different collection permissions."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Server authentication flags, SQL role grants, audit extension configuration, replication and restore evidence have different collection permissions."
+        }
+      }
+    },
+    {
+      "id": "ACA",
+      "name": "Azure Container Apps",
+      "resource_boundary": "Microsoft.App/containerApps, jobs, managedEnvironments; revisions, identities and storage dependencies",
+      "current_encryption_maturity": "Partial metadata; revisions and storage dependencies incomplete",
+      "shared_context": "App/job runtime, environment, revision/image, secret references and backing data stores require independent evidence; job-start rights can expose identity/secret use.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-I",
+            "ORG-I"
+          ],
+          "rationale": "App callers, runtime identities and job execution"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-N"
+          ],
+          "rationale": "Environment and app ingress/egress boundaries"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-R"
+          ],
+          "rationale": "Ephemeral and mounted application storage"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-T"
+          ],
+          "rationale": "Ingress, service traffic and certificates"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-K"
+          ],
+          "rationale": "Secret references and consumer refresh"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-L",
+            "ORG-L"
+          ],
+          "rationale": "Application/system audit and collection health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-C",
+            "ORG-C"
+          ],
+          "rationale": "Revisions, scale rules and deployment configuration"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-V",
+            "ORG-V"
+          ],
+          "rationale": "Container images and managed platform"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "ACA-B",
+            "ORG-B"
+          ],
+          "rationale": "Declarative rebuild and application state recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "App/job runtime, environment, revision/image, secret references and backing data stores require independent evidence; job-start rights can expose identity/secret use."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "App/job runtime, environment, revision/image, secret references and backing data stores require independent evidence; job-start rights can expose identity/secret use."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "App/job runtime, environment, revision/image, secret references and backing data stores require independent evidence; job-start rights can expose identity/secret use."
+        }
+      }
+    },
+    {
+      "id": "UAMI",
+      "name": "user-assigned managed identities",
+      "resource_boundary": "Microsoft.ManagedIdentity/userAssignedIdentities; federatedIdentityCredentials; principal links and assignment relationships",
+      "current_encryption_maturity": "Encryption-only inventory N/A; identity controls not implemented",
+      "shared_context": "Identity owners must govern every attached resource, federated trust and effective grant; deletion and recreation can change principal identity.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-I",
+            "ORG-I"
+          ],
+          "rationale": "Identity assignment and effective privileges"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-N"
+          ],
+          "rationale": "Federated and attached-workload trust boundary"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-T"
+          ],
+          "rationale": "Identity token consumption paths"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-K"
+          ],
+          "rationale": "Provider credentials and customer federation lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-L",
+            "ORG-L"
+          ],
+          "rationale": "Assignment, federation and workload sign-in monitoring"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-C",
+            "ORG-C"
+          ],
+          "rationale": "Identity trust and role drift"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "UAMI-B",
+            "ORG-B"
+          ],
+          "rationale": "Identity dependency recovery and reauthorization"
+        },
+        "V": {
+          "status": "not_resource_local",
+          "check_refs": [
+            "ORG-S"
+          ],
+          "rationale": "No customer OS/image on an identity. Provider service assurance and vulnerabilities in every attached workload are evaluated separately."
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Identity owners must govern every attached resource, federated trust and effective grant; deletion and recreation can change principal identity."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Identity owners must govern every attached resource, federated trust and effective grant; deletion and recreation can change principal identity."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Identity owners must govern every attached resource, federated trust and effective grant; deletion and recreation can change principal identity."
+        },
+        "R": {
+          "status": "not_resource_local",
+          "check_refs": [
+            "ORG-S"
+          ],
+          "rationale": "No customer data store or configurable at-rest mechanism on the identity resource. Provider directory assurance and every consuming workload/store remain applicable."
+        }
+      }
+    },
+    {
+      "id": "PE",
+      "name": "private endpoints",
+      "resource_boundary": "Microsoft.Network/privateEndpoints; privateLinkServiceConnections/manual connections, privateDnsZoneGroups and target resources",
+      "current_encryption_maturity": "Encryption-only inventory N/A; connectivity controls unimplemented",
+      "shared_context": "Platform owns endpoint target/approval evidence and target-service restriction; network team owns VNet, routing, firewall and DNS configuration/effective path validation.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "PE-I",
+            "ORG-I"
+          ],
+          "rationale": "Endpoint creation, connection approval and target authorization"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "PE-N"
+          ],
+          "rationale": "Exact private target and effective connectivity"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "PE-T"
+          ],
+          "rationale": "Application encryption across private connectivity"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "PE-L",
+            "ORG-L"
+          ],
+          "rationale": "Endpoint changes and target access observability"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "PE-C",
+            "ORG-C"
+          ],
+          "rationale": "Connection and DNS linkage drift"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "PE-B",
+            "ORG-B"
+          ],
+          "rationale": "Private connectivity recovery"
+        },
+        "V": {
+          "status": "not_resource_local",
+          "check_refs": [
+            "ORG-S"
+          ],
+          "rationale": "Provider-managed connectivity has no customer patchable endpoint OS; network appliance/client/target vulnerabilities belong to their owners, with provider assurance for the service."
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Platform owns endpoint target/approval evidence and target-service restriction; network team owns VNet, routing, firewall and DNS configuration/effective path validation."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Platform owns endpoint target/approval evidence and target-service restriction; network team owns VNet, routing, firewall and DNS configuration/effective path validation."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Platform owns endpoint target/approval evidence and target-service restriction; network team owns VNet, routing, firewall and DNS configuration/effective path validation."
+        },
+        "R": {
+          "status": "not_resource_local",
+          "check_refs": [
+            "ORG-S"
+          ],
+          "rationale": "Private endpoint is a network interface/link, not a customer at-rest store; protection of target data, configuration exports and provider systems is assessed elsewhere."
+        },
+        "K": {
+          "status": "not_resource_local",
+          "check_refs": [
+            "ORG-G"
+          ],
+          "rationale": "No resource-local application credential/key store. Target-service certificates and credentials remain in target checks; platform connection approval is authorization evidence."
+        }
+      }
+    },
+    {
+      "id": "ACR",
+      "name": "Azure Container Registries",
+      "resource_boundary": "Microsoft.ContainerRegistry/registries; repositories/artifacts, tokens/scopeMaps, replications and tasks",
+      "current_encryption_maturity": "Supported scoped registry image/artifact encryption",
+      "shared_context": "Registry administration and image pull/push rights differ; exact deployed digests, task identities and publisher provenance need evidence beyond registry configuration.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-I",
+            "ORG-I"
+          ],
+          "rationale": "Push/pull, administrator and task rights"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-N"
+          ],
+          "rationale": "Registry ingress and data endpoints"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-R"
+          ],
+          "rationale": "Registry stored artifacts and copies"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-T"
+          ],
+          "rationale": "Registry API and image transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-K"
+          ],
+          "rationale": "Repository tokens, credentials and optional CMK"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-L",
+            "ORG-L"
+          ],
+          "rationale": "Login and repository operation audit"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-C",
+            "ORG-C"
+          ],
+          "rationale": "Artifact immutability policy and task changes"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-V",
+            "ORG-V"
+          ],
+          "rationale": "Stored image vulnerabilities and provenance"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "ACR-B",
+            "ORG-B"
+          ],
+          "rationale": "Artifact availability and registry recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Registry administration and image pull/push rights differ; exact deployed digests, task identities and publisher provenance need evidence beyond registry configuration."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Registry administration and image pull/push rights differ; exact deployed digests, task identities and publisher provenance need evidence beyond registry configuration."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Registry administration and image pull/push rights differ; exact deployed digests, task identities and publisher provenance need evidence beyond registry configuration."
+        }
+      }
+    },
+    {
+      "id": "BV",
+      "name": "backup vaults",
+      "resource_boundary": "Microsoft.DataProtection/backupVaults and Microsoft.RecoveryServices/vaults; policies, backupInstances/protectedItems, jobs and recovery points",
+      "current_encryption_maturity": "Supported vault-stored encryption for both families; item/job coverage absent",
+      "shared_context": "Vault protection, source workload coverage, operational snapshots, hybrid agents and restore targets are distinct. Features depend on vault family/workload.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "BV-I",
+            "ORG-I"
+          ],
+          "rationale": "Backup, restore, delete and security administration"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "BV-N"
+          ],
+          "rationale": "Vault and protected-workload connectivity"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "BV-R"
+          ],
+          "rationale": "Vault encryption versus snapshots and restores"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "BV-T"
+          ],
+          "rationale": "Backup/restore transport and hybrid agents"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "BV-K"
+          ],
+          "rationale": "Optional CMK, agent/passphrase and credential custody"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "BV-L",
+            "ORG-L"
+          ],
+          "rationale": "Backup failures, deletion events and monitoring health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "BV-C",
+            "ORG-C"
+          ],
+          "rationale": "Soft delete, immutability and policy change"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "BV-V",
+            "ORG-V"
+          ],
+          "rationale": "Backup agent and managed vault maintenance"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "BV-B",
+            "ORG-B"
+          ],
+          "rationale": "Protected-item completeness and recovery evidence"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Vault protection, source workload coverage, operational snapshots, hybrid agents and restore targets are distinct. Features depend on vault family/workload."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Vault protection, source workload coverage, operational snapshots, hybrid agents and restore targets are distinct. Features depend on vault family/workload."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Vault protection, source workload coverage, operational snapshots, hybrid agents and restore targets are distinct. Features depend on vault family/workload."
+        }
+      }
+    },
+    {
+      "id": "APPC",
+      "name": "App Configuration",
+      "resource_boundary": "Microsoft.AppConfiguration/configurationStores; replicas, snapshots and Key Vault references",
+      "current_encryption_maturity": "Supported service stored-value encryption; values not fetched",
+      "shared_context": "Configuration readers/writers, secret references, snapshots and replica/client failover require separate control evidence.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-I",
+            "ORG-I"
+          ],
+          "rationale": "Configuration data roles and access-key fallback"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-N"
+          ],
+          "rationale": "Store and replica private/public access"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-R"
+          ],
+          "rationale": "Configuration store and external values"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-T"
+          ],
+          "rationale": "SDK endpoint and refresh transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-K"
+          ],
+          "rationale": "Key Vault references and refresh lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-L",
+            "ORG-L"
+          ],
+          "rationale": "Configuration access/change and refresh failures"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-C",
+            "ORG-C"
+          ],
+          "rationale": "Feature flag/configuration deployment safety"
+        },
+        "V": {
+          "status": "inherited",
+          "check_refs": [
+            "APPC-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed store and application provider SDK"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "APPC-B",
+            "ORG-B"
+          ],
+          "rationale": "Snapshots, deletion recovery and replica failover"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Configuration readers/writers, secret references, snapshots and replica/client failover require separate control evidence."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Configuration readers/writers, secret references, snapshots and replica/client failover require separate control evidence."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Configuration readers/writers, secret references, snapshots and replica/client failover require separate control evidence."
+        }
+      }
+    },
+    {
+      "id": "AI",
+      "name": "Application Insights",
+      "resource_boundary": "Microsoft.Insights/components; WorkspaceResourceId, SDK/OpenTelemetry instrumentation, private-link scopes and exports",
+      "current_encryption_maturity": "Partial; scoped telemetry encryption depends on resolved Log Analytics workspace",
+      "shared_context": "Instrumentation, telemetry privacy, sampling, ingestion identity, query access and linked workspace are different evidence boundaries.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "AI-I",
+            "ORG-I"
+          ],
+          "rationale": "Telemetry ingestion and query authorization"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "AI-N"
+          ],
+          "rationale": "Ingestion/query exposure and private-link path"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "AI-R"
+          ],
+          "rationale": "Workspace-backed telemetry and exports"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "AI-T"
+          ],
+          "rationale": "Telemetry SDK and exporter transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "AI-K"
+          ],
+          "rationale": "Ingestion identity, legacy keys and web-test certificates"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "AI-L",
+            "ORG-L"
+          ],
+          "rationale": "Instrumentation receipt, sampling and collection health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "AI-C",
+            "ORG-C"
+          ],
+          "rationale": "Instrumentation/privacy and alert configuration drift"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "AI-V",
+            "ORG-V"
+          ],
+          "rationale": "SDK, collector and application dependency support"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "AI-B",
+            "ORG-B"
+          ],
+          "rationale": "Monitoring recovery and retained telemetry access"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Instrumentation, telemetry privacy, sampling, ingestion identity, query access and linked workspace are different evidence boundaries."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Instrumentation, telemetry privacy, sampling, ingestion identity, query access and linked workspace are different evidence boundaries."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Instrumentation, telemetry privacy, sampling, ingestion identity, query access and linked workspace are different evidence boundaries."
+        }
+      }
+    },
+    {
+      "id": "GRAF",
+      "name": "Managed Grafana",
+      "resource_boundary": "Microsoft.Dashboard/grafana; managed private endpoints, data sources, service accounts, dashboards and folders",
+      "current_encryption_maturity": "Unsupported; documented encryption is research only",
+      "shared_context": "Workspace access does not automatically preserve data-source access restrictions; shared managed-identity queries and dashboard sharing need explicit review.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-I",
+            "ORG-I"
+          ],
+          "rationale": "Grafana roles and data-source authorization"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-N"
+          ],
+          "rationale": "Workspace ingress and data-source egress"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-R"
+          ],
+          "rationale": "Grafana configuration/data and source stores"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-T"
+          ],
+          "rationale": "Browser and each data-source transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-K"
+          ],
+          "rationale": "Service-account tokens and data-source credentials"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-L",
+            "ORG-L"
+          ],
+          "rationale": "Authentication, administrative and datasource monitoring"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-C",
+            "ORG-C"
+          ],
+          "rationale": "Snapshot sharing, plugins and version-specific settings"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-V",
+            "ORG-V"
+          ],
+          "rationale": "Managed Grafana and enabled plugin lifecycle"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "GRAF-B",
+            "ORG-B"
+          ],
+          "rationale": "Dashboard/configuration recovery and availability"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Workspace access does not automatically preserve data-source access restrictions; shared managed-identity queries and dashboard sharing need explicit review."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Workspace access does not automatically preserve data-source access restrictions; shared managed-identity queries and dashboard sharing need explicit review."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Workspace access does not automatically preserve data-source access restrictions; shared managed-identity queries and dashboard sharing need explicit review."
+        }
+      }
+    },
+    {
+      "id": "PROM",
+      "name": "Managed Prometheus",
+      "resource_boundary": "Microsoft.Monitor/accounts; DCR/DCE associations, AKS/Arc collectors, ruleGroups and Grafana links",
+      "current_encryption_maturity": "Unsupported Azure Monitor workspace; not Log Analytics",
+      "shared_context": "Ingestion and query have distinct endpoints/permissions/private paths; metric labels, collector completeness and 18-month service retention need explicit requirements review.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-I",
+            "ORG-I"
+          ],
+          "rationale": "Metrics ingestion and query scope"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-N"
+          ],
+          "rationale": "Ingestion versus query private connectivity"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-R"
+          ],
+          "rationale": "Azure Monitor workspace metric storage"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-T"
+          ],
+          "rationale": "Scrape, remote write and query paths"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-K"
+          ],
+          "rationale": "Scrape/remote-write identities and credential references"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-L",
+            "ORG-L"
+          ],
+          "rationale": "Scrape coverage, ingestion loss and rule health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-C",
+            "ORG-C"
+          ],
+          "rationale": "DCR, scrape, cardinality and label privacy baseline"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-V",
+            "ORG-V"
+          ],
+          "rationale": "Collector images and managed metrics platform"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "PROM-B",
+            "ORG-B"
+          ],
+          "rationale": "Metric continuity and monitoring rebuild"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Ingestion and query have distinct endpoints/permissions/private paths; metric labels, collector completeness and 18-month service retention need explicit requirements review."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Ingestion and query have distinct endpoints/permissions/private paths; metric labels, collector completeness and 18-month service retention need explicit requirements review."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Ingestion and query have distinct endpoints/permissions/private paths; metric labels, collector completeness and 18-month service retention need explicit requirements review."
+        }
+      }
+    },
+    {
+      "id": "LA",
+      "name": "Log Analytics Workspaces",
+      "resource_boundary": "Microsoft.OperationalInsights/workspaces; tables, dataExports, linked clusters, DCR/DCE and private-link associations",
+      "current_encryption_maturity": "Supported scoped workspace data and saved-query encryption",
+      "shared_context": "Workspace, resource-context and table query rights differ; audit generation at source, table retention, ingestion transformations and purge permissions need separate evidence.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "LA-I",
+            "ORG-I"
+          ],
+          "rationale": "Workspace, resource and table authorization"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "LA-N"
+          ],
+          "rationale": "Query, ingestion and export boundaries"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "LA-R"
+          ],
+          "rationale": "Workspace stored logs, queries and exports"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "LA-T"
+          ],
+          "rationale": "Agent, collection and query transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "LA-K"
+          ],
+          "rationale": "Agent credentials and optional key lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "LA-L",
+            "ORG-L"
+          ],
+          "rationale": "Table retention, query audit and ingestion health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "LA-C",
+            "ORG-C"
+          ],
+          "rationale": "DCR transforms, tables and export change control"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "LA-V",
+            "ORG-V"
+          ],
+          "rationale": "Agents, query clients and managed service"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "LA-B",
+            "ORG-B"
+          ],
+          "rationale": "Retained evidence availability and export recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Workspace, resource-context and table query rights differ; audit generation at source, table retention, ingestion transformations and purge permissions need separate evidence."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Workspace, resource-context and table query rights differ; audit generation at source, table retention, ingestion transformations and purge permissions need separate evidence."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Workspace, resource-context and table query rights differ; audit generation at source, table retention, ingestion transformations and purge permissions need separate evidence."
+        }
+      }
+    },
+    {
+      "id": "VM",
+      "name": "Virtual Machines",
+      "resource_boundary": "Microsoft.Compute/virtualMachines; disks/NICs/extensions/instanceView; guest OS, applications and remote stores",
+      "current_encryption_maturity": "Partial host and declared disk metadata; guest/temp/remote stores incomplete",
+      "shared_context": "Customer owns guest OS, installed software, local administration and data recovery; Microsoft host responsibilities do not include guest configuration.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "VM-I",
+            "ORG-I"
+          ],
+          "rationale": "Azure administration and guest privileged access"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "VM-N"
+          ],
+          "rationale": "NIC exposure and host/service boundaries"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "VM-R"
+          ],
+          "rationale": "OS/data disks, cache/temp and remote mounts"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "VM-T"
+          ],
+          "rationale": "Guest application and management encryption"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "VM-K"
+          ],
+          "rationale": "Guest secrets, SSH keys and certificates"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "VM-L",
+            "ORG-L"
+          ],
+          "rationale": "Guest security events, clocks and agent health"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "VM-C",
+            "ORG-C"
+          ],
+          "rationale": "Guest hardening, boot integrity and drift"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "VM-V",
+            "ORG-V"
+          ],
+          "rationale": "Guest patching, malware defense and software support"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "VM-B",
+            "ORG-B"
+          ],
+          "rationale": "Application-consistent backup and VM recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Customer owns guest OS, installed software, local administration and data recovery; Microsoft host responsibilities do not include guest configuration."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Customer owns guest OS, installed software, local administration and data recovery; Microsoft host responsibilities do not include guest configuration."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Customer owns guest OS, installed software, local administration and data recovery; Microsoft host responsibilities do not include guest configuration."
+        }
+      }
+    },
+    {
+      "id": "VMSS",
+      "name": "Virtual Machine Scale Sets",
+      "resource_boundary": "Microsoft.Compute/virtualMachineScaleSets; Uniform/Flexible instances, disks, NICs, images and applications",
+      "current_encryption_maturity": "Partial scale-set model only; instance enumeration/drift incomplete",
+      "shared_context": "Model and every live instance need reconciliation, including upgrade skew, ephemeral instances, image digests, stateful stores and capacity dependencies.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-I",
+            "ORG-I"
+          ],
+          "rationale": "Model and instance identity/administrator rights"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-N"
+          ],
+          "rationale": "Per-instance exposure and shared frontend"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-R"
+          ],
+          "rationale": "Model versus instance storage protection"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-T"
+          ],
+          "rationale": "Management, application and backend transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-K"
+          ],
+          "rationale": "Image and instance credential lifecycle"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-L",
+            "ORG-L"
+          ],
+          "rationale": "Instance audit coverage through scaling and upgrades"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-C",
+            "ORG-C"
+          ],
+          "rationale": "Upgrade policy and instance-model drift"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-V",
+            "ORG-V"
+          ],
+          "rationale": "Image, OS and extension patch coverage"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "VMSS-B",
+            "ORG-B"
+          ],
+          "rationale": "Capacity rebuild and state recovery"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Model and every live instance need reconciliation, including upgrade skew, ephemeral instances, image digests, stateful stores and capacity dependencies."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Model and every live instance need reconciliation, including upgrade skew, ephemeral instances, image digests, stateful stores and capacity dependencies."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Model and every live instance need reconciliation, including upgrade skew, ephemeral instances, image digests, stateful stores and capacity dependencies."
+        }
+      }
+    },
+    {
+      "id": "AUTO",
+      "name": "Automation accounts",
+      "resource_boundary": "Microsoft.Automation/automationAccounts; runbooks, runtimeEnvironments/modules, webhooks, jobs, assets and Hybrid Runbook Workers",
+      "current_encryption_maturity": "Unsupported; no Automation detail/encryption rules",
+      "shared_context": "Runbook author/publisher/operator, account/worker identities, job payload confidentiality and Hybrid Worker host controls require separate assessment.",
+      "domain_coverage": {
+        "I": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-I",
+            "ORG-I"
+          ],
+          "rationale": "Runbook authoring, execution and runtime identity"
+        },
+        "N": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-N"
+          ],
+          "rationale": "Account endpoints, webhooks and worker connectivity"
+        },
+        "R": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-R"
+          ],
+          "rationale": "Secure assets, code and job/output stores"
+        },
+        "T": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-T"
+          ],
+          "rationale": "Worker, webhook and runbook outbound transport"
+        },
+        "K": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-K"
+          ],
+          "rationale": "Automation assets, webhook tokens and certificate expiry"
+        },
+        "L": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-L",
+            "ORG-L"
+          ],
+          "rationale": "Job status, administrative changes and audit delivery"
+        },
+        "C": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-C",
+            "ORG-C"
+          ],
+          "rationale": "Published code, source control and execution changes"
+        },
+        "V": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-V",
+            "ORG-V"
+          ],
+          "rationale": "Runtime, modules and Hybrid Worker hosts"
+        },
+        "B": {
+          "status": "direct",
+          "check_refs": [
+            "AUTO-B",
+            "ORG-B"
+          ],
+          "rationale": "Account rebuild and protected asset reconstitution"
+        },
+        "O": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-O"
+          ],
+          "rationale": "Runbook author/publisher/operator, account/worker identities, job payload confidentiality and Hybrid Worker host controls require separate assessment."
+        },
+        "D": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-D"
+          ],
+          "rationale": "Runbook author/publisher/operator, account/worker identities, job payload confidentiality and Hybrid Worker host controls require separate assessment."
+        },
+        "G": {
+          "status": "shared",
+          "check_refs": [
+            "ORG-G",
+            "ORG-P",
+            "ORG-H",
+            "ORG-S",
+            "ORG-M",
+            "ORG-A",
+            "ORG-I"
+          ],
+          "rationale": "Runbook author/publisher/operator, account/worker identities, job payload confidentiality and Hybrid Worker host controls require separate assessment."
+        }
+      }
+    }
+  ],
+  "families": [
+    {
+      "id": "ac",
+      "title": "Access Control",
+      "responsibility": "Direct + tenant/application shared",
+      "review": "Resource and data-plane access, IAM lifecycle, inherited/group/conditional rights, workload trust and periodic removal decisions. AC-7/8/11/12 and mobile/wireless/public-content controls are assessed where actual human-facing applications/endpoints exist; they are not fabricated as Azure switches.",
+      "candidate_controls": [
+        "ac-2",
+        "ac-3",
+        "ac-4",
+        "ac-5",
+        "ac-6",
+        "ac-6.7",
+        "ac-17"
+      ]
+    },
+    {
+      "id": "at",
+      "title": "Awareness and Training",
+      "responsibility": "Organization and role owners",
+      "review": "Awareness, role-specific training and completion records for cloud/IAM/network/SOC/backup operators. No resource property proves competence or training attendance. Specialized exercises follow selected roles and threats.",
+      "candidate_controls": [
+        "at-2",
+        "at-3",
+        "at-4"
+      ]
+    },
+    {
+      "id": "au",
+      "title": "Audit and Accountability",
+      "responsibility": "Direct + SOC/audit shared",
+      "review": "Event selection/generation, content, storage/retention, health, integrity and operating review. Session recording/non-repudiation/cross-organization sharing enhancements require an actual use case and explicit selection; enabling diagnostics does not satisfy them.",
+      "candidate_controls": [
+        "au-2",
+        "au-3",
+        "au-4",
+        "au-5",
+        "au-6",
+        "au-8",
+        "au-9",
+        "au-11",
+        "au-12"
+      ]
+    },
+    {
+      "id": "ca",
+      "title": "Assessment, Authorization, and Monitoring",
+      "responsibility": "Assessment/security governance",
+      "review": "Assessment scope/independence, system exchanges, authorization, corrective actions and continuous monitoring; authorized penetration test records when selected. Resource inventory cannot authorize a system or prove all interconnection agreements.",
+      "candidate_controls": [
+        "ca-2",
+        "ca-3",
+        "ca-5",
+        "ca-6",
+        "ca-7",
+        "ca-8",
+        "ca-9"
+      ]
+    },
+    {
+      "id": "cm",
+      "title": "Configuration Management",
+      "responsibility": "Direct + platform/development shared",
+      "review": "Baselines, approved changes, restricted writers, drift, component/data-location inventory and signed artifacts. Software licensing/user-installation controls apply to VM/AKS/app/worker software; SaaS host software is a provider responsibility.",
+      "candidate_controls": [
+        "cm-2",
+        "cm-3",
+        "cm-4",
+        "cm-5",
+        "cm-6",
+        "cm-7",
+        "cm-8",
+        "cm-9",
+        "cm-10",
+        "cm-11",
+        "cm-12",
+        "cm-13",
+        "cm-14"
+      ]
+    },
+    {
+      "id": "cp",
+      "title": "Contingency Planning",
+      "responsibility": "Service + business continuity shared",
+      "review": "BIA, plans/training, alternate storage/processing/telecom as required, protected backups and measured restoration. Stateless constructs can use tested rebuild; this excludes data-backup mechanics only with documented dependency scope.",
+      "candidate_controls": [
+        "cp-2",
+        "cp-3",
+        "cp-4",
+        "cp-6",
+        "cp-7",
+        "cp-8",
+        "cp-9",
+        "cp-9.1",
+        "cp-10"
+      ]
+    },
+    {
+      "id": "ia",
+      "title": "Identification and Authentication",
+      "responsibility": "Direct + tenant/provider shared",
+      "review": "Human identity/MFA, workload identities, credential lifecycle and identity-provider trust. Machine identities do not use human MFA. Identity proofing and reauthentication come from tenant/app policies and evidence; biometric/PIV requirements are conditional, not assumed.",
+      "candidate_controls": [
+        "ia-2",
+        "ia-2.1",
+        "ia-4",
+        "ia-5",
+        "ia-8",
+        "ia-9",
+        "ia-11",
+        "ia-12",
+        "ia-13"
+      ]
+    },
+    {
+      "id": "ir",
+      "title": "Incident Response",
+      "responsibility": "SOC + service owner + provider",
+      "review": "Detection/triage/containment/reporting, exercises, support and spill response for classified data. Alert existence alone proves none of the full operating process. Provider incident notices supplement customer incident records.",
+      "candidate_controls": [
+        "ir-2",
+        "ir-3",
+        "ir-4",
+        "ir-5",
+        "ir-6",
+        "ir-7",
+        "ir-8",
+        "ir-9"
+      ]
+    },
+    {
+      "id": "ma",
+      "title": "Maintenance",
+      "responsibility": "Provider host + customer guest/hybrid/support",
+      "review": "Provider facilities/platform maintenance inherited with assurance; VM/worker remote maintenance, tools, authorization and personnel are customer duties. Physical field maintenance is conditional on owned/hybrid equipment.",
+      "candidate_controls": [
+        "ma-2",
+        "ma-3",
+        "ma-4",
+        "ma-5",
+        "ma-6"
+      ]
+    },
+    {
+      "id": "mp",
+      "title": "Media Protection",
+      "responsibility": "Provider physical media + customer exports",
+      "review": "Physical disk custody/sanitization inherited only in Azure boundary. Exported backups/reports/removable media and local audit archives need access/storage/transport/disposal controls. Deleting a resource is not proof of physical media sanitization.",
+      "candidate_controls": [
+        "mp-2",
+        "mp-3",
+        "mp-4",
+        "mp-5",
+        "mp-6",
+        "mp-7"
+      ]
+    },
+    {
+      "id": "pe",
+      "title": "Physical and Environmental Protection",
+      "responsibility": "Provider datacenters + customer sites",
+      "review": "Datacenter access, visitors, power/fire/environment and facility location inherited through assurance. Hybrid workers/admin workstations/customer sites stay customer owned. Specialized electromagnetic/leakage controls need threat/classification selection.",
+      "candidate_controls": [
+        "pe-2",
+        "pe-3",
+        "pe-4",
+        "pe-5",
+        "pe-6",
+        "pe-8",
+        "pe-9",
+        "pe-10",
+        "pe-11",
+        "pe-12",
+        "pe-13",
+        "pe-14",
+        "pe-15",
+        "pe-16",
+        "pe-17",
+        "pe-18",
+        "pe-20",
+        "pe-23"
+      ]
+    },
+    {
+      "id": "pl",
+      "title": "Planning",
+      "responsibility": "System/security architecture and governance",
+      "review": "System/security/privacy plans, rules of behavior, architecture, common controls, selected baseline and tailoring. Service list is a boundary input, not approval of an 800-53B baseline or organization-defined values.",
+      "candidate_controls": [
+        "pl-2",
+        "pl-4",
+        "pl-7",
+        "pl-8",
+        "pl-9",
+        "pl-10",
+        "pl-11"
+      ]
+    },
+    {
+      "id": "pm",
+      "title": "Program Management",
+      "responsibility": "Organization program leadership",
+      "review": "Program accountability/resources, risk strategy, privacy governance, supplier strategy and continuous-monitoring strategy need enterprise records. National-security, federal reporting and specific program controls depend on organization obligations.",
+      "candidate_controls": [
+        "pm-1",
+        "pm-2",
+        "pm-3",
+        "pm-4",
+        "pm-5",
+        "pm-6",
+        "pm-9",
+        "pm-10",
+        "pm-13",
+        "pm-14",
+        "pm-18",
+        "pm-19",
+        "pm-23",
+        "pm-28",
+        "pm-29",
+        "pm-30",
+        "pm-31"
+      ]
+    },
+    {
+      "id": "ps",
+      "title": "Personnel Security",
+      "responsibility": "HR/security/vendor management",
+      "review": "Screening, position risk, agreements, transfers/termination, external personnel and sanctions. Correlate joiner/mover/leaver records to rights removal without collecting unnecessary HR data. Provider workforce evidence is inherited.",
+      "candidate_controls": [
+        "ps-2",
+        "ps-3",
+        "ps-4",
+        "ps-5",
+        "ps-6",
+        "ps-7",
+        "ps-8",
+        "ps-9"
+      ]
+    },
+    {
+      "id": "pt",
+      "title": "Personally Identifiable Information Processing and Transparency",
+      "responsibility": "Privacy/legal + data/application owners",
+      "review": "Authority, purpose, consent/notices and special PII processing. PT-6 federal system-of-records notices and PT-8 matching requirements are conditional legal determinations. No PII/no federal duty exclusions require a documented data/obligations review, including telemetry.",
+      "candidate_controls": [
+        "pt-2",
+        "pt-3",
+        "pt-4",
+        "pt-5",
+        "pt-6",
+        "pt-7",
+        "pt-8"
+      ]
+    },
+    {
+      "id": "ra",
+      "title": "Risk Assessment",
+      "responsibility": "Direct technical + risk/privacy owners",
+      "review": "Classification, threat/impact/criticality, privacy assessments, fresh scoped vulnerability evidence and risk treatment. Threat hunting requires operational evidence where selected. Physical surveillance surveys are not automatic cloud configuration checks.",
+      "candidate_controls": [
+        "ra-2",
+        "ra-3",
+        "ra-5",
+        "ra-7",
+        "ra-8",
+        "ra-9",
+        "ra-10"
+      ]
+    },
+    {
+      "id": "sa",
+      "title": "System and Services Acquisition",
+      "responsibility": "Acquisition/provider + development",
+      "review": "Contracts, service responsibilities, documentation, secure SDLC/testing and supported components. Criticality can justify resilient design; new logging/resiliency controls are candidates, not retroactive mandates. Formal methods/source review of provider internals require assurance evidence, not guesses.",
+      "candidate_controls": [
+        "sa-2",
+        "sa-3",
+        "sa-4",
+        "sa-5",
+        "sa-8",
+        "sa-9",
+        "sa-10",
+        "sa-11",
+        "sa-15",
+        "sa-15.13",
+        "sa-22",
+        "sa-24"
+      ]
+    },
+    {
+      "id": "sc",
+      "title": "System and Communications Protection",
+      "responsibility": "Direct architecture + provider/network shared",
+      "review": "At-rest/transit protection, key/certificate lifecycle, service boundaries and availability. DNS/routing architecture belongs to network owner; application session authenticity/process isolation to app/platform; physical/EM/covert-channel enhancements require actual selected threat scope.",
+      "candidate_controls": [
+        "sc-5",
+        "sc-7",
+        "sc-8",
+        "sc-8.1",
+        "sc-12",
+        "sc-13",
+        "sc-17",
+        "sc-20",
+        "sc-21",
+        "sc-22",
+        "sc-23",
+        "sc-28",
+        "sc-28.1",
+        "sc-39",
+        "sc-45"
+      ]
+    },
+    {
+      "id": "si",
+      "title": "System and Information Integrity",
+      "responsibility": "Guest/application/monitoring + provider",
+      "review": "Flaws/malware, integrity, advisories, monitoring, input/error handling, retention/privacy and customer memory protection where relevant. No managed-service metadata can establish application input validation or provider firmware integrity; tests/assurance needed.",
+      "candidate_controls": [
+        "si-2",
+        "si-2.7",
+        "si-3",
+        "si-4",
+        "si-5",
+        "si-7",
+        "si-10",
+        "si-11",
+        "si-12",
+        "si-16",
+        "si-18",
+        "si-19"
+      ]
+    },
+    {
+      "id": "sr",
+      "title": "Supply Chain Risk Management",
+      "responsibility": "Procurement, provider and software supply chain",
+      "review": "Supplier risks/reviews, notification, provenance, authenticity and disposal for images/modules/SDKs and cloud vendors. Hardware inspection/tamper controls inherited for provider equipment, direct for owned hardware if selected. SBOM presence is not supplier trust or remediation.",
+      "candidate_controls": [
+        "sr-2",
+        "sr-3",
+        "sr-4",
+        "sr-5",
+        "sr-6",
+        "sr-8",
+        "sr-9",
+        "sr-10",
+        "sr-11",
+        "sr-12"
+      ]
+    }
+  ],
+  "proposed_check_count": 215
+}
